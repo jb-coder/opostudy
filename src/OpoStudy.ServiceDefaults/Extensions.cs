@@ -110,7 +110,7 @@ public static class Extensions
     {
         // Se exponen en todos los entornos: en el VPS la API solo es accesible por la red privada
         // (Tailscale) y los health checks solo devuelven el estado agregado, sin detalles internos.
-        // Revisar antes de exponer la API a Internet (ver docs/adr/0001-stack.md).
+        // Revisar antes de exponer la API a Internet (ver docs/adr/0001-stack-y-arquitectura.md).
 
         // Todos los checks deben pasar para considerar la app lista para recibir tráfico.
         app.MapHealthChecks(HealthEndpointPath);

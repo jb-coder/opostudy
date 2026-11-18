@@ -15,7 +15,7 @@ Dejar el repositorio listo para trabajar con Gitflow, CI y protección de secret
 - API mínima: `/health`, `/alive`, `GET /api/v1/version`, ProblemDetails, OpenAPI + Scalar en Development.
 - Tests: integración de la API (WebApplicationFactory) y arquitectura (NetArchTest).
 - GitHub:
-  - Workflows: CI (gitleaks, backend, Android), CodeQL y Dependabot.
+  - Workflows: CI (gitleaks, backend, Android), CodeQL, Dependabot y Release (tag `v*` en main → APK firmado en GitHub Releases + imágenes en GHCR, con aprobación manual en el environment `release`).
   - Plantillas de issues y PR.
 - ADR 0001.
 
