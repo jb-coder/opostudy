@@ -1,0 +1,9 @@
+# Configuración de gitleaks: reglas por defecto + allowlist mínima.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Plantillas sin valores reales"
+paths = [
+  '''\.env\.example$''',
+]

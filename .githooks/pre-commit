@@ -1,0 +1,19 @@
+#!/bin/sh
+# Bloquea el commit si gitleaks detecta secretos en los cambios preparados.
+# Activar una vez por clon:  git config core.hooksPath .githooks
+GITLEAKS="$(command -v gitleaks 2>/dev/null)"
+if [ -z "$GITLEAKS" ] && [ -n "$LOCALAPPDATA" ]; then
+  # Windows: winget instala un alias aquí aunque el PATH de la sesión aún no lo vea
+  LAD="$(cygpath -u "$LOCALAPPDATA" 2>/dev/null)"
+  for CANDIDATE in "$LAD/Microsoft/WinGet/Links/gitleaks.exe" "$LAD"/Microsoft/WinGet/Packages/Gitleaks.Gitleaks_*/gitleaks.exe; do
+    [ -x "$CANDIDATE" ] && GITLEAKS="$CANDIDATE" && break
+  done
+fi
+if [ -z "$GITLEAKS" ]; then
+  echo "pre-commit: gitleaks no está instalado (https://github.com/gitleaks/gitleaks). Commit bloqueado." >&2
+  exit 1
+fi
+"$GITLEAKS" git --pre-commit --staged --redact --no-banner || {
+  echo "pre-commit: gitleaks ha detectado posibles secretos. Revisa los cambios antes de commitear." >&2
+  exit 1
+}
