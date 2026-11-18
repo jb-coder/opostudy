@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  android:
+    name: APK Android firmado
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: '17'
+      - name: Instalar workload MAUI Android
+        run: dotnet workload install maui-android
+
+      - name: Restaurar keystore desde secrets
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::Falta el secret ANDROID_KEYSTORE_BASE64 (environment 'release')"; exit 1
+          fi
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/opostudy.keystore"
+
+      - name: Publicar APK firmado
+        env:
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASS: ${{ secrets.ANDROID_KEY_PASS }}
+          ANDROID_STORE_PASS: ${{ secrets.ANDROID_STORE_PASS }}
+        run: |
+          dotnet publish src/OpoStudy.Mobile/OpoStudy.Mobile.csproj -f net10.0-android -c Release \
+            -p:AndroidPackageFormat=apk \
+            -p:AndroidKeyStore=true \
+            -p:AndroidSigningKeyStore="$RUNNER_TEMP/opostudy.keystore" \
+            -p:AndroidSigningKeyAlias="$ANDROID_KEY_ALIAS" \
+            -p:AndroidSigningKeyPass=env:ANDROID_KEY_PASS \
+            -p:AndroidSigningStorePass=env:ANDROID_STORE_PASS \
+            -o "$RUNNER_TEMP/out"
+          cp "$(ls "$RUNNER_TEMP"/out/*-Signed.apk | head -1)" "$RUNNER_TEMP/OpoStudy-${GITHUB_REF_NAME}.apk"
+
+      - name: Borrar keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/opostudy.keystore"
+
+      - name: Crear GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PRERELEASE=""
+          case "$GITHUB_REF_NAME" in *-*) PRERELEASE="--prerelease";; esac
+          gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP/OpoStudy-${GITHUB_REF_NAME}.apk" \
+            --title "OpoStudy $GITHUB_REF_NAME" --generate-notes $PRERELEASE
+
+  api-image:
+    name: Imagen de la API (GHCR)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Login en GHCR
+        run: echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Publicar imágenes (api y worker)
+        run: |
+          OWNER="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+          VERSION="${GITHUB_REF_NAME#v}"
+          for APP in Api Worker; do
+            NAME="opostudy-$(echo "$APP" | tr '[:upper:]' '[:lower:]')"
+            dotnet publish "src/OpoStudy.$APP/OpoStudy.$APP.csproj" -c Release -t:PublishContainer \
+              -p:Version="$VERSION" \
+              -p:ContainerRegistry=ghcr.io \
+              -p:ContainerRepository="$OWNER/$NAME" \
+              -p:ContainerImageTags="\"$VERSION;latest\""
+          done

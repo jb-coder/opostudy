@@ -1,0 +1,17 @@
+name: Chore
+description: Tarea técnica (infra, CI, refactor, dependencias, docs)
+title: "chore: "
+labels: ["type:chore"]
+body:
+  - type: textarea
+    id: tarea
+    attributes:
+      label: Tarea
+    validations:
+      required: true
+  - type: textarea
+    id: hecho
+    attributes:
+      label: Definición de hecho
+      value: |
+        - [ ] 
