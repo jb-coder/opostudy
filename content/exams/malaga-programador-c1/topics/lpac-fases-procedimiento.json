@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "lpac-fases-procedimiento",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0001",
+      "statement": "Según el artículo 56.2 de la Ley 39/2015, las medidas provisionales adoptadas antes de la iniciación del procedimiento, en casos de urgencia inaplazable, deberán ser confirmadas, modificadas o levantadas en el acuerdo de iniciación, que deberá efectuarse dentro de:",
+      "options": [
+        {
+          "text": "Los cinco días siguientes a su adopción",
+          "isCorrect": false
+        },
+        {
+          "text": "Los diez días siguientes a su adopción",
+          "isCorrect": false
+        },
+        {
+          "text": "Los quince días siguientes a su adopción",
+          "isCorrect": true
+        },
+        {
+          "text": "Los treinta días siguientes a su adopción",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 56.2 exige que el acuerdo de iniciación, que debe confirmar, modificar o levantar las medidas provisionales, se efectúe «dentro de los quince días siguientes a su adopción». Además, dichas medidas «quedarán sin efecto si no se inicia el procedimiento en dicho plazo o cuando el acuerdo de iniciación no contenga un pronunciamiento expreso acerca de las mismas».",
+      "legalReference": "Ley 39/2015, art. 56.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0002",
+      "statement": "Según el artículo 62.5 de la Ley 39/2015, la presentación de una denuncia:",
+      "options": [
+        {
+          "text": "No confiere, por sí sola, la condición de interesado en el procedimiento",
+          "isCorrect": true
+        },
+        {
+          "text": "Confiere por sí sola la condición de interesado en el procedimiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Obliga al órgano competente a iniciar el procedimiento en cualquier caso",
+          "isCorrect": false
+        },
+        {
+          "text": "Exime al denunciante de cualquier responsabilidad por los hechos denunciados",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 62.5 dice que «la presentación de una denuncia no confiere, por sí sola, la condición de interesado en el procedimiento». El órgano competente no está obligado a iniciar siempre el procedimiento (solo debe motivar la no iniciación y notificarla al denunciante cuando la denuncia invoque un perjuicio en el patrimonio de las Administraciones Públicas, art. 62.3), y la exención de sanciones del art. 62.4 solo opera en los supuestos allí previstos.",
+      "legalReference": "Ley 39/2015, art. 62.5"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0003",
+      "statement": "Según el artículo 68.1 de la Ley 39/2015, si la solicitud de iniciación no reúne los requisitos del artículo 66, se requerirá al interesado para que, en un plazo de ..., subsane la falta o acompañe los documentos preceptivos, con indicación de que, si así no lo hiciera, se le tendrá por desistido de su petición.",
+      "options": [
+        {
+          "text": "Cinco días",
+          "isCorrect": false
+        },
+        {
+          "text": "Diez días",
+          "isCorrect": true
+        },
+        {
+          "text": "Quince días",
+          "isCorrect": false
+        },
+        {
+          "text": "Un mes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 68.1 fija un plazo de diez días para subsanar la solicitud o acompañar los documentos preceptivos, con la advertencia de que, de no hacerlo, «se le tendrá por desistido de su petición, previa resolución» dictada en los términos del art. 21. Los cinco días son la ampliación máxima que prevé el art. 68.2 en los casos de especial dificultad, no el plazo ordinario.",
+      "legalReference": "Ley 39/2015, art. 68.1"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0004",
+      "statement": "Según el artículo 74 de la Ley 39/2015, las cuestiones incidentales que se susciten en el procedimiento, incluso las que se refieran a la nulidad de actuaciones, no suspenderán la tramitación del mismo, salvo:",
+      "options": [
+        {
+          "text": "La petición de acumulación a otros procedimientos",
+          "isCorrect": false
+        },
+        {
+          "text": "La declaración de caducidad",
+          "isCorrect": false
+        },
+        {
+          "text": "La recusación",
+          "isCorrect": true
+        },
+        {
+          "text": "La solicitud de suspensión de la ejecución del acto",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 74 dice que las cuestiones incidentales, «incluso las que se refieran a la nulidad de actuaciones, no suspenderán la tramitación del mismo, salvo la recusación». Ni la petición de acumulación, ni la declaración de caducidad ni la solicitud de suspensión de la ejecución son excepciones previstas en este precepto.",
+      "legalReference": "Ley 39/2015, art. 74"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0005",
+      "statement": "Según el artículo 77.2 de la Ley 39/2015, cuando la Administración no tenga por ciertos los hechos alegados por los interesados o la naturaleza del procedimiento lo exija, el instructor acordará la apertura de un período de prueba por un plazo:",
+      "options": [
+        {
+          "text": "No superior a veinte días ni inferior a cinco",
+          "isCorrect": false
+        },
+        {
+          "text": "No superior a treinta días ni inferior a diez",
+          "isCorrect": true
+        },
+        {
+          "text": "No superior a cuarenta días ni inferior a diez",
+          "isCorrect": false
+        },
+        {
+          "text": "No superior a sesenta días ni inferior a quince",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 77.2 dispone que el instructor acordará un período de prueba «por un plazo no superior a treinta días ni inferior a diez». Además, a petición de los interesados, podrá abrir un período extraordinario de prueba por un plazo no superior a diez días. Las demás horquillas no son las de la Ley.",
+      "legalReference": "Ley 39/2015, art. 77.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0006",
+      "statement": "Según el artículo 82.2 de la Ley 39/2015, en el trámite de audiencia los interesados podrán alegar y presentar los documentos y justificaciones que estimen pertinentes en un plazo:",
+      "options": [
+        {
+          "text": "No inferior a cinco días ni superior a diez",
+          "isCorrect": false
+        },
+        {
+          "text": "No inferior a diez días ni superior a veinte",
+          "isCorrect": false
+        },
+        {
+          "text": "No inferior a quince días ni superior a treinta",
+          "isCorrect": false
+        },
+        {
+          "text": "No inferior a diez días ni superior a quince",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 82.2 señala que los interesados, «en un plazo no inferior a diez días ni superior a quince», podrán alegar y presentar los documentos y justificaciones que estimen pertinentes. Los veinte días son, por el contrario, el plazo mínimo para formular alegaciones en el trámite de información pública (art. 83.2).",
+      "legalReference": "Ley 39/2015, art. 82.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0007",
+      "statement": "Según el artículo 85.3 de la Ley 39/2015, cuando la sanción tenga únicamente carácter pecuniario, tanto si el infractor reconoce su responsabilidad como si efectúa el pago voluntario, el órgano competente para resolver aplicará reducciones sobre el importe de la sanción propuesta de, al menos:",
+      "options": [
+        {
+          "text": "El 10 %",
+          "isCorrect": false
+        },
+        {
+          "text": "El 20 %",
+          "isCorrect": true
+        },
+        {
+          "text": "El 30 %",
+          "isCorrect": false
+        },
+        {
+          "text": "El 50 %",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 85.3 establece que el órgano competente «aplicará reducciones de, al menos, el 20 % sobre el importe de la sanción propuesta, siendo éstos acumulables entre sí». Las reducciones deben estar determinadas en la notificación de iniciación y su efectividad se condiciona al desistimiento o renuncia de cualquier acción o recurso en vía administrativa contra la sanción. El porcentaje puede incrementarse reglamentariamente.",
+      "legalReference": "Ley 39/2015, art. 85.3"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0008",
+      "statement": "Según el artículo 95.1 de la Ley 39/2015, en los procedimientos iniciados a solicitud del interesado, cuando se produzca su paralización por causa imputable a este, la Administración le advertirá que, transcurrido un plazo, se producirá la caducidad del procedimiento. ¿Qué plazo?",
+      "options": [
+        {
+          "text": "Un mes",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos meses",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres meses",
+          "isCorrect": true
+        },
+        {
+          "text": "Seis meses",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 95.1 dispone que la Administración advertirá al interesado de que, «transcurridos tres meses, se producirá la caducidad del procedimiento». Consumido ese plazo sin que el interesado realice las actividades necesarias para reanudar la tramitación, la Administración acordará el archivo de las actuaciones y se lo notificará, y contra esa resolución cabrán los recursos pertinentes.",
+      "legalReference": "Ley 39/2015, art. 95.1"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0009",
+      "statement": "¿Cuál de los siguientes NO es un medio de ejecución forzosa de los previstos en el artículo 100.1 de la Ley 39/2015?",
+      "options": [
+        {
+          "text": "El embargo preventivo de bienes",
+          "isCorrect": true
+        },
+        {
+          "text": "El apremio sobre el patrimonio",
+          "isCorrect": false
+        },
+        {
+          "text": "La ejecución subsidiaria",
+          "isCorrect": false
+        },
+        {
+          "text": "La multa coercitiva",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 100.1 enumera como medios de ejecución forzosa el apremio sobre el patrimonio, la ejecución subsidiaria, la multa coercitiva y la compulsión sobre las personas. El embargo preventivo de bienes no está entre ellos: es una de las medidas provisionales que puede acordarse conforme al art. 56.3.d) para asegurar la eficacia de la resolución.",
+      "legalReference": "Ley 39/2015, art. 100.1"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-fases-procedimiento/0010",
+      "statement": "Según el artículo 102.1 de la Ley 39/2015, habrá lugar a la ejecución subsidiaria cuando se trate de actos:",
+      "options": [
+        {
+          "text": "Personalísimos en que no proceda la compulsión directa sobre la persona del obligado",
+          "isCorrect": false
+        },
+        {
+          "text": "Que impongan una obligación personalísima de no hacer o soportar",
+          "isCorrect": false
+        },
+        {
+          "text": "Que consistan en el pago de una cantidad líquida",
+          "isCorrect": false
+        },
+        {
+          "text": "Que por no ser personalísimos puedan ser realizados por sujeto distinto del obligado",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 102.1 dice que habrá ejecución subsidiaria «cuando se trate de actos que por no ser personalísimos puedan ser realizados por sujeto distinto del obligado», y la Administración los realizará por sí o a través de las personas que determine, a costa del obligado (art. 102.2). Los actos personalísimos en que no cabe la compulsión directa corresponden a la multa coercitiva (art. 103.1.a), las obligaciones personalísimas de no hacer o soportar a la compulsión sobre las personas (art. 104.1) y el pago de cantidad líquida al apremio sobre el patrimonio (art. 101.1).",
+      "legalReference": "Ley 39/2015, art. 102.1"
+    }
+  ]
+}
