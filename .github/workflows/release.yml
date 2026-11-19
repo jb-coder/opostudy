@@ -61,6 +61,15 @@ jobs:
           fi
           echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/opostudy.keystore"
 
+      - name: Restaurar google-services.json desde secrets
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "::error::Falta el secret GOOGLE_SERVICES_JSON_BASE64 (environment 'release')"; exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > src/OpoStudy.Mobile/Platforms/Android/google-services.json
+
       - name: Publicar APK firmado
         env:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -77,9 +86,9 @@ jobs:
             -o "$RUNNER_TEMP/out"
           cp "$(ls "$RUNNER_TEMP"/out/*-Signed.apk | head -1)" "$RUNNER_TEMP/OpoStudy-${GITHUB_REF_NAME}.apk"
 
-      - name: Borrar keystore
+      - name: Borrar keystore y google-services.json
         if: always()
-        run: rm -f "$RUNNER_TEMP/opostudy.keystore"
+        run: rm -f "$RUNNER_TEMP/opostudy.keystore" src/OpoStudy.Mobile/Platforms/Android/google-services.json
 
       - name: Crear GitHub Release
         env:

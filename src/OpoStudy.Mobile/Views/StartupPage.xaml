@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.StartupPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:StartupViewModel"
+    Shell.NavBarIsVisible="False">
+
+    <VerticalStackLayout
+        Padding="{StaticResource PagePadding}"
+        Spacing="{StaticResource SpaceXl}"
+        VerticalOptions="Center"
+        HorizontalOptions="Center">
+        <Label
+            Style="{StaticResource DisplayLabel}"
+            Text="OpoStudy"
+            HorizontalOptions="Center"
+            SemanticProperties.HeadingLevel="Level1" />
+        <ActivityIndicator
+            IsRunning="True"
+            HorizontalOptions="Center"
+            SemanticProperties.Description="Cargando" />
+    </VerticalStackLayout>
+</views:ViewModelPage>

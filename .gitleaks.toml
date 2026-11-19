@@ -2,6 +2,12 @@
 [extend]
 useDefault = true
 
+# google-services.json no se versiona nunca (las API keys AIza... ya las cubre la regla por defecto gcp-api-key).
+[[rules]]
+id = "google-services-json"
+description = "Fichero google-services.json de Firebase"
+path = '''(^|/)google-services\.json$'''
+
 [allowlist]
 description = "Plantillas sin valores reales"
 paths = [

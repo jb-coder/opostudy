@@ -5,9 +5,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
     Title="OpoStudy"
+    FlyoutBehavior="Disabled"
     Shell.TabBarIsVisible="False">
 
-    <!-- Single screen for now: no tab bar. The styleguide route is registered in code (DEBUG only). -->
+    <!-- Top-level pages (absolute navigation, no way back to login). register and forgot-password
+         are registered in code and pushed on top of login. The styleguide route is DEBUG only. -->
+    <ShellContent
+        Title="OpoStudy"
+        ContentTemplate="{DataTemplate views:StartupPage}"
+        Route="startup" />
+    <ShellContent
+        Title="Iniciar sesión"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="login" />
     <ShellContent
         Title="OpoStudy"
         ContentTemplate="{DataTemplate views:HomePage}"

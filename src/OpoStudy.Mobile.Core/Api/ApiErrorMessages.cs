@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 
+using OpoStudy.Mobile.Core.Auth;
+
 using Refit;
 
 namespace OpoStudy.Mobile.Core.Api;
@@ -26,6 +28,10 @@ public static class ApiErrorMessages
     {
         switch (exception)
         {
+            case FirebaseAuthException firebase:
+                return AuthErrorMessages.From(firebase.Code);
+            case GoogleSignInException googleSignIn:
+                return AuthErrorMessages.From(googleSignIn);
             case ApiException api:
                 return (api.StatusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError ? FromProblemDetails(api) : null) ?? ServerError;
             case TaskCanceledException or TimeoutException:

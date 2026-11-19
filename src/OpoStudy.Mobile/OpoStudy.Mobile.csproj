@@ -60,6 +60,26 @@
 		<PackageReference Include="Refit.HttpClientFactory" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<PackageReference Include="Xamarin.AndroidX.Credentials" />
+		<PackageReference Include="Xamarin.AndroidX.Credentials.PlayServicesAuth" />
+		<PackageReference Include="Xamarin.GoogleAndroid.Libraries.Identity.GoogleId" />
+	</ItemGroup>
+
+	<!-- Firebase configuration (not versioned: .gitignore + gitleaks). Copy it by hand locally; release.yml writes it from a secret.
+	     Debug builds compile without it; Release builds fail if it is missing. -->
+	<PropertyGroup>
+		<GoogleServicesFile>$(MSBuildProjectDirectory)/Platforms/Android/google-services.json</GoogleServicesFile>
+	</PropertyGroup>
+
+	<ItemGroup Condition="Exists('$(GoogleServicesFile)')">
+		<EmbeddedResource Include="$(GoogleServicesFile)" LogicalName="google-services.json" />
+	</ItemGroup>
+
+	<Target Name="RequireGoogleServices" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release' And !Exists('$(GoogleServicesFile)')">
+		<Error Text="Missing Platforms/Android/google-services.json (required in Release). Download it from the Firebase console, or in CI set the GOOGLE_SERVICES_JSON_BASE64 secret." />
+	</Target>
+
 	<!-- API base URL, fixed at build time. Debug default: Android emulator -> host loopback (AppHost API port).
 	     USB device: `adb reverse tcp:5054 tcp:5054` and build with -p:ApiBaseUrl=http://localhost:5054.
 	     Release has no default: it is defined with the production deployment. -->

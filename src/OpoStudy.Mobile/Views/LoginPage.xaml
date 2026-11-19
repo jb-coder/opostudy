@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:LoginViewModel"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceL}">
+
+            <VerticalStackLayout Spacing="{StaticResource SpaceXs}" Margin="0,24,0,8">
+                <Label
+                    Style="{StaticResource DisplayLabel}"
+                    Text="OpoStudy"
+                    SemanticProperties.HeadingLevel="Level1" />
+                <Label
+                    Style="{StaticResource CaptionLabel}"
+                    Text="Inicia sesión para guardar tu progreso" />
+            </VerticalStackLayout>
+
+            <Button
+                Style="{StaticResource SecondaryButton}"
+                Text="Continuar con Google"
+                Command="{Binding SignInWithGoogleCommand}" />
+
+            <Label
+                Style="{StaticResource CaptionLabel}"
+                Text="o"
+                HorizontalOptions="Center" />
+
+            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                <Label Text="Correo electrónico" />
+                <Entry
+                    Keyboard="Email"
+                    Text="{Binding Email}"
+                    ReturnType="Next"
+                    SemanticProperties.Description="Correo electrónico" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                <Label Text="Contraseña" />
+                <Entry
+                    IsPassword="True"
+                    Text="{Binding Password}"
+                    ReturnType="Done"
+                    ReturnCommand="{Binding SignInCommand}"
+                    SemanticProperties.Description="Contraseña" />
+            </VerticalStackLayout>
+
+            <Label
+                Style="{StaticResource ErrorLabel}"
+                Text="{Binding ErrorMessage}"
+                IsVisible="{Binding HasError}" />
+
+            <Button Text="Entrar" Command="{Binding SignInCommand}" />
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                HorizontalOptions="Center"
+                SemanticProperties.Description="Iniciando sesión" />
+
+            <Button
+                Style="{StaticResource TextButton}"
+                Text="¿Has olvidado tu contraseña?"
+                Command="{Binding GoToForgotPasswordCommand}" />
+            <Button
+                Style="{StaticResource TextButton}"
+                Text="Crear cuenta"
+                Command="{Binding GoToRegisterCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</views:ViewModelPage>
