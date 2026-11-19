@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#512BD4</color>
-    <color name="colorPrimaryDark">#2B0B98</color>
-    <color name="colorAccent">#2B0B98</color>
+    <!-- Material uses colorPrimary behind the Shell app bar / status bar area: keep it equal to the Background token. -->
+    <color name="colorPrimary">@color/appBackground</color>
+    <!-- Painted behind the Shell app bar as status bar background: must equal the Background token. -->
+    <color name="colorPrimaryDark">@color/appBackground</color>
+    <color name="colorAccent">#1E5AA8</color>
+    <!-- Mirrors the Background design token (Colors.xaml); values-night overrides it. -->
+    <color name="appBackground">#F7F8FA</color>
 </resources>

@@ -14,6 +14,7 @@ public sealed class DependencyTests
     private static readonly Assembly Domain = Assembly.Load("OpoStudy.Domain");
     private static readonly Assembly Contracts = Assembly.Load("OpoStudy.Contracts");
     private static readonly Assembly Infrastructure = Assembly.Load("OpoStudy.Infrastructure");
+    private static readonly Assembly MobileCore = Assembly.Load("OpoStudy.Mobile.Core");
 
     [Fact]
     public void Domain_DoesNotDependOnInfrastructureOrFrameworks()
@@ -54,6 +55,17 @@ public sealed class DependencyTests
         var result = Types.InAssembly(Infrastructure)
             .ShouldNot()
             .HaveDependencyOnAny("OpoStudy.Api", "OpoStudy.Worker")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(FailingTypes(result));
+    }
+
+    [Fact]
+    public void MobileCore_ShouldNot_DependOnMaui()
+    {
+        var result = Types.InAssembly(MobileCore)
+            .ShouldNot()
+            .HaveDependencyOnAny("Microsoft.Maui", "Android", "Xamarin")
             .GetResult();
 
         result.IsSuccessful.ShouldBeTrue(FailingTypes(result));

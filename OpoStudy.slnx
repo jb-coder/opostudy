@@ -6,6 +6,7 @@
     <Project Path="src/OpoStudy.Contracts/OpoStudy.Contracts.csproj" />
     <Project Path="src/OpoStudy.Domain/OpoStudy.Domain.csproj" />
     <Project Path="src/OpoStudy.Infrastructure/OpoStudy.Infrastructure.csproj" />
+    <Project Path="src/OpoStudy.Mobile.Core/OpoStudy.Mobile.Core.csproj" />
     <Project Path="src/OpoStudy.Mobile/OpoStudy.Mobile.csproj" />
     <Project Path="src/OpoStudy.ServiceDefaults/OpoStudy.ServiceDefaults.csproj" />
     <Project Path="src/OpoStudy.Worker/OpoStudy.Worker.csproj" />
@@ -15,5 +16,6 @@
     <Project Path="tests/OpoStudy.Architecture.Tests/OpoStudy.Architecture.Tests.csproj" />
     <Project Path="tests/OpoStudy.Domain.Tests/OpoStudy.Domain.Tests.csproj" />
     <Project Path="tests/OpoStudy.Infrastructure.Tests/OpoStudy.Infrastructure.Tests.csproj" />
+    <Project Path="tests/OpoStudy.Mobile.Core.Tests/OpoStudy.Mobile.Core.Tests.csproj" />
   </Folder>
 </Solution>
