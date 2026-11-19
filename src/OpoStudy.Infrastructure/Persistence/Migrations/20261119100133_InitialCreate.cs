@@ -102,7 +102,9 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                     topic_id = table.Column<Guid>(type: "uuid", nullable: true),
                     mode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     started_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    finished_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                    finished_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    last_answered_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {

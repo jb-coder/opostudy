@@ -22,7 +22,12 @@ public sealed class QuizAttempt
     public QuizMode Mode { get; private set; }
     public DateTimeOffset StartedAt { get; private set; }
     public DateTimeOffset? FinishedAt { get; private set; }
-    public IReadOnlyList<QuizAnswer> Answers => _answers;
+    
+    /// <summary>Last time a question was answered (UTC). Always changes on <see cref="Answer"/>, so every answer modifies the row.</summary>
+    public DateTimeOffset? LastAnsweredAt { get; private set; }
+
+    /// <summary>The answers sorted by <see cref="QuizAnswer.Order"/>, whatever order the persistence loaded them in.</summary>
+    public IReadOnlyList<QuizAnswer> Answers => [.. _answers.OrderBy(a => a.Order)];
 
     public bool IsFinished => FinishedAt is not null;
     public int CorrectCount => _answers.Count(a => a.IsCorrect == true);
@@ -99,6 +104,7 @@ public sealed class QuizAttempt
             ?? throw new DomainRuleException("quiz.foreign_option", "La opción no pertenece a la pregunta.");
 
         answer.Record(option.Id, option.IsCorrect, now);
+        LastAnsweredAt = now;
         if (_answers.TrueForAll(a => a.IsAnswered))
         {
             FinishedAt = now;

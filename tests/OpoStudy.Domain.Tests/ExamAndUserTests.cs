@@ -30,6 +30,32 @@ public sealed class ExamAndUserTests
     }
 
     [Fact]
+    public void UpdateExam_WithInvalidGroup_LeavesExamUntouched()
+    {
+        var exam = Exam.Create("malaga-programador-c1", "Programador", "Diputación de Málaga", "C1");
+
+        var ex = Should.Throw<DomainRuleException>(() => exam.Update("New name", "New organization", new string('x', Limits.Group + 1)));
+
+        ex.Code.ShouldBe("exam.invalid_group");
+        exam.Name.ShouldBe("Programador");
+        exam.Organization.ShouldBe("Diputación de Málaga");
+        exam.Group.ShouldBe("C1");
+    }
+
+    [Fact]
+    public void UpdateTopic_WithInvalidTitle_LeavesTopicUntouched()
+    {
+        var topic = Topic.Create(Guid.CreateVersion7(), "topic-1", 1, "Constitución", "Bloque I");
+
+        var ex = Should.Throw<DomainRuleException>(() => topic.Update(5, " ", "Bloque II"));
+
+        ex.Code.ShouldBe("topic.invalid_title");
+        topic.Number.ShouldBe(1);
+        topic.Title.ShouldBe("Constitución");
+        topic.Section.ShouldBe("Bloque I");
+    }
+
+    [Fact]
     public void CreateTopic_WithNonPositiveNumber_ThrowsDomainRule()
     {
         var ex = Should.Throw<DomainRuleException>(() => Topic.Create(Guid.CreateVersion7(), "topic-1", 0, "Constitución", null));

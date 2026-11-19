@@ -82,6 +82,18 @@ public sealed class QuizAttemptTests
     }
 
     [Fact]
+    public void Answer_Always_SetsLastAnsweredAtInUtc()
+    {
+        var attempt = NewAttempt();
+        attempt.LastAnsweredAt.ShouldBeNull();
+
+        attempt.Answer(_q1, _q1.CorrectOption.Id, Now.AddMinutes(5));
+
+        attempt.LastAnsweredAt.ShouldBe(Now.AddMinutes(5));
+        attempt.LastAnsweredAt!.Value.Offset.ShouldBe(TimeSpan.Zero);
+    }
+
+    [Fact]
     public void Answer_WrongOption_ReturnsIncorrectAndCorrectOption()
     {
         var attempt = NewAttempt();

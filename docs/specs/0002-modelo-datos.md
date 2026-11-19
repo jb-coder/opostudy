@@ -28,6 +28,7 @@ Reglas comunes:
 - Ids `Guid` generados en el dominio con `Guid.CreateVersion7()`.
 - Propiedades `private set`; las colecciones se exponen como `IReadOnlyList<T>` sobre un campo privado.
 - Constructor privado sin parámetros para EF y fábricas estáticas `Create(...)` que validan.
+- `Update(...)` de `Exam`, `Topic` y `Question` es atómico: valida todo antes de asignar nada, así que una validación fallida deja la entidad intacta (textos y opciones).
 - Una regla incumplida lanza `DomainRuleException(code, message)`:
   - El `Code` es estable y en inglés (p. ej. `question.no_correct_option`). En #16 se traducirá a ProblemDetails.
   - El mensaje está en español, porque puede llegar al usuario.
@@ -48,6 +49,7 @@ Detalle de `QuizAttempt`:
 - `Answer(question, optionId, now)` devuelve `AnswerResult(IsCorrect, CorrectOptionId)`. Falla si la pregunta es ajena al test, si ya se respondió, si la opción es de otra pregunta o si el test está finalizado.
 - Al responder la última pregunta se fija `FinishedAt`.
 - Expone `CorrectCount`, `IncorrectCount` e `IsFinished`.
+- `LastAnsweredAt` (UTC) se actualiza en cada `Answer`, de modo que responder siempre modifica la fila de `quiz_attempts`. Sirve de base a la concurrencia (ver *Concurrencia* en Datos).
 
 ### API
 No hay endpoints nuevos. Cambios:
@@ -68,12 +70,15 @@ No hay endpoints nuevos. Cambios:
 - Configuraciones con `IEntityTypeConfiguration<T>` en `Infrastructure/Persistence/Configurations/`. Tablas y columnas en snake_case.
 - Tablas: `exams`, `topics`, `questions`, `answer_options`, `users`, `quiz_attempts`, `quiz_answers`.
 - `Question.Options` y `QuizAttempt.Answers` se cargan siempre (`AutoInclude`).
+- **Orden:** ambas colecciones se exponen ordenadas por `Order`, aunque EF las materialice en otro orden (por PK, un Guid v7). El campo privado sigue siendo el *backing field* de EF y la propiedad devuelve una copia ordenada.
+- **Concurrencia:** `quiz_attempts` usa la columna de sistema `xmin` de PostgreSQL como token de concurrencia optimista (propiedad sombra `uint Version` con `IsRowVersion()`, que Npgsql mapea a `xmin`/`xid`). La migración C# la menciona, pero el SQL generado no crea ninguna columna real. Como cada `Answer` cambia `LastAnsweredAt`, dos respuestas concurrentes al mismo intento hacen que el segundo `SaveChanges` lance `DbUpdateConcurrencyException`. En #16 la API lo traducirá a 409.
 - Longitudes máximas (`Common/Limits.cs`):
 
   | Campo | Máximo |
   |---|---|
   | Slug | 100 |
   | Name / Title | 300 |
+  | Group | 20 |
   | Statement | 2000 |
   | Option text | 1000 |
   | Explanation | 4000 |
@@ -92,6 +97,7 @@ No hay endpoints nuevos. Cambios:
 - Índices simples: `questions(topic_id)` y `quiz_attempts(user_id, started_at)`.
 - PK compuesta de `quiz_answers`: `(quiz_attempt_id, question_id)`.
 - Borrado: al borrar un usuario se borran en cascada sus tests y respuestas (`DELETE /me`, #15). Las FKs hacia el contenido (exámenes, temas, preguntas y opciones) son `Restrict`.
+- `users.active_exam_id` usa `SetNull` a propósito: borrar una oposición no debe bloquearse por la preferencia de un usuario; el usuario se queda sin oposición activa.
 - La migración `InitialCreate` está en `Persistence/Migrations`, marcada como `generated_code` en `.editorconfig`:
   ```
   dotnet ef migrations add <Name> --project src/OpoStudy.Infrastructure --startup-project src/OpoStudy.Api --output-dir Persistence/Migrations
@@ -99,6 +105,10 @@ No hay endpoints nuevos. Cambios:
 
 ### App
 Sin cambios.
+
+## Pendiente para #16
+- Los mensajes de `Guard` son genéricos y exponen el código interno (p. ej. "El campo es obligatorio (exam.invalid_name)"): definir mensajes de usuario.
+- El listado de historial debe usar proyecciones en lugar de cargar entidades con `AutoInclude` de todas las respuestas.
 
 ## Seguridad
 - No hace falta ningún secreto nuevo. En local, Aspire genera la contraseña de Postgres en los user-secrets del AppHost; en los tests la pone Testcontainers.

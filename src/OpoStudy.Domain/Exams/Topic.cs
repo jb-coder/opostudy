@@ -38,8 +38,11 @@ public sealed class Topic
             throw new DomainRuleException("topic.invalid_number", "El número de tema debe ser mayor que 0.");
         }
 
+        var validTitle = Guard.RequiredText(title, Limits.Name, "topic.invalid_title");
+        var validSection = Guard.OptionalText(section, Limits.Name, "topic.invalid_section");
+
         Number = number;
-        Title = Guard.RequiredText(title, Limits.Name, "topic.invalid_title");
-        Section = Guard.OptionalText(section, Limits.Name, "topic.invalid_section");
+        Title = validTitle;
+        Section = validSection;
     }
 }

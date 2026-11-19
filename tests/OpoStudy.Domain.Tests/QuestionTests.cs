@@ -92,6 +92,34 @@ public sealed class QuestionTests
     }
 
     [Fact]
+    public void Update_WithInvalidOptionText_LeavesQuestionUntouched()
+    {
+        var question = NewQuestion(correct: 0);
+        AnswerOptionData[] invalid = [new("New A", false), new("New B", true), new(" ", false), new("New D", false)];
+
+        var ex = Should.Throw<DomainRuleException>(() => question.Update(TopicId, "New", "New explanation", "CE art. 2", invalid));
+
+        ex.Code.ShouldBe("option.invalid_text");
+        question.Statement.ShouldBe("Statement?");
+        question.Explanation.ShouldBe("Explanation");
+        question.LegalReference.ShouldBe("CE art. 1");
+        question.Options.Select(o => o.Text).ShouldBe(["Option 0", "Option 1", "Option 2", "Option 3"]);
+        question.CorrectOption.Order.ShouldBe(0);
+    }
+
+    [Fact]
+    public void Update_WithInvalidExplanation_LeavesQuestionUntouched()
+    {
+        var question = NewQuestion(correct: 0);
+
+        Should.Throw<DomainRuleException>(() => question.Update(TopicId, "New", " ", "CE art. 2", Options(correct: 2)));
+
+        question.Statement.ShouldBe("Statement?");
+        question.Options.Select(o => o.Text).ShouldBe(["Option 0", "Option 1", "Option 2", "Option 3"]);
+        question.CorrectOption.Order.ShouldBe(0);
+    }
+
+    [Fact]
     public void Update_ChangingOptionCount_ThrowsDomainRule()
     {
         var question = NewQuestion(optionCount: 4);

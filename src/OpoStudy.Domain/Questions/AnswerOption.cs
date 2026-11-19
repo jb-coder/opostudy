@@ -21,14 +21,18 @@ public sealed class AnswerOption
         Id = Guid.CreateVersion7(),
         QuestionId = questionId,
         Order = order,
-        Text = Guard.RequiredText(data.Text, Limits.OptionText, "option.invalid_text"),
+        Text = ValidateText(data),
         IsCorrect = data.IsCorrect,
     };
 
-    internal void Update(AnswerOptionData data)
+    internal static string ValidateText(AnswerOptionData data) =>
+        Guard.RequiredText(data.Text, Limits.OptionText, "option.invalid_text");
+
+    /// <summary>Applies already validated data (see <see cref="ValidateText"/>); it cannot fail.</summary>
+    internal void Apply(string validText, bool isCorrect)
     {
-        Text = Guard.RequiredText(data.Text, Limits.OptionText, "option.invalid_text");
-        IsCorrect = data.IsCorrect;
+        Text = validText;
+        IsCorrect = isCorrect;
     }
 }
 

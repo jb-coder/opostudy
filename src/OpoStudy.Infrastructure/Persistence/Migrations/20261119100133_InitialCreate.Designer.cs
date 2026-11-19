@@ -12,7 +12,7 @@ using OpoStudy.Infrastructure.Persistence;
 namespace OpoStudy.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OpoStudyDbContext))]
-    [Migration("20261119092243_InitialCreate")]
+    [Migration("20261119100133_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -255,6 +255,10 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("finished_at");
 
+                    b.Property<DateTimeOffset?>("LastAnsweredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_answered_at");
+
                     b.Property<string>("Mode")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -272,6 +276,12 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
+
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id")
                         .HasName("pk_quiz_attempts");

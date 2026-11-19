@@ -24,7 +24,9 @@ public sealed class Question
     public string Explanation { get; private set; }
     public string LegalReference { get; private set; }
     public bool IsActive { get; private set; }
-    public IReadOnlyList<AnswerOption> Options => _options;
+    
+    /// <summary>The options sorted by <see cref="AnswerOption.Order"/>, whatever order the persistence loaded them in.</summary>
+    public IReadOnlyList<AnswerOption> Options => [.. _options.OrderBy(o => o.Order)];
 
     public AnswerOption CorrectOption => _options.Single(o => o.IsCorrect);
 
@@ -46,7 +48,8 @@ public sealed class Question
             Key = Guard.RequiredText(key, Limits.Key, "question.invalid_key"),
             IsActive = true,
         };
-        question.SetTexts(statement, explanation, legalReference);
+        (question.Statement, question.Explanation, question.LegalReference) =
+            ValidateTexts(statement, explanation, legalReference);
         for (var order = 0; order < options.Count; order++)
         {
             question._options.Add(AnswerOption.Create(question.Id, order, options[order]));
@@ -75,11 +78,15 @@ public sealed class Question
                 "No se puede cambiar el número de opciones de una pregunta existente; crea otra y desactiva esta.");
         }
 
+        // Validate everything first so a failure leaves the question untouched.
+        var texts = ValidateTexts(statement, explanation, legalReference);
+        var optionTexts = options.Select(AnswerOption.ValidateText).ToArray();
+
         TopicId = topicId;
-        SetTexts(statement, explanation, legalReference);
+        (Statement, Explanation, LegalReference) = texts;
         foreach (var option in _options)
         {
-            option.Update(options[option.Order]);
+            option.Apply(optionTexts[option.Order], options[option.Order].IsCorrect);
         }
     }
 
@@ -87,12 +94,13 @@ public sealed class Question
 
     public void Deactivate() => IsActive = false;
 
-    private void SetTexts(string statement, string explanation, string legalReference)
-    {
-        Statement = Guard.RequiredText(statement, Limits.Statement, "question.invalid_statement");
-        Explanation = Guard.RequiredText(explanation, Limits.Explanation, "question.invalid_explanation");
-        LegalReference = Guard.RequiredText(legalReference, Limits.LegalReference, "question.invalid_legal_reference");
-    }
+    private static (string Statement, string Explanation, string LegalReference) ValidateTexts(
+        string statement,
+        string explanation,
+        string legalReference) =>
+        (Guard.RequiredText(statement, Limits.Statement, "question.invalid_statement"),
+         Guard.RequiredText(explanation, Limits.Explanation, "question.invalid_explanation"),
+         Guard.RequiredText(legalReference, Limits.LegalReference, "question.invalid_legal_reference"));
 
     private static void ValidateOptions(IReadOnlyList<AnswerOptionData> options)
     {

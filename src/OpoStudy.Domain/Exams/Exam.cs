@@ -34,9 +34,14 @@ public sealed class Exam
 
     public void Update(string name, string organization, string group)
     {
-        Name = Guard.RequiredText(name, Limits.Name, "exam.invalid_name");
-        Organization = Guard.RequiredText(organization, Limits.Name, "exam.invalid_organization");
-        Group = Guard.RequiredText(group, Limits.Group, "exam.invalid_group");
+        // Validate everything first so a failure leaves the entity untouched.
+        var validName = Guard.RequiredText(name, Limits.Name, "exam.invalid_name");
+        var validOrganization = Guard.RequiredText(organization, Limits.Name, "exam.invalid_organization");
+        var validGroup = Guard.RequiredText(group, Limits.Group, "exam.invalid_group");
+
+        Name = validName;
+        Organization = validOrganization;
+        Group = validGroup;
     }
 
     public void Activate() => IsActive = true;
