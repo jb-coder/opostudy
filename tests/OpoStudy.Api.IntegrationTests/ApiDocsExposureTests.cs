@@ -16,7 +16,8 @@ public sealed class ApiDocsExposureTests(ApiFactory api)
     public async Task ApiDocs_InProduction_AreNotExposed(string path)
     {
         await using var factory = api.WithWebHostBuilder(b => b.UseEnvironment("Production"));
-        using var client = factory.CreateClient();
+        // Authenticated, so a 404 means "does not exist" and not "requires login".
+        using var client = ApiFactory.CreateClientFor(factory, "uid-docs-production");
 
         var response = await client.GetAsync(new Uri(path, UriKind.Relative), TestContext.Current.CancellationToken);
 
