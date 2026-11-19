@@ -16,4 +16,11 @@ builder.AddDotnetProject("worker", "../OpoStudy.Worker/OpoStudy.Worker.csproj")
     .WaitFor(db)
     .WaitFor(api);
 
+// Loads content/ into the database on every start; the import is idempotent.
+var contentDirectory = Path.GetFullPath(Path.Combine(builder.AppHostDirectory, "..", "..", "content"));
+builder.AddDotnetProject("content-importer", "../OpoStudy.ContentImporter/OpoStudy.ContentImporter.csproj")
+    .WithReference(db)
+    .WaitFor(api)
+    .WithArgs("--content", contentDirectory);
+
 builder.Build().Run();
