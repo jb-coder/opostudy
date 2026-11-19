@@ -104,6 +104,7 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                     started_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     finished_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     last_answered_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    revision = table.Column<int>(type: "integer", nullable: false),
                     xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
                 },
                 constraints: table =>

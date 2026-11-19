@@ -24,7 +24,7 @@ public sealed class Question
     public string Explanation { get; private set; }
     public string LegalReference { get; private set; }
     public bool IsActive { get; private set; }
-    
+
     /// <summary>The options sorted by <see cref="AnswerOption.Order"/>, whatever order the persistence loaded them in.</summary>
     public IReadOnlyList<AnswerOption> Options => [.. _options.OrderBy(o => o.Order)];
 

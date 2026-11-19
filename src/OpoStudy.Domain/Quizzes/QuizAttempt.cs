@@ -22,9 +22,12 @@ public sealed class QuizAttempt
     public QuizMode Mode { get; private set; }
     public DateTimeOffset StartedAt { get; private set; }
     public DateTimeOffset? FinishedAt { get; private set; }
-    
-    /// <summary>Last time a question was answered (UTC). Always changes on <see cref="Answer"/>, so every answer modifies the row.</summary>
+
+    /// <summary>Last time a question was answered (UTC). Informational data.</summary>
     public DateTimeOffset? LastAnsweredAt { get; private set; }
+
+    /// <summary>Incremented by every <see cref="Answer"/>, so each answer always modifies the row (and the concurrency token) even if the timestamp repeats.</summary>
+    public int Revision { get; private set; }
 
     /// <summary>The answers sorted by <see cref="QuizAnswer.Order"/>, whatever order the persistence loaded them in.</summary>
     public IReadOnlyList<QuizAnswer> Answers => [.. _answers.OrderBy(a => a.Order)];
@@ -105,6 +108,7 @@ public sealed class QuizAttempt
 
         answer.Record(option.Id, option.IsCorrect, now);
         LastAnsweredAt = now;
+        Revision++;
         if (_answers.TrueForAll(a => a.IsAnswered))
         {
             FinishedAt = now;

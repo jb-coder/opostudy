@@ -12,7 +12,7 @@ using OpoStudy.Infrastructure.Persistence;
 namespace OpoStudy.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OpoStudyDbContext))]
-    [Migration("20261119100133_InitialCreate")]
+    [Migration("20261119101314_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -264,6 +264,10 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("mode");
+
+                    b.Property<int>("Revision")
+                        .HasColumnType("integer")
+                        .HasColumnName("revision");
 
                     b.Property<DateTimeOffset>("StartedAt")
                         .HasColumnType("timestamp with time zone")

@@ -28,6 +28,7 @@ public sealed class QuizAttemptTests
         attempt.StartedAt.Offset.ShouldBe(TimeSpan.Zero);
         attempt.StartedAt.ShouldBe(Now);
         attempt.IsFinished.ShouldBeFalse();
+        attempt.Revision.ShouldBe(0);
     }
 
     [Fact]
@@ -91,6 +92,17 @@ public sealed class QuizAttemptTests
 
         attempt.LastAnsweredAt.ShouldBe(Now.AddMinutes(5));
         attempt.LastAnsweredAt!.Value.Offset.ShouldBe(TimeSpan.Zero);
+    }
+
+    [Fact]
+    public void Answer_TwiceWithSameNow_IncrementsRevisionEachTime()
+    {
+        var attempt = NewAttempt();
+
+        attempt.Answer(_q1, _q1.CorrectOption.Id, Now);
+        attempt.Answer(_q2, _q2.CorrectOption.Id, Now);
+
+        attempt.Revision.ShouldBe(2);
     }
 
     [Fact]

@@ -49,7 +49,9 @@ Detalle de `QuizAttempt`:
 - `Answer(question, optionId, now)` devuelve `AnswerResult(IsCorrect, CorrectOptionId)`. Falla si la pregunta es ajena al test, si ya se respondió, si la opción es de otra pregunta o si el test está finalizado.
 - Al responder la última pregunta se fija `FinishedAt`.
 - Expone `CorrectCount`, `IncorrectCount` e `IsFinished`.
-- `LastAnsweredAt` (UTC) se actualiza en cada `Answer`, de modo que responder siempre modifica la fila de `quiz_attempts`. Sirve de base a la concurrencia (ver *Concurrencia* en Datos).
+- `LastAnsweredAt` (UTC) se actualiza en cada `Answer` y es solo un dato informativo.
+- `Revision` (`int`, empieza en 0) se incrementa en cada `Answer`. Es lo que garantiza que responder siempre modifica la fila de `quiz_attempts` (y por tanto su `xmin`), aunque `now` coincida con el valor anterior. Sirve de base a la concurrencia (ver *Concurrencia* en Datos).
+- `quiz_answers.selected_option_id` no tiene FK compuesta con la pregunta: que la opción pertenezca a la pregunta lo garantiza el dominio (`QuizAttempt.Answer`). Decisión aceptada.
 
 ### API
 No hay endpoints nuevos. Cambios:
@@ -71,7 +73,7 @@ No hay endpoints nuevos. Cambios:
 - Tablas: `exams`, `topics`, `questions`, `answer_options`, `users`, `quiz_attempts`, `quiz_answers`.
 - `Question.Options` y `QuizAttempt.Answers` se cargan siempre (`AutoInclude`).
 - **Orden:** ambas colecciones se exponen ordenadas por `Order`, aunque EF las materialice en otro orden (por PK, un Guid v7). El campo privado sigue siendo el *backing field* de EF y la propiedad devuelve una copia ordenada.
-- **Concurrencia:** `quiz_attempts` usa la columna de sistema `xmin` de PostgreSQL como token de concurrencia optimista (propiedad sombra `uint Version` con `IsRowVersion()`, que Npgsql mapea a `xmin`/`xid`). La migración C# la menciona, pero el SQL generado no crea ninguna columna real. Como cada `Answer` cambia `LastAnsweredAt`, dos respuestas concurrentes al mismo intento hacen que el segundo `SaveChanges` lance `DbUpdateConcurrencyException`. En #16 la API lo traducirá a 409.
+- **Concurrencia:** `quiz_attempts` usa la columna de sistema `xmin` de PostgreSQL como token de concurrencia optimista (propiedad sombra `uint Version` con `IsRowVersion()`, que Npgsql mapea a `xmin`/`xid`). La migración C# la menciona, pero el SQL generado no crea ninguna columna real. Como cada `Answer` incrementa `Revision`, dos respuestas concurrentes al mismo intento hacen que el segundo `SaveChanges` lance `DbUpdateConcurrencyException`. En #16 la API lo traducirá a 409.
 - Longitudes máximas (`Common/Limits.cs`):
 
   | Campo | Máximo |

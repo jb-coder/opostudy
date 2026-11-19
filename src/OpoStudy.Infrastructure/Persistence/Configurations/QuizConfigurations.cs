@@ -18,7 +18,7 @@ internal sealed class QuizAttemptConfiguration : IEntityTypeConfiguration<QuizAt
         builder.Property(a => a.Mode).HasConversion<string>().HasMaxLength(20);
 
         // Optimistic concurrency with the PostgreSQL system column xmin (no real column: see the migration).
-        // Every Answer changes LastAnsweredAt, so concurrent answers to the same attempt conflict.
+        // Every Answer increments Revision, so every answer modifies the row and concurrent answers to the same attempt conflict.
         builder.Property<uint>("Version").IsRowVersion();
         builder.Ignore(a => a.IsFinished);
         builder.Ignore(a => a.CorrectCount);
