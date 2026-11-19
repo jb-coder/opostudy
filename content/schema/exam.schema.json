@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpoStudy exam",
+  "description": "Datos de una oposición y la lista de sus temas (exam.json).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "name", "organization", "group", "topics"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "slug": { "$ref": "#/$defs/slug" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+    "organization": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+    "group": { "type": "string", "minLength": 1, "maxLength": 20, "pattern": "\\S" },
+    "topics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slug", "number", "title"],
+        "properties": {
+          "slug": { "$ref": "#/$defs/slug" },
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+          "section": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 100
+    }
+  }
+}

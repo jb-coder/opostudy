@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpoStudy topic questions",
+  "description": "Preguntas de un tema (topics/<slug>.json).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["topic", "questions"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "topic": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 100 },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "statement", "options", "explanation", "legalReference"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^[a-z0-9-]+(/[a-z0-9-]+)*$", "maxLength": 150 },
+          "statement": { "type": "string", "minLength": 1, "maxLength": 2000, "pattern": "\\S" },
+          "options": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 6,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "isCorrect"],
+              "properties": {
+                "text": { "type": "string", "minLength": 1, "maxLength": 1000, "pattern": "\\S" },
+                "isCorrect": { "type": "boolean" }
+              }
+            },
+            "contains": { "type": "object", "properties": { "isCorrect": { "const": true } }, "required": ["isCorrect"] },
+            "minContains": 1,
+            "maxContains": 1
+          },
+          "explanation": { "type": "string", "minLength": 1, "maxLength": 4000, "pattern": "\\S" },
+          "legalReference": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" }
+        }
+      }
+    }
+  }
+}
