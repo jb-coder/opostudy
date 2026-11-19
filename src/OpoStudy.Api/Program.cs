@@ -1,6 +1,9 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using OpoStudy.Api.Authentication;
+using OpoStudy.Api.Errors;
+using OpoStudy.Api.Features.Exams;
+using OpoStudy.Api.Features.Quizzes;
 using OpoStudy.Api.Features.SystemInfo;
 using OpoStudy.Api.Features.Users;
 using OpoStudy.Api.OpenApi;
@@ -22,6 +25,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.TryAddSingleton(TimeProvider.System);
 builder.Services.AddScoped<CurrentUserService>();
 
+builder.Services.AddExceptionHandler<DomainRuleExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
 
@@ -49,6 +53,8 @@ app.MapDefaultEndpoints();
 var api = app.MapGroup("/api/v1").RequireRateLimiting(RateLimitingExtensions.PerUserPolicy);
 api.MapSystemInfoEndpoints();
 api.MapUsersEndpoints();
+api.MapExamsEndpoints();
+api.MapQuizzesEndpoints();
 
 app.Run();
 
