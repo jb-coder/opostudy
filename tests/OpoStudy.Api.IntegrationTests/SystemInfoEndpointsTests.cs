@@ -38,9 +38,11 @@ public sealed class SystemInfoEndpointsTests(ApiFactory factory)
     }
 
     [Fact]
-    public async Task UnknownRoute_ReturnsProblemDetails()
+    public async Task UnknownRoute_Authenticated_ReturnsProblemDetails()
     {
-        var response = await _client.GetAsync(new Uri("/api/v1/does-not-exist", UriKind.Relative), TestContext.Current.CancellationToken);
+        // Authenticated: the fallback policy also applies to unmatched routes, so anonymous callers get 401.
+        using var client = factory.CreateClientFor("uid-unknown-route");
+        var response = await client.GetAsync(new Uri("/api/v1/does-not-exist", UriKind.Relative), TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");

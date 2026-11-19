@@ -11,7 +11,8 @@ internal static class SystemInfoEndpoints
         api.MapGet("/version", GetVersion)
             .WithName("GetVersion")
             .WithTags("SystemInfo")
-            .WithSummary("Deployed API version");
+            .WithSummary("Deployed API version")
+            .AllowAnonymous();
 
         return api;
     }

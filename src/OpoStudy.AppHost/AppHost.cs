@@ -6,9 +6,13 @@ var postgres = builder.AddPostgres("postgres")
 
 var db = postgres.AddDatabase("opostudy");
 
+// Firebase project id; stored in the AppHost user-secrets (Parameters:firebase-project-id).
+var firebaseProjectId = builder.AddParameter("firebase-project-id");
+
 var api = builder.AddDotnetProject("api", "../OpoStudy.Api/OpoStudy.Api.csproj")
     .WithReference(db)
     .WaitFor(db)
+    .WithEnvironment("Firebase__ProjectId", firebaseProjectId)
     .WithHttpHealthCheck("/health");
 
 builder.AddDotnetProject("worker", "../OpoStudy.Worker/OpoStudy.Worker.csproj")

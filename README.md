@@ -29,3 +29,18 @@ Tras clonar, activa el hook anti-secretos (requiere [gitleaks](https://github.co
 ```bash
 git config core.hooksPath .githooks
 ```
+
+## Configuración local
+La API necesita el id del proyecto de Firebase (`Firebase:ProjectId`); sin él no arranca. No se versiona: va en user-secrets.
+
+Con Aspire (`dotnet run --project src/OpoStudy.AppHost`):
+
+```bash
+dotnet user-secrets set Parameters:firebase-project-id <id> --project src/OpoStudy.AppHost
+```
+
+Ejecutando solo la API, sin AppHost:
+
+```bash
+dotnet user-secrets set Firebase:ProjectId <id> --project src/OpoStudy.Api
+```
