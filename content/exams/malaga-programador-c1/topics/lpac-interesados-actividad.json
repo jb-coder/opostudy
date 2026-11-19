@@ -79,7 +79,7 @@
       "statement": "Según el artículo 11.2 de la Ley 39/2015, ¿para qué actuaciones requerirán las Administraciones Públicas a los interesados el uso obligatorio de firma?",
       "options": [
         {
-          "text": "Para cualquier actuación prevista en el procedimiento administrativo, aunque el interesado ya haya acreditado su identidad",
+          "text": "Para realizar cualquier actuación prevista en el procedimiento administrativo, incluso cuando el interesado haya acreditado previamente su identidad",
           "isCorrect": false
         },
         {
@@ -87,11 +87,11 @@
           "isCorrect": true
         },
         {
-          "text": "Únicamente para formular solicitudes, interponer recursos y renunciar a derechos, pero no para desistir de acciones",
+          "text": "Únicamente para formular solicitudes, interponer recursos y renunciar a derechos, pero no para desistir de acciones ni presentar comunicaciones",
           "isCorrect": false
         },
         {
-          "text": "Para formular solicitudes, presentar alegaciones, aportar documentos y consultar el estado de tramitación del expediente",
+          "text": "Para formular solicitudes, presentar alegaciones, aportar documentos y consultar el estado de tramitación del expediente electrónico",
           "isCorrect": false
         }
       ],
@@ -103,15 +103,15 @@
       "statement": "Según el artículo 12.2 de la Ley 39/2015, la identificación o firma electrónica de un interesado que carezca de los medios electrónicos necesarios podrá ser realizada válidamente por un funcionario público siempre que:",
       "options": [
         {
-          "text": "El interesado lo solicite por escrito y abone la tasa correspondiente",
+          "text": "El interesado lo solicite por escrito ante la oficina de asistencia en materia de registros y abone la tasa",
           "isCorrect": false
         },
         {
-          "text": "El funcionario sea el titular del órgano que tramita el procedimiento",
+          "text": "El funcionario sea titular del órgano instructor y el interesado conste en el registro electrónico de apoderamientos",
           "isCorrect": false
         },
         {
-          "text": "El interesado acredite mediante declaración jurada que carece de certificado electrónico",
+          "text": "El interesado acredite mediante declaración jurada que carece de certificado electrónico y de acceso a Internet",
           "isCorrect": false
         },
         {
@@ -127,11 +127,11 @@
       "statement": "Según el artículo 13 de la Ley 39/2015, quienes tienen capacidad de obrar ante las Administraciones Públicas son titulares, en sus relaciones con ellas, del derecho a utilizar las lenguas oficiales:",
       "options": [
         {
-          "text": "En todo el territorio del Estado, en cualquier procedimiento",
+          "text": "En todo el territorio del Estado, de acuerdo con la Ley 39/2015 y el resto del ordenamiento jurídico",
           "isCorrect": false
         },
         {
-          "text": "Únicamente en los procedimientos tramitados por la Administración General del Estado",
+          "text": "Únicamente en los procedimientos tramitados por la Administración General del Estado y sus Organismos públicos",
           "isCorrect": false
         },
         {
@@ -139,7 +139,7 @@
           "isCorrect": true
         },
         {
-          "text": "En el territorio de su provincia, de acuerdo con la legislación de régimen local",
+          "text": "En el territorio de su provincia, de acuerdo con lo previsto en la Ley Reguladora de las Bases del Régimen Local",
           "isCorrect": false
         }
       ],
@@ -199,7 +199,7 @@
       "statement": "Según el artículo 16.5 de la Ley 39/2015, los documentos presentados de manera presencial ante las Administraciones Públicas deberán ser digitalizados, para su incorporación al expediente administrativo electrónico, por:",
       "options": [
         {
-          "text": "El órgano competente para resolver el procedimiento",
+          "text": "El órgano competente para resolver, previa incorporación al expediente administrativo",
           "isCorrect": false
         },
         {
@@ -207,11 +207,11 @@
           "isCorrect": true
         },
         {
-          "text": "El propio interesado, antes de su presentación",
+          "text": "El propio interesado, antes de su presentación, mediante copia auténtica electrónica",
           "isCorrect": false
         },
         {
-          "text": "La unidad encargada del archivo electrónico único de cada Administración",
+          "text": "La unidad encargada del archivo electrónico único de la Administración",
           "isCorrect": false
         }
       ],

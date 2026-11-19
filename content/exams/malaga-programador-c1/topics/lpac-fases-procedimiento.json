@@ -148,7 +148,7 @@
     },
     {
       "key": "malaga-programador-c1/lpac-fases-procedimiento/0007",
-      "statement": "Según el artículo 85.3 de la Ley 39/2015, cuando la sanción tenga únicamente carácter pecuniario, tanto si el infractor reconoce su responsabilidad como si efectúa el pago voluntario, el órgano competente para resolver aplicará reducciones sobre el importe de la sanción propuesta de, al menos:",
+      "statement": "Según el artículo 85.3 de la Ley 39/2015, cuando la sanción tenga únicamente carácter pecuniario, tanto si el infractor reconoce su responsabilidad como si efectúa el pago voluntario, ¿qué porcentaje mínimo de reducción sobre el importe de la sanción propuesta debe aplicar el órgano competente para resolver?",
       "options": [
         {
           "text": "El 10 %",
@@ -167,7 +167,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "El artículo 85.3 establece que el órgano competente «aplicará reducciones de, al menos, el 20 % sobre el importe de la sanción propuesta, siendo éstos acumulables entre sí». Las reducciones deben estar determinadas en la notificación de iniciación y su efectividad se condiciona al desistimiento o renuncia de cualquier acción o recurso en vía administrativa contra la sanción. El porcentaje puede incrementarse reglamentariamente.",
+      "explanation": "El artículo 85.3 establece que el órgano competente «aplicará reducciones de, al menos, el 20 % sobre el importe de la sanción propuesta, siendo éstos acumulables entre sí». Las reducciones deben estar determinadas en la notificación de iniciación y su efectividad se condiciona al desistimiento o renuncia de cualquier acción o recurso en vía administrativa contra la sanción. El 20 % es, por tanto, el mínimo legal («al menos»), y el porcentaje puede incrementarse reglamentariamente.",
       "legalReference": "Ley 39/2015, art. 85.3"
     },
     {
