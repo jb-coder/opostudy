@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Time.Testing;
 
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -32,8 +33,54 @@ public sealed class HomeViewModelTests
         _auth.Email.Returns("a@b.com");
     }
 
+    private readonly FakeTimeProvider _time = new();
+
     private HomeViewModel CreateSut(bool isDebug = false) =>
-        new(_api, _navigation, new AppEnvironment(isDebug), _auth, _dialogs, NullLogger<HomeViewModel>.Instance);
+        new(_api, _navigation, new AppEnvironment(isDebug), _auth, _dialogs, _time, NullLogger<HomeViewModel>.Instance);
+
+    [Fact]
+    public async Task RefreshCommand_CreatedNearMidnightUtc_UsesLocalDate()
+    {
+        _time.SetLocalTimeZone(TimeZoneInfo.CreateCustomTimeZone("test", TimeSpan.FromHours(2), "test", "test"));
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _api.GetMeAsync(Arg.Any<CancellationToken>())
+            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 23, 30, 0, TimeSpan.Zero), null));
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.MemberSince.ShouldBe("6 de marzo de 2026");
+    }
+
+    [Fact]
+    public async Task SignOutCommand_WhileBusy_CannotExecute()
+    {
+        var gate = new TaskCompletionSource();
+        _auth.SignOutAsync().Returns(gate.Task);
+        var sut = CreateSut();
+
+        var running = sut.SignOutCommand.ExecuteAsync(null);
+
+        sut.SignOutCommand.CanExecute(null).ShouldBeFalse();
+
+        gate.SetResult();
+        await running;
+
+        sut.SignOutCommand.CanExecute(null).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task SignOutCommand_NavigationFails_ShowsErrorAndResetsBusy()
+    {
+        _navigation.GoToAsync(Arg.Any<string>(), Arg.Any<IReadOnlyDictionary<string, object>?>())
+            .ThrowsAsync(new InvalidOperationException());
+        var sut = CreateSut();
+
+        await sut.SignOutCommand.ExecuteAsync(null);
+
+        sut.HasError.ShouldBeTrue();
+        sut.IsBusy.ShouldBeFalse();
+    }
 
     [Fact]
     public async Task RefreshCommand_ApiResponds_LoadsAccountCard()

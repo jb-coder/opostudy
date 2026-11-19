@@ -129,12 +129,18 @@ public sealed class AuthServiceTests
         var sut = await CreateRestoredAsync(TimeSpan.FromMinutes(1));
         _firebase.RefreshAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).ThrowsAsync(new FirebaseAuthException(code));
         var raised = 0;
-        sut.SessionExpired += (_, _) => raised++;
+        string? raisedCode = null;
+        sut.SessionExpired += (_, e) =>
+        {
+            raised++;
+            raisedCode = e.Code;
+        };
 
         (await sut.GetIdTokenAsync(TestContext.Current.CancellationToken)).ShouldBeNull();
 
         sut.IsSignedIn.ShouldBeFalse();
         raised.ShouldBe(1);
+        raisedCode.ShouldBe(code);
         _store.Received(1).Remove(Key);
     }
 
@@ -157,9 +163,68 @@ public sealed class AuthServiceTests
         _firebase.RefreshAsync("refresh-old", Arg.Any<CancellationToken>())
             .Returns(new FirebaseTokens("id-new", "refresh-new", 3600, null));
 
-        sut.InvalidateIdToken();
+        sut.InvalidateIdToken("id-old");
 
         (await sut.GetIdTokenAsync(TestContext.Current.CancellationToken)).ShouldBe("id-new");
+    }
+
+    [Fact]
+    public async Task InvalidateIdToken_StaleToken_DoesNotInvalidateRenewedOne()
+    {
+        var sut = await CreateRestoredAsync(TimeSpan.FromHours(1));
+
+        sut.InvalidateIdToken("id-older");
+
+        (await sut.GetIdTokenAsync(TestContext.Current.CancellationToken)).ShouldBe("id-old");
+        await _firebase.DidNotReceiveWithAnyArgs().RefreshAsync(default!, TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task SignOutAsync_RefreshInFlight_DoesNotRestoreSession()
+    {
+        var sut = await CreateRestoredAsync(TimeSpan.FromMinutes(1));
+        var gate = new TaskCompletionSource<FirebaseTokens>();
+        _firebase.RefreshAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(gate.Task);
+        _store.ClearReceivedCalls();
+
+        var refresh = sut.GetIdTokenAsync(TestContext.Current.CancellationToken);
+        var signOut = sut.SignOutAsync();
+        gate.SetResult(new FirebaseTokens("id-new", "refresh-new", 3600, null));
+        await Task.WhenAll(refresh, signOut);
+
+        sut.IsSignedIn.ShouldBeFalse();
+        Received.InOrder(() =>
+        {
+            _store.SetAsync(Key, Arg.Any<string>());
+            _store.Remove(Key);
+        });
+    }
+
+    [Fact]
+    public async Task GetIdTokenAsync_SessionChangedDuringRefresh_DiscardsResult()
+    {
+        var sut = await CreateRestoredAsync(TimeSpan.FromMinutes(1));
+        var gate = new TaskCompletionSource<FirebaseTokens>();
+        _firebase.RefreshAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(gate.Task);
+        _firebase.SignInWithPasswordAsync("c@d.com", "secret1", Arg.Any<CancellationToken>())
+            .Returns(new FirebaseTokens("id-other", "refresh-other", 3600, "c@d.com"));
+
+        var refresh = sut.GetIdTokenAsync(TestContext.Current.CancellationToken);
+        await sut.SignInWithEmailAsync("c@d.com", "secret1", TestContext.Current.CancellationToken);
+        gate.SetResult(new FirebaseTokens("id-new", "refresh-new", 3600, null));
+
+        (await refresh).ShouldBeNull();
+        sut.Email.ShouldBe("c@d.com");
+    }
+
+    [Fact]
+    public async Task DeleteFirebaseAccountAsync_NoSession_ThrowsTokenExpired()
+    {
+        var sut = CreateSut();
+
+        var ex = await Should.ThrowAsync<FirebaseAuthException>(() => sut.DeleteFirebaseAccountAsync());
+
+        ex.Code.ShouldBe("TOKEN_EXPIRED");
     }
 
     [Fact]

@@ -4,7 +4,7 @@ namespace OpoStudy.Mobile.Core.Auth;
 public interface IAuthService
 {
     /// <summary>Raised when the session can no longer be renewed and was cleared.</summary>
-    event EventHandler? SessionExpired;
+    event EventHandler<SessionExpiredEventArgs>? SessionExpired;
 
     bool IsSignedIn { get; }
 
@@ -28,8 +28,11 @@ public interface IAuthService
     /// <summary>Returns a valid ID token (renewing it if needed), or null when there is no session.</summary>
     Task<string?> GetIdTokenAsync(CancellationToken cancellationToken = default);
 
-    /// <summary>Marks the current token as expired so the next call renews it.</summary>
-    void InvalidateIdToken();
+    /// <summary>
+    /// Marks the token as expired so the next call renews it, but only when it is still the current one
+    /// (a late 401 for an already renewed token is ignored).
+    /// </summary>
+    void InvalidateIdToken(string rejectedIdToken);
 
     Task SignOutAsync();
 

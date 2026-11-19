@@ -135,7 +135,8 @@ Todos heredan de `ViewModelBase` (`IsBusy`, `ErrorMessage`), comandos asíncrono
 - `ShellNavigationService` ejecuta la navegación en el hilo principal (`MainThread.InvokeOnMainThreadAsync`).
 - `Platforms/Android/GoogleSignInProvider.cs` (con su registro condicional para Android): `CredentialManager.Create(activity)` + `GetSignInWithGoogleOption.Builder(webClientId)` → `GoogleIdTokenCredential.CreateFrom(...).IdToken`. `GetCredentialCancellationException` → `null`; `NoCredentialException` → `GoogleSignInException(NoAccount)`; otra → `Failed`. `SignOutAsync` → `ClearCredentialStateAsync`. Paquetes (versiones en `Directory.Packages.props`, grupo `App`): `Xamarin.AndroidX.Credentials`, `Xamarin.AndroidX.Credentials.PlayServicesAuth`, `Xamarin.GoogleAndroid.Libraries.Identity.GoogleId`.
 - `MauiProgram`: `FirebaseOptions`, `TimeProvider.System`, `AddHttpClient<IFirebaseAuthClient, FirebaseAuthClient>`, `IAuthService` singleton, `AuthHeaderHandler` transient y `.AddHttpMessageHandler<AuthHeaderHandler>()` en el cliente Refit, `ISecureStore`, `IDialogService`, `IGoogleSignInProvider`, nuevos ViewModels y páginas.
-- `AppShell`: se suscribe a `IAuthService.SessionExpired` y navega a `//login`.
+- `AppShell`: arranca `SessionExpiredHandler` (Core), que al recibir `IAuthService.SessionExpired` (con el código de Firebase) navega a `//login` y muestra un aviso "Sesión cerrada" con el motivo (p. ej. cuenta deshabilitada).
+- Notas de robustez: `SignOutAsync` limpia la sesión bajo el mismo bloqueo que la renovación del token, y una renovación en vuelo descarta su resultado si la sesión ya cambió (así no se "resucita" una sesión cerrada). `InvalidateIdToken(token)` solo caduca la sesión si ese token sigue siendo el actual (un 401 tardío de un token ya renovado se ignora). `DeleteFirebaseAccountAsync` sin token válido lanza `FirebaseAuthException("TOKEN_EXPIRED")` para mostrar "Tu sesión ha caducado". "Miembro desde" usa la zona horaria local.
 - `AndroidManifest.xml`: `android:allowBackup="false"` (SecureStorage no sobrevive a una copia restaurada y no hay nada local que merezca copia).
 - Estilo implícito nuevo de `Entry` en `Styles.xaml` (fondo `Surface`, texto `OnSurface`, placeholder `OnSurfaceVariant`, `MinimumHeightRequest` 48) y documentado en `docs/diseno/sistema-diseno.md`.
 
@@ -173,7 +174,7 @@ Todos heredan de `ViewModelBase` (`IsBusy`, `ErrorMessage`), comandos asíncrono
 - [x] La pantalla de inicio muestra el correo y la fecha de alta que devuelve `GET /me`.
 - [x] Cerrar sesión vuelve al login; con Google vuelve a salir el selector de cuentas.
 - [x] Borrar la cuenta elimina el usuario de la BD y de Firebase.
-- [ ] `.gitignore` y gitleaks cubren `google-services.json`; el job `mobile-android` de CI compila sin él y `release.yml` lo exige.
+- [x] `.gitignore` y gitleaks cubren `google-services.json`; el job `mobile-android` de CI compila sin él y `release.yml` lo exige.
 - [x] `dotnet build src/OpoStudy.Mobile -f net10.0-android` sin warnings y los tests de `OpoStudy.Mobile.Core.Tests` en verde.
 
 ## Plan de tests

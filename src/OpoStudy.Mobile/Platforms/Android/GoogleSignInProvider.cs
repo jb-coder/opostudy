@@ -15,6 +15,8 @@ namespace OpoStudy.Mobile.Platforms.Android;
 /// <summary>Google sign-in through the Android Credential Manager ("Sign in with Google" option).</summary>
 internal sealed class GoogleSignInProvider(FirebaseOptions options) : IGoogleSignInProvider
 {
+    private static readonly TimeSpan SignOutTimeout = TimeSpan.FromSeconds(5);
+
     private static readonly IExecutor Executor = Executors.NewSingleThreadExecutor()!;
 
     public async Task<string?> GetIdTokenAsync(CancellationToken cancellationToken = default)
@@ -76,12 +78,22 @@ internal sealed class GoogleSignInProvider(FirebaseOptions options) : IGoogleSig
         }
 
         var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var signal = new CancellationSignal();
         CredentialManager.Create(activity).ClearCredentialStateAsync(
             new ClearCredentialStateRequest(),
-            new CancellationSignal(),
+            signal,
             Executor,
             new ClearCallback(completion));
-        await completion.Task;
+
+        try
+        {
+            await completion.Task.WaitAsync(SignOutTimeout);
+        }
+        catch (System.TimeoutException)
+        {
+            // Best effort: the local session is already cleared and AuthService ignores sign-out failures.
+            signal.Cancel();
+        }
     }
 
     private sealed class Callback(TaskCompletionSource<GetCredentialResponse> completion) : Java.Lang.Object, ICredentialManagerCallback

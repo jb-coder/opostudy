@@ -33,7 +33,7 @@ public sealed class AuthHeaderHandlerTests
         await client.GetAsync("/x", TestContext.Current.CancellationToken);
 
         inner.Request!.Headers.Authorization.ShouldBeNull();
-        _auth.DidNotReceive().InvalidateIdToken();
+        _auth.DidNotReceiveWithAnyArgs().InvalidateIdToken(default!);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public sealed class AuthHeaderHandlerTests
 
         await client.GetAsync("/x", TestContext.Current.CancellationToken);
 
-        _auth.Received(1).InvalidateIdToken();
+        _auth.Received(1).InvalidateIdToken("token-1");
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public sealed class AuthHeaderHandlerTests
 
         await client.GetAsync("/x", TestContext.Current.CancellationToken);
 
-        _auth.DidNotReceive().InvalidateIdToken();
+        _auth.DidNotReceiveWithAnyArgs().InvalidateIdToken(default!);
     }
 
     private (HttpClient Client, StubHttpMessageHandler Inner) CreateClient(HttpStatusCode status = HttpStatusCode.OK)

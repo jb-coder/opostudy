@@ -17,7 +17,7 @@ public sealed class AuthHeaderHandler(IAuthService auth) : DelegatingHandler
         var response = await base.SendAsync(request, cancellationToken);
         if (token is not null && response.StatusCode == HttpStatusCode.Unauthorized)
         {
-            auth.InvalidateIdToken();
+            auth.InvalidateIdToken(token);
         }
 
         return response;

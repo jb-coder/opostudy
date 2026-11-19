@@ -19,6 +19,7 @@ public sealed partial class HomeViewModel(
     AppEnvironment environment,
     IAuthService auth,
     IDialogService dialogs,
+    TimeProvider time,
     ILogger<HomeViewModel> logger) : ViewModelBase
 {
     [ObservableProperty]
@@ -87,7 +88,7 @@ public sealed partial class HomeViewModel(
             IsConnected = true;
 
             var me = await api.GetMeAsync(cancellationToken);
-            MemberSince = me.CreatedAt.ToString("d 'de' MMMM 'de' yyyy", SpanishCulture);
+            MemberSince = TimeZoneInfo.ConvertTime(me.CreatedAt, time.LocalTimeZone).ToString("d 'de' MMMM 'de' yyyy", SpanishCulture);
         }
         catch (Exception ex)
         {
@@ -104,8 +105,22 @@ public sealed partial class HomeViewModel(
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
     private async Task SignOutAsync()
     {
-        await auth.SignOutAsync();
-        await navigation.GoToAsync(Routes.Root(Routes.Login));
+        IsBusy = true;
+        ErrorMessage = null;
+        try
+        {
+            await auth.SignOutAsync();
+            await navigation.GoToAsync(Routes.Root(Routes.Login));
+        }
+        catch (Exception ex)
+        {
+            LogSignOutFailed(ex, ex.GetType().FullName);
+            ErrorMessage = ApiErrorMessages.From(ex);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
@@ -149,6 +164,9 @@ public sealed partial class HomeViewModel(
 
     [RelayCommand]
     private Task OpenStyleGuideAsync() => navigation.GoToAsync(Routes.StyleGuide);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not sign out ({ExceptionType})")]
+    private partial void LogSignOutFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not delete the account ({ExceptionType})")]
     private partial void LogDeleteFailed(Exception exception, string? exceptionType);

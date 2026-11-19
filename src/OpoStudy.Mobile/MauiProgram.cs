@@ -74,6 +74,7 @@ public static class MauiProgram
 
         services.AddSingleton<INavigationService, ShellNavigationService>();
 
+        services.AddSingleton<SessionExpiredHandler>();
         services.AddSingleton<AppShell>();
 
         services.AddTransient<StartupViewModel>();

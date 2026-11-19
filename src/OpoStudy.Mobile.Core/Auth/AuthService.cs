@@ -40,7 +40,7 @@ public sealed partial class AuthService(
 
     private AuthSession? _session;
 
-    public event EventHandler? SessionExpired;
+    public event EventHandler<SessionExpiredEventArgs>? SessionExpired;
 
     public void Dispose() => _refreshLock.Dispose();
 
@@ -139,6 +139,14 @@ public sealed partial class AuthService(
                     time.GetUtcNow().AddSeconds(tokens.ExpiresIn),
                     current.Email,
                     current.Provider);
+
+                // Sign-out or a new sign-in happened while the refresh was in flight: discard the result.
+                // Compared by refresh token, so an InvalidateIdToken in the meantime doesn't discard it.
+                if (_session?.RefreshToken != current.RefreshToken)
+                {
+                    return null;
+                }
+
                 await PersistAsync(renewed);
                 return renewed.IdToken;
             }
@@ -146,7 +154,7 @@ public sealed partial class AuthService(
             {
                 LogSessionLost(ex.Code);
                 ClearSession();
-                SessionExpired?.Invoke(this, EventArgs.Empty);
+                SessionExpired?.Invoke(this, new SessionExpiredEventArgs(ex.Code));
                 return null;
             }
         }
@@ -156,9 +164,9 @@ public sealed partial class AuthService(
         }
     }
 
-    public void InvalidateIdToken()
+    public void InvalidateIdToken(string rejectedIdToken)
     {
-        if (_session is { } current)
+        if (_session is { } current && current.IdToken == rejectedIdToken)
         {
             _session = current with { ExpiresAt = DateTimeOffset.MinValue };
         }
@@ -166,7 +174,17 @@ public sealed partial class AuthService(
 
     public async Task SignOutAsync()
     {
-        ClearSession();
+        // Serialized with token renewal so an in-flight refresh cannot re-save the session afterwards.
+        await _refreshLock.WaitAsync();
+        try
+        {
+            ClearSession();
+        }
+        finally
+        {
+            _refreshLock.Release();
+        }
+
         try
         {
             await google.SignOutAsync();
@@ -180,7 +198,7 @@ public sealed partial class AuthService(
     public async Task DeleteFirebaseAccountAsync(CancellationToken cancellationToken = default)
     {
         var token = await GetIdTokenAsync(cancellationToken)
-            ?? throw new InvalidOperationException("There is no active session.");
+            ?? throw new FirebaseAuthException("TOKEN_EXPIRED");
 
         try
         {
