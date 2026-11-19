@@ -1,13 +1,18 @@
+using Microsoft.Extensions.Logging;
+
 using OpoStudy.Mobile.Core.ViewModels;
 
 namespace OpoStudy.Mobile.Views;
 
 /// <summary>Base page: binds its ViewModel and forwards the appearing event to it.</summary>
-public abstract class ViewModelPage : ContentPage
+public abstract partial class ViewModelPage : ContentPage
 {
-    protected ViewModelPage(object viewModel)
+    private readonly ILogger _logger;
+
+    protected ViewModelPage(object viewModel, ILogger logger)
     {
         BindingContext = viewModel;
+        _logger = logger;
     }
 
     protected override async void OnAppearing()
@@ -23,8 +28,11 @@ public abstract class ViewModelPage : ContentPage
             catch (Exception ex)
             {
                 // async void must never throw: a failing ViewModel must not crash the app.
-                System.Diagnostics.Debug.WriteLine($"OnAppearingAsync failed: {ex}");
+                LogAppearingFailed(_logger, ex, GetType().Name);
             }
         }
     }
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "OnAppearingAsync failed on {Page}")]
+    private static partial void LogAppearingFailed(ILogger logger, Exception exception, string page);
 }

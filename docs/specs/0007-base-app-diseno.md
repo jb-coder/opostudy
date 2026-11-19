@@ -85,7 +85,7 @@ ViewModels/HomeViewModel.cs
 - Valor por defecto en `Debug`: `http://10.0.2.2:5054` (emulador → `localhost` del PC, puerto del AppHost).
 - Dispositivo USB: `adb reverse tcp:5054 tcp:5054` y compilar con `-p:ApiBaseUrl=http://localhost:5054`.
 - En `Release` no hay valor por defecto: si falta, `MauiProgram` lanza una excepción clara al arrancar. Se definirá en #21.
-- Android bloquea HTTP en claro: `Platforms/Android/Resources/xml/network_security_config.xml` lo permite **solo** para `10.0.2.2` y `localhost`, y se referencia desde `AndroidManifest.xml`.
+- Android bloquea HTTP en claro. El recurso `xml/network_security_config` (referenciado desde `AndroidManifest.xml`) sale de `Platforms/Android/NetworkConfig/network_security_config.<Configuración>.xml`: en `Debug` permite HTTP en claro **solo** para `10.0.2.2` y `localhost`; en `Release` solo HTTPS.
 - El README (sección de desarrollo local) explica ambos modos.
 
 #### Sistema de diseño
@@ -137,6 +137,7 @@ Recursos con nombre en `Resources/Styles/Colors.xaml`, `Typography.xaml` (nuevo)
 - `HomeViewModel` recibe además `INavigationService`, `AppEnvironment` (para `IsStyleGuideVisible`) e `ILogger<HomeViewModel>`; la versión se muestra sin los metadatos de compilación (`1.0.0+abc` → `1.0.0`).
 - `ApiErrorMessages` recorre las excepciones internas: Refit envuelve los fallos de red (`ApiRequestException` → `TaskCanceledException` → `TimeoutException`). En Android, `JavaNetworkExceptionHandler` traduce las excepciones de Java a `HttpRequestException`/`TimeoutException`.
 - Barra de estado: `MainActivity` aplica el color `Background` y los iconos claros u oscuros según el tema. Limitación conocida: si se cambia el tema del sistema con una página apilada abierta (el catálogo), su franja superior no se repinta hasta volver a entrar.
+- Pendiente para #19: `RefreshCommand` recibe un `CancellationToken`, pero nadie cancela al salir de la pantalla. Cuando haya navegación real, `ViewModelBase` tendrá `OnDisappearing` para cancelar los comandos en curso, y una cancelación del usuario no se mostrará como error de tiempo de espera.
 - En `Release` sin `ApiBaseUrl` la app se cierra al arrancar: el workflow de release tendrá que pasarlo (#21).
 
 ## Seguridad
