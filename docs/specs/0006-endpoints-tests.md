@@ -91,7 +91,9 @@ La API no expone `Key`, `IsActive` ni `FirebaseUid`, y `Explanation`/`LegalRefer
   | cualquier otro código | 422 | No se ha podido completar la operación. |
 - `DomainRuleExceptionHandler : IExceptionHandler` (registrado con `AddExceptionHandler<>` antes de `UseExceptionHandler`, que ya existe) escribe un ProblemDetails con `status`, `title` = mensaje de `DomainErrors`, y la extensión `code` con el código estable (para que la app pueda reaccionar). **No** usa `exception.Message`.
 - El mismo handler (u otro) traduce `DbUpdateConcurrencyException` a `409` con código `quiz.concurrent_update` y mensaje "El test se ha modificado desde otra petición. Vuelve a cargarlo.".
+- Si ninguna de las entidades en conflicto (`exception.Entries`) es un `QuizAttempt`, el `409` usa el código `concurrency.conflict` y el mensaje "Los datos se han modificado desde otra petición. Vuelve a intentarlo.".
 - Los errores que genera el propio endpoint (404, 422 de `quiz.foreign_question` y `quiz.no_questions_available`) usan el mismo helper de `DomainErrors` para que formato y mensajes coincidan. 404: "La oposición no existe.", "El tema no existe." y "El test no existe." (extensión `code`: `exam.not_found`, `topic.not_found`, `quiz.not_found`).
+- Un `BadHttpRequestException` de Minimal APIs (p. ej. body vacío o JSON mal formado) sale como `400` (o el 4xx que traiga la excepción) con código `request.invalid` y mensaje "La petición no es válida.", en lugar de 500.
 - Las excepciones no controladas siguen saliendo como 500 ProblemDetails genérico (sin detalles fuera de Development).
 
 ### Datos

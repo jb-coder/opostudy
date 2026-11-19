@@ -13,6 +13,8 @@ internal static class DomainErrors
     public const string QuizForeignQuestion = "quiz.foreign_question";
     public const string QuizNoQuestionsAvailable = "quiz.no_questions_available";
     public const string QuizConcurrentUpdate = "quiz.concurrent_update";
+    public const string InvalidRequest = "request.invalid";
+    public const string ConcurrencyConflict = "concurrency.conflict";
 
     private const string FallbackMessage = "No se ha podido completar la operación.";
 
@@ -22,6 +24,7 @@ internal static class DomainErrors
             ["quiz.finished"] = (StatusCodes.Status409Conflict, "El test ya está terminado."),
             ["quiz.already_answered"] = (StatusCodes.Status409Conflict, "Ya has respondido a esta pregunta."),
             [QuizConcurrentUpdate] = (StatusCodes.Status409Conflict, "El test se ha modificado desde otra petición. Vuelve a cargarlo."),
+            [ConcurrencyConflict] = (StatusCodes.Status409Conflict, "Los datos se han modificado desde otra petición. Vuelve a intentarlo."),
             [QuizForeignQuestion] = (StatusCodes.Status422UnprocessableEntity, "La pregunta no forma parte de este test."),
             ["quiz.foreign_option"] = (StatusCodes.Status422UnprocessableEntity, "La opción elegida no corresponde a la pregunta."),
             [QuizNoQuestionsAvailable] = (StatusCodes.Status422UnprocessableEntity, "No hay preguntas disponibles para este test."),

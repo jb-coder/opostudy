@@ -130,6 +130,42 @@ public sealed class QuizzesEndpointsTests(ApiFactory factory)
     }
 
     [Fact]
+    public async Task CreateQuiz_WithEmptyTopicId_ReturnsValidationProblem()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+
+        var response = await client.PostAsJsonAsync(QuizzesUri, new CreateQuizRequest(content.Exam.Id, Guid.Empty, 5), Ct);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
+        (await response.Content.ReadAsStringAsync(Ct)).ShouldContain("topicId");
+    }
+
+    [Fact]
+    public async Task CreateQuiz_WithEmptyJsonBody_Returns400Problem()
+    {
+        using var client = factory.CreateClientFor(NewUid());
+        using var content = new StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync(QuizzesUri, content, Ct);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
+    }
+
+    [Fact]
+    public async Task CreateQuiz_WithoutBody_Returns400Problem()
+    {
+        using var client = factory.CreateClientFor(NewUid());
+
+        var response = await client.PostAsync(QuizzesUri, null, Ct);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
+    }
+
+    [Fact]
     public async Task CreateQuiz_WithTopicOfAnotherExam_Returns404()
     {
         var content = await ContentSeeder.SeedAsync(factory.Services);

@@ -153,6 +153,7 @@ internal static class QuizzesEndpoints
             .AsNoTracking()
             .Where(a => a.UserId == userId)
             .OrderByDescending(a => a.StartedAt)
+            .ThenByDescending(a => a.Id)
             .Skip(skip)
             .Take(take)
             .Select(a => new

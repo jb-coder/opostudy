@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="OpoStudy.Api.IntegrationTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OpoStudy.ServiceDefaults\OpoStudy.ServiceDefaults.csproj" />
     <ProjectReference Include="..\OpoStudy.Contracts\OpoStudy.Contracts.csproj" />
     <ProjectReference Include="..\OpoStudy.Infrastructure\OpoStudy.Infrastructure.csproj" />
