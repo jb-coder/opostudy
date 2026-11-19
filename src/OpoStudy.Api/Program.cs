@@ -30,10 +30,11 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseAuthentication();
-app.UseAuthorization();
 
-// After authentication so the partition key can use the user.
+// After authentication so the partition key can use the user, and before authorization so
+// anonymous requests are also rate limited (partitioned by IP) before getting a 401.
 app.UseRateLimiter();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {

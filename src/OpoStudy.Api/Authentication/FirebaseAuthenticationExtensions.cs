@@ -38,6 +38,20 @@ internal static class FirebaseAuthenticationExtensions
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                 };
+
+                // A signed token without a subject cannot identify a user: reject it as 401 instead of failing later.
+                jwt.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        if (string.IsNullOrWhiteSpace(context.Principal?.FindFirst("sub")?.Value))
+                        {
+                            context.Fail("The token has no subject claim.");
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                };
             });
 
         builder.Services.AddAuthorizationBuilder()

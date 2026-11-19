@@ -2,7 +2,7 @@
 
 - **Issue:** #15
 - **Milestone:** v0.1.0-alpha
-- **Estado:** lista
+- **Estado:** implementada
 
 ## Objetivo
 La API acepta solo peticiones con un ID token de Firebase Auth válido, da de alta al `User` la primera vez que llega y le permite ver y borrar su cuenta. Es la base de la autorización por recurso de #16 y del login de la app (#18). La API no guarda credenciales de Firebase: solo valida el JWT con las claves públicas de Google.
@@ -31,7 +31,7 @@ Sin cambios: `User` ya existe (`Id`, `FirebaseUid`, `CreatedAt`, `ActiveExamId?`
 - `AddFirebaseAuthentication(this WebApplicationBuilder)`:
   - `AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(...)` con `Authority = https://securetoken.google.com/<ProjectId>`, `ValidIssuer` = esa misma URL, `ValidAudience = <ProjectId>`, `MapInboundClaims = false`. Se validan emisor, audiencia, caducidad y firma (claves vía discovery de la Authority).
   - `AddAuthorizationBuilder().SetFallbackPolicy(...RequireAuthenticatedUser())`.
-- `ClaimsPrincipalExtensions.GetFirebaseUid()`: devuelve el claim `sub` (en Firebase es el uid). Si falta, lanza `InvalidOperationException` (no debería ocurrir tras la autenticación).
+- `ClaimsPrincipalExtensions.GetFirebaseUid()`: devuelve el claim `sub` (en Firebase es el uid). Un token válido sin `sub` se rechaza en `OnTokenValidated` (401), así que tras la autenticación siempre existe.
 - Endpoints anónimos explícitos (`.AllowAnonymous()`): `/health`, `/alive`, `GET /api/v1/version` y, en Development, OpenAPI y Scalar.
 - 401 y 403 salen como ProblemDetails (`application/problem+json`): `AddProblemDetails` + `UseStatusCodePages` ya lo cubren para respuestas sin cuerpo; si el challenge de JwtBearer escribe algo, se ajusta en `OnChallenge`. Se mantiene la cabecera `WWW-Authenticate: Bearer`.
 - Nunca se registra en logs el uid ni el token.
@@ -57,7 +57,7 @@ Sin cambios: `User` ya existe (`Id`, `FirebaseUid`, `CreatedAt`, `ActiveExamId?`
 ### Rate limiting
 - `AddRateLimiter` con una política con nombre `"per-user"`: ventana fija, partición por uid (`sub`) y, si no hay usuario, por IP remota.
 - Límites en configuración (`RateLimiting:PermitLimit`, por defecto 120; `RateLimiting:WindowSeconds`, por defecto 60), validados al arrancar.
-- `UseRateLimiter()` va **después** de `UseAuthentication()`/`UseAuthorization()` para que la partición vea al usuario.
+- `UseRateLimiter()` va **entre** `UseAuthentication()` y `UseAuthorization()`: la partición ve al usuario y las peticiones anónimas también se limitan (por IP) antes del 401. `ForwardedHeaders` queda para cuando haya proxy en el VPS (#21).
 - Se aplica al grupo `/api/v1` con `.RequireRateLimiting("per-user")`. `/health` y `/alive` quedan fuera.
 - Rechazo: `429` con ProblemDetails (título en español: "Demasiadas peticiones. Inténtalo de nuevo en unos segundos.") y cabecera `Retry-After` si el lease la trae.
 
@@ -85,22 +85,22 @@ Nada (#18).
 - Ningún secreto nuevo en el repo. La configuración local va en user-secrets.
 
 ## Criterios de aceptación
-- [ ] Una petición sin token, o con un token inválido, a `/api/v1/me` devuelve 401 con ProblemDetails.
-- [ ] `/health`, `/alive` y `GET /api/v1/version` siguen respondiendo sin token.
-- [ ] `GET /me` crea el usuario la primera vez y devuelve el mismo `Id` en las siguientes; peticiones concurrentes de un uid nuevo crean un solo `User`.
-- [ ] `DELETE /me` devuelve 204, borra el usuario y sus tests en cascada, y es idempotente.
-- [ ] Superar el límite devuelve 429 con ProblemDetails; el límite es por usuario.
-- [ ] La API no arranca sin `Firebase:ProjectId`.
-- [ ] Tests de integración con un esquema de prueba, sin llamar a Firebase.
-- [ ] Ningún secreto en el repo.
+- [x] Una petición sin token, o con un token inválido, a `/api/v1/me` devuelve 401 con ProblemDetails.
+- [x] `/health`, `/alive` y `GET /api/v1/version` siguen respondiendo sin token.
+- [x] `GET /me` crea el usuario la primera vez y devuelve el mismo `Id` en las siguientes; peticiones concurrentes de un uid nuevo crean un solo `User`.
+- [x] `DELETE /me` devuelve 204, borra el usuario y sus tests en cascada, y es idempotente.
+- [x] Superar el límite devuelve 429 con ProblemDetails; el límite es por usuario.
+- [x] La API no arranca sin `Firebase:ProjectId`.
+- [x] Tests de integración con un esquema de prueba, sin llamar a Firebase.
+- [x] Ningún secreto en el repo.
 
 ## Plan de tests
 - Unitarios: ninguno nuevo (la lógica vive en la API).
 - Integración (`tests/OpoStudy.Api.IntegrationTests`):
   - `ApiFactory` fija `Firebase:ProjectId=test-project` y, en `ConfigureTestServices`, registra un `TestAuthHandler` (esquema `"Test"`, que pasa a ser el esquema por defecto de autenticación y challenge) que autentica con `sub` = valor de la cabecera `X-Test-User`; sin cabecera devuelve `NoResult` → 401. Helper `CreateClientFor(string uid)`.
   - `UsersEndpointsTests`: sin token → 401 ProblemDetails; primer `GET /me` crea y el segundo devuelve el mismo `Id`; N `GET /me` en paralelo con un uid nuevo → un solo registro en `users`; `DELETE /me` → 204, el usuario y sus `quiz_attempts` desaparecen (sembrar un intento con el DbContext); `DELETE /me` sin usuario → 204; el `FirebaseUid` no aparece en el JSON.
-  - `JwtBearerTests`: con el esquema real (sin `TestAuthHandler`), un token mal formado → 401 ProblemDetails, sin red (no se llega a pedir las claves).
-  - `RateLimitingTests`: factory derivada con `RateLimiting:PermitLimit=2` → la 3.ª petición del mismo uid da 429 ProblemDetails y la de otro uid da 200.
+  - `JwtBearerTests`: con el esquema real (sin `TestAuthHandler`) y una configuración OIDC fija con una clave RSA de prueba, sin red: token válido → 200; mal formado, emisor o audiencia incorrectos, caducado, firmado con otra clave o sin `sub` → 401 ProblemDetails.
+  - `RateLimitingTests`: factory derivada con `RateLimiting:PermitLimit=2` → la 3.ª petición del mismo uid da 429 ProblemDetails y la de otro uid da 200. La 3.ª petición anónima da 429, no 401.
   - `ApiDocsExposureTests`/`SystemInfoEndpointsTests` siguen verdes sin token.
   - Arranque sin `Firebase:ProjectId` → falla con `OptionsValidationException`.
 - Architecture: si procede, que los endpoints de `Features/` no usen `AllowAnonymous` salvo `SystemInfo` (opcional, solo si es sencillo con NetArchTest; si no, omitir).

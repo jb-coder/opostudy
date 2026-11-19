@@ -28,4 +28,17 @@ public sealed class RateLimitingTests(ApiFactory api)
         body.ShouldContain("Demasiadas peticiones");
         otherUser.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
+
+    [Fact]
+    public async Task GetMe_AnonymousOverLimit_Returns429Not401()
+    {
+        await using var factory = api.WithWebHostBuilder(b => b.UseSetting("RateLimiting:PermitLimit", "2"));
+        using var client = factory.CreateClient();
+
+        (await client.GetAsync(MeUri, TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        (await client.GetAsync(MeUri, TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        var limited = await client.GetAsync(MeUri, TestContext.Current.CancellationToken);
+
+        limited.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
+    }
 }
