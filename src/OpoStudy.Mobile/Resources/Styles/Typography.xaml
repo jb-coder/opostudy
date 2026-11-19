@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Font sizes. Font scaling stays enabled so the system font size is respected. -->
+    <x:Double x:Key="FontSizeDisplay">28</x:Double>
+    <x:Double x:Key="FontSizeTitle">22</x:Double>
+    <x:Double x:Key="FontSizeSubtitle">18</x:Double>
+    <x:Double x:Key="FontSizeBody">16</x:Double>
+    <x:Double x:Key="FontSizeCaption">13</x:Double>
+
+    <Style x:Key="DisplayLabel" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeDisplay}" />
+    </Style>
+
+    <Style x:Key="TitleLabel" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeTitle}" />
+    </Style>
+
+    <Style x:Key="SubtitleLabel" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeSubtitle}" />
+    </Style>
+
+    <Style x:Key="BodyLabel" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
+    </Style>
+
+    <Style x:Key="CaptionLabel" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OnSurfaceVariantLight}, Dark={StaticResource OnSurfaceVariantDark}}" />
+    </Style>
+</ResourceDictionary>

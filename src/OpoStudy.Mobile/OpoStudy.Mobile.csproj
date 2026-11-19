@@ -40,15 +40,13 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#1E5AA8" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1E5AA8" BaseSize="128,128" />
 
 		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
-		
+		<MauiImage Include="Resources\Images\*" Condition="Exists('Resources\Images')" />
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
@@ -59,10 +57,26 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" VersionOverride="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+		<PackageReference Include="Refit.HttpClientFactory" />
+	</ItemGroup>
+
+	<!-- API base URL, fixed at build time. Debug default: Android emulator -> host loopback (AppHost API port).
+	     USB device: `adb reverse tcp:5054 tcp:5054` and build with -p:ApiBaseUrl=http://localhost:5054.
+	     Release has no default: it is defined with the production deployment. -->
+	<PropertyGroup Condition="'$(ApiBaseUrl)' == '' And '$(Configuration)' == 'Debug'">
+		<ApiBaseUrl>http://10.0.2.2:5054</ApiBaseUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+			<_Parameter1>ApiBaseUrl</_Parameter1>
+			<_Parameter2>$(ApiBaseUrl)</_Parameter2>
+		</AssemblyAttribute>
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\OpoStudy.Contracts\OpoStudy.Contracts.csproj" />
+	  <ProjectReference Include="..\OpoStudy.Mobile.Core\OpoStudy.Mobile.Core.csproj" />
 	</ItemGroup>
 
 </Project>

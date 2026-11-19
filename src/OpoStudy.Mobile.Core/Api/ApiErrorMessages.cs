@@ -1,0 +1,86 @@
+using System.Net.Sockets;
+using System.Text.Json;
+
+using Refit;
+
+namespace OpoStudy.Mobile.Core.Api;
+
+/// <summary>Maps exceptions to user-facing (Spanish) messages without leaking internal details.</summary>
+public static class ApiErrorMessages
+{
+    public const string ServerError = "El servidor ha respondido con un error. Inténtalo de nuevo más tarde.";
+    public const string Unreachable = "No se puede conectar con el servidor. Revisa tu conexión.";
+    public const string Timeout = "El servidor tarda demasiado en responder. Inténtalo de nuevo.";
+    public const string Unexpected = "Ha ocurrido un error inesperado.";
+
+    public static string From(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        return Classify(exception) ?? Unexpected;
+    }
+
+    /// <summary>Walks the exception tree (inner exceptions and aggregates) and returns the first known classification.</summary>
+    private static string? Classify(Exception exception)
+    {
+        switch (exception)
+        {
+            case ApiException api:
+                return FromProblemDetails(api) ?? ServerError;
+            case TaskCanceledException or TimeoutException:
+                return Timeout;
+            case HttpRequestException or SocketException or IOException:
+                return Unreachable;
+        }
+
+        if (exception is AggregateException aggregate)
+        {
+            foreach (var inner in aggregate.InnerExceptions)
+            {
+                if (Classify(inner) is { } message)
+                {
+                    return message;
+                }
+            }
+
+            return null;
+        }
+
+        return exception.InnerException is null ? null : Classify(exception.InnerException);
+    }
+
+    private static string? FromProblemDetails(ApiException exception)
+    {
+        if (string.IsNullOrWhiteSpace(exception.Content))
+        {
+            return null;
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(exception.Content);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            return ReadString(document.RootElement, "detail") ?? ReadString(document.RootElement, "title");
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private static string? ReadString(JsonElement root, string name)
+    {
+        if (root.TryGetProperty(name, out var value)
+            && value.ValueKind == JsonValueKind.String
+            && !string.IsNullOrWhiteSpace(value.GetString()))
+        {
+            return value.GetString();
+        }
+
+        return null;
+    }
+}

@@ -8,12 +8,14 @@
       "src/OpoStudy.Contracts/OpoStudy.Contracts.csproj",
       "src/OpoStudy.Domain/OpoStudy.Domain.csproj",
       "src/OpoStudy.Infrastructure/OpoStudy.Infrastructure.csproj",
+      "src/OpoStudy.Mobile.Core/OpoStudy.Mobile.Core.csproj",
       "src/OpoStudy.ServiceDefaults/OpoStudy.ServiceDefaults.csproj",
       "src/OpoStudy.Worker/OpoStudy.Worker.csproj",
       "tests/OpoStudy.Api.IntegrationTests/OpoStudy.Api.IntegrationTests.csproj",
       "tests/OpoStudy.Architecture.Tests/OpoStudy.Architecture.Tests.csproj",
       "tests/OpoStudy.Domain.Tests/OpoStudy.Domain.Tests.csproj",
-      "tests/OpoStudy.Infrastructure.Tests/OpoStudy.Infrastructure.Tests.csproj"
+      "tests/OpoStudy.Infrastructure.Tests/OpoStudy.Infrastructure.Tests.csproj",
+      "tests/OpoStudy.Mobile.Core.Tests/OpoStudy.Mobile.Core.Tests.csproj"
     ]
   }
 }

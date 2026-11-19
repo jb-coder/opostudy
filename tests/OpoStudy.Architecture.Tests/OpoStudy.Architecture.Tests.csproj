@@ -24,6 +24,7 @@
     <ProjectReference Include="..\..\src\OpoStudy.Worker\OpoStudy.Worker.csproj" />
     <ProjectReference Include="..\..\src\OpoStudy.Domain\OpoStudy.Domain.csproj" />
     <ProjectReference Include="..\..\src\OpoStudy.Contracts\OpoStudy.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\OpoStudy.Mobile.Core\OpoStudy.Mobile.Core.csproj" />
     <ProjectReference Include="..\..\src\OpoStudy.Infrastructure\OpoStudy.Infrastructure.csproj" />
   </ItemGroup>
 

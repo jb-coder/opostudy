@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:HomeViewModel"
+    Shell.NavBarIsVisible="False">
+
+    <RefreshView
+        Command="{Binding RefreshCommand}"
+        IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+        <ScrollView>
+            <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceXl}">
+
+                <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                    <Label
+                        Style="{StaticResource DisplayLabel}"
+                        Text="OpoStudy"
+                        SemanticProperties.HeadingLevel="Level1" />
+                    <Label
+                        Style="{StaticResource CaptionLabel}"
+                        Text="Programador/a C1 · Diputación de Málaga" />
+                </VerticalStackLayout>
+
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Estado del servidor"
+                            SemanticProperties.HeadingLevel="Level2" />
+
+                        <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsBusy}">
+                            <ActivityIndicator IsRunning="{Binding IsBusy}" />
+                            <Label Text="Comprobando conexión…" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+                        <Label
+                            Style="{StaticResource SuccessLabel}"
+                            Text="{Binding ConnectionText}"
+                            IsVisible="{Binding IsConnected}" />
+
+                        <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasError}">
+                            <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                            <Button
+                                Text="Reintentar"
+                                Command="{Binding RefreshCommand}"
+                                SemanticProperties.Hint="Vuelve a comprobar la conexión con el servidor" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button
+                    Style="{StaticResource SecondaryButton}"
+                    Text="Catálogo de estilos"
+                    Command="{Binding OpenStyleGuideCommand}"
+                    IsVisible="{Binding IsStyleGuideVisible}" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</views:ViewModelPage>
