@@ -168,13 +168,13 @@ Todos heredan de `ViewModelBase` (`IsBusy`, `ErrorMessage`), comandos asíncrono
 
 ## Criterios de aceptación
 - [ ] Se puede crear una cuenta con correo, iniciar sesión con correo y con Google, y recuperar la contraseña (llega el correo en español).
-- [ ] Al cerrar la app (también desde recientes) y reabrirla, se entra directamente en inicio con la sesión conservada, incluso sin conexión.
+- [x] Al cerrar la app (también desde recientes) y reabrirla, se entra directamente en inicio con la sesión conservada, incluso sin conexión.
 - [ ] Pasada una hora, las llamadas a la API siguen funcionando (el token se renueva solo).
-- [ ] La pantalla de inicio muestra el correo y la fecha de alta que devuelve `GET /me`.
-- [ ] Cerrar sesión vuelve al login; con Google vuelve a salir el selector de cuentas.
-- [ ] Borrar la cuenta elimina el usuario de la BD y de Firebase.
+- [x] La pantalla de inicio muestra el correo y la fecha de alta que devuelve `GET /me`.
+- [x] Cerrar sesión vuelve al login; con Google vuelve a salir el selector de cuentas.
+- [x] Borrar la cuenta elimina el usuario de la BD y de Firebase.
 - [ ] `.gitignore` y gitleaks cubren `google-services.json`; el job `mobile-android` de CI compila sin él y `release.yml` lo exige.
-- [ ] `dotnet build src/OpoStudy.Mobile -f net10.0-android` sin warnings y los tests de `OpoStudy.Mobile.Core.Tests` en verde.
+- [x] `dotnet build src/OpoStudy.Mobile -f net10.0-android` sin warnings y los tests de `OpoStudy.Mobile.Core.Tests` en verde.
 
 ## Plan de tests
 - Unitarios (`OpoStudy.Mobile.Core.Tests`; `HttpMessageHandler` de prueba para el cliente REST, NSubstitute para el resto, `FakeTimeProvider` de `Microsoft.Extensions.TimeProvider.Testing`):
