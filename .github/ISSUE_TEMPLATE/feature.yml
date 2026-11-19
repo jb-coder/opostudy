@@ -1,0 +1,32 @@
+name: Feature
+description: Nueva funcionalidad (debe enlazar una spec en docs/specs)
+title: "feat: "
+labels: ["type:feature"]
+body:
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo
+      description: Qué problema resuelve y para quién.
+    validations:
+      required: true
+  - type: input
+    id: spec
+    attributes:
+      label: Spec
+      description: Ruta a la spec, p. ej. docs/specs/0002-tests-con-aclaracion.md
+      placeholder: docs/specs/NNNN-nombre.md
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      value: |
+        - [ ] 
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      multiple: true
+      options: [api, mobile, content, infra, llm]

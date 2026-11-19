@@ -1,0 +1,17 @@
+{
+  "solution": {
+    "path": "OpoStudy.slnx",
+    "projects": [
+      "src/OpoStudy.Api/OpoStudy.Api.csproj",
+      "src/OpoStudy.AppHost/OpoStudy.AppHost.csproj",
+      "src/OpoStudy.ContentImporter/OpoStudy.ContentImporter.csproj",
+      "src/OpoStudy.Contracts/OpoStudy.Contracts.csproj",
+      "src/OpoStudy.Domain/OpoStudy.Domain.csproj",
+      "src/OpoStudy.Infrastructure/OpoStudy.Infrastructure.csproj",
+      "src/OpoStudy.ServiceDefaults/OpoStudy.ServiceDefaults.csproj",
+      "src/OpoStudy.Worker/OpoStudy.Worker.csproj",
+      "tests/OpoStudy.Api.IntegrationTests/OpoStudy.Api.IntegrationTests.csproj",
+      "tests/OpoStudy.Architecture.Tests/OpoStudy.Architecture.Tests.csproj"
+    ]
+  }
+}

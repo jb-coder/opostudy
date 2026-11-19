@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OpoStudy.Api/OpoStudy.Api.csproj" />
+    <Project Path="src/OpoStudy.AppHost/OpoStudy.AppHost.csproj" />
+    <Project Path="src/OpoStudy.ContentImporter/OpoStudy.ContentImporter.csproj" />
+    <Project Path="src/OpoStudy.Contracts/OpoStudy.Contracts.csproj" />
+    <Project Path="src/OpoStudy.Domain/OpoStudy.Domain.csproj" />
+    <Project Path="src/OpoStudy.Infrastructure/OpoStudy.Infrastructure.csproj" />
+    <Project Path="src/OpoStudy.Mobile/OpoStudy.Mobile.csproj" />
+    <Project Path="src/OpoStudy.ServiceDefaults/OpoStudy.ServiceDefaults.csproj" />
+    <Project Path="src/OpoStudy.Worker/OpoStudy.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OpoStudy.Api.IntegrationTests/OpoStudy.Api.IntegrationTests.csproj" />
+    <Project Path="tests/OpoStudy.Architecture.Tests/OpoStudy.Architecture.Tests.csproj" />
+  </Folder>
+</Solution>
