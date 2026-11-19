@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net10.0-android</TargetFrameworks>
-		<!-- iOS se activará en la fase final: añadir net10.0-ios aquí -->
+		<!-- iOS will be enabled in the final phase: add net10.0-ios here -->
 
 
 		<OutputType>Exe</OutputType>

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-using OpoStudy.Infrastructure.Persistencia;
+using OpoStudy.Infrastructure.Persistence;
 
 using Testcontainers.PostgreSql;
 
@@ -8,7 +8,7 @@ using Testcontainers.PostgreSql;
 
 namespace OpoStudy.Infrastructure.Tests;
 
-/// <summary>Un único Postgres real (Docker) para todo el ensamblado, migrado una vez.</summary>
+/// <summary>A single real Postgres (Docker) for the whole assembly, migrated once.</summary>
 public sealed class PostgresFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17-alpine").Build();
@@ -16,16 +16,16 @@ public sealed class PostgresFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         await _postgres.StartAsync();
-        await using var db = CrearContexto();
+        await using var db = CreateContext();
         await db.Database.MigrateAsync();
     }
 
     public async ValueTask DisposeAsync() => await _postgres.DisposeAsync();
 
-    public OpoStudyDbContext CrearContexto()
+    public OpoStudyDbContext CreateContext()
     {
         var builder = new DbContextOptionsBuilder<OpoStudyDbContext>().UseNpgsql(_postgres.GetConnectionString());
-        OpoStudyDbContext.AplicarConvenciones(builder);
+        OpoStudyDbContext.ApplyConventions(builder);
         return new OpoStudyDbContext(builder.Options);
     }
 }

@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <!-- Fija también las dependencias transitivas listadas aquí (p. ej. EF Core), para que no se mezclen versiones. -->
+    <!-- Also pins transitive dependencies listed here (e.g. EF Core) so versions never get mixed. -->
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
 

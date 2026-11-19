@@ -1,12 +1,13 @@
-using OpoStudy.Api.Features.Sistema;
-using OpoStudy.Infrastructure.Persistencia;
+using OpoStudy.Api.Features.SystemInfo;
+using OpoStudy.Infrastructure.Persistence;
+
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddNpgsqlDbContext<OpoStudyDbContext>(
-    "opostudy", configureDbContextOptions: OpoStudyDbContext.AplicarConvenciones);
+    "opostudy", configureDbContextOptions: OpoStudyDbContext.ApplyConventions);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
@@ -18,8 +19,8 @@ app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {
-    // En el VPS las migraciones se aplicarán con un migration bundle antes de arrancar (v0.5).
-    await app.Services.AplicarMigracionesAsync();
+    // On the VPS, migrations will be applied with a migration bundle before startup (v0.5).
+    await app.Services.ApplyMigrationsAsync();
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
@@ -27,9 +28,9 @@ if (app.Environment.IsDevelopment())
 app.MapDefaultEndpoints();
 
 var api = app.MapGroup("/api/v1");
-api.MapSistemaEndpoints();
+api.MapSystemInfoEndpoints();
 
 app.Run();
 
-/// <summary>Punto de entrada expuesto para los tests de integración (WebApplicationFactory).</summary>
+/// <summary>Entry point exposed for the integration tests (WebApplicationFactory).</summary>
 public partial class Program;

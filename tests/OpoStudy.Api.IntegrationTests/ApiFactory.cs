@@ -7,7 +7,7 @@ using Testcontainers.PostgreSql;
 
 namespace OpoStudy.Api.IntegrationTests;
 
-/// <summary>La API contra un Postgres real (Docker), compartido por todo el ensamblado.</summary>
+/// <summary>The API against a real Postgres (Docker), shared by the whole assembly.</summary>
 public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17-alpine").Build();

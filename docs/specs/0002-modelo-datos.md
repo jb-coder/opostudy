@@ -4,8 +4,10 @@
 - **Milestone:** v0.1.0-alpha
 - **Estado:** implementada
 
+> El código está en inglés y sigue el glosario del ADR 0001 (Oposición → `Exam`, Pregunta → `Question`, test realizado → `QuizAttempt`…).
+
 ## Objetivo
-Crear las entidades del núcleo de tests (oposiciones, temas, preguntas con aclaración, usuarios e intentos de test) con sus reglas en Domain, y guardarlas en PostgreSQL con EF Core 10. Es la base de las issues #13 (importador), #15 (auth) y #16 (endpoints).
+Crear las entidades del núcleo de tests en Domain (oposiciones, temas, preguntas con aclaración, usuarios y tests realizados) con sus reglas, y guardarlas en PostgreSQL con EF Core 10. Es la base de las issues #13 (importador), #15 (auth) y #16 (endpoints).
 
 ## Alcance
 **Incluye:**
@@ -15,85 +17,111 @@ Crear las entidades del núcleo de tests (oposiciones, temas, preguntas con acla
 - Tests unitarios de dominio, tests de persistencia con Testcontainers y adaptación de los tests de la Api.
 
 **No incluye:**
-- Endpoints (#16), auth (#15) ni el importador (#13).
+- Endpoints (#16), auth (#15) ni importador (#13).
 - Búsqueda full-text (`tsvector`), gamificación ni rachas (v0.2), ni supuestos (v0.3).
 - Datos semilla: el contenido llegará con el importador.
 
 ## Diseño
 
-### Dominio (`src/OpoStudy.Domain/`, carpetas por agregado)
+### Dominio (`src/OpoStudy.Domain/`, una carpeta por agregado: `Exams`, `Questions`, `Users`, `Quizzes`, `Common`)
 Reglas comunes:
 - Ids `Guid` generados en el dominio con `Guid.CreateVersion7()`.
-- Propiedades con `private set` y colecciones expuestas como `IReadOnlyList<T>` sobre un campo privado.
-- Constructor privado sin parámetros para EF y fábricas estáticas `Crear(...)` que validan.
-- Una regla incumplida lanza `ReglaDominioException(string codigo, string mensaje)`. El `codigo` es estable (p. ej. `pregunta.sin_opcion_correcta`) y en #16 se traducirá a ProblemDetails.
-- El tiempo llega como parámetro `DateTimeOffset ahora`: el dominio nunca llama a `DateTime.Now`. Fuera del dominio se usa `TimeProvider`.
+- Propiedades `private set`; las colecciones se exponen como `IReadOnlyList<T>` sobre un campo privado.
+- Constructor privado sin parámetros para EF y fábricas estáticas `Create(...)` que validan.
+- Una regla incumplida lanza `DomainRuleException(code, message)`:
+  - El `Code` es estable y en inglés (p. ej. `question.no_correct_option`). En #16 se traducirá a ProblemDetails.
+  - El mensaje está en español, porque puede llegar al usuario.
+- El tiempo entra como parámetro `DateTimeOffset now` y se guarda en UTC: el dominio no llama a `DateTime.Now`, y fuera del dominio se usa `TimeProvider`.
 
 | Entidad | Campos | Reglas |
 |---|---|---|
-| `Oposicion` | `Id`, `Slug`, `Nombre`, `Organismo`, `Grupo` (p. ej. "C1"), `Activa` | El slug va en kebab-case y no puede estar vacío |
-| `Tema` | `Id`, `OposicionId`, `Slug`, `Numero`, `Titulo`, `Bloque?` | `Numero` > 0 |
-| `Pregunta` | `Id`, `TemaId`, `Clave` (id estable que viene del contenido), `Enunciado`, `Aclaracion`, `ReferenciaLegal`, `Activa`, `Opciones` | Ningún texto vacío; de 2 a 6 opciones; **exactamente una correcta**; `Orden` de las opciones único. Las preguntas no se borran, se desactivan (`Activa = false`) para conservar el historial. Un método `Actualizar(...)` revalida todo y empareja las opciones por orden (lo usará el importador). No puede cambiar el número de opciones (`pregunta.cambio_numero_opciones`), porque las respuestas ya dadas apuntan a ellas: en ese caso se crea otra pregunta y se desactiva esta. |
-| `Opcion` | `Id`, `PreguntaId`, `Orden`, `Texto`, `EsCorrecta` | Solo se crea a través de `Pregunta` |
-| `Usuario` | `Id`, `FirebaseUid`, `FechaAlta`, `OposicionActivaId?` | `FirebaseUid` no puede estar vacío; `ElegirOposicion(id)` |
-| `IntentoTest` | `Id`, `UsuarioId`, `OposicionId`, `TemaId?` (null = aleatorio), `Modo` (`PorTema` \| `Aleatorio`), `FechaInicio`, `FechaFin?`, `Respuestas` | `Crear(usuarioId, oposicionId, temaId, modo, preguntas, ahora)` necesita entre 1 y 100 preguntas distintas y crea una `RespuestaUsuario` vacía por pregunta, en orden. `Responder(pregunta, opcionId, ahora)` → `ResultadoRespuesta(EsCorrecta, OpcionCorrectaId)`. Responder falla si la pregunta no está en el intento, si ya está respondida, si la opción no es de esa pregunta o si el intento ya está finalizado. Cuando se responde la última, fija `FechaFin`. Expone `Aciertos`, `Fallos` y `EstaFinalizado`. |
-| `RespuestaUsuario` | `IntentoTestId`, `PreguntaId`, `Orden`, `OpcionElegidaId?`, `EsCorrecta?`, `RespondidaEn?` | Solo se modifica a través de `IntentoTest` |
+| `Exam` | `Id`, `Slug`, `Name`, `Organization`, `Group` (p. ej. "C1"), `IsActive` | El slug, en kebab-case, no puede estar vacío |
+| `Topic` | `Id`, `ExamId`, `Slug`, `Number`, `Title`, `Section?` | `Number` > 0 |
+| `Question` | `Id`, `TopicId`, `Key` (identificador estable del contenido), `Statement`, `Explanation`, `LegalReference`, `IsActive`, `Options` | Ningún texto vacío; de 2 a 6 opciones; **exactamente una correcta**. No se borra: se desactiva para conservar el historial. `Update(...)` vuelve a validar todo y empareja las opciones por orden. No puede cambiar el número de opciones (`question.option_count_changed`): en ese caso se crea otra pregunta y se desactiva esta. |
+| `AnswerOption` | `Id`, `QuestionId`, `Order`, `Text`, `IsCorrect` | Solo se crea y modifica a través de `Question` |
+| `User` | `Id`, `FirebaseUid`, `CreatedAt`, `ActiveExamId?` | `FirebaseUid` no puede estar vacío; `ChooseExam(id)` |
+| `QuizAttempt` | `Id`, `UserId`, `ExamId`, `TopicId?` (null en los aleatorios), `Mode` (`ByTopic` \| `Random`), `StartedAt`, `FinishedAt?`, `Answers` | Ver detalle bajo la tabla. |
+| `QuizAnswer` | `QuizAttemptId`, `QuestionId`, `Order`, `SelectedOptionId?`, `IsCorrect?`, `AnsweredAt?` | Solo se modifica a través de `QuizAttempt` |
+
+Detalle de `QuizAttempt`:
+- `Create(...)` exige entre 1 y 100 preguntas, sin repetir, y crea una `QuizAnswer` vacía por cada una, en orden.
+- `Answer(question, optionId, now)` devuelve `AnswerResult(IsCorrect, CorrectOptionId)`. Falla si la pregunta es ajena al test, si ya se respondió, si la opción es de otra pregunta o si el test está finalizado.
+- Al responder la última pregunta se fija `FinishedAt`.
+- Expone `CorrectCount`, `IncorrectCount` e `IsFinished`.
 
 ### API
-No hay endpoints nuevos. Sí cambia `Program.cs`:
-- `builder.AddNpgsqlDbContext<OpoStudyDbContext>("opostudy", configureDbContextOptions: o => o.UseSnakeCaseNamingConvention())` (integración cliente de Aspire, que añade health check, reintentos y trazas).
-- En Development: `await app.AplicarMigracionesAsync()` (extensión en Infrastructure). En el VPS se usará un *migration bundle* (v0.5).
+No hay endpoints nuevos. Cambios:
+- `builder.AddNpgsqlDbContext<OpoStudyDbContext>("opostudy", configureDbContextOptions: OpoStudyDbContext.ApplyConventions)`: integración cliente de Aspire, que aporta health check, reintentos y trazas. Las convenciones no van en `OnConfiguring` porque Aspire usa un pool de DbContext y el pool no lo admite.
+- En Development, `await app.Services.ApplyMigrationsAsync()`. En el VPS se usará un *migration bundle* (v0.5).
 - El Worker registra el mismo DbContext pero **no** migra.
+- Renombrados para seguir la regla del inglés:
+  - `Features/Sistema` pasa a `Features/SystemInfo` y el endpoint `GET /api/v1/version` pasa a llamarse `GetVersion`.
+  - `CorreccionesWorker` pasa a `GradingWorker`.
 
 ### Datos
-- Paquetes, todos en `Directory.Packages.props`:
-  - `Npgsql.EntityFrameworkCore.PostgreSQL` y `EFCore.NamingConventions` (Infrastructure).
-  - `Aspire.Npgsql.EntityFrameworkCore.PostgreSQL` (Api y Worker), en la versión alineada con Aspire 17.
-  - `Microsoft.EntityFrameworkCore.Design` (solo la Api, `PrivateAssets=all`).
-  - `dotnet-ef` como herramienta local en `dotnet-tools.json` (`dotnet tool restore`).
-  - `CentralPackageTransitivePinningEnabled` fija EF Core (`Microsoft.EntityFrameworkCore` y `.Relational`), para que Npgsql y Design no traigan versiones distintas.
-- Configuraciones con `IEntityTypeConfiguration<T>` en `Infrastructure/Persistencia/Configuraciones/`. Tablas y columnas en snake_case.
-- `Pregunta.Opciones` e `IntentoTest.Respuestas` se cargan siempre con la entidad (`AutoInclude`).
-- Las migraciones generadas se marcan como `generated_code` en `.editorconfig`, para que los analizadores no las revisen.
-- Longitudes máximas: `Slug` 100, `Nombre`/`Titulo` 300, `Enunciado` 2000, `Opcion.Texto` 1000, `Aclaracion` 4000, `ReferenciaLegal` 300, `Clave` 150, `FirebaseUid` 128. `Modo` se guarda como texto.
+- **Paquetes**, todos en `Directory.Packages.props`:
+  - `Npgsql.EntityFrameworkCore.PostgreSQL` y `EFCore.NamingConventions`, en Infrastructure.
+  - `Aspire.Npgsql.EntityFrameworkCore.PostgreSQL`, en la Api y el Worker.
+  - `Microsoft.EntityFrameworkCore.Design`, solo en la Api (`PrivateAssets=all`).
+  - `dotnet-ef` como herramienta local en `dotnet-tools.json`.
+  - `CentralPackageTransitivePinningEnabled` fija la versión de EF Core.
+- Configuraciones con `IEntityTypeConfiguration<T>` en `Infrastructure/Persistence/Configurations/`. Tablas y columnas en snake_case.
+- Tablas: `exams`, `topics`, `questions`, `answer_options`, `users`, `quiz_attempts`, `quiz_answers`.
+- `Question.Options` y `QuizAttempt.Answers` se cargan siempre (`AutoInclude`).
+- Longitudes máximas (`Common/Limits.cs`):
+
+  | Campo | Máximo |
+  |---|---|
+  | Slug | 100 |
+  | Name / Title | 300 |
+  | Statement | 2000 |
+  | Option text | 1000 |
+  | Explanation | 4000 |
+  | LegalReference | 300 |
+  | Key | 150 |
+  | FirebaseUid | 128 |
+
+  `Mode` se guarda como texto.
 - Índices únicos:
-  - `oposiciones(slug)`
-  - `temas(oposicion_id, slug)`
-  - `temas(oposicion_id, numero)`
-  - `preguntas(clave)`
-  - `opciones(pregunta_id, orden)`
-  - `usuarios(firebase_uid)`
-  - `respuestas_usuario(intento_test_id, orden)`
-- Índices simples: `preguntas(tema_id)` e `intentos_test(usuario_id, fecha_inicio)`.
-- Claves y borrados:
-  - PK compuesta de `respuestas_usuario`: `(intento_test_id, pregunta_id)`.
-  - Al borrar un usuario se borran sus intentos y respuestas en cascada (lo necesita `DELETE /me` en #15).
-  - Las FKs hacia `preguntas`, `opciones`, `temas` y `oposiciones` desde los intentos son `Restrict`.
-- Migración inicial: `dotnet ef migrations add Inicial --project src/OpoStudy.Infrastructure --startup-project src/OpoStudy.Api --output-dir Persistencia/Migraciones`.
+  - `exams(slug)`
+  - `topics(exam_id, slug)` y `topics(exam_id, number)`
+  - `questions(key)`
+  - `answer_options(question_id, order)`
+  - `users(firebase_uid)`
+  - `quiz_answers(quiz_attempt_id, order)`
+- Índices simples: `questions(topic_id)` y `quiz_attempts(user_id, started_at)`.
+- PK compuesta de `quiz_answers`: `(quiz_attempt_id, question_id)`.
+- Borrado: al borrar un usuario se borran en cascada sus tests y respuestas (`DELETE /me`, #15). Las FKs hacia el contenido (exámenes, temas, preguntas y opciones) son `Restrict`.
+- La migración `InitialCreate` está en `Persistence/Migrations`, marcada como `generated_code` en `.editorconfig`:
+  ```
+  dotnet ef migrations add <Name> --project src/OpoStudy.Infrastructure --startup-project src/OpoStudy.Api --output-dir Persistence/Migrations
+  ```
 
 ### App
 Sin cambios.
 
 ## Seguridad
 - No hace falta ningún secreto nuevo. En local, Aspire genera la contraseña de Postgres en los user-secrets del AppHost; en los tests la pone Testcontainers.
-- `FirebaseUid` es un identificador personal, así que no se escribe en logs.
-- Las consultas siempre van parametrizadas (EF Core): nada de `FromSqlRaw` con concatenaciones.
-- El borrado en cascada de `Usuario` deja lista la base del RGPD (borrado de cuenta).
+- `FirebaseUid` es un dato personal y no se escribe en logs.
+- Las consultas son siempre parametrizadas (EF Core): nada de `FromSqlRaw` con concatenaciones.
+- El borrado en cascada de `User` deja preparada la base para el RGPD (borrado de cuenta).
 
 ## Criterios de aceptación
-- [ ] Domain sigue sin dependencias externas (tests de arquitectura en verde, incluida la regla de que no dependa de EF Core).
-- [ ] `dotnet run --project src/OpoStudy.AppHost` crea las tablas en Postgres y `/health` responde Healthy con el check de la base de datos.
-- [ ] El modelo no tiene cambios pendientes de migrar (`HasPendingModelChanges()` es `false`, comprobado en un test).
-- [ ] Las invariantes de `Pregunta` e `IntentoTest` tienen tests unitarios.
-- [ ] Los tests de persistencia corren contra Postgres real (Testcontainers), en local y en CI.
-- [ ] Build sin warnings y CI en verde.
+- [x] Domain sigue sin dependencias externas: los tests de arquitectura pasan, incluido el que prohíbe depender de EF Core.
+- [x] `dotnet run --project src/OpoStudy.AppHost` crea las tablas y `/health` responde Healthy con el check de la base de datos.
+- [x] El modelo no tiene cambios pendientes de migrar: un test comprueba que `HasPendingModelChanges()` es `false`.
+- [x] Las reglas de `Question` y `QuizAttempt` tienen tests unitarios.
+- [x] Los tests de persistencia corren contra Postgres real (Testcontainers).
+- [x] Todo el código está en inglés y sigue el glosario.
+- [ ] CI en verde.
 
 ## Plan de tests
-- **Unitarios:** nuevo proyecto `tests/OpoStudy.Domain.Tests`.
-  - `Pregunta`: ninguna correcta, dos correctas, menos de 2 o más de 6 opciones, textos vacíos.
-  - `IntentoTest`: responder una pregunta ajena, responder dos veces, una opción de otra pregunta, un intento finalizado; aciertos y fallos; `FechaFin` al responder la última.
-- **Integración de persistencia:** nuevo proyecto `tests/OpoStudy.Infrastructure.Tests` con `Testcontainers.PostgreSql`.
-  - Un contenedor compartido mediante una fixture de colección; la base se migra una vez.
-  - Casos: ida y vuelta de un `IntentoTest` con sus respuestas, violación de los índices únicos (`preguntas.clave`, `usuarios.firebase_uid`), borrado en cascada del usuario y `HasPendingModelChanges()`.
-- **Api:** los tests actuales pasan a una `ApiFactory` (WebApplicationFactory + contenedor Postgres) que inyecta `ConnectionStrings:opostudy`.
-- **Manual:** arrancar el AppHost y comprobar en el dashboard que la Api está sana y que las tablas existen.
+- **Unitarios** (`tests/OpoStudy.Domain.Tests`):
+  - `QuestionTests`: sin correcta, dos correctas, menos de 2 o más de 6 opciones, textos vacíos o demasiado largos, y `Update`.
+  - `QuizAttemptTests`: pregunta ajena, respuesta repetida, opción ajena, test finalizado, recuento de aciertos y fallos, y `FinishedAt`.
+  - `ExamAndUserTests`.
+- **Persistencia** (`tests/OpoStudy.Infrastructure.Tests`):
+  - Un único contenedor `postgres:17-alpine` para todo el ensamblado (*assembly fixture*), migrado una sola vez.
+  - Casos: guardar y releer un `QuizAttempt`, índices únicos, borrado en cascada y `HasPendingModelChanges()`.
+- **Api:** `ApiFactory` (WebApplicationFactory + contenedor Postgres) inyecta `ConnectionStrings:opostudy`.
+- **Manual:** arrancar el AppHost y comprobar en el dashboard que la Api está sana y las tablas existen.

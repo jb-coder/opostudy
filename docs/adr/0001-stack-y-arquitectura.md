@@ -62,6 +62,29 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
 - Todo cambio entra por PR, con CI obligatorio y revisión de un agente local antes del merge.
 - **Milestones de GitHub = releases alpha.** El APK se publica en GitHub Releases.
 
+### Idioma del código
+- **El código se escribe en inglés**:
+  - Identificadores, namespaces y comentarios.
+  - Nombres de tests (`Method_Scenario_Result`).
+  - Tablas y columnas, rutas de la API, nombres y tags de los endpoints, y códigos de error.
+- **En español** queda lo que leen las personas: la interfaz de la app y los mensajes al usuario (también los de las excepciones que llegan a ProblemDetails), las specs, los ADR, el README, las issues, los PRs y los commits.
+- **Glosario del dominio.** Un término nuevo se añade aquí antes de usarlo.
+
+  | Español | Código |
+  |---|---|
+  | Oposición | `Exam` |
+  | Tema | `Topic` |
+  | Pregunta | `Question` |
+  | Opción | `AnswerOption` |
+  | Aclaración | `Explanation` |
+  | Referencia legal | `LegalReference` |
+  | Usuario | `User` |
+  | Test realizado (intento) | `QuizAttempt` (`Quiz`, para no confundirlo con los tests de código) |
+  | Respuesta del usuario | `QuizAnswer` |
+  | Racha | `Streak` |
+  | Supuesto práctico | `PracticalCase` |
+  | Corrección (de un supuesto) | `Grading` |
+
 ### Calidad
 - **Tests**:
   - xUnit v3 (Microsoft Testing Platform), Shouldly y NSubstitute.

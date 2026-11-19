@@ -108,14 +108,14 @@ public static class Extensions
 
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {
-        // Se exponen en todos los entornos: en el VPS la API solo es accesible por la red privada
-        // (Tailscale) y los health checks solo devuelven el estado agregado, sin detalles internos.
-        // Revisar antes de exponer la API a Internet (ver docs/adr/0001-stack-y-arquitectura.md).
+        // Exposed in every environment: on the VPS the API is only reachable through the private network
+        // (Tailscale) and health checks only return the aggregated status, without internal details.
+        // Review before exposing the API to the Internet (see docs/adr/0001-stack-y-arquitectura.md).
 
-        // Todos los checks deben pasar para considerar la app lista para recibir tráfico.
+        // All health checks must pass for app to be considered ready to accept traffic after starting
         app.MapHealthChecks(HealthEndpointPath);
 
-        // Solo los checks con la etiqueta "live" deben pasar para considerar la app viva.
+        // Only health checks tagged with the "live" tag must pass for app to be considered alive
         app.MapHealthChecks(AlivenessEndpointPath, new HealthCheckOptions
         {
             Predicate = r => r.Tags.Contains("live")
