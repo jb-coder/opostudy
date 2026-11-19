@@ -13,6 +13,7 @@ public sealed class ExposicionPorEntornoTests
     [Theory]
     [InlineData("/openapi/v1.json")]
     [InlineData("/scalar")]
+    [InlineData("/scalar/v1")]
     public async Task DocumentacionApi_EnProduccion_NoSeExpone(string ruta)
     {
         await using var factory = new WebApplicationFactory<Program>()
@@ -24,14 +25,18 @@ public sealed class ExposicionPorEntornoTests
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-    [Fact]
-    public async Task OpenApi_EnDevelopment_SeExpone()
+    // Contraparte positiva: garantiza que las rutas del test anterior son las reales,
+    // para que un 404 en Production no pase por apuntar a una ruta equivocada.
+    [Theory]
+    [InlineData("/openapi/v1.json")]
+    [InlineData("/scalar/v1")]
+    public async Task DocumentacionApi_EnDevelopment_SeExpone(string ruta)
     {
         await using var factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(b => b.UseEnvironment("Development"));
         using var client = factory.CreateClient();
 
-        var response = await client.GetAsync(new Uri("/openapi/v1.json", UriKind.Relative), TestContext.Current.CancellationToken);
+        var response = await client.GetAsync(new Uri(ruta, UriKind.Relative), TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }

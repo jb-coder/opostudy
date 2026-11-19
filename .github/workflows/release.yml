@@ -92,9 +92,10 @@ jobs:
 
   api-image:
     name: Imagen de la API (GHCR)
-    needs: verify
+    # Sin environment propio: depende de `android`, que ya exige la aprobación del environment
+    # `release`. Así cada tag pide una sola aprobación y los secrets del keystore solo los ve `android`.
+    needs: [verify, android]
     runs-on: ubuntu-latest
-    environment: release
     permissions:
       contents: read
       packages: write
