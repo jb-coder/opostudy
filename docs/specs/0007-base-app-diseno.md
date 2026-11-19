@@ -145,12 +145,12 @@ Recursos con nombre en `Resources/Styles/Colors.xaml`, `Typography.xaml` (nuevo)
 - Los mensajes de error que se muestran al usuario no incluyen trazas ni detalles internos (solo `detail`/`title` de ProblemDetails, que ya están pensados para el usuario).
 
 ## Criterios de aceptación
-- [ ] La app arranca en el emulador con la nueva estructura, en tema claro y oscuro, y muestra la versión de la API cuando el AppHost está levantado (o el error y "Reintentar" si no lo está).
-- [ ] Los ViewModels se prueban sin emulador (`OpoStudy.Mobile.Core.Tests` en el job `backend` de CI).
-- [ ] `OpoStudy.Mobile.Core` no depende de MAUI (test de arquitectura).
-- [ ] No quedan `MainPage`, `dotnet_bot.png` ni colores de la plantilla.
-- [ ] Sistema de diseño documentado en `docs/diseno/sistema-diseno.md` con contrastes AA.
-- [ ] `dotnet build src/OpoStudy.Mobile -f net10.0-android` sin warnings.
+- [x] La app arranca en el emulador con la nueva estructura, en tema claro y oscuro, y muestra la versión de la API cuando el AppHost está levantado (o el error y "Reintentar" si no lo está).
+- [x] Los ViewModels se prueban sin emulador (`OpoStudy.Mobile.Core.Tests` en el job `backend` de CI).
+- [x] `OpoStudy.Mobile.Core` no depende de MAUI (test de arquitectura).
+- [x] No quedan `MainPage`, `dotnet_bot.png` ni colores de la plantilla.
+- [x] Sistema de diseño documentado en `docs/diseno/sistema-diseno.md` con contrastes AA.
+- [x] `dotnet build src/OpoStudy.Mobile -f net10.0-android` sin warnings.
 
 ## Plan de tests
 - Unitarios (`OpoStudy.Mobile.Core.Tests`, `IOpoStudyApi` con NSubstitute):

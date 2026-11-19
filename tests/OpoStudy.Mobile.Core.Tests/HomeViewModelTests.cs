@@ -16,8 +16,10 @@ public sealed class HomeViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly INavigationService _navigation = Substitute.For<INavigationService>();
+
     private HomeViewModel CreateSut(bool isDebug = false) =>
-        new(_api, Substitute.For<INavigationService>(), new AppEnvironment(isDebug), NullLogger<HomeViewModel>.Instance);
+        new(_api, _navigation, new AppEnvironment(isDebug), NullLogger<HomeViewModel>.Instance);
 
     [Fact]
     public async Task RefreshCommand_ApiResponds_SetsVersionAndConnected()
@@ -103,6 +105,51 @@ public sealed class HomeViewModelTests
         await sut.OnAppearingAsync();
 
         await _api.Received(1).GetVersionAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_AfterError_RetriesLoad()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>())
+            .Returns(
+                _ => Task.FromException<VersionResponse>(new HttpRequestException()),
+                _ => Task.FromResult(new VersionResponse("0.1.0")));
+        var sut = CreateSut();
+
+        await sut.OnAppearingAsync();
+        sut.HasError.ShouldBeTrue();
+
+        await sut.OnAppearingAsync();
+
+        sut.HasError.ShouldBeFalse();
+        sut.ApiVersion.ShouldBe("0.1.0");
+        await _api.Received(2).GetVersionAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_WhileRefreshing_DoesNotStartSecondRequest()
+    {
+        var gate = new TaskCompletionSource<VersionResponse>();
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(gate.Task);
+        var sut = CreateSut();
+
+        var first = sut.OnAppearingAsync();
+        await sut.OnAppearingAsync();
+
+        gate.SetResult(new VersionResponse("0.1.0"));
+        await first;
+
+        await _api.Received(1).GetVersionAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task OpenStyleGuideCommand_Executed_NavigatesToStyleGuide()
+    {
+        var sut = CreateSut(isDebug: true);
+
+        await sut.OpenStyleGuideCommand.ExecuteAsync(null);
+
+        await _navigation.Received(1).GoToAsync(Routes.StyleGuide);
     }
 
     [Fact]

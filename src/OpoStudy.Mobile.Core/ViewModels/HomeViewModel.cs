@@ -34,7 +34,10 @@ public sealed partial class HomeViewModel(
             return;
         }
 
-        await RefreshAsync();
+        if (RefreshCommand.CanExecute(null))
+        {
+            await RefreshCommand.ExecuteAsync(null);
+        }
     }
 
     /// <summary>Drops the SemVer build metadata (everything from '+'), e.g. "1.0.0+abc123" becomes "1.0.0".</summary>
@@ -47,13 +50,13 @@ public sealed partial class HomeViewModel(
     protected override void OnBusyChanged() => RefreshCommand.NotifyCanExecuteChanged();
 
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
-    private async Task RefreshAsync()
+    private async Task RefreshAsync(CancellationToken cancellationToken)
     {
         IsBusy = true;
         ErrorMessage = null;
         try
         {
-            var response = await api.GetVersionAsync();
+            var response = await api.GetVersionAsync(cancellationToken);
             ApiVersion = response.Version;
             IsConnected = true;
         }

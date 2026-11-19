@@ -90,6 +90,16 @@ public sealed class ApiErrorMessagesTests
     public void From_AggregateWithUnknownErrors_ReturnsUnexpected() =>
         ApiErrorMessages.From(new AggregateException(new InvalidOperationException())).ShouldBe(ApiErrorMessages.Unexpected);
 
+    [Theory]
+    [InlineData(HttpStatusCode.InternalServerError)]
+    [InlineData(HttpStatusCode.BadGateway)]
+    public async Task From_ServerErrorWithProblemDetails_ReturnsServerError(HttpStatusCode status)
+    {
+        var exception = await CreateApiExceptionAsync(status, """{"title":"Proxy","detail":"internal stack"}""");
+
+        ApiErrorMessages.From(exception).ShouldBe(ApiErrorMessages.ServerError);
+    }
+
     private static async Task<ApiException> CreateApiExceptionAsync(HttpStatusCode status, string? body)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/api/v1/version");

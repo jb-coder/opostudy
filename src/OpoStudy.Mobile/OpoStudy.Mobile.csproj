@@ -74,6 +74,14 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
+	<!-- Network security config is chosen per configuration (same resource name, referenced by the manifest):
+	     Debug allows cleartext HTTP to the emulator host/loopback; Release is HTTPS only. -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AndroidResource Include="Platforms\Android\NetworkConfig\$(Configuration)\network_security_config.xml"
+		                 Condition="'$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'"
+		                 LogicalName="xml\network_security_config.xml" />
+	</ItemGroup>
+
 	<ItemGroup>
 	  <ProjectReference Include="..\OpoStudy.Contracts\OpoStudy.Contracts.csproj" />
 	  <ProjectReference Include="..\OpoStudy.Mobile.Core\OpoStudy.Mobile.Core.csproj" />

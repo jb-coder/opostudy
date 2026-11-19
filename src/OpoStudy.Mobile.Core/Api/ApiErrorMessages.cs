@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 
@@ -26,7 +27,7 @@ public static class ApiErrorMessages
         switch (exception)
         {
             case ApiException api:
-                return FromProblemDetails(api) ?? ServerError;
+                return (api.StatusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError ? FromProblemDetails(api) : null) ?? ServerError;
             case TaskCanceledException or TimeoutException:
                 return Timeout;
             case HttpRequestException or SocketException or IOException:

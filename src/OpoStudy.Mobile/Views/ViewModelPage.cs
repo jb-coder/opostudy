@@ -16,7 +16,15 @@ public abstract class ViewModelPage : ContentPage
 
         if (BindingContext is IPageLifecycleAware lifecycleAware)
         {
-            await lifecycleAware.OnAppearingAsync();
+            try
+            {
+                await lifecycleAware.OnAppearingAsync();
+            }
+            catch (Exception ex)
+            {
+                // async void must never throw: a failing ViewModel must not crash the app.
+                System.Diagnostics.Debug.WriteLine($"OnAppearingAsync failed: {ex}");
+            }
         }
     }
 }
