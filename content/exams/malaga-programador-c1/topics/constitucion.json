@@ -1,0 +1,486 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "constitucion",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/constitucion/0001",
+      "statement": "¿Cuántos artículos tiene la Constitución española de 1978, sin contar las disposiciones adicionales, transitorias, derogatoria y final?",
+      "options": [
+        {
+          "text": "160",
+          "isCorrect": false
+        },
+        {
+          "text": "165",
+          "isCorrect": false
+        },
+        {
+          "text": "169",
+          "isCorrect": true
+        },
+        {
+          "text": "178",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La Constitución consta de un Preámbulo, un Título Preliminar y diez títulos numerados del I al X, con un articulado que va del artículo 1 al artículo 169. Tras el articulado figuran cuatro disposiciones adicionales, nueve transitorias, una derogatoria y una final, que no se cuentan como artículos. Por eso 160, 165 o 178 no son el número de artículos del texto.",
+      "legalReference": "CE, estructura (arts. 1-169)"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0002",
+      "statement": "¿Cuántas disposiciones transitorias contiene la Constitución española?",
+      "options": [
+        {
+          "text": "Cuatro",
+          "isCorrect": false
+        },
+        {
+          "text": "Nueve",
+          "isCorrect": true
+        },
+        {
+          "text": "Once",
+          "isCorrect": false
+        },
+        {
+          "text": "Doce",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Después del articulado, la Constitución incluye cuatro disposiciones adicionales, nueve disposiciones transitorias (de la primera a la novena), una disposición derogatoria y una disposición final. «Cuatro» es el número de disposiciones adicionales, no el de transitorias.",
+      "legalReference": "CE, disposiciones transitorias primera a novena"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0003",
+      "statement": "El Título I de la Constitución, «De los derechos y deberes fundamentales», se divide en:",
+      "options": [
+        {
+          "text": "Dos capítulos",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres capítulos",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuatro capítulos",
+          "isCorrect": false
+        },
+        {
+          "text": "Cinco capítulos",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El Título I comprende cinco capítulos: primero, «De los españoles y los extranjeros»; segundo, «Derechos y libertades» (dividido en dos secciones); tercero, «De los principios rectores de la política social y económica»; cuarto, «De las garantías de las libertades y derechos fundamentales»; y quinto, «De la suspensión de los derechos y libertades». Ni dos, ni tres ni cuatro capítulos corresponden a la estructura real del Título.",
+      "legalReference": "CE, Título I (capítulos primero a quinto)"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0004",
+      "statement": "Según el artículo 1.1 de la Constitución, ¿cuáles son los valores superiores del ordenamiento jurídico del Estado social y democrático de Derecho?",
+      "options": [
+        {
+          "text": "La libertad, la justicia, la solidaridad y el pluralismo político",
+          "isCorrect": false
+        },
+        {
+          "text": "La libertad, la justicia, la igualdad y el pluralismo político",
+          "isCorrect": true
+        },
+        {
+          "text": "La dignidad, la libertad, la igualdad y la seguridad jurídica",
+          "isCorrect": false
+        },
+        {
+          "text": "La libertad, la igualdad, la unidad y el pluralismo político",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 1.1 dice que España «propugna como valores superiores de su ordenamiento jurídico la libertad, la justicia, la igualdad y el pluralismo político». La solidaridad y la unidad de la Nación (art. 2), la seguridad jurídica (art. 9.3) y la dignidad de la persona (art. 10.1) aparecen en otros preceptos, pero ninguna figura entre los valores superiores del art. 1.1.",
+      "legalReference": "CE, art. 1.1"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0005",
+      "statement": "Según el artículo 1.2 de la Constitución, la soberanía nacional reside en:",
+      "options": [
+        {
+          "text": "Las Cortes Generales, que representan al pueblo español",
+          "isCorrect": false
+        },
+        {
+          "text": "La Nación española, como patria común e indivisible",
+          "isCorrect": false
+        },
+        {
+          "text": "El pueblo español, del que emanan los poderes del Estado",
+          "isCorrect": true
+        },
+        {
+          "text": "El Rey, como Jefe del Estado y símbolo de su unidad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 1.2 establece que «la soberanía nacional reside en el pueblo español, del que emanan los poderes del Estado». Las Cortes Generales, la Nación y el Rey son instituciones o conceptos que la Constitución regula en otros lugares, pero ninguno es el titular de la soberanía nacional según este apartado.",
+      "legalReference": "CE, art. 1.2"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0006",
+      "statement": "Según el artículo 1.3 de la Constitución, la forma política del Estado español es:",
+      "options": [
+        {
+          "text": "La Monarquía parlamentaria",
+          "isCorrect": true
+        },
+        {
+          "text": "La Monarquía constitucional",
+          "isCorrect": false
+        },
+        {
+          "text": "La República parlamentaria",
+          "isCorrect": false
+        },
+        {
+          "text": "La Monarquía federal",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 1.3 dispone que «la forma política del Estado español es la Monarquía parlamentaria». Las demás denominaciones no figuran en ese apartado: la Constitución no habla de monarquía constitucional ni federal y no adopta la forma republicana.",
+      "legalReference": "CE, art. 1.3"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0007",
+      "statement": "Según el artículo 2 de la Constitución, esta se fundamenta en la indisoluble unidad de la Nación española y reconoce y garantiza:",
+      "options": [
+        {
+          "text": "El derecho a la libre determinación de las nacionalidades y regiones que la integran y la solidaridad entre todas ellas",
+          "isCorrect": false
+        },
+        {
+          "text": "El derecho a la autonomía de las nacionalidades y regiones que la integran y la solidaridad entre todas ellas",
+          "isCorrect": true
+        },
+        {
+          "text": "El derecho a la autonomía de los municipios y de las provincias que la integran y la igualdad entre todos ellos",
+          "isCorrect": false
+        },
+        {
+          "text": "El derecho a la autonomía de las nacionalidades y regiones que la integran y la igualdad entre todas ellas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 2 reconoce y garantiza «el derecho a la autonomía de las nacionalidades y regiones que la integran y la solidaridad entre todas ellas». La libre determinación no se menciona en el precepto, que parte de la indisoluble unidad de la Nación. Tampoco se refiere a municipios y provincias en este artículo ni habla de igualdad entre las nacionalidades y regiones, sino de solidaridad.",
+      "legalReference": "CE, art. 2"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0008",
+      "statement": "¿Qué establece el artículo 3.1 de la Constitución respecto del castellano?",
+      "options": [
+        {
+          "text": "Que es la lengua española oficial del Estado y todos los españoles tienen el derecho a conocerla y el deber de usarla",
+          "isCorrect": false
+        },
+        {
+          "text": "Que es la lengua oficial del Estado y todos los españoles tienen el deber de conocerla y el derecho a usarla",
+          "isCorrect": true
+        },
+        {
+          "text": "Que es la lengua oficial del Estado, aunque solo es obligatorio conocerla en las Comunidades Autónomas sin lengua propia",
+          "isCorrect": false
+        },
+        {
+          "text": "Que es la lengua oficial del Estado y todos los españoles tienen el derecho a usarla, sin que exista deber de conocerla",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 3.1 dice: «El castellano es la lengua española oficial del Estado. Todos los españoles tienen el deber de conocerla y el derecho a usarla». Las opciones que invierten el deber y el derecho, que limitan el deber de conocerla a ciertas Comunidades Autónomas o que lo eliminan contradicen el texto.",
+      "legalReference": "CE, art. 3.1"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0009",
+      "statement": "Según el artículo 3.2 de la Constitución, las demás lenguas españolas distintas del castellano serán también oficiales:",
+      "options": [
+        {
+          "text": "En todo el territorio del Estado, de acuerdo con la ley orgánica correspondiente",
+          "isCorrect": false
+        },
+        {
+          "text": "En las respectivas Comunidades Autónomas, de acuerdo con una ley orgánica estatal",
+          "isCorrect": false
+        },
+        {
+          "text": "En las respectivas provincias, de acuerdo con lo que determinen las Diputaciones Provinciales",
+          "isCorrect": false
+        },
+        {
+          "text": "En las respectivas Comunidades Autónomas, de acuerdo con sus Estatutos",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 3.2 señala que «las demás lenguas españolas serán también oficiales en las respectivas Comunidades Autónomas de acuerdo con sus Estatutos». La cooficialidad es, por tanto, territorial (Comunidad Autónoma) y se regula en el Estatuto de Autonomía, no en una ley orgánica estatal ni en normas provinciales.",
+      "legalReference": "CE, art. 3.2"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0010",
+      "statement": "Según el artículo 4.1 de la Constitución, ¿cómo está formada la bandera de España?",
+      "options": [
+        {
+          "text": "Por tres franjas horizontales, roja, amarilla y roja, siendo la amarilla de doble anchura que cada una de las rojas",
+          "isCorrect": true
+        },
+        {
+          "text": "Por tres franjas horizontales, roja, amarilla y roja, siendo las tres de la misma anchura",
+          "isCorrect": false
+        },
+        {
+          "text": "Por tres franjas verticales, roja, amarilla y roja, siendo la amarilla de doble anchura que cada una de las rojas",
+          "isCorrect": false
+        },
+        {
+          "text": "Por tres franjas horizontales, amarilla, roja y amarilla, siendo la roja de doble anchura que cada una de las amarillas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 4.1 dispone que «la bandera de España está formada por tres franjas horizontales, roja, amarilla y roja, siendo la amarilla de doble anchura que cada una de las rojas». Las demás opciones cambian la orientación de las franjas, el orden de los colores o la proporción de anchuras.",
+      "legalReference": "CE, art. 4.1"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0011",
+      "statement": "Según el artículo 6 de la Constitución, los partidos políticos son instrumento fundamental para:",
+      "options": [
+        {
+          "text": "El acceso a los cargos públicos",
+          "isCorrect": false
+        },
+        {
+          "text": "El control de la acción del Gobierno",
+          "isCorrect": false
+        },
+        {
+          "text": "La defensa de los intereses económicos y sociales de sus afiliados",
+          "isCorrect": false
+        },
+        {
+          "text": "La participación política",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 6 afirma que los partidos políticos «expresan el pluralismo político, concurren a la formación y manifestación de la voluntad popular y son instrumento fundamental para la participación política». La defensa de los intereses económicos y sociales corresponde a sindicatos y asociaciones empresariales (art. 7), y el acceso a los cargos públicos y el control del Gobierno no se atribuyen a los partidos en este artículo.",
+      "legalReference": "CE, art. 6"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0012",
+      "statement": "Según el artículo 8.1 de la Constitución, ¿cuál es la misión de las Fuerzas Armadas, constituidas por el Ejército de Tierra, la Armada y el Ejército del Aire?",
+      "options": [
+        {
+          "text": "Proteger el libre ejercicio de los derechos y libertades y garantizar la seguridad ciudadana",
+          "isCorrect": false
+        },
+        {
+          "text": "Garantizar la soberanía e independencia de España, defender su integridad territorial y el ordenamiento constitucional",
+          "isCorrect": true
+        },
+        {
+          "text": "Garantizar la soberanía de la Nación y la independencia del Poder Judicial",
+          "isCorrect": false
+        },
+        {
+          "text": "Defender el ordenamiento constitucional y colaborar con las Fuerzas y Cuerpos de Seguridad en el mantenimiento del orden público",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 8.1 atribuye a las Fuerzas Armadas la misión de «garantizar la soberanía e independencia de España, defender su integridad territorial y el ordenamiento constitucional». Proteger el libre ejercicio de los derechos y libertades y garantizar la seguridad ciudadana es la misión de las Fuerzas y Cuerpos de Seguridad según el art. 104.1, no la de las Fuerzas Armadas.",
+      "legalReference": "CE, art. 8.1"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0013",
+      "statement": "Según el artículo 9.1 de la Constitución, los ciudadanos y los poderes públicos están sujetos a:",
+      "options": [
+        {
+          "text": "La Constitución y a las leyes del Estado, no a las normas autonómicas",
+          "isCorrect": false
+        },
+        {
+          "text": "La Constitución y a la jurisprudencia del Tribunal Constitucional",
+          "isCorrect": false
+        },
+        {
+          "text": "La Constitución y al resto del ordenamiento jurídico",
+          "isCorrect": true
+        },
+        {
+          "text": "La Constitución, con independencia del resto del ordenamiento jurídico",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 9.1 establece que «los ciudadanos y los poderes públicos están sujetos a la Constitución y al resto del ordenamiento jurídico». La sujeción alcanza a todo el ordenamiento, no solo a las leyes estatales ni a la jurisprudencia, y no se limita a la Constitución.",
+      "legalReference": "CE, art. 9.1"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0014",
+      "statement": "Según el artículo 9.2 de la Constitución, corresponde a los poderes públicos facilitar la participación de todos los ciudadanos en la vida:",
+      "options": [
+        {
+          "text": "Política, económica, cultural y social",
+          "isCorrect": true
+        },
+        {
+          "text": "Política, económica, social y territorial",
+          "isCorrect": false
+        },
+        {
+          "text": "Política, jurídica, cultural y social",
+          "isCorrect": false
+        },
+        {
+          "text": "Política, económica y administrativa",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 9.2 encomienda a los poderes públicos «facilitar la participación de todos los ciudadanos en la vida política, económica, cultural y social». Las demás opciones sustituyen o suprimen alguno de esos ámbitos.",
+      "legalReference": "CE, art. 9.2"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0015",
+      "statement": "¿Cuál de los siguientes principios NO figura entre los que garantiza expresamente el artículo 9.3 de la Constitución?",
+      "options": [
+        {
+          "text": "La seguridad jurídica",
+          "isCorrect": false
+        },
+        {
+          "text": "La interdicción de la arbitrariedad de los poderes públicos",
+          "isCorrect": false
+        },
+        {
+          "text": "La publicidad de las normas",
+          "isCorrect": false
+        },
+        {
+          "text": "La separación de poderes",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 9.3 dice: «La Constitución garantiza el principio de legalidad, la jerarquía normativa, la publicidad de las normas, la irretroactividad de las disposiciones sancionadoras no favorables o restrictivas de derechos individuales, la seguridad jurídica, la responsabilidad y la interdicción de la arbitrariedad de los poderes públicos». La seguridad jurídica, la publicidad de las normas y la interdicción de la arbitrariedad sí aparecen en el listado; la separación de poderes no.",
+      "legalReference": "CE, art. 9.3"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0016",
+      "statement": "Según el artículo 167.1 de la Constitución, los proyectos de reforma constitucional deberán ser aprobados por una mayoría de:",
+      "options": [
+        {
+          "text": "La mayoría simple de cada una de las Cámaras",
+          "isCorrect": false
+        },
+        {
+          "text": "La mayoría absoluta de cada una de las Cámaras",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres quintos de cada una de las Cámaras",
+          "isCorrect": true
+        },
+        {
+          "text": "Dos tercios de cada una de las Cámaras",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 167.1 exige que los proyectos de reforma constitucional sean aprobados «por una mayoría de tres quintos de cada una de las Cámaras»; si no hay acuerdo entre ambas, se intenta obtenerlo mediante una Comisión de composición paritaria de Diputados y Senadores. Según el art. 167.2, «de no lograrse la aprobación mediante el procedimiento del apartado anterior, y siempre que el texto hubiere obtenido el voto favorable de la mayoría absoluta del Senado, el Congreso, por mayoría de dos tercios, podrá aprobar la reforma». La mayoría de dos tercios de cada Cámara es la que se exige para aprobar el principio en el procedimiento agravado del art. 168.1, y las mayorías simple o absoluta de cada Cámara no bastan en el procedimiento ordinario de reforma.",
+      "legalReference": "CE, art. 167.1"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0017",
+      "statement": "En el procedimiento de reforma del artículo 167 de la Constitución, aprobada la reforma por las Cortes Generales, será sometida a referéndum para su ratificación cuando así lo soliciten, dentro de los quince días siguientes a su aprobación:",
+      "options": [
+        {
+          "text": "Una décima parte de los miembros de cualquiera de las Cámaras",
+          "isCorrect": true
+        },
+        {
+          "text": "Una quinta parte de los miembros de cualquiera de las Cámaras",
+          "isCorrect": false
+        },
+        {
+          "text": "Una cuarta parte de los miembros de cualquiera de las Cámaras",
+          "isCorrect": false
+        },
+        {
+          "text": "Un tercio de los miembros de cualquiera de las Cámaras",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 167.3 dispone que la reforma «será sometida a referéndum para su ratificación cuando así lo soliciten, dentro de los quince días siguientes a su aprobación, una décima parte de los miembros de cualquiera de las Cámaras». Las fracciones de una quinta parte, una cuarta parte o un tercio no son las que fija la Constitución.",
+      "legalReference": "CE, art. 167.3"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0018",
+      "statement": "¿Cuál de las siguientes reformas parciales de la Constitución exige seguir el procedimiento agravado del artículo 168?",
+      "options": [
+        {
+          "text": "La que afecte al Título III, «De las Cortes Generales»",
+          "isCorrect": false
+        },
+        {
+          "text": "La que afecte al Capítulo tercero del Título I, «De los principios rectores de la política social y económica»",
+          "isCorrect": false
+        },
+        {
+          "text": "La que afecte a la Sección segunda del Capítulo segundo del Título I, «De los derechos y deberes de los ciudadanos»",
+          "isCorrect": false
+        },
+        {
+          "text": "La que afecte al Título II, «De la Corona»",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 168.1 exige el procedimiento agravado para la revisión total de la Constitución o para una parcial «que afecte al Título preliminar, al Capítulo segundo, Sección primera del Título I, o al Título II». Por tanto, la reforma del Título II («De la Corona») lo requiere. Las que afecten al Título III, al Capítulo tercero o a la Sección segunda del Capítulo segundo del Título I siguen el procedimiento ordinario del art. 167.",
+      "legalReference": "CE, art. 168.1"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0019",
+      "statement": "Según el artículo 168.3 de la Constitución, aprobada la reforma por las Cortes Generales mediante el procedimiento agravado, ¿qué ocurre a continuación?",
+      "options": [
+        {
+          "text": "Será sometida a referéndum para su ratificación, sin necesidad de que nadie lo solicite",
+          "isCorrect": true
+        },
+        {
+          "text": "Será sometida a referéndum únicamente si lo solicita una décima parte de los miembros de cualquiera de las Cámaras",
+          "isCorrect": false
+        },
+        {
+          "text": "Será sancionada y promulgada por el Rey sin necesidad de referéndum",
+          "isCorrect": false
+        },
+        {
+          "text": "Será remitida al Tribunal Constitucional para su ratificación",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 168.3 establece que, aprobada la reforma por las Cortes Generales, «será sometida a referéndum para su ratificación», sin condicionarlo a ninguna solicitud. El referéndum a petición de una décima parte de los miembros de cualquiera de las Cámaras es el facultativo del procedimiento ordinario (art. 167.3). La Constitución no atribuye la ratificación de la reforma ni al Rey ni al Tribunal Constitucional.",
+      "legalReference": "CE, art. 168.3"
+    },
+    {
+      "key": "malaga-programador-c1/constitucion/0020",
+      "statement": "Según el artículo 169 de la Constitución, no podrá iniciarse la reforma constitucional:",
+      "options": [
+        {
+          "text": "Mientras las Cortes Generales estén disueltas o hayan expirado su mandato",
+          "isCorrect": false
+        },
+        {
+          "text": "Durante los seis meses anteriores a la celebración de unas elecciones generales",
+          "isCorrect": false
+        },
+        {
+          "text": "En tiempo de guerra o de vigencia de alguno de los estados previstos en el artículo 116",
+          "isCorrect": true
+        },
+        {
+          "text": "Mientras esté constituida una Regencia",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 169 prohíbe iniciar la reforma constitucional «en tiempo de guerra o de vigencia de alguno de los estados previstos en el artículo 116», es decir, los estados de alarma, de excepción y de sitio. Ni la disolución de las Cortes, ni la proximidad de elecciones, ni la existencia de una Regencia figuran como impedimentos en ese artículo.",
+      "legalReference": "CE, art. 169"
+    }
+  ]
+}

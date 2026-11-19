@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "lpac-interesados-actividad",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0001",
+      "statement": "Según el artículo 3 de la Ley 39/2015, los grupos de afectados, las uniones y entidades sin personalidad jurídica y los patrimonios independientes o autónomos tienen capacidad de obrar ante las Administraciones Públicas:",
+      "options": [
+        {
+          "text": "Cuando la Ley así lo declare expresamente",
+          "isCorrect": true
+        },
+        {
+          "text": "En todo caso, por el mero hecho de actuar en defensa de intereses colectivos",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando así lo autorice el órgano administrativo que tramite el procedimiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando acrediten la representación de sus miembros mediante apoderamiento apud acta",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 3.c) atribuye capacidad de obrar a estos sujetos «cuando la Ley así lo declare expresamente». No basta con actuar en defensa de intereses colectivos ni depende de la autorización del órgano que tramita el procedimiento. El apoderamiento apud acta (art. 5.4) sirve para acreditar la representación, no para otorgar capacidad de obrar.",
+      "legalReference": "Ley 39/2015, art. 3.c)"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0002",
+      "statement": "Según el artículo 6 de la Ley 39/2015, los poderes inscritos en los registros electrónicos generales y particulares de apoderamientos tienen una validez determinada máxima de:",
+      "options": [
+        {
+          "text": "Un año",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos años",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres años",
+          "isCorrect": false
+        },
+        {
+          "text": "Cinco años",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 6.6 dispone que los poderes inscritos «tendrán una validez determinada máxima de cinco años a contar desde la fecha de inscripción». Antes de que finalice ese plazo el poderdante puede revocar o prorrogar el poder, y las prórrogas también tienen una validez máxima de cinco años desde la fecha de inscripción.",
+      "legalReference": "Ley 39/2015, art. 6.6"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0003",
+      "statement": "Según el artículo 9.2.c) de la Ley 39/2015, cuando una Administración considere válido otro sistema de identificación electrónica distinto de los certificados cualificados, previa comunicación a la Secretaría General de Administración Digital, ¿qué plazo debe transcurrir desde esa comunicación antes de que el sistema tenga eficacia jurídica?",
+      "options": [
+        {
+          "text": "Quince días",
+          "isCorrect": false
+        },
+        {
+          "text": "Un mes",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos meses",
+          "isCorrect": true
+        },
+        {
+          "text": "Tres meses",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 9.2.c) establece que, «de forma previa a la eficacia jurídica del sistema, habrán de transcurrir dos meses desde dicha comunicación», durante los cuales el órgano estatal competente por motivos de seguridad pública puede acudir a la vía jurisdiccional. El plazo de diez días que menciona el mismo apartado es el que tiene la Secretaría de Estado de Seguridad para emitir su informe vinculante, no el de eficacia del sistema.",
+      "legalReference": "Ley 39/2015, art. 9.2.c)"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0004",
+      "statement": "Según el artículo 11.2 de la Ley 39/2015, ¿para qué actuaciones requerirán las Administraciones Públicas a los interesados el uso obligatorio de firma?",
+      "options": [
+        {
+          "text": "Para realizar cualquier actuación prevista en el procedimiento administrativo, incluso cuando el interesado haya acreditado previamente su identidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Para formular solicitudes, presentar declaraciones responsables o comunicaciones, interponer recursos, desistir de acciones y renunciar a derechos",
+          "isCorrect": true
+        },
+        {
+          "text": "Únicamente para formular solicitudes, interponer recursos y renunciar a derechos, pero no para desistir de acciones ni presentar comunicaciones",
+          "isCorrect": false
+        },
+        {
+          "text": "Para formular solicitudes, presentar alegaciones, aportar documentos y consultar el estado de tramitación del expediente electrónico",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 11.2 dice que las Administraciones «sólo requerirán a los interesados el uso obligatorio de firma para» formular solicitudes, presentar declaraciones responsables o comunicaciones, interponer recursos, desistir de acciones y renunciar a derechos. Para el resto de actuaciones basta, según el art. 11.1, con que el interesado acredite previamente su identidad por alguno de los medios previstos en la Ley.",
+      "legalReference": "Ley 39/2015, art. 11.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0005",
+      "statement": "Según el artículo 12.2 de la Ley 39/2015, la identificación o firma electrónica de un interesado que carezca de los medios electrónicos necesarios podrá ser realizada válidamente por un funcionario público siempre que:",
+      "options": [
+        {
+          "text": "El interesado lo solicite por escrito ante la oficina de asistencia en materia de registros y abone la tasa",
+          "isCorrect": false
+        },
+        {
+          "text": "El funcionario sea titular del órgano instructor y el interesado conste en el registro electrónico de apoderamientos",
+          "isCorrect": false
+        },
+        {
+          "text": "El interesado acredite mediante declaración jurada que carece de certificado electrónico y de acceso a Internet",
+          "isCorrect": false
+        },
+        {
+          "text": "El interesado se identifique ante el funcionario y preste su consentimiento expreso, de lo que deberá quedar constancia",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 12.2 exige que «el interesado que carezca de los medios electrónicos necesarios se identifique ante el funcionario y preste su consentimiento expreso para esta actuación, de lo que deberá quedar constancia para los casos de discrepancia o litigio». La ley no condiciona la actuación al pago de ninguna tasa, a que el funcionario sea el titular del órgano ni a una declaración jurada.",
+      "legalReference": "Ley 39/2015, art. 12.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0006",
+      "statement": "Según el artículo 13 de la Ley 39/2015, quienes tienen capacidad de obrar ante las Administraciones Públicas son titulares, en sus relaciones con ellas, del derecho a utilizar las lenguas oficiales:",
+      "options": [
+        {
+          "text": "En todo el territorio del Estado, de acuerdo con la Ley 39/2015 y el resto del ordenamiento jurídico",
+          "isCorrect": false
+        },
+        {
+          "text": "Únicamente en los procedimientos tramitados por la Administración General del Estado y sus Organismos públicos",
+          "isCorrect": false
+        },
+        {
+          "text": "En el territorio de su Comunidad Autónoma, de acuerdo con la Ley 39/2015 y el resto del ordenamiento jurídico",
+          "isCorrect": true
+        },
+        {
+          "text": "En el territorio de su provincia, de acuerdo con lo previsto en la Ley Reguladora de las Bases del Régimen Local",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 13.c) reconoce el derecho «a utilizar las lenguas oficiales en el territorio de su Comunidad Autónoma, de acuerdo con lo previsto en esta Ley y en el resto del ordenamiento jurídico». El derecho tiene, pues, un ámbito territorial autonómico, no estatal ni provincial, y no se limita a los procedimientos de la Administración General del Estado.",
+      "legalReference": "Ley 39/2015, art. 13.c)"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0007",
+      "statement": "El artículo 13.d) de la Ley 39/2015 reconoce el derecho de las personas al acceso a la información pública, archivos y registros «de acuerdo con lo previsto en» una norma concreta. ¿Cuál?",
+      "options": [
+        {
+          "text": "Ley 19/2013, de 9 de diciembre, de transparencia, acceso a la información pública y buen gobierno",
+          "isCorrect": true
+        },
+        {
+          "text": "Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales",
+          "isCorrect": false
+        },
+        {
+          "text": "Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público",
+          "isCorrect": false
+        },
+        {
+          "text": "Ley 7/1985, de 2 de abril, Reguladora de las Bases del Régimen Local",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 13.d) remite expresamente a la «Ley 19/2013, de 9 de diciembre, de transparencia, acceso a la información pública y buen gobierno» y al resto del ordenamiento jurídico. Las otras normas existen y están relacionadas con la Administración, pero no son las que cita este apartado.",
+      "legalReference": "Ley 39/2015, art. 13.d)"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0008",
+      "statement": "Según el artículo 14.2 de la Ley 39/2015, estarán obligados a relacionarse a través de medios electrónicos con las Administraciones Públicas para la realización de cualquier trámite de un procedimiento administrativo, al menos:",
+      "options": [
+        {
+          "text": "Todas las personas físicas mayores de edad",
+          "isCorrect": false
+        },
+        {
+          "text": "Las entidades sin personalidad jurídica",
+          "isCorrect": true
+        },
+        {
+          "text": "Las personas físicas que ejerzan una actividad profesional para la que no se requiera colegiación obligatoria",
+          "isCorrect": false
+        },
+        {
+          "text": "Las personas físicas titulares de un certificado electrónico cualificado",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 14.2 incluye entre los sujetos obligados a las personas jurídicas, «las entidades sin personalidad jurídica», los profesionales de colegiación obligatoria, quienes representen a un interesado obligado y los empleados públicos. Las personas físicas, en cambio, pueden elegir en todo momento si se comunican por medios electrónicos o no (art. 14.1), salvo que estén obligadas. Los profesionales cuya actividad no requiere colegiación obligatoria no están en la lista del art. 14.2.",
+      "legalReference": "Ley 39/2015, art. 14.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0009",
+      "statement": "Según el artículo 16.5 de la Ley 39/2015, los documentos presentados de manera presencial ante las Administraciones Públicas deberán ser digitalizados, para su incorporación al expediente administrativo electrónico, por:",
+      "options": [
+        {
+          "text": "El órgano competente para resolver, previa incorporación al expediente administrativo",
+          "isCorrect": false
+        },
+        {
+          "text": "La oficina de asistencia en materia de registros en la que hayan sido presentados",
+          "isCorrect": true
+        },
+        {
+          "text": "El propio interesado, antes de su presentación, mediante copia auténtica electrónica",
+          "isCorrect": false
+        },
+        {
+          "text": "La unidad encargada del archivo electrónico único de la Administración",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 16.5 establece que los documentos presentados presencialmente «deberán ser digitalizados [...] por la oficina de asistencia en materia de registros en la que hayan sido presentados para su incorporación al expediente administrativo electrónico, devolviéndose los originales al interesado», salvo los supuestos en que la norma determine su custodia o sea obligatoria la presentación de objetos o documentos no digitalizables. La digitalización no corresponde ni al órgano que resuelve ni al interesado ni al archivo electrónico.",
+      "legalReference": "Ley 39/2015, art. 16.5"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-interesados-actividad/0010",
+      "statement": "Según el artículo 21.3 de la Ley 39/2015, cuando las normas reguladoras de los procedimientos no fijen el plazo máximo para notificar la resolución expresa, este será de:",
+      "options": [
+        {
+          "text": "Un mes",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos meses",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres meses",
+          "isCorrect": true
+        },
+        {
+          "text": "Seis meses",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 21.3 dispone que, cuando las normas reguladoras no fijen el plazo máximo, «éste será de tres meses». Los seis meses son el límite que, como regla general, no puede exceder el plazo fijado por la norma reguladora (art. 21.2), salvo que una norma con rango de Ley establezca uno mayor o así venga previsto en el Derecho de la Unión Europea.",
+      "legalReference": "Ley 39/2015, art. 21.3"
+    }
+  ]
+}
