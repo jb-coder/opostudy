@@ -63,7 +63,7 @@ public static partial class ContentReader
         var examsDir = Path.Combine(root, "exams");
         if (Directory.Exists(examsDir))
         {
-            foreach (var examDir in Directory.GetDirectories(examsDir).Order(StringComparer.Ordinal))
+            foreach (var examDir in Directory.GetDirectories(examsDir).Where(d => !IsLink(d)).Order(StringComparer.Ordinal))
             {
                 var exam = ReadExam(root, examDir, keys, errors);
                 if (exam is not null)
@@ -78,7 +78,31 @@ public static partial class ContentReader
 
     private static void CheckStructure(string root, List<ContentError> errors)
     {
-        foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories).Order(StringComparer.Ordinal))
+        var options = new EnumerationOptions { AttributesToSkip = 0, RecurseSubdirectories = false, IgnoreInaccessible = false };
+        var pending = new Stack<string>();
+        pending.Push(root);
+        var files = new List<string>();
+        while (pending.Count > 0)
+        {
+            var directory = pending.Pop();
+            foreach (var entry in Directory.EnumerateFileSystemEntries(directory, "*", options))
+            {
+                if (IsLink(entry))
+                {
+                    errors.Add(new ContentError(Relative(root, entry), "$", "Los enlaces simbólicos no están permitidos en el contenido."));
+                }
+                else if (Directory.Exists(entry))
+                {
+                    pending.Push(entry);
+                }
+                else
+                {
+                    files.Add(entry);
+                }
+            }
+        }
+
+        foreach (var file in files.Order(StringComparer.Ordinal))
         {
             var parts = Relative(root, file).Split('/');
             var valid = parts[0] == "schema"
@@ -92,6 +116,10 @@ public static partial class ContentReader
         }
     }
 
+    /// <summary>Symbolic links and other reparse points (files or directories).</summary>
+    private static bool IsLink(string path) =>
+        File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint) || new FileInfo(path).LinkTarget is not null;
+
     private static ExamContent? ReadExam(string root, string examDir, Dictionary<string, string> keys, List<ContentError> errors)
     {
         var examFilePath = Path.Combine(examDir, "exam.json");
@@ -100,7 +128,11 @@ public static partial class ContentReader
         var topicsDir = Path.Combine(examDir, "topics");
 
         ExamFile? examFile = null;
-        if (File.Exists(examFilePath))
+        if (File.Exists(examFilePath) && IsLink(examFilePath))
+        {
+            // Already reported by the structure check; do not follow it.
+        }
+        else if (File.Exists(examFilePath))
         {
             examFile = ReadJson<ExamFile>(root, examFilePath, errors);
         }
@@ -114,9 +146,9 @@ public static partial class ContentReader
 
         // Topic files are always read so their own errors are reported even when exam.json is broken.
         var questionsByTopic = new Dictionary<string, List<QuestionContent>>(StringComparer.Ordinal);
-        if (Directory.Exists(topicsDir))
+        if (Directory.Exists(topicsDir) && !IsLink(topicsDir))
         {
-            foreach (var topicPath in Directory.GetFiles(topicsDir, "*.json").Order(StringComparer.Ordinal))
+            foreach (var topicPath in Directory.GetFiles(topicsDir, "*.json").Where(f => !IsLink(f)).Order(StringComparer.Ordinal))
             {
                 ReadTopicFile(root, topicPath, examValid ? topics : null, keys, questionsByTopic, errors);
             }
@@ -139,7 +171,11 @@ public static partial class ContentReader
     {
         var before = errors.Count;
         Guarded(() => Exam.Create(exam.Slug, exam.Name, exam.Organization, exam.Group), file, "$", errors);
-        if (exam.Slug != folderName)
+        if (exam.Slug.Trim() != exam.Slug)
+        {
+            errors.Add(new ContentError(file, "$.slug", $"El slug '{exam.Slug}' tiene espacios al principio o al final."));
+        }
+        else if (exam.Slug != folderName)
         {
             errors.Add(new ContentError(file, "$.slug", $"El slug '{exam.Slug}' no coincide con el nombre de la carpeta '{folderName}'."));
         }
@@ -158,9 +194,18 @@ public static partial class ContentReader
             var topic = exam.Topics[i];
             var path = $"$.topics[{i}]";
             var ok = Guarded(() => Topic.Create(Guid.Empty, topic.Slug, topic.Number, topic.Title, topic.Section), file, path, errors);
-            if (!slugs.Add(topic.Slug))
+
+            // The domain trims slugs; the schema rejects spaces. Reject here too, so the reader and the importer never see different values.
+            var slug = topic.Slug.Trim();
+            if (slug != topic.Slug)
             {
-                errors.Add(new ContentError(file, $"{path}.slug", $"El slug de tema '{topic.Slug}' está repetido."));
+                errors.Add(new ContentError(file, $"{path}.slug", $"El slug de tema '{topic.Slug}' tiene espacios al principio o al final."));
+                ok = false;
+            }
+
+            if (!slugs.Add(slug))
+            {
+                errors.Add(new ContentError(file, $"{path}.slug", $"El slug de tema '{slug}' está repetido."));
                 ok = false;
             }
 
@@ -172,7 +217,7 @@ public static partial class ContentReader
 
             if (ok)
             {
-                topics.Add(new TopicContent(topic.Slug, topic.Number, topic.Title, topic.Section, []));
+                topics.Add(new TopicContent(slug, topic.Number, topic.Title, topic.Section, []));
             }
         }
 
@@ -195,7 +240,11 @@ public static partial class ContentReader
         }
 
         var expected = Path.GetFileNameWithoutExtension(topicPath);
-        if (topicFile.Topic != expected)
+        if (topicFile.Topic.Trim() != topicFile.Topic)
+        {
+            errors.Add(new ContentError(file, "$.topic", $"El tema '{topicFile.Topic}' tiene espacios al principio o al final."));
+        }
+        else if (topicFile.Topic != expected)
         {
             errors.Add(new ContentError(file, "$.topic", $"El tema '{topicFile.Topic}' no coincide con el nombre del fichero '{expected}'."));
         }
@@ -212,7 +261,11 @@ public static partial class ContentReader
             var options = q.Options.Select(o => new AnswerOptionData(o.Text, o.IsCorrect)).ToList();
             var ok = Guarded(() => Question.Create(Guid.Empty, q.Key, q.Statement, q.Explanation, q.LegalReference, options), file, path, errors);
 
-            if (!KeyRegex().IsMatch(q.Key))
+            if (q.Key.Trim() != q.Key)
+            {
+                errors.Add(new ContentError(file, $"{path}.key", $"La key '{q.Key}' tiene espacios al principio o al final."));
+            }
+            else if (!KeyRegex().IsMatch(q.Key))
             {
                 errors.Add(new ContentError(file, $"{path}.key", $"La key '{q.Key}' no es válida: minúsculas, números, guiones y '/' entre segmentos."));
             }

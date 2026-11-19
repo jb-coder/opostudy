@@ -16,7 +16,7 @@
         "required": ["key", "statement", "options", "explanation", "legalReference"],
         "properties": {
           "key": { "type": "string", "pattern": "^[a-z0-9-]+(/[a-z0-9-]+)*$", "maxLength": 150 },
-          "statement": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "statement": { "type": "string", "minLength": 1, "maxLength": 2000, "pattern": "\\S" },
           "options": {
             "type": "array",
             "minItems": 2,
@@ -26,7 +26,7 @@
               "additionalProperties": false,
               "required": ["text", "isCorrect"],
               "properties": {
-                "text": { "type": "string", "minLength": 1, "maxLength": 1000 },
+                "text": { "type": "string", "minLength": 1, "maxLength": 1000, "pattern": "\\S" },
                 "isCorrect": { "type": "boolean" }
               }
             },
@@ -34,8 +34,8 @@
             "minContains": 1,
             "maxContains": 1
           },
-          "explanation": { "type": "string", "minLength": 1, "maxLength": 4000 },
-          "legalReference": { "type": "string", "minLength": 1, "maxLength": 300 }
+          "explanation": { "type": "string", "minLength": 1, "maxLength": 4000, "pattern": "\\S" },
+          "legalReference": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" }
         }
       }
     }

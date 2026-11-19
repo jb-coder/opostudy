@@ -11,7 +11,7 @@ namespace OpoStudy.Infrastructure.Content;
 /// <summary>
 /// Idempotent upsert of the content into the database, in a single transaction (spec 0003).
 /// Questions that disappear from the content are deactivated, never deleted.
-/// Known limitation: swapping the <c>number</c> of two topics in one import can hit the unique index (exam_id, number).
+/// Known limitation: topic numbers that collide with the unique index (exam_id, number) during one import fail (see spec 0003).
 /// </summary>
 public sealed class ContentImporter(OpoStudyDbContext db)
 {

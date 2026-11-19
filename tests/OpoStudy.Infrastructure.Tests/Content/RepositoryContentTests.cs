@@ -65,6 +65,33 @@ public sealed class RepositoryContentTests
         schema.Evaluate(document.RootElement).IsValid.ShouldBeFalse();
     }
 
+    [Fact]
+    public void JsonSchema_ValidTopicWithQuestions_IsAccepted()
+    {
+        var schema = LoadSchema("topic.schema.json");
+        using var document = JsonDocument.Parse(TempContent.TopicJson("tema-uno", TempContent.QuestionJson("a/tema-uno/0001"), TempContent.QuestionJson("a/tema-uno/0002")));
+
+        schema.Evaluate(document.RootElement).IsValid.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void JsonSchema_WhitespaceOnlyStatement_IsRejected()
+    {
+        var schema = LoadSchema("topic.schema.json");
+        using var document = JsonDocument.Parse(TempContent.TopicJson("tema-uno", TempContent.QuestionJson("a/tema-uno/0001", statement: "   ")));
+
+        schema.Evaluate(document.RootElement).IsValid.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void JsonSchema_WhitespaceOnlyExamName_IsRejected()
+    {
+        var schema = LoadSchema("exam.schema.json");
+        using var document = JsonDocument.Parse("""{ "slug": "a", "name": "  ", "organization": "O", "group": "C1", "topics": [] }""");
+
+        schema.Evaluate(document.RootElement).IsValid.ShouldBeFalse();
+    }
+
     private static JsonSchema LoadSchema(string name) =>
         JsonSchema.FromText(File.ReadAllText(Path.Combine(ContentRoot, "schema", name)));
 

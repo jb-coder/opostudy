@@ -134,6 +134,59 @@ public sealed class ContentImporterTests(PostgresFixture postgres)
     }
 
     [Fact]
+    public async Task ImportAsync_DryRunWithChangesOnImportedContent_DoesNotPersistThem()
+    {
+        var slug = UniqueSlug();
+        await ImportAsync(Exam(slug, Question(slug, 1), Question(slug, 2)));
+        var changed = Exam(slug, Question(slug, 1, statement: "¿Cambiada?"), Question(slug, 3));
+
+        var report = await ImportAsync(changed, dryRun: true);
+
+        report.DryRun.ShouldBeTrue();
+        report.Questions.ShouldBe(new ImportCounts(1, 1, 1, 0));
+        await using var db = postgres.CreateContext();
+        (await db.Questions.SingleAsync(q => q.Key == $"{slug}/uno/0001", Ct)).Statement.ShouldBe("¿Pregunta?");
+        (await db.Questions.SingleAsync(q => q.Key == $"{slug}/uno/0002", Ct)).IsActive.ShouldBeTrue();
+        (await db.Questions.AnyAsync(q => q.Key == $"{slug}/uno/0003", Ct)).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ImportAsync_DeactivatedExamAppearsAgain_IsReactivated()
+    {
+        var slug = UniqueSlug();
+        var exam = Exam(slug, Question(slug, 1));
+        await ImportAsync(exam);
+        await using (var db = postgres.CreateContext())
+        {
+            (await db.Exams.SingleAsync(e => e.Slug == slug, Ct)).Deactivate();
+            await db.SaveChangesAsync(Ct);
+        }
+
+        var report = await ImportAsync(exam);
+
+        report.Exams.ShouldBe(new ImportCounts(0, 0, 0, 1));
+        await using var check = postgres.CreateContext();
+        (await check.Exams.SingleAsync(e => e.Slug == slug, Ct)).IsActive.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ImportAsync_TopicChanged_UpdatesTitleNumberAndSection()
+    {
+        var slug = UniqueSlug();
+        await ImportAsync(Exam(slug, Question(slug, 1)));
+        var changed = new ExamContent(slug, "Programador", "Diputación", "C1", [new TopicContent("uno", 5, "Título nuevo", "Bloque II", [Question(slug, 1)])]);
+
+        var report = await ImportAsync(changed);
+
+        report.Topics.ShouldBe(new ImportCounts(0, 1, 0, 0));
+        await using var db = postgres.CreateContext();
+        var topic = await db.Topics.SingleAsync(t => t.Slug == "uno" && db.Exams.Any(e => e.Id == t.ExamId && e.Slug == slug), Ct);
+        topic.Number.ShouldBe(5);
+        topic.Title.ShouldBe("Título nuevo");
+        topic.Section.ShouldBe("Bloque II");
+    }
+
+    [Fact]
     public async Task ImportAsync_TopicRemovedFromContent_KeepsItAndWarns()
     {
         var slug = UniqueSlug();

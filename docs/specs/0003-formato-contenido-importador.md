@@ -107,13 +107,13 @@ Upsert por tipo:
 Otras reglas:
 - Una ejecución que no cambia nada no modifica ninguna fila: comparar antes de llamar a `Update`, o confiar en el change tracker de EF.
 - `dryRun = true` hace todo y al final revierte la transacción.
-- Limitación conocida: intercambiar el `number` de dos temas en la misma importación puede chocar con el índice único `(exam_id, number)`. Se documenta y se resuelve en dos pasos si alguna vez hace falta.
+- Limitación conocida: el índice único `(exam_id, number)` se comprueba fila a fila al guardar, así que los siguientes cambios pueden fallar en la importación (se aborta sin cambios parciales) aunque el contenido sea válido: intercambiar el `number` de dos temas, desplazar números (p. ej. el tema 2 pasa a 3 y el 3 a 4), reutilizar el número de un tema retirado del contenido (el tema sigue en la BD con su número) y cambiar el slug de un tema conservando su número (para la BD es un tema nuevo con un número ya ocupado). El lector no puede detectarlo sin consultar la BD. Workaround: hacerlo en dos importaciones (la primera con números provisionales). No se implementa renumeración en dos pasos.
 
 ### Consola `OpoStudy.ContentImporter`
 - Host genérico con `AddServiceDefaults()` y `AddNpgsqlDbContext<OpoStudyDbContext>("opostudy", configureDbContextOptions: OpoStudyDbContext.ApplyConventions)`.
 - Uso:
   ```
-  dotnet run --project src/OpoStudy.ContentImporter -- --content <ruta> [--dry-run] [--validate-only]
+  dotnet run --project src/OpoStudy.ContentImporter -- --content <ruta> [--dry-run] [--validate-only] [--verbose]
   ```
   `--validate-only` no necesita base de datos.
 - Códigos de salida:
@@ -169,4 +169,9 @@ Sin cambios de modelo ni migraciones.
 - El importador convierte cualquier `DomainRuleException` al actualizar una pregunta en `ContentImportException` (con la `key`); la consola la muestra con código de salida 2.
 - La consola no pasa sus argumentos al host (`Args = []`): la cadena de conexión viene del entorno (Aspire) o de user-secrets.
 - Una oposición desactivada que vuelve a aparecer en el contenido se reactiva (cuenta como reactivación de oposición).
+- Los slugs (oposición, tema), el campo `topic` y las `key` no admiten espacios al principio ni al final: el lector lo informa como error (igual que el patrón del esquema) y detecta duplicados sobre el valor recortado, así lector, importador y dominio manejan el mismo valor.
+- Los enlaces simbólicos (reparse points) en `content/`, ficheros o directorios, son un error y no se siguen.
+- Los textos de los esquemas llevan `pattern: "\\S"` para rechazar cadenas formadas solo por espacios.
+- `maxLength` del esquema cuenta code points y `Limits` del dominio cuenta unidades UTF-16: solo difieren con emojis u otros caracteres suplementarios. La fuente de verdad es el dominio, que el lector aplica siempre.
+- Consola: `ContentReader.Read` va dentro del manejo de errores; al fallar se imprime la cadena de `InnerException` (una línea por nivel) y, con `--verbose`, el stack trace. Ctrl+C cancela mediante un `CancellationToken` (la transacción se revierte) y sale con código 2.
 - Los ficheros de `content/` no pertenecen a ningún proyecto, así que no se copian a ningún `bin`.

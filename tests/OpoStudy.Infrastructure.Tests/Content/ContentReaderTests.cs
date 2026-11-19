@@ -181,6 +181,78 @@ public sealed class ContentReaderTests
     }
 
     [Fact]
+    public void Read_TopicSlugsDifferingOnlyBySpaces_ReportsError()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, (" uno ", 1), ("uno", 2));
+
+        var result = ContentReader.Read(content.Root);
+
+        result.Exams.ShouldBeEmpty();
+        result.Errors.ShouldContain(e => e.Path == "$.topics[0].slug");
+        result.Errors.ShouldContain(e => e.Path == "$.topics[1].slug" && e.Message.Contains("repetido", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Read_QuestionKeyWithSurroundingSpaces_ReportsError()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WriteTopic(Exam, "uno", TempContent.QuestionJson(" exam-a/uno/0001 "));
+
+        var error = ContentReader.Read(content.Root).Errors.ShouldHaveSingleItem();
+
+        error.Path.ShouldBe("$.questions[0].key");
+    }
+
+    [Fact]
+    public void Read_TopicFieldWithSurroundingSpaces_ReportsError()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.Write($"exams/{Exam}/topics/uno.json", TempContent.TopicJson(" uno "));
+
+        var error = ContentReader.Read(content.Root).Errors.ShouldHaveSingleItem();
+
+        error.Path.ShouldBe("$.topic");
+    }
+
+    [Fact]
+    public void Read_FileOverFiveMegabytes_ReportsSizeError()
+    {
+        using var content = new TempContent();
+        content.Write($"exams/{Exam}/exam.json", new string(' ', (5 * 1024 * 1024) + 1));
+
+        var error = ContentReader.Read(content.Root).Errors.ShouldHaveSingleItem();
+
+        error.File.ShouldBe($"exams/{Exam}/exam.json");
+        error.Message.ShouldContain("5 MB");
+    }
+
+    [Fact]
+    public void Read_SymbolicLink_ReportsError()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        var target = Path.Combine(content.Root, "exams", Exam, "exam.json");
+        var link = Path.Combine(content.Root, "exams", Exam, "topics", "uno.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(link)!);
+        try
+        {
+            File.CreateSymbolicLink(link, target);
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or PlatformNotSupportedException)
+        {
+            Assert.Skip("Cannot create symbolic links in this environment.");
+        }
+
+        var result = ContentReader.Read(content.Root);
+
+        result.Exams.ShouldBeEmpty();
+        result.Errors.ShouldContain(e => e.File == $"exams/{Exam}/topics/uno.json" && e.Message.Contains("enlaces simbólicos", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Read_SeveralProblems_ReportsAllOfThem()
     {
         using var content = new TempContent();

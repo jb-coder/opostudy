@@ -8,9 +8,9 @@
   "properties": {
     "$schema": { "type": "string" },
     "slug": { "$ref": "#/$defs/slug" },
-    "name": { "type": "string", "minLength": 1, "maxLength": 300 },
-    "organization": { "type": "string", "minLength": 1, "maxLength": 300 },
-    "group": { "type": "string", "minLength": 1, "maxLength": 20 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+    "organization": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+    "group": { "type": "string", "minLength": 1, "maxLength": 20, "pattern": "\\S" },
     "topics": {
       "type": "array",
       "items": {
@@ -20,8 +20,8 @@
         "properties": {
           "slug": { "$ref": "#/$defs/slug" },
           "number": { "type": "integer", "minimum": 1 },
-          "title": { "type": "string", "minLength": 1, "maxLength": 300 },
-          "section": { "type": "string", "minLength": 1, "maxLength": 300 }
+          "title": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+          "section": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" }
         }
       }
     }
