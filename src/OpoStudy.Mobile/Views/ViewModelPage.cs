@@ -5,7 +5,7 @@ using OpoStudy.Mobile.Core.ViewModels;
 namespace OpoStudy.Mobile.Views;
 
 /// <summary>Base page: binds its ViewModel and forwards the appearing event to it.</summary>
-public abstract partial class ViewModelPage : ContentPage
+public abstract partial class ViewModelPage : ContentPage, IQueryAttributable
 {
     private readonly ILogger _logger;
 
@@ -13,6 +13,15 @@ public abstract partial class ViewModelPage : ContentPage
     {
         BindingContext = viewModel;
         _logger = logger;
+    }
+
+    /// <summary>Forwards Shell navigation parameters to ViewModels that want them.</summary>
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (BindingContext is IQueryReceiver receiver)
+        {
+            receiver.ApplyQuery(new Dictionary<string, object>(query));
+        }
     }
 
     protected override async void OnAppearing()

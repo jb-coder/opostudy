@@ -5,7 +5,9 @@ using Microsoft.Extensions.Logging;
 
 using OpoStudy.Mobile.Core;
 using OpoStudy.Mobile.Core.Api;
+using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
 using OpoStudy.Mobile.Services;
 using OpoStudy.Mobile.Views;
@@ -17,6 +19,8 @@ namespace OpoStudy.Mobile;
 public static class MauiProgram
 {
     private static readonly TimeSpan ApiTimeout = TimeSpan.FromSeconds(15);
+
+    private const string GoogleServicesResource = "google-services.json";
 
     public static MauiApp CreateMauiApp()
     {
@@ -40,12 +44,29 @@ public static class MauiProgram
 
         services.AddSingleton(new AppEnvironment(isDebug));
         services.AddSingleton(new ApiOptions(ReadApiBaseAddress()));
+
+        services.AddSingleton(TimeProvider.System);
+        services.AddSingleton(LoadFirebaseOptions());
+        services.AddSingleton<ISecureStore, SecureStore>();
+        services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<IAuthService, AuthService>();
+        services.AddTransient<AuthHeaderHandler>();
+#if ANDROID
+        services.AddSingleton<IGoogleSignInProvider, Platforms.Android.GoogleSignInProvider>();
+#endif
+        services.AddHttpClient<IFirebaseAuthClient, FirebaseAuthClient>(client => client.Timeout = ApiTimeout)
+#if ANDROID
+            .AddHttpMessageHandler(() => new JavaNetworkExceptionHandler())
+#endif
+            ;
+
         services.AddRefitGeneratedClient<IOpoStudyApi>(ApiJsonContext.Default)
             .ConfigureHttpClient((sp, client) =>
             {
                 client.BaseAddress = sp.GetRequiredService<ApiOptions>().BaseAddress;
                 client.Timeout = ApiTimeout;
             })
+            .AddHttpMessageHandler<AuthHeaderHandler>()
 #if ANDROID
             .AddHttpMessageHandler(() => new JavaNetworkExceptionHandler())
 #endif
@@ -53,6 +74,17 @@ public static class MauiProgram
 
         services.AddSingleton<INavigationService, ShellNavigationService>();
 
+        services.AddSingleton<SessionExpiredHandler>();
+        services.AddSingleton<AppShell>();
+
+        services.AddTransient<StartupViewModel>();
+        services.AddTransient<StartupPage>();
+        services.AddTransient<LoginViewModel>();
+        services.AddTransient<LoginPage>();
+        services.AddTransient<RegisterViewModel>();
+        services.AddTransient<RegisterPage>();
+        services.AddTransient<ForgotPasswordViewModel>();
+        services.AddTransient<ForgotPasswordPage>();
         services.AddTransient<HomeViewModel>();
         services.AddTransient<HomePage>();
 #if DEBUG
@@ -60,6 +92,26 @@ public static class MauiProgram
 #endif
 
         return builder.Build();
+    }
+
+    /// <summary>Reads the embedded <c>google-services.json</c>; without it the app runs but sign-in reports NOT_CONFIGURED.</summary>
+    private static FirebaseOptions LoadFirebaseOptions()
+    {
+        using var stream = typeof(MauiProgram).Assembly.GetManifestResourceStream(GoogleServicesResource);
+        if (stream is null)
+        {
+            return FirebaseOptions.Empty;
+        }
+
+        try
+        {
+            return GoogleServicesConfig.Parse(stream, AppInfo.PackageName);
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.Text.Json.JsonException)
+        {
+            System.Diagnostics.Debug.WriteLine($"google-services.json is not usable: {ex.Message}");
+            return FirebaseOptions.Empty;
+        }
     }
 
     private static Uri ReadApiBaseAddress()

@@ -51,6 +51,30 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Tu cuenta"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <Label Text="{Binding AccountEmail}" />
+                        <Label
+                            Style="{StaticResource CaptionLabel}"
+                            Text="{Binding MemberSinceText}"
+                            IsVisible="{Binding HasMemberSince}" />
+                        <Button
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Cerrar sesión"
+                            Command="{Binding SignOutCommand}" />
+                        <Button
+                            Style="{StaticResource TextButton}"
+                            Text="Borrar cuenta"
+                            TextColor="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorDark}}"
+                            Command="{Binding DeleteAccountCommand}"
+                            SemanticProperties.Hint="Borra tu cuenta y todo tu progreso" />
+                    </VerticalStackLayout>
+                </Border>
+
                 <Button
                     Style="{StaticResource SecondaryButton}"
                     Text="Catálogo de estilos"
