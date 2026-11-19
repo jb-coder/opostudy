@@ -11,7 +11,9 @@
       "src/OpoStudy.ServiceDefaults/OpoStudy.ServiceDefaults.csproj",
       "src/OpoStudy.Worker/OpoStudy.Worker.csproj",
       "tests/OpoStudy.Api.IntegrationTests/OpoStudy.Api.IntegrationTests.csproj",
-      "tests/OpoStudy.Architecture.Tests/OpoStudy.Architecture.Tests.csproj"
+      "tests/OpoStudy.Architecture.Tests/OpoStudy.Architecture.Tests.csproj",
+      "tests/OpoStudy.Domain.Tests/OpoStudy.Domain.Tests.csproj",
+      "tests/OpoStudy.Infrastructure.Tests/OpoStudy.Infrastructure.Tests.csproj"
     ]
   }
 }

@@ -1,13 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
 using OpoStudy.Contracts.Sistema;
 using Shouldly;
 
 namespace OpoStudy.Api.IntegrationTests;
 
-public sealed class SistemaEndpointsTests(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+public sealed class SistemaEndpointsTests(ApiFactory factory)
 {
     private readonly HttpClient _client = factory.CreateClient();
 

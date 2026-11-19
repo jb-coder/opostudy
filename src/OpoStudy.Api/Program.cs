@@ -1,9 +1,12 @@
 using OpoStudy.Api.Features.Sistema;
+using OpoStudy.Infrastructure.Persistencia;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddNpgsqlDbContext<OpoStudyDbContext>(
+    "opostudy", configureDbContextOptions: OpoStudyDbContext.AplicarConvenciones);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
@@ -15,6 +18,8 @@ app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {
+    // En el VPS las migraciones se aplicarán con un migration bundle antes de arrancar (v0.5).
+    await app.Services.AplicarMigracionesAsync();
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
