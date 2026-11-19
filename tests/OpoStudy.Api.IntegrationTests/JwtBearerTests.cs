@@ -65,7 +65,7 @@ public sealed class JwtBearerTests(ApiFactory api)
     }
 
     [Fact]
-    public async Task GetMe_WithWrongAudience_Returns401()
+    public async Task GetMe_WithWrongAudience_ReturnsProblemDetails401()
     {
         using var rsa = RSA.Create(2048);
         await using var factory = CreateFactory(rsa);
@@ -74,10 +74,11 @@ public sealed class JwtBearerTests(ApiFactory api)
         var response = await client.GetAsync(MeUri, TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
     }
 
     [Fact]
-    public async Task GetMe_WithExpiredToken_Returns401()
+    public async Task GetMe_WithExpiredToken_ReturnsProblemDetails401()
     {
         using var rsa = RSA.Create(2048);
         await using var factory = CreateFactory(rsa);
@@ -89,10 +90,11 @@ public sealed class JwtBearerTests(ApiFactory api)
         var response = await client.GetAsync(MeUri, TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
     }
 
     [Fact]
-    public async Task GetMe_WithTokenSignedByDifferentKey_Returns401()
+    public async Task GetMe_WithTokenSignedByDifferentKey_ReturnsProblemDetails401()
     {
         using var rsa = RSA.Create(2048);
         using var otherRsa = RSA.Create(2048);
@@ -102,10 +104,11 @@ public sealed class JwtBearerTests(ApiFactory api)
         var response = await client.GetAsync(MeUri, TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
     }
 
     [Fact]
-    public async Task GetMe_WithValidTokenWithoutSubject_Returns401()
+    public async Task GetMe_WithValidTokenWithoutSubject_ReturnsProblemDetails401()
     {
         using var rsa = RSA.Create(2048);
         await using var factory = CreateFactory(rsa);
@@ -114,6 +117,7 @@ public sealed class JwtBearerTests(ApiFactory api)
         var response = await client.GetAsync(MeUri, TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
     }
 
     [Fact]
