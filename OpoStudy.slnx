@@ -13,5 +13,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/OpoStudy.Api.IntegrationTests/OpoStudy.Api.IntegrationTests.csproj" />
     <Project Path="tests/OpoStudy.Architecture.Tests/OpoStudy.Architecture.Tests.csproj" />
+    <Project Path="tests/OpoStudy.Domain.Tests/OpoStudy.Domain.Tests.csproj" />
+    <Project Path="tests/OpoStudy.Infrastructure.Tests/OpoStudy.Infrastructure.Tests.csproj" />
   </Folder>
 </Solution>

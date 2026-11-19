@@ -1,24 +1,24 @@
 using System.Reflection;
+
 using NetArchTest.Rules;
+
 using Shouldly;
+
 using ArchResult = NetArchTest.Rules.TestResult;
 
 namespace OpoStudy.Architecture.Tests;
 
-/// <summary>
-/// Reglas de dependencias entre capas. Se cumplen trivialmente mientras los proyectos estén vacíos
-/// y empiezan a proteger la arquitectura en cuanto se añade código.
-/// </summary>
-public sealed class DependenciasTests
+/// <summary>Dependency rules between layers.</summary>
+public sealed class DependencyTests
 {
     private static readonly Assembly Domain = Assembly.Load("OpoStudy.Domain");
     private static readonly Assembly Contracts = Assembly.Load("OpoStudy.Contracts");
     private static readonly Assembly Infrastructure = Assembly.Load("OpoStudy.Infrastructure");
 
     [Fact]
-    public void Domain_NoDependeDeInfraestructuraNiFrameworks()
+    public void Domain_DoesNotDependOnInfrastructureOrFrameworks()
     {
-        var resultado = Types.InAssembly(Domain)
+        var result = Types.InAssembly(Domain)
             .ShouldNot()
             .HaveDependencyOnAny(
                 "OpoStudy.Infrastructure",
@@ -30,13 +30,13 @@ public sealed class DependenciasTests
                 "Npgsql")
             .GetResult();
 
-        resultado.IsSuccessful.ShouldBeTrue(Fallos(resultado));
+        result.IsSuccessful.ShouldBeTrue(FailingTypes(result));
     }
 
     [Fact]
-    public void Contracts_SoloContieneDtosSinDependencias()
+    public void Contracts_OnlyContainsDtosWithoutDependencies()
     {
-        var resultado = Types.InAssembly(Contracts)
+        var result = Types.InAssembly(Contracts)
             .ShouldNot()
             .HaveDependencyOnAny(
                 "OpoStudy.Domain",
@@ -45,20 +45,20 @@ public sealed class DependenciasTests
                 "Microsoft.AspNetCore")
             .GetResult();
 
-        resultado.IsSuccessful.ShouldBeTrue(Fallos(resultado));
+        result.IsSuccessful.ShouldBeTrue(FailingTypes(result));
     }
 
     [Fact]
-    public void Infrastructure_NoDependeDeLaApiNiDelWorker()
+    public void Infrastructure_DoesNotDependOnApiOrWorker()
     {
-        var resultado = Types.InAssembly(Infrastructure)
+        var result = Types.InAssembly(Infrastructure)
             .ShouldNot()
             .HaveDependencyOnAny("OpoStudy.Api", "OpoStudy.Worker")
             .GetResult();
 
-        resultado.IsSuccessful.ShouldBeTrue(Fallos(resultado));
+        result.IsSuccessful.ShouldBeTrue(FailingTypes(result));
     }
 
-    private static string Fallos(ArchResult resultado) =>
-        string.Join(", ", resultado.FailingTypeNames ?? []);
+    private static string FailingTypes(ArchResult result) =>
+        string.Join(", ", result.FailingTypeNames ?? []);
 }
