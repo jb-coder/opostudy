@@ -43,6 +43,8 @@ public sealed partial class OfflineSynchronizer : IOfflineSynchronizer, IDisposa
         _network.Changed += OnNetworkChanged;
     }
 
+    public event EventHandler? ReconnectSynced;
+
     public void Dispose()
     {
         if (_started)
@@ -90,8 +92,14 @@ public sealed partial class OfflineSynchronizer : IOfflineSynchronizer, IDisposa
     {
         if (_network.HasInternet)
         {
-            _ = SyncAsync();
+            _ = SyncAfterReconnectAsync();
         }
+    }
+
+    private async Task SyncAfterReconnectAsync()
+    {
+        await SyncAsync();
+        ReconnectSynced?.Invoke(this, EventArgs.Empty);
     }
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not sync the pending answers ({ExceptionType})")]

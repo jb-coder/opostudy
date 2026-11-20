@@ -238,6 +238,8 @@ public sealed partial class HomeViewModel(
     {
         LoadReminder();
         ListenToOfflineState();
+        synchronizer.ReconnectSynced -= OnReconnectSynced;
+        synchronizer.ReconnectSynced += OnReconnectSynced;
 
         if (ApiVersion is not null)
         {
@@ -257,6 +259,21 @@ public sealed partial class HomeViewModel(
         if (RefreshCommand.CanExecute(null))
         {
             await RefreshCommand.ExecuteAsync(null);
+        }
+    }
+
+    public override void OnDisappearing()
+    {
+        synchronizer.ReconnectSynced -= OnReconnectSynced;
+        base.OnDisappearing();
+    }
+
+    /// <summary>The connection came back and the queue was flushed: reload the goal, streak and level the server recomputed.</summary>
+    private void OnReconnectSynced(object? sender, EventArgs e)
+    {
+        if (RefreshCommand.CanExecute(null))
+        {
+            _ = RefreshCommand.ExecuteAsync(null);
         }
     }
 

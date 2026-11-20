@@ -521,6 +521,32 @@ public sealed class HomeOfflineViewModelTests
     }
 
     [Fact]
+    public async Task ReconnectSynced_HomeVisible_ReloadsStreakAndLevel()
+    {
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+        _api.ClearReceivedCalls();
+
+        _offline.Synchronizer.ReconnectSynced += Raise.Event();
+
+        await _api.Received(1).GetStreakAsync(Arg.Any<CancellationToken>());
+        await _api.Received(1).GetLevelAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ReconnectSynced_HomeDisappeared_DoesNotReload()
+    {
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+        sut.OnDisappearing();
+        _api.ClearReceivedCalls();
+
+        _offline.Synchronizer.ReconnectSynced += Raise.Event();
+
+        await _api.DidNotReceiveWithAnyArgs().GetStreakAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
     public async Task RefreshCommand_SyncReturnsNothing_StillLoadsStreak()
     {
         _offline.Synchronizer.SyncAsync(Arg.Any<CancellationToken>()).Returns(0);
@@ -765,6 +791,19 @@ public sealed class OfflineSynchronizerTests : IDisposable
 
         _network.Changed += Raise.Event();
 
+        await _sync.Received(1).FlushAsync(null, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Start_InternetComesBack_RaisesReconnectSynced()
+    {
+        var raised = new TaskCompletionSource();
+        _sut.ReconnectSynced += (_, _) => raised.TrySetResult();
+        _sut.Start();
+
+        _network.Changed += Raise.Event();
+
+        await raised.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
         await _sync.Received(1).FlushAsync(null, Arg.Any<CancellationToken>());
     }
 
