@@ -313,6 +313,45 @@ public sealed class PreferencesReminderStoreTests
     }
 
     [Fact]
+    public void GetSuspended_NothingSaved_ReturnsFalse() =>
+        CreateSut().GetSuspended().ShouldBeFalse();
+
+    [Fact]
+    public void SetSuspended_ThenGet_RoundTrips()
+    {
+        var sut = CreateSut();
+
+        sut.SetSuspended(true);
+        sut.GetSuspended().ShouldBeTrue();
+
+        sut.SetSuspended(false);
+        sut.GetSuspended().ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GetLastFiredOn_NothingSaved_ReturnsNull() =>
+        CreateSut().GetLastFiredOn().ShouldBeNull();
+
+    [Fact]
+    public void SaveLastFiredOn_ThenGet_RoundTrips()
+    {
+        var sut = CreateSut();
+
+        sut.SaveLastFiredOn(new DateOnly(2026, 11, 20));
+
+        sut.GetLastFiredOn().ShouldBe(new DateOnly(2026, 11, 20));
+        _preferences.Values["reminder.lastFiredOn"].ShouldBe("2026-11-20");
+    }
+
+    [Fact]
+    public void GetLastFiredOn_CorruptValue_ReturnsNull()
+    {
+        _preferences.Values["reminder.lastFiredOn"] = "not a date";
+
+        CreateSut().GetLastFiredOn().ShouldBeNull();
+    }
+
+    [Fact]
     public void ClearSnapshot_Saved_RemovesIt()
     {
         var sut = CreateSut();

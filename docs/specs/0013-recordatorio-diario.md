@@ -2,7 +2,7 @@
 
 - **Issue:** #40
 - **Milestone:** v0.2.0
-- **Estado:** lista
+- **Estado:** implementada
 
 ## Objetivo
 Mantener el hábito con un aviso diario a la hora que elija el usuario si aún no ha cumplido el objetivo del día. La notificación es **local** (ADR 0001): sin servidor, sin Firebase Cloud Messaging y sin coste. Se apoya en el objetivo diario y la racha de la 0010.
@@ -14,7 +14,7 @@ Mantener el hábito con un aviso diario a la hora que elija el usuario si aún n
 - **Desactivado por defecto.** El usuario lo activa desde la pantalla de inicio; así el permiso de notificaciones de Android 13+ se pide en el momento en que tiene sentido y no al abrir la app.
 - **Hora a elegir entre valores fijos**: 18:00, 19:00, 20:00, 21:00 y 22:00; **20:00 por defecto**. Mismo patrón que el objetivo diario (hoja de acciones), sin selector de hora.
 - **El día es el día local del dispositivo** (`TimeProvider`). La app ya sincroniza su zona horaria con el servidor (0010), así que coincide con el día de la racha.
-- **Al cerrar sesión se cancela la alarma y se borra la instantánea**, para que no avise con datos de otra cuenta. La preferencia (activado y hora) es del dispositivo y se conserva: queda suspendida (`reminder.suspended`) hasta volver a iniciar sesión y entonces se reprograma si estaba activada.
+- **Al cerrar sesión (o si caduca la sesión) se cancela la alarma y se borra la instantánea**, para que no avise con datos de otra cuenta. La preferencia (activado y hora) es del dispositivo y se conserva: queda suspendida (`reminder.suspended`) hasta volver a iniciar sesión y entonces se reprograma si estaba activada.
 
 ## Alcance
 **Incluye:**
@@ -75,7 +75,7 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
   - `ReminderMessage? OnAlarmFired(DateTimeOffset now)`: `null` si está suspendido o desactivado (sin reprogramar); si no, guarda `lastFiredOn = hoy`, reprograma con `EnsureScheduled()` y devuelve `ReminderMessages.For(instantánea, hoy)`.
 - `HomeViewModel`:
   - Llama a `UpdateFromStreak` tras `GET /me/streak`, cambiar el objetivo y comprar un protector, y a `OnSignedIn` al refrescar.
-  - Llama a `OnSignedOut` al cerrar sesión (aunque `SignOutAsync` falle no debe quedar programado).
+  - Llama a `OnSignedOut` al cerrar sesión (aunque `SignOutAsync` falle no debe quedar programado). `SessionExpiredHandler` también llama a `OnSignedOut` si Firebase cierra la sesión.
   - Tarjeta «Recordatorio» (propiedades y comandos): `ReminderEnabled` (switch), `ReminderTimeText` («Todos los días a las 20:00 si no has cumplido el objetivo»), `ToggleReminderCommand` y `ChangeReminderTimeCommand` (hoja de acciones de `IDialogService` con las 5 horas). Si el permiso se deniega, el switch vuelve a apagado y se muestra «Activa las notificaciones de OpoStudy en los ajustes de Android para recibir el recordatorio.». El comando no admite ejecuciones concurrentes: `IsReminderToggleEnabled` desactiva el switch mientras corre y, al terminar, el switch refleja siempre el estado guardado. `IsReminderSupported` oculta la tarjeta fuera de Android.
 - `QuizViewModel`: llama a `UpdateFromProgress` con cada `DailyProgress` recibido.
 
@@ -98,16 +98,16 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 - No hacen falta secretos nuevos.
 
 ## Criterios de aceptación
-- [ ] Con el recordatorio desactivado (por defecto) no se programa ninguna alarma ni se pide permiso.
-- [ ] Al activarlo en Android 13+ se pide `POST_NOTIFICATIONS`; si se deniega, el switch queda apagado y se muestra el mensaje de ajustes.
-- [ ] Activado a las 20:00 sin cumplir el objetivo, a esa hora (con hasta 15 min de retraso) llega una notificación con el texto según el estado; al tocarla se abre la app.
-- [ ] Si el objetivo de hoy ya está cumplido (según la instantánea), no llega notificación ese día, y el día siguiente sí, si no se cumple.
-- [ ] Cambiar la hora reprograma la alarma; desactivar la cancela.
-- [ ] Tras reiniciar el móvil, el recordatorio sigue programado.
-- [ ] Al cerrar sesión no llegan más recordatorios hasta volver a iniciar sesión; al volver, se reprograma si estaba activado.
-- [ ] Los textos cubren racha en riesgo, preguntas que faltan, sin racha y sin datos de hoy, con singular y plural.
-- [ ] La tarjeta «Recordatorio» se ve bien en tema claro y oscuro (verificado en el emulador).
-- [ ] Sin cambios en la API ni en la BD; la app compila con `TreatWarningsAsErrors`.
+- [x] Con el recordatorio desactivado (por defecto) no se programa ninguna alarma ni se pide permiso.
+- [x] Al activarlo en Android 13+ se pide `POST_NOTIFICATIONS`; si se deniega, el switch queda apagado y se muestra el mensaje de ajustes.
+- [x] Activado a las 20:00 sin cumplir el objetivo, a esa hora (con hasta 15 min de retraso) llega una notificación con el texto según el estado; al tocarla se abre la app.
+- [x] Si el objetivo de hoy ya está cumplido (según la instantánea), no llega notificación ese día, y el día siguiente sí, si no se cumple.
+- [x] Cambiar la hora reprograma la alarma; desactivar la cancela.
+- [x] Tras reiniciar el móvil, el recordatorio sigue programado.
+- [x] Al cerrar sesión no llegan más recordatorios hasta volver a iniciar sesión; al volver, se reprograma si estaba activado.
+- [x] Los textos cubren racha en riesgo, preguntas que faltan, sin racha y sin datos de hoy, con singular y plural.
+- [x] La tarjeta «Recordatorio» se ve bien en tema claro y oscuro (verificado en el emulador).
+- [x] Sin cambios en la API ni en la BD; la app compila con `TreatWarningsAsErrors`.
 
 ## Plan de tests
 - **Unitarios (Mobile.Core.Tests):**
