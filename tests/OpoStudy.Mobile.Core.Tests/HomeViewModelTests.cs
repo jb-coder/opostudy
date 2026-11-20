@@ -215,7 +215,41 @@ public sealed class HomeViewModelTests
 
         await sut.BuyStreakFreezeCommand.ExecuteAsync(null);
 
-        sut.ErrorMessage.ShouldBe("Ya tienes el máximo de 2 protectores.");
+        sut.BuyFreezeErrorMessage.ShouldBe("Ya tienes el máximo de 2 protectores.");
+        sut.HasBuyFreezeError.ShouldBeTrue();
+        sut.ErrorMessage.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task BuyStreakFreezeCommand_AfterRejection_SuccessfulPurchaseClearsError()
+    {
+        var sut = await LoadedSutAsync();
+        _dialogs.ConfirmAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        _api.BuyStreakFreezeAsync(Arg.Any<CancellationToken>())
+            .Returns(
+                _ => Task.FromException<StreakResponse>(ProblemAsync("""{"title":"Error.","code":"xp.insufficient"}""").GetAwaiter().GetResult()),
+                _ => Task.FromResult(StreakWith()));
+        await sut.BuyStreakFreezeCommand.ExecuteAsync(null);
+        sut.HasBuyFreezeError.ShouldBeTrue();
+
+        await sut.BuyStreakFreezeCommand.ExecuteAsync(null);
+
+        sut.BuyFreezeErrorMessage.ShouldBeNull();
+        sut.HasBuyFreezeError.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task RefreshCommand_AfterFailedPurchase_ClearsPurchaseError()
+    {
+        var sut = await LoadedSutAsync();
+        _dialogs.ConfirmAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        _api.BuyStreakFreezeAsync(Arg.Any<CancellationToken>())
+            .ThrowsAsync(await ProblemAsync("""{"title":"Error.","code":"xp.insufficient"}"""));
+        await sut.BuyStreakFreezeCommand.ExecuteAsync(null);
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.BuyFreezeErrorMessage.ShouldBeNull();
     }
 
     [Fact]

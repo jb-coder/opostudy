@@ -100,6 +100,13 @@ public sealed partial class HomeViewModel(
     [NotifyPropertyChangedFor(nameof(HasLevelError))]
     public partial string? LevelErrorMessage { get; set; }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasBuyFreezeError))]
+    public partial string? BuyFreezeErrorMessage { get; set; }
+
+    /// <summary>Whether the daily goal card shows a streak freeze purchase error.</summary>
+    public bool HasBuyFreezeError => BuyFreezeErrorMessage is not null;
+
     /// <summary>Whether the level card has data to show.</summary>
     public bool HasLevel => Level is not null;
 
@@ -165,6 +172,7 @@ public sealed partial class HomeViewModel(
     {
         IsBusy = true;
         ErrorMessage = null;
+        BuyFreezeErrorMessage = null;
         AccountEmail = auth.Email;
         try
         {
@@ -371,6 +379,7 @@ public sealed partial class HomeViewModel(
 
         IsBusy = true;
         ErrorMessage = null;
+        BuyFreezeErrorMessage = null;
         try
         {
             var streak = await api.BuyStreakFreezeAsync(cancellationToken);
@@ -381,7 +390,7 @@ public sealed partial class HomeViewModel(
         catch (Exception ex)
         {
             LogBuyFreezeFailed(ex, ex.GetType().FullName);
-            ErrorMessage = ApiErrorMessages.From(ex);
+            BuyFreezeErrorMessage = ApiErrorMessages.From(ex);
         }
         finally
         {

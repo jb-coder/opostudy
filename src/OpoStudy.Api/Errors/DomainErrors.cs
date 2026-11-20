@@ -2,6 +2,9 @@ using System.Collections.Frozen;
 
 using Microsoft.AspNetCore.Http.HttpResults;
 
+using OpoStudy.Domain.Common;
+using OpoStudy.Domain.Users;
+
 namespace OpoStudy.Api.Errors;
 
 /// <summary>Maps stable error codes to HTTP status and a user-facing (Spanish) message that never includes the code.</summary>
@@ -26,8 +29,8 @@ internal static class DomainErrors
             ["quiz.already_answered"] = (StatusCodes.Status409Conflict, "Ya has respondido a esta pregunta."),
             [QuizConcurrentUpdate] = (StatusCodes.Status409Conflict, "El test se ha modificado desde otra petición. Vuelve a cargarlo."),
             [ConcurrencyConflict] = (StatusCodes.Status409Conflict, "Los datos se han modificado desde otra petición. Vuelve a intentarlo."),
-            ["streak.freezes_full"] = (StatusCodes.Status422UnprocessableEntity, "Ya tienes el máximo de 2 protectores."),
-            ["xp.insufficient"] = (StatusCodes.Status422UnprocessableEntity, "Necesitas 200 XP disponibles para comprar un protector."),
+            ["streak.freezes_full"] = (StatusCodes.Status422UnprocessableEntity, $"Ya tienes el máximo de {Limits.MaxStreakFreezes} protectores."),
+            ["xp.insufficient"] = (StatusCodes.Status422UnprocessableEntity, $"Necesitas {XpRules.StreakFreezePrice} XP disponibles para comprar un protector."),
             [QuizForeignQuestion] = (StatusCodes.Status422UnprocessableEntity, "La pregunta no forma parte de este test."),
             ["quiz.foreign_option"] = (StatusCodes.Status422UnprocessableEntity, "La opción elegida no corresponde a la pregunta."),
             [QuizNoQuestionsAvailable] = (StatusCodes.Status422UnprocessableEntity, "No hay preguntas disponibles para este test."),

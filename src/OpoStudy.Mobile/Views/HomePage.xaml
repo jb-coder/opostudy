@@ -91,6 +91,10 @@
                             Style="{StaticResource SecondaryButton}"
                             Text="{Binding BuyFreezeText}"
                             Command="{Binding BuyStreakFreezeCommand}" />
+                        <Label
+                            Style="{StaticResource ErrorLabel}"
+                            Text="{Binding BuyFreezeErrorMessage}"
+                            IsVisible="{Binding HasBuyFreezeError}" />
                         <Button
                             Style="{StaticResource SecondaryButton}"
                             Text="Cambiar objetivo"
