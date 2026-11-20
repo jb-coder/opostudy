@@ -24,4 +24,7 @@ public static class Limits
     public const string DefaultTimeZone = "Europe/Madrid";
     public const int StreakHistoryDays = 7;
     public const int MaxStreakFreezes = 2;
+
+    /// <summary>Oldest time of an answer the server accepts when syncing a quiz taken offline.</summary>
+    public static readonly TimeSpan MaxOfflineAge = TimeSpan.FromDays(7);
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="OpoStudy.Mobile.Views.Controls.OfflineBanner"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Name="Root">
+
+    <!-- Warning-coloured card; the state is in the text, never only in the colour. -->
+    <Border
+        Style="{StaticResource CardBorder}"
+        Stroke="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}"
+        SemanticProperties.Description="{Binding Text, Source={x:Reference Root}}">
+        <Label
+            Style="{StaticResource WarningLabel}"
+            Text="{Binding Text, Source={x:Reference Root}}"
+            AutomationId="OfflineBannerText" />
+    </Border>
+</ContentView>

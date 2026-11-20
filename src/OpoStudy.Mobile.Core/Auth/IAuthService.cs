@@ -10,6 +10,9 @@ public interface IAuthService
 
     string? Email { get; }
 
+    /// <summary>Firebase uid of the signed-in user (<c>user_id</c> or <c>sub</c> claim of the stored ID token), or null without session.</summary>
+    string? UserId { get; }
+
     /// <summary><c>password</c> or <c>google.com</c>.</summary>
     string? Provider { get; }
 
