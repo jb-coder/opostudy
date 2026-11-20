@@ -7,9 +7,11 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
 using OpoStudy.Contracts.Exams;
+using OpoStudy.Contracts.Offline;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Offline;
 
 namespace OpoStudy.Mobile.Core.ViewModels;
 
@@ -59,8 +61,13 @@ public sealed partial class TopicItem(TopicResponse topic) : ObservableObject
 public sealed partial class TopicsViewModel(
     IOpoStudyApi api,
     INavigationService navigation,
-    ILogger<TopicsViewModel> logger) : ViewModelBase, IQueryReceiver
+    IOfflineContentStore offlineContent,
+    IOfflineQuizService offlineQuizzes,
+    OfflineState offlineState,
+    ILogger<TopicsViewModel> logger) : OfflineAwareViewModel(offlineState), IQueryReceiver
 {
+    private const string MistakesNeedConnectionMessage = "El repaso de falladas necesita conexión.";
+
     private const string MissingExamMessage = "No se ha podido abrir la oposición. Vuelve atrás e inténtalo de nuevo.";
 
     private const string NoMistakesCode = "quiz.no_mistakes";
@@ -115,12 +122,20 @@ public sealed partial class TopicsViewModel(
     [NotifyPropertyChangedFor(nameof(HasMistakesHint))]
     public partial bool MistakesLoadFailed { get; set; }
 
+    /// <summary>The mistakes could not be loaded because there is no connection (reviews need the server).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanReviewMistakes))]
+    [NotifyPropertyChangedFor(nameof(MistakesHint))]
+    [NotifyPropertyChangedFor(nameof(HasMistakesHint))]
+    public partial bool MistakesNeedConnection { get; set; }
+
     /// <summary>Whether the "only mistakes" switch can be used.</summary>
-    public bool CanReviewMistakes => !MistakesLoadFailed && MistakeTotal > 0;
+    public bool CanReviewMistakes => !MistakesLoadFailed && !MistakesNeedConnection && MistakeTotal > 0;
 
     /// <summary>Why the switch is disabled; empty while it is usable.</summary>
     public string MistakesHint =>
-        MistakesLoadFailed ? "No se han podido cargar tus preguntas falladas."
+        MistakesNeedConnection ? MistakesNeedConnectionMessage
+        : MistakesLoadFailed ? "No se han podido cargar tus preguntas falladas."
         : MistakeTotal == 0 ? "Aún no tienes preguntas falladas."
         : string.Empty;
 
@@ -154,6 +169,7 @@ public sealed partial class TopicsViewModel(
 
     public override async Task OnAppearingAsync()
     {
+        ListenToOfflineState();
         if (!_loaded)
         {
             if (RefreshCommand.CanExecute(null))
@@ -214,10 +230,18 @@ public sealed partial class TopicsViewModel(
                 await mistakes;
             }
 
+            OfflineState.ReportSuccess();
             _loaded = true;
             IsEmpty = _topics.Count == 0;
             HasAnyQuestions = _topics.Any(t => t.QuestionCount > 0);
             RebuildTopics();
+            _ = DownloadContentAsync(_examId);
+        }
+        catch (Exception ex) when (ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
+        {
+            LogLoadFailed(ex, ex.GetType().FullName);
+            OfflineState.ReportConnectivityFailure();
+            await ShowCachedTopicsAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -231,6 +255,52 @@ public sealed partial class TopicsViewModel(
         }
     }
 
+    /// <summary>Refreshes the offline copy of the exam in the background. It never blocks or shows errors.</summary>
+    private async Task DownloadContentAsync(Guid examId)
+    {
+        try
+        {
+            await offlineContent.RefreshAsync(examId, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            LogDownloadFailed(ex, ex.GetType().FullName);
+        }
+    }
+
+    /// <summary>Without connection: topics and counts from the offline copy. Not marked as loaded, so the next visit tries the server again.</summary>
+    private async Task ShowCachedTopicsAsync(CancellationToken cancellationToken)
+    {
+        OfflineContentResponse? content = null;
+        try
+        {
+            content = await offlineContent.GetAsync(_examId, cancellationToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogLoadFailed(ex, ex.GetType().FullName);
+        }
+
+        if (content is null)
+        {
+            IsEmpty = false;
+            ErrorMessage = OfflineQuizException.NoContentDownloaded;
+            return;
+        }
+
+        // Reviews need the server's history.
+        _mistakesByTopic = [];
+        MistakeTotal = 0;
+        MistakesLoadFailed = false;
+        MistakesNeedConnection = true;
+        MistakesOnly = false;
+
+        _topics = [.. content.Topics.Select(t => new TopicResponse(t.Id, t.Number, t.Title, t.Section, t.Questions.Count))];
+        IsEmpty = _topics.Count == 0;
+        HasAnyQuestions = _topics.Any(t => t.QuestionCount > 0);
+        RebuildTopics();
+    }
+
     /// <summary>Loads the mistakes of the exam. A failure only disables the switch; it never throws.</summary>
     private async Task LoadMistakesAsync(CancellationToken cancellationToken)
     {
@@ -240,13 +310,16 @@ public sealed partial class TopicsViewModel(
             _mistakesByTopic = summary.Topics.ToDictionary(t => t.TopicId, t => t.Count);
             MistakeTotal = summary.Total;
             MistakesLoadFailed = false;
+            MistakesNeedConnection = false;
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             LogMistakesFailed(ex, ex.GetType().FullName);
             _mistakesByTopic = [];
             MistakeTotal = 0;
-            MistakesLoadFailed = true;
+            var offline = ConnectivityErrors.IsConnectivityError(ex, cancellationToken);
+            MistakesNeedConnection = offline;
+            MistakesLoadFailed = !offline;
         }
 
         if (MistakeTotal == 0)
@@ -298,10 +371,23 @@ public sealed partial class TopicsViewModel(
         ErrorMessage = null;
         try
         {
+            if (!MistakesOnly && OfflineState.IsOffline)
+            {
+                await StartOfflineQuizAsync(topicId, title, cancellationToken);
+                return;
+            }
+
             var quiz = await api.CreateQuizAsync(new CreateQuizRequest(_examId, topicId, SelectedQuestionCount, MistakesOnly), cancellationToken);
+            OfflineState.ReportSuccess();
             await navigation.GoToAsync(
                 Routes.Quiz,
                 new Dictionary<string, object> { [QueryKeys.QuizId] = quiz.Id, [QueryKeys.QuizTitle] = title });
+        }
+        catch (Exception ex) when (!MistakesOnly && ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
+        {
+            LogCreateFailed(ex, ex.GetType().FullName);
+            OfflineState.ReportConnectivityFailure();
+            await StartOfflineQuizAsync(topicId, title, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -320,6 +406,30 @@ public sealed partial class TopicsViewModel(
             IsBusy = false;
         }
     }
+
+    /// <summary>Creates the quiz from the offline copy and opens it. Failures are shown in <see cref="ViewModelBase.ErrorMessage"/>.</summary>
+    private async Task StartOfflineQuizAsync(Guid? topicId, string title, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var quiz = await offlineQuizzes.CreateAsync(_examId, topicId, SelectedQuestionCount, cancellationToken);
+            await navigation.GoToAsync(
+                Routes.Quiz,
+                new Dictionary<string, object> { [QueryKeys.QuizId] = quiz.Id, [QueryKeys.QuizTitle] = title });
+        }
+        catch (OfflineQuizException ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogCreateFailed(ex, ex.GetType().FullName);
+            ErrorMessage = ApiErrorMessages.From(ex);
+        }
+    }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not refresh the offline content ({ExceptionType})")]
+    private partial void LogDownloadFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the topics ({ExceptionType})")]
     private partial void LogLoadFailed(Exception exception, string? exceptionType);
