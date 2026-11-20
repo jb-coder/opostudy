@@ -162,12 +162,22 @@ public sealed partial class HomeViewModel(
         }
     }
 
+    /// <summary>Bumped by every streak load or goal change, so a slower, older response never overwrites a newer one.</summary>
+    private int _streakVersion;
+
     /// <summary>Loads the daily goal card. Failures are only logged: the card stays hidden or stale.</summary>
     private async Task LoadStreakAsync(CancellationToken cancellationToken)
     {
+        var version = ++_streakVersion;
         try
         {
-            ApplyStreak(await api.GetStreakAsync(cancellationToken));
+            var streak = await api.GetStreakAsync(cancellationToken);
+
+            // A newer load or a goal change finished first: this response is stale.
+            if (version == _streakVersion)
+            {
+                ApplyStreak(streak);
+            }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -202,7 +212,9 @@ public sealed partial class HomeViewModel(
         ErrorMessage = null;
         try
         {
-            ApplyStreak(await api.UpdateDailyGoalAsync(new UpdateDailyGoalRequest(goal), cancellationToken));
+            var streak = await api.UpdateDailyGoalAsync(new UpdateDailyGoalRequest(goal), cancellationToken);
+            _streakVersion++;
+            ApplyStreak(streak);
         }
         catch (Exception ex)
         {

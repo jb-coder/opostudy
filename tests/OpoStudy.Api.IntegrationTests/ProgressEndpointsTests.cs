@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Time.Testing;
 
+using OpoStudy.Api.Errors;
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Contracts.Users;
+using OpoStudy.Domain.Common;
+using OpoStudy.Domain.Users;
 using OpoStudy.Infrastructure.Persistence;
 
 using Shouldly;
@@ -253,7 +257,60 @@ public sealed class ProgressEndpointsTests(ApiFactory factory)
         (await db.DailyActivities.CountAsync(a => a.UserId == me.Id, Ct)).ShouldBe(0);
     }
 
+    [Fact]
+    public async Task TryHandleAsync_DuplicateDailyActivity_Returns409()
+    {
+        var me = await CreateUserAsync();
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        await InsertAsync(DailyActivity.Start(me.Id, today, Limits.DefaultDailyGoal));
+
+        // Same key inserted by a second request that also saw no row for today.
+        var exception = await Should.ThrowAsync<DbUpdateException>(() => InsertAsync(DailyActivity.Start(me.Id, today, Limits.DefaultDailyGoal)));
+        var (handled, status) = await HandleAsync(exception);
+
+        handled.ShouldBeTrue();
+        status.ShouldBe(StatusCodes.Status409Conflict);
+    }
+
+    [Fact]
+    public async Task TryHandleAsync_OtherUniqueViolation_IsNotHandled()
+    {
+        var uid = NewUid();
+        await InsertAsync(User.Create(uid, DateTimeOffset.UtcNow));
+
+        var exception = await Should.ThrowAsync<DbUpdateException>(() => InsertAsync(User.Create(uid, DateTimeOffset.UtcNow)));
+        var (handled, _) = await HandleAsync(exception);
+
+        handled.ShouldBeFalse();
+    }
+
     // ---- Helpers ----
+
+    private async Task<UserProfileResponse> CreateUserAsync()
+    {
+        using var client = factory.CreateClientFor(NewUid());
+        var me = await client.GetFromJsonAsync<UserProfileResponse>(MeUri, Ct);
+        me.ShouldNotBeNull();
+        return me;
+    }
+
+    private async Task InsertAsync<T>(T entity)
+        where T : class
+    {
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<OpoStudyDbContext>();
+        db.Add(entity);
+        await db.SaveChangesAsync(Ct);
+    }
+
+    private async Task<(bool Handled, int Status)> HandleAsync(Exception exception)
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = new DefaultHttpContext { RequestServices = scope.ServiceProvider };
+        context.Response.Body = new MemoryStream();
+        var handled = await new DomainRuleExceptionHandler().TryHandleAsync(context, exception, Ct);
+        return (handled, context.Response.StatusCode);
+    }
 
     private WebApplicationFactory<Program> WithTime(FakeTimeProvider time) =>
         factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>

@@ -2,7 +2,7 @@
 
 - **Issue:** #37
 - **Milestone:** v0.2.0
-- **Estado:** borrador
+- **Estado:** implementada
 
 ## Objetivo
 Crear el hábito de estudiar cada día. El usuario tiene un objetivo de preguntas respondidas al día y una racha de días seguidos cumpliéndolo, que ve en la pantalla de inicio y al terminar el objetivo durante un test. Es la base de la v0.2: el XP (0011) y las notificaciones locales (0013) se apoyan en ella.
@@ -97,16 +97,16 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 - Riesgo de despliegue: la imagen de contenedor necesita `tzdata` para resolver zonas IANA. Hay que comprobarlo en la #21 (v0.5) y anotarlo allí.
 
 ## Criterios de aceptación
-- [ ] Un usuario nuevo tiene objetivo 10, zona `Europe/Madrid` y racha 0.
-- [ ] Cada respuesta incrementa `AnsweredToday`. La respuesta que alcanza el objetivo devuelve `GoalMetNow = true` y suma 1 a la racha. Las siguientes de ese día devuelven `false` y no la vuelven a sumar.
-- [ ] Cumplir días consecutivos aumenta la racha. Saltarse un día la deja a 0 en la lectura y la siguiente vez que se cumple empieza en 1. `LongestStreak` conserva el máximo.
-- [ ] Si ayer se cumplió y hoy todavía no, `CurrentStreak` mantiene el valor de ayer y `GoalMetToday` es `false`.
-- [ ] El día se calcula en la zona del usuario: una respuesta a las 23:30 en Madrid (22:30 UTC en invierno) cuenta para ese día, y una a las 00:30 cuenta para el siguiente.
-- [ ] Cambiar el objetivo no altera los días pasados. Si hoy no estaba cumplido y el nuevo objetivo ya se alcanza, hoy pasa a cumplido y suma racha. Un día cumplido no deja de estarlo.
-- [ ] `PUT /me/daily-goal` con 4 o 101 devuelve 400. `PUT /me/time-zone` con `Mars/Olympus` devuelve 400.
-- [ ] `LastDays` devuelve siempre 7 días en orden ascendente terminando hoy, incluidos los días sin actividad.
-- [ ] Borrar la cuenta borra sus `daily_activities`.
-- [ ] La app muestra la tarjeta en tema claro y oscuro, cambia el objetivo y muestra el aviso al cumplirlo durante un test (verificado en el emulador).
+- [x] Un usuario nuevo tiene objetivo 10, zona `Europe/Madrid` y racha 0.
+- [x] Cada respuesta incrementa `AnsweredToday`. La respuesta que alcanza el objetivo devuelve `GoalMetNow = true` y suma 1 a la racha. Las siguientes de ese día devuelven `false` y no la vuelven a sumar.
+- [x] Cumplir días consecutivos aumenta la racha. Saltarse un día la deja a 0 en la lectura y la siguiente vez que se cumple empieza en 1. `LongestStreak` conserva el máximo.
+- [x] Si ayer se cumplió y hoy todavía no, `CurrentStreak` mantiene el valor de ayer y `GoalMetToday` es `false`.
+- [x] El día se calcula en la zona del usuario: una respuesta a las 23:30 en Madrid (22:30 UTC en invierno) cuenta para ese día, y una a las 00:30 cuenta para el siguiente.
+- [x] Cambiar el objetivo no altera los días pasados. Si hoy no estaba cumplido y el nuevo objetivo ya se alcanza, hoy pasa a cumplido y suma racha. Un día cumplido no deja de estarlo.
+- [x] `PUT /me/daily-goal` con 4 o 101 devuelve 400. `PUT /me/time-zone` con `Mars/Olympus` devuelve 400.
+- [x] `LastDays` devuelve siempre 7 días en orden ascendente terminando hoy, incluidos los días sin actividad.
+- [x] Borrar la cuenta borra sus `daily_activities`.
+- [x] La app muestra la tarjeta en tema claro y oscuro, cambia el objetivo y muestra el aviso al cumplirlo durante un test (verificado en el emulador).
 
 ## Plan de tests
 - **Unitarios (Domain):**

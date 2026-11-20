@@ -122,6 +122,26 @@ public sealed class HomeViewModelTests
     }
 
     [Fact]
+    public async Task OnAppearingAsync_StaleStreakArrivesAfterGoalChange_KeepsGoalChange()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+        var pending = new TaskCompletionSource<StreakResponse>();
+        _api.GetStreakAsync(Arg.Any<CancellationToken>()).Returns(pending.Task);
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns("20");
+        _api.UpdateDailyGoalAsync(Arg.Any<UpdateDailyGoalRequest>(), Arg.Any<CancellationToken>())
+            .Returns(StreakWith(goal: 20, answered: 7));
+
+        var reload = sut.OnAppearingAsync();
+        await sut.ChangeDailyGoalCommand.ExecuteAsync(null);
+        pending.SetResult(StreakWith(goal: 10, answered: 7));
+        await reload;
+
+        sut.GoalProgressText.ShouldBe("7 de 20 preguntas");
+    }
+
+    [Fact]
     public async Task ChangeDailyGoalCommand_ChoiceMade_UpdatesGoalAndRefreshesCard()
     {
         _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns("20");
