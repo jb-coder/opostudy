@@ -246,6 +246,8 @@ internal static class QuizzesEndpoints
             return DomainErrors.Problem(DomainErrors.QuizForeignQuestion);
         }
 
+        // IsActive is deliberately not checked: a question deactivated by the importer after the
+        // quiz was created can still be answered, so an attempt in progress can always be finished.
         var question = await db.Questions
             .AsNoTracking()
             .FirstOrDefaultAsync(q => q.Id == request.QuestionId, cancellationToken);
@@ -274,6 +276,9 @@ internal static class QuizzesEndpoints
             attempt.Answers.Count));
     }
 
+    // Every question of an attempt is guaranteed to exist: the importer never deletes questions (it
+    // deactivates them) and the QuizAnswer -> Question foreign key is Restrict, so the database rejects
+    // deleting a question that has answers. Inactive questions are loaded on purpose (see SubmitAnswer).
     private static async Task<Dictionary<Guid, Question>> LoadQuestionsAsync(
         OpoStudyDbContext db,
         List<Guid> questionIds,
