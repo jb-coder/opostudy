@@ -12,6 +12,9 @@ public partial class AppShell : Shell
 
         Routing.RegisterRoute(Routes.Register, typeof(RegisterPage));
         Routing.RegisterRoute(Routes.ForgotPassword, typeof(ForgotPasswordPage));
+        Routing.RegisterRoute(Routes.Exams, typeof(ExamsPage));
+        Routing.RegisterRoute(Routes.Topics, typeof(TopicsPage));
+        Routing.RegisterRoute(Routes.Quiz, typeof(QuizPage));
 #if DEBUG
         Routing.RegisterRoute(Routes.StyleGuide, typeof(StyleGuidePage));
 #endif

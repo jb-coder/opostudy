@@ -81,6 +81,7 @@ Escala de 4 (`Spacing.xaml`):
 | `CardPadding` (`Thickness`) | 16 |
 | `CornerRadius` | 12 |
 | `MinTouchTarget` | 48 |
+| `DimmedOpacity` | 0,6 (elementos atenuados o no disponibles; nunca como único indicador de estado) |
 
 ## Estilos
 

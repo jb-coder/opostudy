@@ -163,6 +163,9 @@ public sealed partial class HomeViewModel(
     }
 
     [RelayCommand]
+    private Task StartQuizAsync() => navigation.GoToAsync(Routes.Exams);
+
+    [RelayCommand]
     private Task OpenStyleGuideAsync() => navigation.GoToAsync(Routes.StyleGuide);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not sign out ({ExceptionType})")]

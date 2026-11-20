@@ -87,6 +87,12 @@ public static class MauiProgram
         services.AddTransient<ForgotPasswordPage>();
         services.AddTransient<HomeViewModel>();
         services.AddTransient<HomePage>();
+        services.AddTransient<ExamsViewModel>();
+        services.AddTransient<ExamsPage>();
+        services.AddTransient<TopicsViewModel>();
+        services.AddTransient<TopicsPage>();
+        services.AddTransient<QuizViewModel>();
+        services.AddTransient<QuizPage>();
 #if DEBUG
         services.AddTransient<StyleGuidePage>();
 #endif
