@@ -29,17 +29,14 @@ internal sealed class AndroidReminderScheduler : IReminderScheduler
             return;
         }
 
-        // Inexact alarm: needs no SCHEDULE_EXACT_ALARM permission and a few minutes of delay do not matter.
+        // Windowed alarm: needs no SCHEDULE_EXACT_ALARM permission and fires within ReminderWindow.
+        // SetAndAllowWhileIdle was discarded: Android 12+ gives it a window of up to one hour.
         var operation = CreateAlarmIntent(context);
-        if (OperatingSystem.IsAndroidVersionAtLeast(23))
-        {
-            alarms.SetAndAllowWhileIdle(AlarmType.RtcWakeup, at.ToUnixTimeMilliseconds(), operation);
-        }
-        else
-        {
-            alarms.Set(AlarmType.RtcWakeup, at.ToUnixTimeMilliseconds(), operation);
-        }
+        alarms.SetWindow(AlarmType.RtcWakeup, at.ToUnixTimeMilliseconds(), (long)ReminderWindow.TotalMilliseconds, operation);
     }
+
+    /// <summary>Maximum delay of the reminder after the chosen time (Android enforces at least 10 minutes).</summary>
+    private static readonly TimeSpan ReminderWindow = TimeSpan.FromMinutes(15);
 
     public void Cancel()
     {

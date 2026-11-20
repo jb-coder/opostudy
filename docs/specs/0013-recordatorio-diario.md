@@ -10,7 +10,7 @@ Mantener el hábito con un aviso diario a la hora que elija el usuario si aún n
 ## Decisiones
 - **Solo app, sin cambios en la API.** La alarma se programa en Android y decide al dispararse, sin red, con una **instantánea local** del progreso del día que la app guarda cada vez que recibe datos de la racha. Llamar a la API desde segundo plano exigiría un token válido y más permisos; para un único dispositivo, la instantánea basta.
 - **Implementación nativa de Android** (`AlarmManager` + `BroadcastReceiver` + `NotificationManager`), sin plugins de terceros: es poco código, no añade dependencias y Android es la única plataforma.
-- **Alarma inexacta** (`SetAndAllowWhileIdle`, `RTC_WAKEUP`). No necesita el permiso `SCHEDULE_EXACT_ALARM` (restringido desde Android 12/14) y unos minutos de retraso no importan. Es de un solo disparo: al saltar, se reprograma para el día siguiente.
+- **Alarma con ventana de 15 minutos** (`SetWindow`, `RTC_WAKEUP`). No necesita el permiso `SCHEDULE_EXACT_ALARM` (restringido desde Android 12/14). Se descartó `SetAndAllowWhileIdle` porque en Android 12+ el sistema le da una ventana de hasta una hora (verificado en el emulador). A cambio, con el móvil en reposo profundo (Doze) el aviso puede esperar a la siguiente ventana de mantenimiento. Es de un solo disparo: al saltar, se reprograma para el día siguiente.
 - **Desactivado por defecto.** El usuario lo activa desde la pantalla de inicio; así el permiso de notificaciones de Android 13+ se pide en el momento en que tiene sentido y no al abrir la app.
 - **Hora a elegir entre valores fijos**: 18:00, 19:00, 20:00, 21:00 y 22:00; **20:00 por defecto**. Mismo patrón que el objetivo diario (hoja de acciones), sin selector de hora.
 - **El día es el día local del dispositivo** (`TimeProvider`). La app ya sincroniza su zona horaria con el servidor (0010), así que coincide con el día de la racha.
@@ -80,7 +80,7 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 - Canal `daily_reminder` («Recordatorio diario», importancia por defecto), creado al arrancar en `MainApplication.OnCreate` (idempotente).
 - `AndroidReminderScheduler : IReminderScheduler`:
   - `RequestPermissionAsync`: en API ≥ 33, `Permissions.RequestAsync<Permissions.PostNotifications>()`; por debajo, `true`.
-  - `Schedule`: `AlarmManager.SetAndAllowWhileIdle(RTC_WAKEUP, ...)` con un `PendingIntent` de broadcast fijo (`FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE`), así reprogramar sustituye a la alarma anterior.
+  - `Schedule`: `AlarmManager.SetWindow(RTC_WAKEUP, at, 15 min, ...)` con un `PendingIntent` de broadcast fijo (`FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE`), así reprogramar sustituye a la alarma anterior.
   - `Cancel`: cancela ese `PendingIntent`.
 - `ReminderReceiver : BroadcastReceiver` (alarma): lee ajustes e instantánea del `IReminderStore`; si sigue activado, obtiene `ReminderMessages.For(snapshot, hoy)` y, si no es `null`, muestra la notificación (icono de la app, `AutoCancel`, toque → abre `MainActivity`). Siempre reprograma el día siguiente si está activado. No hace red ni operaciones largas. Si `NotificationManagerCompat.AreNotificationsEnabled()` es falso, no muestra nada.
 - `ReminderRescheduleReceiver`: `BOOT_COMPLETED`, `MY_PACKAGE_REPLACED`, `TIME_SET` y `TIMEZONE_CHANGED` → `EnsureScheduled`.
@@ -96,7 +96,7 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 ## Criterios de aceptación
 - [ ] Con el recordatorio desactivado (por defecto) no se programa ninguna alarma ni se pide permiso.
 - [ ] Al activarlo en Android 13+ se pide `POST_NOTIFICATIONS`; si se deniega, el switch queda apagado y se muestra el mensaje de ajustes.
-- [ ] Activado a las 20:00 sin cumplir el objetivo, a esa hora (±15 min) llega una notificación con el texto según el estado; al tocarla se abre la app.
+- [ ] Activado a las 20:00 sin cumplir el objetivo, a esa hora (con hasta 15 min de retraso) llega una notificación con el texto según el estado; al tocarla se abre la app.
 - [ ] Si el objetivo de hoy ya está cumplido (según la instantánea), no llega notificación ese día, y el día siguiente sí, si no se cumple.
 - [ ] Cambiar la hora reprograma la alarma; desactivar la cancela.
 - [ ] Tras reiniciar el móvil, el recordatorio sigue programado.
