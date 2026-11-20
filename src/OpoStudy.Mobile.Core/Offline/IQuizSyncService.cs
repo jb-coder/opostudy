@@ -12,6 +12,6 @@ public interface IQuizSyncService
     /// Its answers go out on the next flush, when the user is no longer playing it.
     /// </param>
     /// <param name="cancellationToken">Cancels the flush; it never counts as a connectivity error.</param>
-    /// <returns>How many answers were handed to the server and removed from the queue.</returns>
-    Task<int> FlushAsync(Guid? excludeQuizId = null, CancellationToken cancellationToken = default);
+    /// <returns>How many answers reached the server and how many local quizzes were discarded because the server rejected them.</returns>
+    Task<SyncResult> FlushAsync(Guid? excludeQuizId = null, CancellationToken cancellationToken = default);
 }

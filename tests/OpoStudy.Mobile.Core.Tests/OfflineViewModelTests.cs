@@ -534,6 +534,45 @@ public sealed class HomeOfflineViewModelTests
     }
 
     [Fact]
+    public async Task RefreshCommand_QuizzesWereDiscarded_ShowsTheNoticeUntilTheNextRefresh()
+    {
+        var sut = CreateSut();
+        _offline.State.ReportDiscardedQuizzes(2);
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.HasDiscardedNotice.ShouldBeTrue();
+        sut.DiscardedNotice.ShouldBe("No se han podido sincronizar 2 tests hechos sin conexión y se han descartado.");
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.HasDiscardedNotice.ShouldBeFalse();
+        sut.DiscardedNotice.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_OneQuizDiscardedWhileAway_ShowsTheSingularNotice()
+    {
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+        _offline.State.ReportDiscardedQuizzes(1);
+
+        await sut.OnAppearingAsync();
+
+        sut.DiscardedNotice.ShouldBe("No se ha podido sincronizar un test hecho sin conexión y se ha descartado.");
+    }
+
+    [Fact]
+    public async Task ReconnectSynced_ReloadThrows_DoesNotThrowOutOfTheEvent()
+    {
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new InvalidOperationException("boom"));
+
+        Should.NotThrow(() => _offline.Synchronizer.ReconnectSynced += Raise.Event());
+    }
+
+    [Fact]
     public async Task ReconnectSynced_HomeDisappeared_DoesNotReload()
     {
         var sut = CreateSut();
@@ -675,6 +714,27 @@ public sealed class HomeOfflineViewModelTests
 
 public sealed class OfflineStateTests
 {
+    [Theory]
+    [InlineData(0, null)]
+    [InlineData(1, "No se ha podido sincronizar un test hecho sin conexión y se ha descartado.")]
+    [InlineData(2, "No se han podido sincronizar 2 tests hechos sin conexión y se han descartado.")]
+    [InlineData(5, "No se han podido sincronizar 5 tests hechos sin conexión y se han descartado.")]
+    public void DiscardedNotice_Count_ReturnsSingularOrPluralText(int count, string? expected) =>
+        OfflineState.DiscardedNotice(count).ShouldBe(expected);
+
+    [Fact]
+    public void TakeDiscardedQuizzes_AfterReports_ReturnsTheTotalAndResets()
+    {
+        var network = Substitute.For<INetworkStatus>();
+        using var state = new OfflineState(network);
+        state.ReportDiscardedQuizzes(1);
+        state.ReportDiscardedQuizzes(2);
+        state.ReportDiscardedQuizzes(0);
+
+        state.TakeDiscardedQuizzes().ShouldBe(3);
+        state.TakeDiscardedQuizzes().ShouldBe(0);
+    }
+
     private readonly INetworkStatus _network = Substitute.For<INetworkStatus>();
 
     private OfflineState CreateSut()
@@ -749,6 +809,7 @@ public sealed class OfflineSynchronizerTests : IDisposable
     {
         _network.HasInternet.Returns(true);
         _state = new OfflineState(_network);
+        _sync.FlushAsync(null, Arg.Any<CancellationToken>()).Returns(new SyncResult(0, 0));
         _sut = new OfflineSynchronizer(_quizzes, _sync, _state, _network, NullLogger<OfflineSynchronizer>.Instance);
     }
 
@@ -766,7 +827,7 @@ public sealed class OfflineSynchronizerTests : IDisposable
         _sync.FlushAsync(null, Arg.Any<CancellationToken>()).Returns(_ =>
         {
             during = _state.SyncingAnswers;
-            return Task.FromResult(3);
+            return Task.FromResult(new SyncResult(3, 0));
         });
 
         var sent = await _sut.SyncAsync(TestContext.Current.CancellationToken);
@@ -805,6 +866,42 @@ public sealed class OfflineSynchronizerTests : IDisposable
 
         await raised.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
         await _sync.Received(1).FlushAsync(null, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Start_ReconnectSubscriberThrows_DoesNotLeakAndOthersStillRun()
+    {
+        var second = new TaskCompletionSource();
+        _sut.ReconnectSynced += (_, _) => throw new InvalidOperationException("subscriber bug");
+        _sut.ReconnectSynced += (_, _) => second.TrySetResult();
+        var unobserved = new List<Exception>();
+        void OnUnobserved(object? sender, UnobservedTaskExceptionEventArgs e) => unobserved.Add(e.Exception);
+        TaskScheduler.UnobservedTaskException += OnUnobserved;
+        try
+        {
+            _sut.Start();
+
+            _network.Changed += Raise.Event();
+
+            await second.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            unobserved.ShouldBeEmpty();
+        }
+        finally
+        {
+            TaskScheduler.UnobservedTaskException -= OnUnobserved;
+        }
+    }
+
+    [Fact]
+    public async Task SyncAsync_QuizzesDiscarded_ReportsThemInTheState()
+    {
+        _sync.FlushAsync(null, Arg.Any<CancellationToken>()).Returns(new SyncResult(2, 3));
+
+        await _sut.SyncAsync(TestContext.Current.CancellationToken);
+
+        _state.DiscardedQuizzes.ShouldBe(3);
     }
 
     [Fact]

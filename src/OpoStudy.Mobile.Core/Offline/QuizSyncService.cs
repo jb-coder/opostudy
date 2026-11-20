@@ -24,17 +24,18 @@ public sealed partial class QuizSyncService(
 
     public void Dispose() => _flushLock.Dispose();
 
-    public async Task<int> FlushAsync(Guid? excludeQuizId = null, CancellationToken cancellationToken = default)
+    public async Task<SyncResult> FlushAsync(Guid? excludeQuizId = null, CancellationToken cancellationToken = default)
     {
         await _flushLock.WaitAsync(cancellationToken);
         try
         {
             if (auth.UserId is not { } userId)
             {
-                return 0;
+                return new SyncResult(0, 0);
             }
 
             var synced = 0;
+            var discarded = 0;
             foreach (var quiz in await store.ListWithPendingAnswersAsync(userId, cancellationToken))
             {
                 if (quiz.Id == excludeQuizId)
@@ -43,9 +44,10 @@ public sealed partial class QuizSyncService(
                 }
 
                 var outcome = await SyncQuizAsync(quiz, cancellationToken);
-                if (outcome.Sent > 0)
+                synced += outcome.Sent;
+                if (outcome.Discarded)
                 {
-                    synced += outcome.Sent;
+                    discarded++;
                 }
 
                 if (outcome.StopLoop)
@@ -55,7 +57,7 @@ public sealed partial class QuizSyncService(
             }
 
             await store.DeleteFinishedOrOlderThanAsync(time.GetUtcNow() - MaxLocalAge, cancellationToken);
-            return synced;
+            return new SyncResult(synced, discarded);
         }
         finally
         {
@@ -63,12 +65,12 @@ public sealed partial class QuizSyncService(
         }
     }
 
-    private async Task<(int Sent, bool StopLoop)> SyncQuizAsync(LocalQuiz quiz, CancellationToken cancellationToken)
+    private async Task<(int Sent, bool StopLoop, bool Discarded)> SyncQuizAsync(LocalQuiz quiz, CancellationToken cancellationToken)
     {
         var pending = await store.GetPendingAnswersAsync(quiz.Id, cancellationToken);
         if (pending.Count == 0)
         {
-            return (0, false);
+            return (0, false, false);
         }
 
         var request = new SyncQuizRequest(
@@ -85,12 +87,13 @@ public sealed partial class QuizSyncService(
         }
         catch (ApiException ex)
         {
-            return (0, await HandleApiErrorAsync(ex, quiz, cancellationToken));
+            var (stop, discarded) = await HandleApiErrorAsync(ex, quiz, cancellationToken);
+            return (0, stop, discarded);
         }
         catch (Exception ex) when (ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
         {
             LogOffline();
-            return (0, true);
+            return (0, true, false);
         }
 
         // Finished quizzes are gone once sent; an unfinished one keeps its answers (marked as sent) so it can still be resumed.
@@ -103,11 +106,11 @@ public sealed partial class QuizSyncService(
             await store.MarkSyncedAsync(quiz.Id, [.. pending.Select(a => a.QuestionId)], cancellationToken);
         }
 
-        return (pending.Count, false);
+        return (pending.Count, false, false);
     }
 
-    /// <summary>Returns whether the loop must stop. Errors that retrying cannot fix discard the local quiz.</summary>
-    private async Task<bool> HandleApiErrorAsync(ApiException exception, LocalQuiz quiz, CancellationToken cancellationToken)
+    /// <summary>Returns whether the loop must stop and whether the quiz was discarded. Errors that retrying cannot fix discard the local quiz.</summary>
+    private async Task<(bool Stop, bool Discarded)> HandleApiErrorAsync(ApiException exception, LocalQuiz quiz, CancellationToken cancellationToken)
     {
         var status = exception.StatusCode;
         var code = ApiErrorMessages.ProblemCode(exception);
@@ -117,12 +120,12 @@ public sealed partial class QuizSyncService(
         if (retryLater)
         {
             LogRetryLater((int)status);
-            return true;
+            return (true, false);
         }
 
         LogDiscarded((int)status, code);
         await store.DeleteAsync(quiz.Id, cancellationToken);
-        return false;
+        return (false, true);
     }
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Offline sync postponed: no connection")]

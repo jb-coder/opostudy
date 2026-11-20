@@ -138,6 +138,13 @@ public sealed partial class HomeViewModel(
     [ObservableProperty]
     public partial string? AccountEmail { get; set; }
 
+    /// <summary>Non-blocking notice shown when a quiz made offline was discarded by the server; it goes away on the next refresh.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasDiscardedNotice))]
+    public partial string? DiscardedNotice { get; set; }
+
+    public bool HasDiscardedNotice => DiscardedNotice is not null;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MemberSinceText))]
     [NotifyPropertyChangedFor(nameof(HasMemberSince))]
@@ -248,6 +255,7 @@ public sealed partial class HomeViewModel(
             {
                 // Answers given offline must reach the server before the streak and the level are read.
                 await synchronizer.SyncAsync(CancellationToken.None);
+                ShowDiscardedNotice();
                 await LoadStreakAsync(CancellationToken.None);
                 await LoadLevelAsync(CancellationToken.None);
                 await LoadUnfinishedQuizAsync(CancellationToken.None);
@@ -271,11 +279,27 @@ public sealed partial class HomeViewModel(
     /// <summary>The connection came back and the queue was flushed: reload the goal, streak and level the server recomputed.</summary>
     private void OnReconnectSynced(object? sender, EventArgs e)
     {
-        if (RefreshCommand.CanExecute(null))
+        _ = ReloadAfterReconnectAsync();
+    }
+
+    /// <summary>Fire-and-forget from an event: it must never throw, or the exception would go unobserved.</summary>
+    private async Task ReloadAfterReconnectAsync()
+    {
+        try
         {
-            _ = RefreshCommand.ExecuteAsync(null);
+            if (RefreshCommand.CanExecute(null))
+            {
+                await RefreshCommand.ExecuteAsync(null);
+            }
+        }
+        catch (Exception ex)
+        {
+            LogLoadFailed(ex, ex.GetType().FullName);
         }
     }
+
+    /// <summary>Shows the quizzes discarded since the last refresh (none clears the notice).</summary>
+    private void ShowDiscardedNotice() => DiscardedNotice = OfflineState.DiscardedNotice(OfflineState.TakeDiscardedQuizzes());
 
     /// <summary>Drops the SemVer build metadata (everything from '+'), e.g. "1.0.0+abc123" becomes "1.0.0".</summary>
     private static string StripBuildMetadata(string version)
@@ -312,6 +336,7 @@ public sealed partial class HomeViewModel(
 
             await SyncTimeZoneAsync(me.TimeZone, cancellationToken);
             await synchronizer.SyncAsync(cancellationToken);
+            ShowDiscardedNotice();
             await LoadStreakAsync(cancellationToken);
             await LoadLevelAsync(cancellationToken);
             await LoadUnfinishedQuizAsync(cancellationToken);

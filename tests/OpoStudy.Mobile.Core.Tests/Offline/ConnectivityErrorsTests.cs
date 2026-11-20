@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
+using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Offline;
 
 using Shouldly;
@@ -62,6 +63,41 @@ public sealed class ConnectivityErrorsTests
     [Fact]
     public void IsConnectivityError_UnrelatedException_ReturnsFalse() =>
         Check(new InvalidOperationException("bug")).ShouldBeFalse();
+
+    [Fact]
+    public void IsConnectivityError_WebExceptionConnectFailure_ReturnsTrue() =>
+        Check(new WebException("connect failed", new InvalidOperationException("java.net.ConnectException"), WebExceptionStatus.ConnectFailure, null)).ShouldBeTrue();
+
+    [Fact]
+    public void IsConnectivityError_WebExceptionNameResolution_ReturnsTrue() =>
+        Check(new WebException("unknown host", WebExceptionStatus.NameResolutionFailure)).ShouldBeTrue();
+
+    [Fact]
+    public void IsConnectivityError_WebExceptionWithoutStatusDetails_ReturnsTrue() =>
+        Check(new WebException("no route")).ShouldBeTrue();
+
+    [Fact]
+    public void IsConnectivityError_WebExceptionProtocolError_ReturnsFalse() =>
+        Check(new WebException("500", WebExceptionStatus.ProtocolError)).ShouldBeFalse();
+
+    [Fact]
+    public void IsConnectivityError_WebExceptionWrappedInHttpRequestException_ReturnsTrue() =>
+        Check(new HttpRequestException("wrapper", new WebException("connect", WebExceptionStatus.ConnectFailure))).ShouldBeTrue();
+
+    [Fact]
+    public void IsConnectivityError_FirebaseErrorCode_ReturnsFalse()
+    {
+        Check(new FirebaseAuthException("INVALID_REFRESH_TOKEN")).ShouldBeFalse();
+        Check(new FirebaseAuthException("UNKNOWN")).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsConnectivityError_TokenRefreshTimeout_ReturnsTrue() =>
+        Check(new TaskCanceledException("timeout", new TimeoutException())).ShouldBeTrue();
+
+    [Fact]
+    public void IsConnectivityError_TokenRefreshJavaFailureWrappedByTheHandler_ReturnsTrue() =>
+        Check(new HttpRequestException("Unable to resolve host", new InvalidOperationException("Java.Net.UnknownHostException"))).ShouldBeTrue();
 
     private static bool Check(Exception exception) =>
         ConnectivityErrors.IsConnectivityError(exception, TestContext.Current.CancellationToken);

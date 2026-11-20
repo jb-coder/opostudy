@@ -156,4 +156,58 @@ public sealed class OfflineContentEndpointsTests(ApiFactory factory)
         after.Version.ShouldNotBe(before.Version);
         response.Headers.ETag?.Tag.ShouldBe($"\"{after.Version}\"");
     }
+
+    [Theory]
+    [InlineData("W/\"{0}\"")]
+    [InlineData("*")]
+    [InlineData("\"other\", W/\"{0}\"")]
+    public async Task GetOfflineContent_WithWeakOrWildcardIfNoneMatch_Returns304(string template)
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+        var first = await client.GetFromJsonAsync<OfflineContentResponse>(ContentUri(content.Exam.Id), Ct);
+        first.ShouldNotBeNull();
+
+        using var request = ConditionalRequest(content.Exam.Id, string.Format(System.Globalization.CultureInfo.InvariantCulture, template, first.Version));
+        var response = await client.SendAsync(request, Ct);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotModified);
+    }
+
+    [Fact]
+    public async Task GetOfflineContent_WildcardIfNoneMatchOnUnknownExam_Returns404()
+    {
+        using var client = factory.CreateClientFor(NewUid());
+
+        using var request = ConditionalRequest(Guid.NewGuid(), "*");
+        var response = await client.SendAsync(request, Ct);
+
+        await response.ShouldBeProblemAsync(HttpStatusCode.NotFound, "exam.not_found");
+    }
+
+    [Fact]
+    public async Task GetOfflineContent_AfterRenamingTheExam_ChangesTheETag()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+        var before = await client.GetFromJsonAsync<OfflineContentResponse>(ContentUri(content.Exam.Id), Ct);
+        before.ShouldNotBeNull();
+
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<OpoStudyDbContext>();
+            var exam = await db.Exams.FirstAsync(e => e.Id == content.Exam.Id, Ct);
+            exam.Update($"{exam.Name} renamed", exam.Organization, exam.Group);
+            await db.SaveChangesAsync(Ct);
+        }
+
+        using var request = ConditionalRequest(content.Exam.Id, $"\"{before.Version}\"");
+        var response = await client.SendAsync(request, Ct);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var after = await response.Content.ReadFromJsonAsync<OfflineContentResponse>(Ct);
+        after.ShouldNotBeNull();
+        after.Version.ShouldNotBe(before.Version);
+        after.Exam.Name.ShouldEndWith("renamed");
+    }
 }

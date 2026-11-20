@@ -77,7 +77,7 @@ public sealed class QuizSyncServiceTests : IDisposable
 
         var synced = await _sut.FlushAsync(null, Ct);
 
-        synced.ShouldBe(3);
+        synced.ShouldBe(new SyncResult(3, 0));
         await _api.Received(1).SyncQuizAsync(
             Arg.Is<SyncQuizRequest>(r => r.Id == quiz.Id
                 && r.ExamId == ExamId
@@ -105,7 +105,7 @@ public sealed class QuizSyncServiceTests : IDisposable
         (await _store.CountPendingAnswersAsync("user-a", Ct)).ShouldBe(0);
 
         _api.ClearReceivedCalls();
-        (await _sut.FlushAsync(null, Ct)).ShouldBe(0);
+        (await _sut.FlushAsync(null, Ct)).ShouldBe(new SyncResult(0, 0));
         await _api.DidNotReceive().SyncQuizAsync(Arg.Any<SyncQuizRequest>(), Arg.Any<CancellationToken>());
     }
 
@@ -132,7 +132,7 @@ public sealed class QuizSyncServiceTests : IDisposable
 
         var synced = await _sut.FlushAsync(null, Ct);
 
-        synced.ShouldBe(0);
+        synced.ShouldBe(new SyncResult(0, 0));
         await _api.Received(1).SyncQuizAsync(Arg.Any<SyncQuizRequest>(), Arg.Any<CancellationToken>());
         (await _store.CountPendingAnswersAsync("user-a", Ct)).ShouldBe(2);
         (await ExistsAsync(first)).ShouldBeTrue();
@@ -155,7 +155,7 @@ public sealed class QuizSyncServiceTests : IDisposable
 
         var synced = await _sut.FlushAsync(null, Ct);
 
-        synced.ShouldBe(0);
+        synced.ShouldBe(new SyncResult(0, 0));
         await _api.Received(1).SyncQuizAsync(Arg.Any<SyncQuizRequest>(), Arg.Any<CancellationToken>());
         (await _store.CountPendingAnswersAsync("user-a", Ct)).ShouldBe(2);
     }
@@ -174,7 +174,7 @@ public sealed class QuizSyncServiceTests : IDisposable
 
         var synced = await _sut.FlushAsync(null, Ct);
 
-        synced.ShouldBe(1);
+        synced.ShouldBe(new SyncResult(1, 1));
         (await ExistsAsync(rejected)).ShouldBeFalse();
         (await _store.GetAnswersAsync(rejected.Id, Ct)).ShouldBeEmpty();
         (await ExistsAsync(good)).ShouldBeFalse();
@@ -200,10 +200,10 @@ public sealed class QuizSyncServiceTests : IDisposable
 
         var synced = await _sut.FlushAsync(null, Ct);
 
-        synced.ShouldBe(0);
+        synced.ShouldBe(new SyncResult(0, 0));
         await _api.DidNotReceive().SyncQuizAsync(Arg.Any<SyncQuizRequest>(), Arg.Any<CancellationToken>());
         _auth.UserId.Returns("user-b");
-        (await _sut.FlushAsync(null, Ct)).ShouldBe(2);
+        (await _sut.FlushAsync(null, Ct)).ShouldBe(new SyncResult(2, 0));
     }
 
     [Fact]
@@ -212,7 +212,7 @@ public sealed class QuizSyncServiceTests : IDisposable
         await AddQuizAsync(1);
         _auth.UserId.Returns((string?)null);
 
-        (await _sut.FlushAsync(null, Ct)).ShouldBe(0);
+        (await _sut.FlushAsync(null, Ct)).ShouldBe(new SyncResult(0, 0));
 
         await _api.DidNotReceive().SyncQuizAsync(Arg.Any<SyncQuizRequest>(), Arg.Any<CancellationToken>());
     }
@@ -251,8 +251,8 @@ public sealed class QuizSyncServiceTests : IDisposable
         second.IsCompleted.ShouldBeFalse();
         release.SetResult();
 
-        (await first).ShouldBe(2);
-        (await second).ShouldBe(0);
+        (await first).ShouldBe(new SyncResult(2, 0));
+        (await second).ShouldBe(new SyncResult(0, 0));
         await _api.Received(1).SyncQuizAsync(Arg.Any<SyncQuizRequest>(), Arg.Any<CancellationToken>());
     }
 

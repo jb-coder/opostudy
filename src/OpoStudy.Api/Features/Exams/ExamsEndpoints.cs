@@ -123,17 +123,35 @@ internal static class ExamsEndpoints
                     .ToList()))
             .ToListAsync(cancellationToken);
 
-        var version = Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(topics, JsonSerializerOptions.Web)));
-        var etag = $"\"{version}\"";
-        http.Response.Headers.ETag = etag;
+        // The version covers everything the app stores (exam and topics): the payload is hashed once with an empty version.
+        var unversioned = new OfflineContentResponse(examId, string.Empty, exam, topics);
+        var version = Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(unversioned, JsonSerializerOptions.Web)));
+        http.Response.Headers.ETag = $"\"{version}\"";
         http.Response.Headers.CacheControl = "no-cache";
 
-        if (http.Request.Headers.IfNoneMatch.Any(v => v is not null && v.Split(',').Any(t => t.Trim().Trim('"') == version)))
+        if (http.Request.Headers.IfNoneMatch.Any(v => v is not null && v.Split(',').Any(t => MatchesVersion(t, version))))
         {
             return TypedResults.StatusCode(StatusCodes.Status304NotModified);
         }
 
-        return TypedResults.Ok(new OfflineContentResponse(examId, version, exam, topics));
+        return TypedResults.Ok(unversioned with { Version = version });
+    }
+
+    /// <summary>Weak comparison of an If-None-Match entry: <c>*</c>, <c>"v"</c>, <c>v</c> and <c>W/"v"</c> match.</summary>
+    private static bool MatchesVersion(string entityTag, string version)
+    {
+        var tag = entityTag.Trim();
+        if (tag == "*")
+        {
+            return true;
+        }
+
+        if (tag.StartsWith("W/", StringComparison.Ordinal))
+        {
+            tag = tag[2..];
+        }
+
+        return tag.Trim('"') == version;
     }
 
     private static async Task<Results<Ok<MistakeSummaryResponse>, ProblemHttpResult>> GetMistakes(

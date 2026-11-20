@@ -27,6 +27,8 @@
 
                 <controls:OfflineBanner IsVisible="{Binding ShowOfflineBanner}" Text="{Binding OfflineBannerText}" />
 
+                <controls:OfflineBanner IsVisible="{Binding HasDiscardedNotice}" Text="{Binding DiscardedNotice}" />
+
                 <Border IsVisible="{Binding HasStreak}">
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">
                         <Label

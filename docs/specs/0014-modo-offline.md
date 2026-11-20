@@ -2,7 +2,7 @@
 
 - **Issue:** #41
 - **Milestone:** v0.2.0
-- **Estado:** lista
+- **Estado:** implementada
 
 ## Objetivo
 Poder estudiar sin conexión (metro, avión, pueblo sin cobertura o sin Tailscale). La app guarda en SQLite el contenido de las oposiciones que el usuario abre. Sin conexión, corrige los tests con esa copia local y encola las respuestas. Al recuperar la conexión, las sincroniza y el servidor las cuenta para el objetivo diario, la racha y el XP según la hora real de cada respuesta.
@@ -51,7 +51,7 @@ Rutas bajo `/api/v1`. Todas exigen usuario autenticado.
 **`GET /exams/{examId}/offline-content`** (en `ExamsEndpoints`):
 - Mismo 404 que `/topics` si la oposición no existe o no está activa.
 - Proyección `AsNoTracking`: temas por `Number`, preguntas **activas** de cada tema (por `Key`) y opciones por `Order`.
-- `Version` = SHA-256 en hex (minúsculas) del JSON serializado de `Topics`. Se envía como `ETag: "<version>"` y `Cache-Control: no-cache`. Si `If-None-Match` coincide (con o sin comillas), `304` sin cuerpo.
+- `Version` = SHA-256 en hex (minúsculas) del JSON serializado de toda la respuesta (`ExamId`, `Exam` y `Topics`, con `Version` vacío), es decir, de todo lo que guarda la app: renombrar la oposición también cambia el `ETag`. Se calcula en cada petición (sin versión almacenada ni migración). Se envía como `ETag: "<version>"` y `Cache-Control: no-cache`. Si `If-None-Match` coincide (con o sin comillas, validador débil `W/"<version>"` o `*`), `304` sin cuerpo.
 - Contratos nuevos en `Contracts/Offline`:
   - `OfflineContentResponse(Guid ExamId, string Version, ExamResponse Exam, IReadOnlyList<OfflineTopicResponse> Topics)`.
   - `OfflineTopicResponse(Guid Id, int Number, string Title, string? Section, IReadOnlyList<OfflineQuestionResponse> Questions)`.
@@ -117,7 +117,7 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
   - **200:** si el test está terminado, borra el test local con sus respuestas; si no, marca las enviadas como `synced = 1`.
   - **Error de conectividad, 401, 408, 429, 409 por concurrencia (`quiz.concurrent_update`, `concurrency.conflict`) o 5xx:** se deja para la próxima vez y se para el bucle.
   - **Cualquier otro 4xx** (400, 404, 422, `quiz.sync_conflict`): no se arreglará reintentando. Se borra el test local con sus pendientes y se registra en el log (sin ids de usuario).
-  - Devuelve cuántas respuestas se han sincronizado.
+  - Devuelve `SyncResult(SyncedAnswers, DiscardedQuizzes)`: cuántas respuestas se han sincronizado y cuántos tests locales se han descartado por un 4xx. `OfflineSynchronizer` se lo pasa a `OfflineState` (`ReportDiscardedQuizzes`), que lo guarda hasta que una pantalla lo recoge con `TakeDiscardedQuizzes()`.
   - Limpieza: borra los tests locales sin pendientes que estén terminados o tengan más de 30 días.
 - **Usuario actual:** `IAuthService` gana `string? UserId`, que lee el claim `user_id` (o `sub`) del payload del `IdToken` guardado (base64url, sin validar: es nuestro propio token). Sin sesión, la cola no se lee ni se sincroniza. `DeleteAccount` borra los tests locales de ese usuario.
 
@@ -145,6 +145,7 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
   - Sincroniza antes de cargar.
   - Tarjeta «Test a medias»: si hay un test local sin terminar más reciente que el del servidor, o si la carga del servidor falla por conectividad, muestra el local (`GetLatestUnfinishedAsync`). «Continuar» abre el test con su `QuizId` y `QuizTitle`, igual que ahora.
   - Las tarjetas de racha y nivel, sin conexión, muestran su error de carga actual.
+  - Aviso no bloqueante (misma tarjeta que el banner) si la sincronización ha descartado tests locales: «No se ha podido sincronizar un test hecho sin conexión y se ha descartado.» (en plural, «No se han podido sincronizar N tests hechos sin conexión y se han descartado.»). El texto sale de `OfflineState.DiscardedNotice(count)`. Se recoge justo después de sincronizar en cada recarga, así que desaparece en la siguiente.
 - Registro en DI (`MauiProgram`): `OfflineDatabase` y los servicios como singletons, `INetworkStatus` y `Connectivity.Current`.
 
 ## Seguridad
@@ -157,19 +158,19 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 - No hacen falta secretos nuevos.
 
 ## Criterios de aceptación
-- [ ] `GET /exams/{id}/offline-content` devuelve temas, preguntas activas, opciones con `isCorrect`, aclaración y referencia legal, con `ETag`. Con `If-None-Match` igual devuelve 304. Si cambia el contenido, cambia el `ETag`.
-- [ ] Sincronizar un test nuevo lo crea con su id, sus preguntas y las respuestas con su hora. Repetir la misma petición devuelve `DuplicateCount` = n, `AcceptedCount` = 0 y no cambia el XP.
-- [ ] Sincronizar respuestas nuevas de un test creado online (incluido un `Review`) las añade. Si las preguntas no coinciden, 409 `quiz.sync_conflict`. Un id de test de otro usuario también da 409 y no lo modifica.
-- [ ] Una respuesta con opción ajena cuenta como rechazada y no impide aplicar las demás.
-- [ ] Con `FakeTimeProvider`: 10 respuestas offline de ayer sincronizadas hoy cumplen el objetivo de **ayer**, suman racha y dan el bonus. Las de hoy cuentan para hoy.
-- [ ] Una respuesta con hora futura cuenta como ahora. Una de hace 10 días cuenta como de hace 7.
-- [ ] Respuestas tardías de un día ya liquidado (racha perdida) suman al día y al XP sin error y sin cambiar la racha.
-- [ ] `SubmitAnswer` y el resto de endpoints se comportan igual que antes (los tests existentes siguen en verde).
-- [ ] App en modo avión (o sin Tailscale): se listan las oposiciones descargadas, se hace un test por tema y uno aleatorio con su aclaración, y se ve el banner.
-- [ ] Al cortar la conexión a mitad de un test online, la siguiente respuesta se corrige en local sin perder las anteriores.
-- [ ] Al recuperar la conexión, las respuestas se sincronizan solas, y la racha y el XP del inicio las reflejan. Cerrar la app con respuestas pendientes no las pierde.
-- [ ] Las respuestas pendientes de un usuario no se envían con la sesión de otro.
-- [ ] Verificado en el emulador en tema claro y oscuro.
+- [x] `GET /exams/{id}/offline-content` devuelve temas, preguntas activas, opciones con `isCorrect`, aclaración y referencia legal, con `ETag`. Con `If-None-Match` igual devuelve 304. Si cambia el contenido, cambia el `ETag`.
+- [x] Sincronizar un test nuevo lo crea con su id, sus preguntas y las respuestas con su hora. Repetir la misma petición devuelve `DuplicateCount` = n, `AcceptedCount` = 0 y no cambia el XP.
+- [x] Sincronizar respuestas nuevas de un test creado online (incluido un `Review`) las añade. Si las preguntas no coinciden, 409 `quiz.sync_conflict`. Un id de test de otro usuario también da 409 y no lo modifica.
+- [x] Una respuesta con opción ajena cuenta como rechazada y no impide aplicar las demás.
+- [x] Con `FakeTimeProvider`: 10 respuestas offline de ayer sincronizadas hoy cumplen el objetivo de **ayer**, suman racha y dan el bonus. Las de hoy cuentan para hoy.
+- [x] Una respuesta con hora futura cuenta como ahora. Una de hace 10 días cuenta como de hace 7.
+- [x] Respuestas tardías de un día ya liquidado (racha perdida) suman al día y al XP sin error y sin cambiar la racha.
+- [x] `SubmitAnswer` y el resto de endpoints se comportan igual que antes (los tests existentes siguen en verde).
+- [x] App en modo avión (o sin Tailscale): se listan las oposiciones descargadas, se hace un test por tema y uno aleatorio con su aclaración, y se ve el banner.
+- [x] Al cortar la conexión a mitad de un test online, la siguiente respuesta se corrige en local sin perder las anteriores.
+- [x] Al recuperar la conexión, las respuestas se sincronizan solas, y la racha y el XP del inicio las reflejan. Cerrar la app con respuestas pendientes no las pierde.
+- [x] Las respuestas pendientes de un usuario no se envían con la sesión de otro.
+- [x] Verificado en el emulador en tema claro y oscuro.
 
 ## Plan de tests
 - **Unitarios (Domain):** `QuizAttempt.Create` con id dado (y `Guid.Empty`, que falla).

@@ -66,13 +66,14 @@ public sealed partial class OfflineSynchronizer : IOfflineSynchronizer, IDisposa
                 syncing = true;
             }
 
-            var sent = await _sync.FlushAsync(null, cancellationToken);
-            if (sent > 0)
+            var result = await _sync.FlushAsync(null, cancellationToken);
+            if (result.SyncedAnswers > 0)
             {
                 _state.ReportSuccess();
             }
 
-            return sent;
+            _state.ReportDiscardedQuizzes(result.DiscardedQuizzes);
+            return result.SyncedAnswers;
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -98,9 +99,36 @@ public sealed partial class OfflineSynchronizer : IOfflineSynchronizer, IDisposa
 
     private async Task SyncAfterReconnectAsync()
     {
-        await SyncAsync();
-        ReconnectSynced?.Invoke(this, EventArgs.Empty);
+        try
+        {
+            await SyncAsync();
+            RaiseReconnectSynced();
+        }
+        catch (Exception ex)
+        {
+            // Fire-and-forget: nothing may escape as an unobserved exception (a subscriber can throw).
+            LogReconnectFailed(ex, ex.GetType().FullName);
+        }
     }
+
+    /// <summary>Calls every subscriber on its own, so one that throws neither stops the others nor escapes.</summary>
+    private void RaiseReconnectSynced()
+    {
+        foreach (var handler in ReconnectSynced?.GetInvocationList() ?? [])
+        {
+            try
+            {
+                ((EventHandler)handler)(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                LogReconnectFailed(ex, ex.GetType().FullName);
+            }
+        }
+    }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Reconnect handling failed ({ExceptionType})")]
+    private partial void LogReconnectFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not sync the pending answers ({ExceptionType})")]
     private partial void LogSyncFailed(Exception exception, string? exceptionType);
