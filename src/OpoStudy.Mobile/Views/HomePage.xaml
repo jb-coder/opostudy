@@ -28,6 +28,17 @@
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">
                         <Label
                             Style="{StaticResource SubtitleLabel}"
+                            Text="Practicar"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <Label Text="Haz un test y repasa la aclaración de cada pregunta." />
+                        <Button Text="Hacer un test" Command="{Binding StartQuizCommand}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
                             Text="Estado del servidor"
                             SemanticProperties.HeadingLevel="Level2" />
 

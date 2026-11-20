@@ -24,5 +24,12 @@ public abstract partial class ViewModelBase : ObservableObject, IPageLifecycleAw
     {
     }
 
+    /// <summary>Called whenever <see cref="ErrorMessage"/> changes.</summary>
+    protected virtual void OnErrorMessageChanged()
+    {
+    }
+
     partial void OnIsBusyChanged(bool value) => OnBusyChanged();
+
+    partial void OnErrorMessageChanged(string? value) => OnErrorMessageChanged();
 }

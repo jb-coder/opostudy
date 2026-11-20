@@ -53,6 +53,16 @@ public sealed class HomeViewModelTests
     }
 
     [Fact]
+    public async Task StartQuizCommand_Executed_NavigatesToExams()
+    {
+        var sut = CreateSut();
+
+        await sut.StartQuizCommand.ExecuteAsync(null);
+
+        await _navigation.Received(1).GoToAsync(Routes.Exams);
+    }
+
+    [Fact]
     public async Task SignOutCommand_WhileBusy_CannotExecute()
     {
         var gate = new TaskCompletionSource();

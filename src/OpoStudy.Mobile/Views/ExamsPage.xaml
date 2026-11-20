@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.ExamsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:ExamsViewModel"
+    Title="Elige oposición">
+
+    <RefreshView
+        Command="{Binding RefreshCommand}"
+        IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+        <CollectionView
+            ItemsSource="{Binding Exams}"
+            Margin="{StaticResource PagePadding}">
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="{StaticResource SpaceM}" Padding="0,0,0,12">
+                    <Label
+                        Style="{StaticResource TitleLabel}"
+                        Text="Elige oposición"
+                        SemanticProperties.HeadingLevel="Level1" />
+
+                    <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsBusy}">
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" />
+                        <Label Text="Cargando oposiciones…" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasError}">
+                        <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                        <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <Label
+                        Style="{StaticResource CaptionLabel}"
+                        Text="No hay oposiciones disponibles todavía."
+                        IsVisible="{Binding IsEmpty}" />
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SpaceM}" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:ExamItem">
+                    <Border
+                        MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                        SemanticProperties.Description="{Binding Name}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding SelectExamCommand, Source={RelativeSource AncestorType={x:Type vm:ExamsViewModel}}}"
+                                CommandParameter="{Binding Exam}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                            <Label Style="{StaticResource SubtitleLabel}" Text="{Binding Name}" />
+                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding Subtitle}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</views:ViewModelPage>
