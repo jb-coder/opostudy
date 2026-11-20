@@ -351,6 +351,22 @@ public sealed class QuizViewModelTests
     }
 
     [Fact]
+    public async Task NextCommand_ResumedQuizWithoutNewAnswers_HidesQuizXp()
+    {
+        var q = Question(1);
+        var answered = q with { Feedback = Feedback(q.Options[0].Id, q.Options[0].Id) };
+        GivenQuiz(Quiz(1, 0, answered));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        sut.NextCommand.Execute(null);
+
+        sut.IsFinished.ShouldBeTrue();
+        sut.QuizXpText.ShouldBeEmpty();
+        sut.HasQuizXpText.ShouldBeFalse();
+    }
+
+    [Fact]
     public async Task AnswerCommand_LevelUpAndGoalMet_ShowsSingleCombinedNotice()
     {
         var question = Question(1);

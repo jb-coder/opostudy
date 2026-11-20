@@ -149,7 +149,11 @@ public sealed partial class QuizViewModel(
 
     /// <summary>XP earned by the answers given on this screen, shown in the summary.</summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasQuizXpText))]
     public partial string QuizXpText { get; set; } = string.Empty;
+
+    /// <summary>False when no XP was earned on this screen (e.g. a resumed quiz with no new answers).</summary>
+    public bool HasQuizXpText => QuizXpText.Length > 0;
 
     [ObservableProperty]
     public partial string NextButtonText { get; set; } = "Siguiente pregunta";
@@ -457,7 +461,7 @@ public sealed partial class QuizViewModel(
                 q.Feedback?.Explanation ?? string.Empty,
                 q.Feedback?.LegalReference ?? string.Empty)),
         ];
-        QuizXpText = LevelCard.QuizTotalText(_quizXp);
+        QuizXpText = _quizXp > 0 ? LevelCard.QuizTotalText(_quizXp) : string.Empty;
         Progress = 1;
         ScoreText = FormatScore(_correctCount, _incorrectCount);
         IsFinished = true;

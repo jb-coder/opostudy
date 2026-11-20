@@ -122,7 +122,10 @@
                     SemanticProperties.HeadingLevel="Level1" />
                 <Label Style="{StaticResource DisplayLabel}" Text="{Binding ResultText}" />
                 <Label Style="{StaticResource SubtitleLabel}" Text="{Binding PercentageText}" />
-                <Label Style="{StaticResource SubtitleLabel}" Text="{Binding QuizXpText}" />
+                <Label
+                    Style="{StaticResource SubtitleLabel}"
+                    Text="{Binding QuizXpText}"
+                    IsVisible="{Binding HasQuizXpText}" />
                 <Label Style="{StaticResource CaptionLabel}" Text="{Binding ScoreText}" />
 
                 <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding SummaryItems}">
