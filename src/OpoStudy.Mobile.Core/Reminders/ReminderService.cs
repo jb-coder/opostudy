@@ -60,18 +60,47 @@ public sealed class ReminderService(IReminderStore store, IReminderScheduler sch
     public void EnsureScheduled()
     {
         var settings = store.GetSettings();
-        if (settings.Enabled && scheduler.IsSupported)
+        if (settings.Enabled && !store.GetSuspended() && scheduler.IsSupported)
         {
             ScheduleNext(settings.Time);
         }
     }
 
-    /// <summary>Stops reminders and drops the snapshot so another account never sees stale data. Settings are kept.</summary>
+    /// <summary>
+    /// Stops reminders, drops the snapshot so another account never sees stale data and suspends scheduling until
+    /// <see cref="OnSignedIn"/>. Settings are kept (they belong to the device).
+    /// </summary>
     public void OnSignedOut()
     {
         scheduler.Cancel();
         store.ClearSnapshot();
+        store.SetSuspended(true);
     }
 
-    private void ScheduleNext(TimeOnly at) => scheduler.Schedule(ReminderSchedule.NextTrigger(time.GetUtcNow(), at, time.LocalTimeZone));
+    /// <summary>Lifts the suspension and re-programs the alarm when the reminder is on.</summary>
+    public void OnSignedIn()
+    {
+        store.SetSuspended(false);
+        EnsureScheduled();
+    }
+
+    /// <summary>
+    /// Decides what to do when the alarm fires: records the day, programs the next alarm and returns the message to show,
+    /// or <c>null</c> when nothing must be shown (suspended, off or goal met).
+    /// </summary>
+    public ReminderMessage? OnAlarmFired(DateTimeOffset now)
+    {
+        if (store.GetSuspended() || !store.GetSettings().Enabled)
+        {
+            return null;
+        }
+
+        var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(now, time.LocalTimeZone).DateTime);
+        store.SaveLastFiredOn(today);
+        EnsureScheduled();
+        return ReminderMessages.For(store.GetSnapshot(), today);
+    }
+
+    private void ScheduleNext(TimeOnly at) =>
+        scheduler.Schedule(ReminderSchedule.NextTrigger(time.GetUtcNow(), at, time.LocalTimeZone, store.GetLastFiredOn()));
 }

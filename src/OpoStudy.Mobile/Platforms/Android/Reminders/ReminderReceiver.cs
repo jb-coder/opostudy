@@ -20,23 +20,13 @@ public sealed class ReminderReceiver : BroadcastReceiver
             return;
         }
 
-        var store = services.GetRequiredService<IReminderStore>();
-        var settings = store.GetSettings();
-        if (!settings.Enabled)
-        {
-            return;
-        }
-
+        // The service also programs the next day (one-shot alarm).
         var time = services.GetRequiredService<TimeProvider>();
-        var today = DateOnly.FromDateTime(time.GetLocalNow().DateTime);
-        var message = ReminderMessages.For(store.GetSnapshot(), today);
+        var message = services.GetRequiredService<ReminderService>().OnAlarmFired(time.GetUtcNow());
         if (message is not null && NotificationManagerCompat.From(context)!.AreNotificationsEnabled())
         {
             Show(context, message);
         }
-
-        // One-shot alarm: always program the next day.
-        services.GetRequiredService<ReminderService>().EnsureScheduled();
     }
 
     private static void Show(Context context, ReminderMessage message)

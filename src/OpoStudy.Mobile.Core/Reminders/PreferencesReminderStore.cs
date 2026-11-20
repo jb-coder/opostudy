@@ -12,6 +12,12 @@ public sealed class PreferencesReminderStore(IPreferencesStore preferences) : IR
 
     internal const string SnapshotKey = "reminder.snapshot";
 
+    internal const string SuspendedKey = "reminder.suspended";
+
+    internal const string LastFiredOnKey = "reminder.lastFiredOn";
+
+    private const string DateFormat = "yyyy-MM-dd";
+
     private const string TimeFormat = "HH:mm";
 
     public ReminderSettings GetSettings()
@@ -55,4 +61,16 @@ public sealed class PreferencesReminderStore(IPreferencesStore preferences) : IR
     }
 
     public void ClearSnapshot() => preferences.Remove(SnapshotKey);
+
+    public bool GetSuspended() => bool.TryParse(preferences.GetString(SuspendedKey), out var s) && s;
+
+    public void SetSuspended(bool suspended) => preferences.SetString(SuspendedKey, suspended ? "true" : "false");
+
+    public DateOnly? GetLastFiredOn() =>
+        DateOnly.TryParseExact(preferences.GetString(LastFiredOnKey), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var d)
+            ? d
+            : null;
+
+    public void SaveLastFiredOn(DateOnly day) =>
+        preferences.SetString(LastFiredOnKey, day.ToString(DateFormat, CultureInfo.InvariantCulture));
 }

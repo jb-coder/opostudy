@@ -113,6 +113,7 @@
                             <Switch
                                 Grid.Column="1"
                                 IsToggled="{Binding ReminderEnabled}"
+                                IsEnabled="{Binding IsReminderToggleEnabled}"
                                 VerticalOptions="Center"
                                 SemanticProperties.Description="Avisarme cada día" />
                         </Grid>

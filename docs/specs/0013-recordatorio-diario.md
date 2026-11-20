@@ -14,7 +14,7 @@ Mantener el hábito con un aviso diario a la hora que elija el usuario si aún n
 - **Desactivado por defecto.** El usuario lo activa desde la pantalla de inicio; así el permiso de notificaciones de Android 13+ se pide en el momento en que tiene sentido y no al abrir la app.
 - **Hora a elegir entre valores fijos**: 18:00, 19:00, 20:00, 21:00 y 22:00; **20:00 por defecto**. Mismo patrón que el objetivo diario (hoja de acciones), sin selector de hora.
 - **El día es el día local del dispositivo** (`TimeProvider`). La app ya sincroniza su zona horaria con el servidor (0010), así que coincide con el día de la racha.
-- **Al cerrar sesión se cancela la alarma y se borra la instantánea**, para que no avise con datos de otra cuenta. La preferencia (activado y hora) es del dispositivo y se conserva: al volver a iniciar sesión se reprograma si estaba activada.
+- **Al cerrar sesión se cancela la alarma y se borra la instantánea**, para que no avise con datos de otra cuenta. La preferencia (activado y hora) es del dispositivo y se conserva: queda suspendida (`reminder.suspended`) hasta volver a iniciar sesión y entonces se reprograma si estaba activada.
 
 ## Alcance
 **Incluye:**
@@ -42,6 +42,8 @@ Sin cambios. Se reutilizan `GET /me/streak` (`StreakResponse`) y el `DailyProgre
 Sin cambios en la BD. Claves de `Preferences` (dispositivo):
 - `reminder.enabled` (bool, `false`) y `reminder.time` (string `HH:mm`, `"20:00"`).
 - `reminder.snapshot` (JSON de `ReminderSnapshot`, ver abajo) o ausente.
+- `reminder.suspended` (bool, `false`): true tras cerrar sesión, hasta volver a iniciarla.
+- `reminder.lastFiredOn` (fecha `yyyy-MM-dd`) o ausente: último día en que saltó la alarma.
 
 ### App
 Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
@@ -52,7 +54,7 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 - `IReminderStore`: `GetSettings`/`SaveSettings`, `GetSnapshot`/`SaveSnapshot`/`ClearSnapshot`. Implementación `PreferencesReminderStore` en Core sobre una abstracción de `IPreferences` (MAUI Essentials) para poder sustituirla en tests.
 - `IReminderScheduler` (plataforma): `Task<bool> RequestPermissionAsync()`, `void Schedule(DateTimeOffset at)`, `void Cancel()`, `bool IsSupported`. Implementación nula (`IsSupported = false`) para otras plataformas.
 - `static class ReminderSchedule`:
-  - `DateTimeOffset NextTrigger(DateTimeOffset now, TimeOnly time, TimeZoneInfo zone)`: hoy a esa hora si aún no ha pasado; si no, mañana. Correcto en los cambios de horario de verano (si la hora no existe ese día, se usa la siguiente válida).
+  - `Window` (15 min) y `DateTimeOffset NextTrigger(DateTimeOffset now, TimeOnly time, TimeZoneInfo zone, DateOnly? lastFiredOn)`: hoy a esa hora si hoy no ha saltado ya y `now < hora + Window` (si la hora ya pasó, Android la dispara enseguida; así reprogramar dentro de la ventana no pierde el aviso del día); si no, mañana. Correcto en los cambios de horario de verano (si la hora no existe ese día, se usa la siguiente válida).
 - `static class ReminderMessages`:
   - `ReminderMessage? For(ReminderSnapshot? snapshot, DateOnly today)` → título y texto, o `null` si no hay que avisar:
     - Instantánea de hoy con `GoalMetToday` → `null` (no se avisa).
@@ -67,12 +69,14 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
   - `Task<bool> EnableAsync(TimeOnly time)`: pide permiso; si se deniega, no guarda nada y devuelve `false`. Si se concede, guarda y programa `NextTrigger`.
   - `Disable()`: guarda `Enabled = false` y cancela.
   - `ChangeTime(TimeOnly)`: guarda y reprograma si está activado.
-  - `EnsureScheduled()`: si está activado, programa `NextTrigger` (idempotente). Se llama al cargar la pantalla de inicio.
-  - `OnSignedOut()`: cancela y borra la instantánea.
+  - `EnsureScheduled()`: si está activado y no suspendido, programa `NextTrigger` (idempotente).
+  - `OnSignedOut()`: cancela, borra la instantánea y marca suspendido (no toca `Enabled` ni `Time`).
+  - `OnSignedIn()`: quita la suspensión y llama a `EnsureScheduled()`. Se llama al cargar la pantalla de inicio.
+  - `ReminderMessage? OnAlarmFired(DateTimeOffset now)`: `null` si está suspendido o desactivado (sin reprogramar); si no, guarda `lastFiredOn = hoy`, reprograma con `EnsureScheduled()` y devuelve `ReminderMessages.For(instantánea, hoy)`.
 - `HomeViewModel`:
-  - Llama a `UpdateFromStreak` tras `GET /me/streak`, cambiar el objetivo y comprar un protector, y a `EnsureScheduled` al refrescar.
+  - Llama a `UpdateFromStreak` tras `GET /me/streak`, cambiar el objetivo y comprar un protector, y a `OnSignedIn` al refrescar.
   - Llama a `OnSignedOut` al cerrar sesión (aunque `SignOutAsync` falle no debe quedar programado).
-  - Tarjeta «Recordatorio» (propiedades y comandos): `ReminderEnabled` (switch), `ReminderTimeText` («Todos los días a las 20:00 si no has cumplido el objetivo»), `ToggleReminderCommand` y `ChangeReminderTimeCommand` (hoja de acciones de `IDialogService` con las 5 horas). Si el permiso se deniega, el switch vuelve a apagado y se muestra «Activa las notificaciones de OpoStudy en los ajustes de Android para recibir el recordatorio.». `IsReminderSupported` oculta la tarjeta fuera de Android.
+  - Tarjeta «Recordatorio» (propiedades y comandos): `ReminderEnabled` (switch), `ReminderTimeText` («Todos los días a las 20:00 si no has cumplido el objetivo»), `ToggleReminderCommand` y `ChangeReminderTimeCommand` (hoja de acciones de `IDialogService` con las 5 horas). Si el permiso se deniega, el switch vuelve a apagado y se muestra «Activa las notificaciones de OpoStudy en los ajustes de Android para recibir el recordatorio.». El comando no admite ejecuciones concurrentes: `IsReminderToggleEnabled` desactiva el switch mientras corre y, al terminar, el switch refleja siempre el estado guardado. `IsReminderSupported` oculta la tarjeta fuera de Android.
 - `QuizViewModel`: llama a `UpdateFromProgress` con cada `DailyProgress` recibido.
 
 **OpoStudy.Mobile (Platforms/Android)**:
@@ -82,8 +86,8 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
   - `RequestPermissionAsync`: en API ≥ 33, `Permissions.RequestAsync<Permissions.PostNotifications>()`; por debajo, `true`.
   - `Schedule`: `AlarmManager.SetWindow(RTC_WAKEUP, at, 15 min, ...)` con un `PendingIntent` de broadcast fijo (`FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE`), así reprogramar sustituye a la alarma anterior.
   - `Cancel`: cancela ese `PendingIntent`.
-- `ReminderReceiver : BroadcastReceiver` (alarma): lee ajustes e instantánea del `IReminderStore`; si sigue activado, obtiene `ReminderMessages.For(snapshot, hoy)` y, si no es `null`, muestra la notificación (icono de la app, `AutoCancel`, toque → abre `MainActivity`). Siempre reprograma el día siguiente si está activado. No hace red ni operaciones largas. Si `NotificationManagerCompat.AreNotificationsEnabled()` es falso, no muestra nada.
-- `ReminderRescheduleReceiver`: `BOOT_COMPLETED`, `MY_PACKAGE_REPLACED`, `TIME_SET` y `TIMEZONE_CHANGED` → `EnsureScheduled`.
+- `ReminderReceiver : BroadcastReceiver` (alarma): llama a `ReminderService.OnAlarmFired` y, si el mensaje no es `null`, muestra la notificación (icono de la app, `AutoCancel`, toque → abre `MainActivity`). No hace red ni operaciones largas. Si `NotificationManagerCompat.AreNotificationsEnabled()` es falso, no muestra nada.
+- `ReminderRescheduleReceiver`: `BOOT_COMPLETED`, `MY_PACKAGE_REPLACED`, `TIME_SET` y `TIMEZONE_CHANGED` → `EnsureScheduled` (con `TIMEZONE_CHANGED` y `TIME_SET` limpia antes la zona horaria cacheada con `TimeZoneInfo.ClearCachedData()`). Con la sesión cerrada no programa nada.
 - Los receptores obtienen los servicios con `IPlatformApplication.Current.Services` (el proceso arranca `MainApplication` antes del receptor). Se registran con atributos `[BroadcastReceiver(Exported = ...)]` e `[IntentFilter]`: el de alarma no exportado; el de reprogramación exportado solo para esas acciones del sistema.
 - Registro en `MauiProgram`: `IReminderScheduler` → Android o nulo según plataforma, `IReminderStore`, `ReminderService`, `IPreferences` (`Preferences.Default`).
 
@@ -108,9 +112,9 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 ## Plan de tests
 - **Unitarios (Mobile.Core.Tests):**
   - `ReminderMessages.For`: cada caso de la lista (hoy cumplido → `null`; hoy con y sin racha; ayer cumplido con racha; ayer sin cumplir; sin instantánea; instantánea antigua) y singular/plural.
-  - `ReminderSchedule.NextTrigger`: antes y después de la hora, justo a la hora (→ mañana), y los dos cambios de hora de `Europe/Madrid` (marzo y octubre).
-  - `ReminderService` con fakes de `IReminderScheduler` y `IPreferences`: activar con permiso concedido (programa) y denegado (no guarda ni programa); desactivar (cancela); cambiar hora activado y desactivado; `EnsureScheduled`; `OnSignedOut` (cancela y borra); `UpdateFromProgress` conserva `GoalMetToday` del mismo día y lo reinicia si cambia el día.
-  - `HomeViewModel`: switch y hora (comandos, textos, mensaje al denegar), instantánea guardada tras cargar la racha y `OnSignedOut` al cerrar sesión. `QuizViewModel`: instantánea tras responder.
+  - `ReminderSchedule.NextTrigger`: antes y después de la hora, justo a la hora (→ hoy), dentro de la ventana sin disparo hoy (→ hoy), ya disparado hoy (→ mañana), fuera de la ventana (→ mañana), y los dos cambios de hora de `Europe/Madrid` (marzo y octubre).
+  - `ReminderService` con fakes de `IReminderScheduler` y `IPreferences`: activar con permiso concedido (programa) y denegado (no guarda ni programa); desactivar (cancela); cambiar hora activado y desactivado; `EnsureScheduled`; `OnSignedOut` (cancela, borra y suspende; después `EnsureScheduled` y `OnAlarmFired` no programan); `OnSignedIn` (reprograma si está activado); `OnAlarmFired` (suspendido, desactivado, objetivo cumplido y con mensaje: guarda `lastFiredOn` y reprograma); `UpdateFromProgress` conserva `GoalMetToday` del mismo día y lo reinicia si cambia el día.
+  - `HomeViewModel`: switch y hora (comandos, textos, mensaje al denegar), instantánea guardada tras cargar la racha, `OnSignedIn` al cargar, switch desactivado mientras corre el comando y `OnSignedOut` al cerrar sesión. `QuizViewModel`: instantánea tras responder.
 - **Integración:** no aplica (sin cambios de backend).
 - **Manual (emulador, Android 13+):**
   - Activar, conceder permiso y comprobar la alarma con `adb shell dumpsys alarm | grep -i opostudy`.

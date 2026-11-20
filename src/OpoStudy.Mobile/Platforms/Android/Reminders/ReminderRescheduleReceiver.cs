@@ -26,6 +26,12 @@ public sealed class ReminderRescheduleReceiver : BroadcastReceiver
             return;
         }
 
+        // The runtime caches the time zone: drop it so TimeZoneInfo.Local (read on every call by TimeProvider.System) is fresh.
+        if (intent.Action is Intent.ActionTimezoneChanged or Intent.ActionTimeChanged)
+        {
+            TimeZoneInfo.ClearCachedData();
+        }
+
         IPlatformApplication.Current?.Services.GetRequiredService<ReminderService>().EnsureScheduled();
     }
 }

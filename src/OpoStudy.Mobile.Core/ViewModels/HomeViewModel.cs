@@ -46,6 +46,10 @@ public sealed partial class HomeViewModel(
 
     public bool HasReminderNotice => ReminderNotice.Length > 0;
 
+    /// <summary>False while the toggle command runs, so the switch cannot be flipped again meanwhile.</summary>
+    [ObservableProperty]
+    public partial bool IsReminderToggleEnabled { get; set; } = true;
+
     partial void OnReminderEnabledChanged(bool value)
     {
         if (!_isSyncingReminder)
@@ -81,17 +85,26 @@ public sealed partial class HomeViewModel(
     private async Task ToggleReminderAsync()
     {
         ReminderNotice = string.Empty;
-        if (ReminderEnabled)
+        IsReminderToggleEnabled = false;
+        try
         {
-            if (!await reminders.EnableAsync(reminders.Settings.Time))
+            if (ReminderEnabled)
             {
-                SetReminderEnabled(false);
-                ReminderNotice = ReminderDeniedNotice;
+                if (!await reminders.EnableAsync(reminders.Settings.Time))
+                {
+                    ReminderNotice = ReminderDeniedNotice;
+                }
+            }
+            else
+            {
+                reminders.Disable();
             }
         }
-        else
+        finally
         {
-            reminders.Disable();
+            // The switch always shows the saved state.
+            SetReminderEnabled(reminders.Settings.Enabled);
+            IsReminderToggleEnabled = true;
         }
     }
 
@@ -323,7 +336,7 @@ public sealed partial class HomeViewModel(
             if (version == _streakVersion)
             {
                 ApplyStreak(streak);
-                reminders.EnsureScheduled();
+                reminders.OnSignedIn();
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

@@ -464,6 +464,36 @@ public sealed class HomeViewModelTests
     }
 
     [Fact]
+    public async Task RefreshCommand_StreakLoaded_LiftsReminderSuspension()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _reminderStore.Suspended = true;
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        _reminderStore.Suspended.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ToggleReminderCommand_PermissionPending_DisablesSwitchUntilDone()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var permission = new TaskCompletionSource<bool>();
+        _scheduler.RequestPermissionAsync().Returns(permission.Task);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        sut.ReminderEnabled = true;
+
+        sut.IsReminderToggleEnabled.ShouldBeFalse();
+        permission.SetResult(true);
+        await Task.Delay(50, TestContext.Current.CancellationToken);
+        sut.IsReminderToggleEnabled.ShouldBeTrue();
+        sut.ReminderEnabled.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task SignOutCommand_Executed_CancelsReminderAndClearsSnapshot()
     {
         _reminderStore.Snapshot = new ReminderSnapshot(new DateOnly(2026, 11, 20), 3, 10, false, 2);

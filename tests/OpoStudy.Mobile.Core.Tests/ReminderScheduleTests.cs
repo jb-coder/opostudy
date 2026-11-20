@@ -15,7 +15,7 @@ public sealed class ReminderScheduleTests
     {
         var now = new DateTimeOffset(2026, 11, 20, 10, 0, 0, TimeSpan.FromHours(1));
 
-        ReminderSchedule.NextTrigger(now, Eight, Madrid).ShouldBe(new DateTimeOffset(2026, 11, 20, 20, 0, 0, TimeSpan.FromHours(1)));
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, null).ShouldBe(new DateTimeOffset(2026, 11, 20, 20, 0, 0, TimeSpan.FromHours(1)));
     }
 
     [Fact]
@@ -23,15 +23,41 @@ public sealed class ReminderScheduleTests
     {
         var now = new DateTimeOffset(2026, 11, 20, 21, 0, 0, TimeSpan.FromHours(1));
 
-        ReminderSchedule.NextTrigger(now, Eight, Madrid).ShouldBe(new DateTimeOffset(2026, 11, 21, 20, 0, 0, TimeSpan.FromHours(1)));
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, null).ShouldBe(new DateTimeOffset(2026, 11, 21, 20, 0, 0, TimeSpan.FromHours(1)));
     }
 
     [Fact]
-    public void NextTrigger_ExactlyAtTime_ReturnsTomorrow()
+    public void NextTrigger_ExactlyAtTime_ReturnsTodayToFireRightAway()
     {
         var now = new DateTimeOffset(2026, 11, 20, 20, 0, 0, TimeSpan.FromHours(1));
 
-        ReminderSchedule.NextTrigger(now, Eight, Madrid).ShouldBe(new DateTimeOffset(2026, 11, 21, 20, 0, 0, TimeSpan.FromHours(1)));
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, null).ShouldBe(new DateTimeOffset(2026, 11, 20, 20, 0, 0, TimeSpan.FromHours(1)));
+    }
+
+    [Fact]
+    public void NextTrigger_NotFiredTodayInsideWindow_ReturnsToday()
+    {
+        var now = new DateTimeOffset(2026, 11, 20, 20, 10, 0, TimeSpan.FromHours(1));
+
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, new DateOnly(2026, 11, 19))
+            .ShouldBe(new DateTimeOffset(2026, 11, 20, 20, 0, 0, TimeSpan.FromHours(1)));
+    }
+
+    [Fact]
+    public void NextTrigger_AlreadyFiredToday_ReturnsTomorrow()
+    {
+        var now = new DateTimeOffset(2026, 11, 20, 20, 10, 0, TimeSpan.FromHours(1));
+
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, new DateOnly(2026, 11, 20))
+            .ShouldBe(new DateTimeOffset(2026, 11, 21, 20, 0, 0, TimeSpan.FromHours(1)));
+    }
+
+    [Fact]
+    public void NextTrigger_OutsideWindow_ReturnsTomorrow()
+    {
+        var now = new DateTimeOffset(2026, 11, 20, 20, 15, 0, TimeSpan.FromHours(1));
+
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, null).ShouldBe(new DateTimeOffset(2026, 11, 21, 20, 0, 0, TimeSpan.FromHours(1)));
     }
 
     [Fact]
@@ -40,7 +66,7 @@ public sealed class ReminderScheduleTests
         // 23:30 UTC on the 20th is already 00:30 on the 21st in Madrid.
         var now = new DateTimeOffset(2026, 11, 20, 23, 30, 0, TimeSpan.Zero);
 
-        ReminderSchedule.NextTrigger(now, Eight, Madrid).ShouldBe(new DateTimeOffset(2026, 11, 21, 20, 0, 0, TimeSpan.FromHours(1)));
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, null).ShouldBe(new DateTimeOffset(2026, 11, 21, 20, 0, 0, TimeSpan.FromHours(1)));
     }
 
     [Fact]
@@ -49,7 +75,7 @@ public sealed class ReminderScheduleTests
         // Clocks go forward on 2026-03-29: 20:00 that day is UTC+2.
         var now = new DateTimeOffset(2026, 3, 29, 0, 30, 0, TimeSpan.FromHours(1));
 
-        ReminderSchedule.NextTrigger(now, Eight, Madrid).ShouldBe(new DateTimeOffset(2026, 3, 29, 20, 0, 0, TimeSpan.FromHours(2)));
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, null).ShouldBe(new DateTimeOffset(2026, 3, 29, 20, 0, 0, TimeSpan.FromHours(2)));
     }
 
     [Fact]
@@ -57,7 +83,7 @@ public sealed class ReminderScheduleTests
     {
         var now = new DateTimeOffset(2026, 3, 28, 12, 0, 0, TimeSpan.FromHours(1));
 
-        var next = ReminderSchedule.NextTrigger(now, new TimeOnly(2, 30), Madrid);
+        var next = ReminderSchedule.NextTrigger(now, new TimeOnly(2, 30), Madrid, null);
 
         next.ShouldBe(new DateTimeOffset(2026, 3, 29, 3, 0, 0, TimeSpan.FromHours(2)));
     }
@@ -68,6 +94,6 @@ public sealed class ReminderScheduleTests
         // Clocks go back on 2026-10-25: 20:00 that day is UTC+1.
         var now = new DateTimeOffset(2026, 10, 24, 21, 0, 0, TimeSpan.FromHours(2));
 
-        ReminderSchedule.NextTrigger(now, Eight, Madrid).ShouldBe(new DateTimeOffset(2026, 10, 25, 20, 0, 0, TimeSpan.FromHours(1)));
+        ReminderSchedule.NextTrigger(now, Eight, Madrid, null).ShouldBe(new DateTimeOffset(2026, 10, 25, 20, 0, 0, TimeSpan.FromHours(1)));
     }
 }

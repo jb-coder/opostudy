@@ -129,6 +129,97 @@ public sealed class ReminderServiceTests
     }
 
     [Fact]
+    public void OnSignedOut_ThenEnsureScheduled_DoesNotSchedule()
+    {
+        _store.Settings = new ReminderSettings(true, Nine);
+        var sut = CreateSut();
+
+        sut.OnSignedOut();
+        sut.EnsureScheduled();
+
+        _store.Suspended.ShouldBeTrue();
+        _store.Settings.ShouldBe(new ReminderSettings(true, Nine));
+        _scheduler.DidNotReceive().Schedule(Arg.Any<DateTimeOffset>());
+    }
+
+    [Fact]
+    public void OnSignedOut_ThenAlarmFired_ReturnsNullAndDoesNotSchedule()
+    {
+        _store.Settings = new ReminderSettings(true, Nine);
+        var sut = CreateSut();
+
+        sut.OnSignedOut();
+        var message = sut.OnAlarmFired(_time.GetUtcNow());
+
+        message.ShouldBeNull();
+        _scheduler.DidNotReceive().Schedule(Arg.Any<DateTimeOffset>());
+    }
+
+    [Fact]
+    public void OnSignedIn_Enabled_LiftsSuspensionAndSchedules()
+    {
+        _store.Settings = new ReminderSettings(true, Nine);
+        _store.Suspended = true;
+        var sut = CreateSut();
+
+        sut.OnSignedIn();
+
+        _store.Suspended.ShouldBeFalse();
+        _scheduler.Received(1).Schedule(new DateTimeOffset(2026, 11, 20, 21, 0, 0, TimeSpan.Zero));
+    }
+
+    [Fact]
+    public void OnSignedIn_Disabled_DoesNotSchedule()
+    {
+        _store.Suspended = true;
+        var sut = CreateSut();
+
+        sut.OnSignedIn();
+
+        _store.Suspended.ShouldBeFalse();
+        _scheduler.DidNotReceive().Schedule(Arg.Any<DateTimeOffset>());
+    }
+
+    [Fact]
+    public void OnAlarmFired_Disabled_ReturnsNullAndDoesNotSchedule()
+    {
+        var sut = CreateSut();
+
+        sut.OnAlarmFired(_time.GetUtcNow()).ShouldBeNull();
+
+        _store.LastFiredOn.ShouldBeNull();
+        _scheduler.DidNotReceive().Schedule(Arg.Any<DateTimeOffset>());
+    }
+
+    [Fact]
+    public void OnAlarmFired_GoalMet_ReturnsNullAndSchedulesTomorrow()
+    {
+        _store.Settings = new ReminderSettings(true, Nine);
+        _store.Snapshot = new ReminderSnapshot(new DateOnly(2026, 11, 20), 10, 10, true, 3);
+        var sut = CreateSut();
+
+        sut.OnAlarmFired(_time.GetUtcNow()).ShouldBeNull();
+
+        _store.LastFiredOn.ShouldBe(new DateOnly(2026, 11, 20));
+        _scheduler.Received(1).Schedule(new DateTimeOffset(2026, 11, 21, 21, 0, 0, TimeSpan.Zero));
+    }
+
+    [Fact]
+    public void OnAlarmFired_GoalNotMet_ReturnsMessageSavesDayAndSchedulesTomorrow()
+    {
+        _time.SetUtcNow(new DateTimeOffset(2026, 11, 20, 21, 5, 0, TimeSpan.Zero));
+        _store.Settings = new ReminderSettings(true, Nine);
+        _store.Snapshot = new ReminderSnapshot(new DateOnly(2026, 11, 20), 7, 10, false, 3);
+        var sut = CreateSut();
+
+        var message = sut.OnAlarmFired(_time.GetUtcNow());
+
+        message.ShouldNotBeNull();
+        _store.LastFiredOn.ShouldBe(new DateOnly(2026, 11, 20));
+        _scheduler.Received(1).Schedule(new DateTimeOffset(2026, 11, 21, 21, 0, 0, TimeSpan.Zero));
+    }
+
+    [Fact]
     public void UpdateFromStreak_Always_SavesTodaySnapshot()
     {
         var sut = CreateSut();

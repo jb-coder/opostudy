@@ -34,6 +34,18 @@ internal sealed class FakeReminderStore : IReminderStore
     public void SaveSnapshot(ReminderSnapshot snapshot) => Snapshot = snapshot;
 
     public void ClearSnapshot() => Snapshot = null;
+
+    public bool Suspended { get; set; }
+
+    public DateOnly? LastFiredOn { get; set; }
+
+    public bool GetSuspended() => Suspended;
+
+    public void SetSuspended(bool suspended) => Suspended = suspended;
+
+    public DateOnly? GetLastFiredOn() => LastFiredOn;
+
+    public void SaveLastFiredOn(DateOnly date) => LastFiredOn = date;
 }
 
 internal static class ReminderTestSupport
