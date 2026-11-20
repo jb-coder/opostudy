@@ -14,6 +14,7 @@ public sealed class OpoStudyDbContext(DbContextOptions<OpoStudyDbContext> option
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<User> Users => Set<User>();
     public DbSet<QuizAttempt> QuizAttempts => Set<QuizAttempt>();
+    public DbSet<DailyActivity> DailyActivities => Set<DailyActivity>();
 
     /// <summary>
     /// Shared conventions (snake_case tables and columns). Applied when registering the context because Aspire
