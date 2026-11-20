@@ -24,6 +24,63 @@
                         Text="Programador/a C1 · Diputación de Málaga" />
                 </VerticalStackLayout>
 
+                <Border IsVisible="{Binding HasStreak}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Objetivo diario"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <ProgressBar
+                            Progress="{Binding GoalProgress}"
+                            SemanticProperties.Description="{Binding GoalProgressText}" />
+                        <Label Text="{Binding GoalProgressText}" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Style="{StaticResource SubtitleLabel}"
+                                Text="{Binding StreakText}"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                Style="{StaticResource CaptionLabel}"
+                                Text="{Binding LongestStreakText}"
+                                VerticalOptions="Center" />
+                        </Grid>
+                        <HorizontalStackLayout
+                            Spacing="{StaticResource SpaceM}"
+                            HorizontalOptions="Center"
+                            BindableLayout.ItemsSource="{Binding Dots}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:DayDot">
+                                    <VerticalStackLayout
+                                        Spacing="{StaticResource SpaceXs}"
+                                        SemanticProperties.Description="{Binding AccessibilityText}">
+                                        <Border
+                                            Style="{StaticResource DayDotBorder}"
+                                            StrokeThickness="2">
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding IsMet}" Value="True">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                                                </DataTrigger>
+                                            </Border.Triggers>
+                                        </Border>
+                                        <Label
+                                            Style="{StaticResource CaptionLabel}"
+                                            Text="{Binding Initial}"
+                                            HorizontalOptions="Center" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </HorizontalStackLayout>
+                        <Label
+                            Text="{Binding KeepStreakText}"
+                            IsVisible="{Binding HasKeepStreakText}" />
+                        <Button
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Cambiar objetivo"
+                            Command="{Binding ChangeDailyGoalCommand}" />
+                    </VerticalStackLayout>
+                </Border>
+
                 <Border Style="{StaticResource CardBorder}">
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">
                         <Label

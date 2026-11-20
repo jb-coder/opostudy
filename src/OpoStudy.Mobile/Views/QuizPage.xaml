@@ -17,6 +17,14 @@
                 <Label Text="Cargando test…" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
+            <!-- Daily goal notice (non-blocking) -->
+            <Border IsVisible="{Binding HasGoalNotice}">
+                <Label
+                    Style="{StaticResource SuccessLabel}"
+                    Text="{Binding GoalNotice}"
+                    SemanticProperties.Description="{Binding GoalNotice}" />
+            </Border>
+
             <!-- Question view -->
             <VerticalStackLayout Spacing="{StaticResource SpaceL}" IsVisible="{Binding IsQuestionVisible}">
                 <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
