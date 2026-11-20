@@ -20,8 +20,8 @@ Dejar el repositorio listo para trabajar con Gitflow, CI y protección de secret
 - ADR 0001.
 
 **No incluye:**
-- Modelo de datos ni EF Core (v0.1.0-alpha).
-- Autenticación (v0.1.0-alpha).
+- Modelo de datos ni EF Core (v0.1.0).
+- Autenticación (v0.1.0).
 
 ## Criterios de aceptación
 - [x] `dotnet build OpoStudy.Backend.slnf` sin warnings.

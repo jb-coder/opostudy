@@ -1,7 +1,7 @@
 # 0005 — Autenticación con Firebase en la API
 
 - **Issue:** #15
-- **Milestone:** v0.1.0-alpha
+- **Milestone:** v0.1.0
 - **Estado:** implementada
 
 ## Objetivo

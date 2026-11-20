@@ -1,7 +1,7 @@
 # 0009 — Selección de oposición y pantalla de test con aclaración
 
 - **Issue:** #19
-- **Milestone:** v0.1.0-alpha
+- **Milestone:** v0.1.0
 - **Estado:** implementada
 
 ## Objetivo

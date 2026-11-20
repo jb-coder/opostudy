@@ -1,7 +1,7 @@
 # 0003 — Formato JSON del contenido e importador
 
 - **Issue:** #13
-- **Milestone:** v0.1.0-alpha
+- **Milestone:** v0.1.0
 - **Estado:** lista
 
 > El código va en inglés según el glosario del ADR 0001. El **texto del contenido** (enunciados, aclaraciones…) está en español.

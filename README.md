@@ -2,7 +2,7 @@
 
 Aplicación móvil (.NET MAUI) para repasar y practicar el temario de oposiciones mediante tests con aclaraciones y supuestos prácticos corregidos por IA.
 
-> Estado: **pre-alpha** — proyecto personal y didáctico.
+> Estado: **en desarrollo (0.x)** — proyecto personal y didáctico.
 
 Oposición inicial: **Programador Informático (C1) — Diputación de Málaga**.
 

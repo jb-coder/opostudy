@@ -1,7 +1,7 @@
 # 0004 — Primeros temas de Programador/a C1 (Diputación de Málaga)
 
 - **Issue:** #14
-- **Milestone:** v0.1.0-alpha
+- **Milestone:** v0.1.0
 - **Estado:** lista
 
 > El texto del contenido está en español. Los slugs, las `key` y cualquier código, en inglés o sin tildes, según la spec 0003.

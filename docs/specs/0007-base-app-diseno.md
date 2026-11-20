@@ -1,7 +1,7 @@
 # 0007 — Base de la app y sistema de diseño
 
 - **Issue:** #17
-- **Milestone:** v0.1.0-alpha
+- **Milestone:** v0.1.0
 - **Estado:** implementada
 
 > La issue apuntaba a `0006-base-app-diseno.md`, pero el número 0006 ya lo usa la spec de los endpoints de tests.
