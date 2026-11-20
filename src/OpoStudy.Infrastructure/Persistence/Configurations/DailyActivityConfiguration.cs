@@ -10,7 +10,7 @@ internal sealed class DailyActivityConfiguration : IEntityTypeConfiguration<Dail
     public void Configure(EntityTypeBuilder<DailyActivity> builder)
     {
         builder.ToTable("daily_activities");
-        builder.HasKey(a => new { a.UserId, a.Date });
+        builder.HasKey(a => new { a.UserId, a.Date }).HasName(DbConstraintNames.DailyActivitiesPrimaryKey);
         builder.Ignore(a => a.IsGoalMet);
 
         // Optimistic concurrency with the PostgreSQL system column xmin (no real column: see the migration).

@@ -5,6 +5,7 @@ using Npgsql;
 
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Quizzes;
+using OpoStudy.Infrastructure.Persistence;
 
 namespace OpoStudy.Api.Errors;
 
@@ -36,7 +37,8 @@ internal sealed class DomainRuleExceptionHandler : IExceptionHandler
                 ? DomainErrors.QuizConcurrentUpdate
                 : DomainErrors.ConcurrencyConflict,
             // Two concurrent first answers of the day insert the same daily_activities row.
-            DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation } } => DomainErrors.ConcurrencyConflict,
+            // Other unique violations stay unhandled (500) so real bugs are not disguised as conflicts.
+            DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.DailyActivitiesPrimaryKey } } => DomainErrors.ConcurrencyConflict,
             _ => null,
         };
         if (code is null)
