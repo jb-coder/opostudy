@@ -96,6 +96,9 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
   | Recordatorio diario | `DailyReminder` |
   | Pregunta fallada (pendiente de repaso) | `Mistake` |
   | Repaso (de falladas) | `Review` |
+  | Contenido offline (paquete descargado de una oposición) | `OfflineContent` |
+  | Respuesta pendiente (de sincronizar) | `PendingAnswer` |
+  | Sincronización (de un test hecho sin conexión) | `QuizSync` |
   | Supuesto práctico | `PracticalCase` |
   | Corrección (de un supuesto) | `Grading` |
 
