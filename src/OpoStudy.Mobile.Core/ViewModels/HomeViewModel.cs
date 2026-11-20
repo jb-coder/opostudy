@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 
 using Microsoft.Extensions.Logging;
 
+using OpoStudy.Contracts.Progress;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
@@ -36,6 +37,36 @@ public sealed partial class HomeViewModel(
     [NotifyPropertyChangedFor(nameof(MemberSinceText))]
     [NotifyPropertyChangedFor(nameof(HasMemberSince))]
     public partial string? MemberSince { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasStreak))]
+    public partial StreakResponse? Streak { get; set; }
+
+    [ObservableProperty]
+    public partial string GoalProgressText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial double GoalProgress { get; set; }
+
+    [ObservableProperty]
+    public partial string StreakText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string LongestStreakText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasKeepStreakText))]
+    public partial string KeepStreakText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial IReadOnlyList<DayDot> Dots { get; set; } = [];
+
+    /// <summary>Whether the daily goal card has data to show.</summary>
+    public bool HasStreak => Streak is not null;
+
+    public bool HasKeepStreakText => KeepStreakText.Length > 0;
+
+    private static readonly int[] GoalChoices = [10, 20, 30, 50];
 
     public bool HasMemberSince => MemberSince is not null;
 
@@ -73,6 +104,7 @@ public sealed partial class HomeViewModel(
         RefreshCommand.NotifyCanExecuteChanged();
         DeleteAccountCommand.NotifyCanExecuteChanged();
         SignOutCommand.NotifyCanExecuteChanged();
+        ChangeDailyGoalCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
@@ -89,11 +121,86 @@ public sealed partial class HomeViewModel(
 
             var me = await api.GetMeAsync(cancellationToken);
             MemberSince = TimeZoneInfo.ConvertTime(me.CreatedAt, time.LocalTimeZone).ToString("d 'de' MMMM 'de' yyyy", SpanishCulture);
+
+            await SyncTimeZoneAsync(me.TimeZone, cancellationToken);
+            await LoadStreakAsync(cancellationToken);
         }
         catch (Exception ex)
         {
             LogLoadFailed(ex, ex.GetType().FullName);
             IsConnected = false;
+            ErrorMessage = ApiErrorMessages.From(ex);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    /// <summary>Sends the device time zone when it differs from the profile one. Failures are only logged.</summary>
+    private async Task SyncTimeZoneAsync(string profileTimeZone, CancellationToken cancellationToken)
+    {
+        var deviceTimeZone = time.LocalTimeZone.Id;
+        if (string.Equals(profileTimeZone, deviceTimeZone, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        try
+        {
+            await api.UpdateTimeZoneAsync(new UpdateTimeZoneRequest(deviceTimeZone), cancellationToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogTimeZoneSyncFailed(ex, ex.GetType().FullName);
+        }
+    }
+
+    /// <summary>Loads the daily goal card. Failures are only logged: the card stays hidden or stale.</summary>
+    private async Task LoadStreakAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            ApplyStreak(await api.GetStreakAsync(cancellationToken));
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogStreakFailed(ex, ex.GetType().FullName);
+        }
+    }
+
+    private void ApplyStreak(StreakResponse streak)
+    {
+        Streak = streak;
+        GoalProgressText = DailyGoalCard.ProgressText(streak);
+        GoalProgress = DailyGoalCard.ProgressFraction(streak);
+        StreakText = DailyGoalCard.StreakText(streak.CurrentStreak);
+        LongestStreakText = DailyGoalCard.LongestText(streak.LongestStreak);
+        KeepStreakText = DailyGoalCard.KeepStreakText(streak);
+        Dots = DailyGoalCard.Dots(streak);
+    }
+
+    [RelayCommand(CanExecute = nameof(IsNotBusy))]
+    private async Task ChangeDailyGoalAsync(CancellationToken cancellationToken)
+    {
+        var choice = await dialogs.ChooseAsync(
+            "Objetivo diario",
+            "Cancelar",
+            [.. GoalChoices.Select(g => g.ToString(CultureInfo.InvariantCulture))]);
+        if (choice is null || !int.TryParse(choice, CultureInfo.InvariantCulture, out var goal))
+        {
+            return;
+        }
+
+        IsBusy = true;
+        ErrorMessage = null;
+        try
+        {
+            ApplyStreak(await api.UpdateDailyGoalAsync(new UpdateDailyGoalRequest(goal), cancellationToken));
+        }
+        catch (Exception ex)
+        {
+            LogGoalChangeFailed(ex, ex.GetType().FullName);
             ErrorMessage = ApiErrorMessages.From(ex);
         }
         finally
@@ -167,6 +274,15 @@ public sealed partial class HomeViewModel(
 
     [RelayCommand]
     private Task OpenStyleGuideAsync() => navigation.GoToAsync(Routes.StyleGuide);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not sync the time zone ({ExceptionType})")]
+    private partial void LogTimeZoneSyncFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the streak ({ExceptionType})")]
+    private partial void LogStreakFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not change the daily goal ({ExceptionType})")]
+    private partial void LogGoalChangeFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not sign out ({ExceptionType})")]
     private partial void LogSignOutFailed(Exception exception, string? exceptionType);

@@ -1,4 +1,5 @@
 using OpoStudy.Contracts.Exams;
+using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Contracts.SystemInfo;
 using OpoStudy.Contracts.Users;
@@ -33,4 +34,13 @@ public interface IOpoStudyApi
 
     [Post("/api/v1/quizzes/{quizId}/answers")]
     Task<AnswerFeedbackResponse> SubmitAnswerAsync(Guid quizId, [Body] SubmitAnswerRequest request, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/me/streak")]
+    Task<StreakResponse> GetStreakAsync(CancellationToken cancellationToken = default);
+
+    [Put("/api/v1/me/daily-goal")]
+    Task<StreakResponse> UpdateDailyGoalAsync([Body] UpdateDailyGoalRequest request, CancellationToken cancellationToken = default);
+
+    [Put("/api/v1/me/time-zone")]
+    Task UpdateTimeZoneAsync([Body] UpdateTimeZoneRequest request, CancellationToken cancellationToken = default);
 }
