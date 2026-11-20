@@ -28,7 +28,7 @@ public sealed class AuthErrorMessagesTests
 
     [Theory]
     [InlineData(GoogleSignInFailure.NoAccount, "No hay ninguna cuenta de Google en el dispositivo.")]
-    [InlineData(GoogleSignInFailure.Failed, "No se ha podido iniciar sesión con Google.")]
+    [InlineData(GoogleSignInFailure.Failed, "No se ha podido iniciar sesión con Google. Inténtalo de nuevo o entra con tu correo.")]
     public void From_GoogleFailure_ReturnsSpanishMessage(GoogleSignInFailure failure, string expected) =>
         AuthErrorMessages.From(new GoogleSignInException(failure)).ShouldBe(expected);
 }

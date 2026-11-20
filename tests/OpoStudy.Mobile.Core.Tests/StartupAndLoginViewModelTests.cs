@@ -130,6 +130,20 @@ public sealed class LoginViewModelTests
         await sut.SignInWithGoogleCommand.ExecuteAsync(null);
 
         sut.HasError.ShouldBeFalse();
+        sut.ErrorMessage.ShouldBeNull();
+        await _navigation.DidNotReceiveWithAnyArgs().GoToAsync(default!);
+    }
+
+    [Fact]
+    public async Task SignInWithGoogleCommand_GoogleFailure_ShowsMessageAndStopsBusy()
+    {
+        _auth.SignInWithGoogleAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new GoogleSignInException(GoogleSignInFailure.Failed));
+        var sut = CreateSut();
+
+        await sut.SignInWithGoogleCommand.ExecuteAsync(null);
+
+        sut.ErrorMessage.ShouldBe("No se ha podido iniciar sesión con Google. Inténtalo de nuevo o entra con tu correo.");
+        sut.IsBusy.ShouldBeFalse();
         await _navigation.DidNotReceiveWithAnyArgs().GoToAsync(default!);
     }
 
