@@ -60,6 +60,12 @@ internal sealed partial class GoogleSignInProvider(FirebaseOptions options, ILog
         catch (Java.Lang.Throwable ex)
         {
             // Includes GoogleIdTokenParsingException (always a failure) and every GetCredentialException subtype.
+            if (cancellationToken.IsCancellationRequested)
+            {
+                // The caller cancelled: never surface that as a Google error.
+                return null;
+            }
+
             var typeName = ex.Class?.SimpleName ?? "Unknown";
             var outcome = GoogleSignInErrorClassifier.Classify(typeName, ex.Message);
             if (outcome == GoogleSignInOutcome.Cancelled)

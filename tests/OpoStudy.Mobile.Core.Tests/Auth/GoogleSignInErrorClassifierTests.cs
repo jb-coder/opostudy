@@ -36,7 +36,8 @@ public sealed class GoogleSignInErrorClassifierTests
 
     [Theory]
     [InlineData("[16] Account reauth failed.", 16)]
-    [InlineData("Error [10]: developer error", 10)]
+    [InlineData("  [10] Developer console is not set up correctly.", 10)]
+    [InlineData("Error [10]: not at the start", null)]
     [InlineData("activity is cancelled by the user.", null)]
     [InlineData("", null)]
     [InlineData(null, null)]

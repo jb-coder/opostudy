@@ -27,7 +27,7 @@ public static partial class GoogleSignInErrorClassifier
         _ => GoogleSignInOutcome.Failed,
     };
 
-    /// <summary>Extracts the Google status code in brackets (e.g. "[16]") from the message, if any.</summary>
+    /// <summary>Extracts the Google status code in brackets at the start of the message (e.g. "[16] ..."), if any.</summary>
     public static int? ExtractStatusCode(string? message)
     {
         if (string.IsNullOrEmpty(message))
@@ -39,6 +39,6 @@ public static partial class GoogleSignInErrorClassifier
         return match.Success && int.TryParse(match.Groups[1].Value, out var code) ? code : null;
     }
 
-    [GeneratedRegex(@"\[(\d+)\]")]
+    [GeneratedRegex(@"^\s*\[(\d+)\]")]
     private static partial Regex StatusCodeRegex();
 }
