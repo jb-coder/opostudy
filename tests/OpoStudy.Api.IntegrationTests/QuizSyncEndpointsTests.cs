@@ -624,6 +624,26 @@ public sealed class QuizSyncEndpointsTests(ApiFactory factory)
         mistakes.Topics.Single().TopicId.ShouldBe(content.Topic1.Id);
     }
 
+    [Fact]
+    public async Task SyncQuiz_TwoSimultaneousIdenticalRequests_NeverReturn500()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+        var questions = content.ActiveQuestionsOf(content.Topic1).ToList();
+        var request = NewRequest(
+            Guid.CreateVersion7(),
+            content.Exam.Id,
+            content.Topic1.Id,
+            "ByTopic",
+            [.. questions.Select(q => q.Id)],
+            [Correct(questions[0], DateTimeOffset.UtcNow.AddMinutes(-1))]);
+
+        var responses = await Task.WhenAll(Enumerable.Range(0, 4).Select(_ => client.PostAsJsonAsync(SyncUri, request, Ct)));
+
+        responses.Select(r => r.StatusCode).ShouldAllBe(s => s == HttpStatusCode.OK || s == HttpStatusCode.Conflict);
+        responses.ShouldContain(r => r.StatusCode == HttpStatusCode.OK);
+    }
+
     // ---- Helpers ----
 
     private static SyncQuizRequest NewRequest(
