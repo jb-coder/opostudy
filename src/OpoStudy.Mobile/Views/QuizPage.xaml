@@ -12,8 +12,8 @@
         <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceL}">
 
             <!-- Loading and load error -->
-            <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsBusy}">
-                <ActivityIndicator IsRunning="{Binding IsBusy}" />
+            <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsLoading}">
+                <ActivityIndicator IsRunning="{Binding IsLoading}" />
                 <Label Text="Cargando test…" VerticalOptions="Center" />
             </HorizontalStackLayout>
 

@@ -74,6 +74,8 @@ public sealed partial class QuizViewModel(
     INavigationService navigation,
     ILogger<QuizViewModel> logger) : ViewModelBase, IQueryReceiver
 {
+    private const string MissingQuizMessage = "No se ha podido abrir el test. Vuelve atrás e inténtalo de nuevo.";
+
     private Guid _quizId;
 
     private List<QuestionState> _questions = [];
@@ -93,6 +95,10 @@ public sealed partial class QuizViewModel(
     [NotifyPropertyChangedFor(nameof(IsQuestionVisible))]
     [NotifyPropertyChangedFor(nameof(ShowLoadError))]
     public partial bool IsLoaded { get; set; }
+
+    /// <summary>Whether the quiz itself is being loaded (not while an answer is sent).</summary>
+    [ObservableProperty]
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsQuestionVisible))]
@@ -181,13 +187,22 @@ public sealed partial class QuizViewModel(
     {
         LoadCommand.NotifyCanExecuteChanged();
         AnswerCommand.NotifyCanExecuteChanged();
+        AnotherQuizCommand.NotifyCanExecuteChanged();
+        GoHomeCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
     private async Task LoadAsync(CancellationToken cancellationToken)
     {
-        IsBusy = true;
         ErrorMessage = null;
+        if (_quizId == Guid.Empty)
+        {
+            ErrorMessage = MissingQuizMessage;
+            return;
+        }
+
+        IsBusy = true;
+        IsLoading = true;
         try
         {
             ApplyQuiz(await api.GetQuizAsync(_quizId, cancellationToken));
@@ -201,6 +216,7 @@ public sealed partial class QuizViewModel(
         }
         finally
         {
+            IsLoading = false;
             IsBusy = false;
         }
     }
@@ -253,11 +269,25 @@ public sealed partial class QuizViewModel(
         ShowQuestion(next);
     }
 
-    [RelayCommand]
-    private Task AnotherQuizAsync() => navigation.GoToAsync(Routes.Back);
+    [RelayCommand(CanExecute = nameof(IsNotBusy))]
+    private Task AnotherQuizAsync() => NavigateAsync(Routes.Back);
 
-    [RelayCommand]
-    private Task GoHomeAsync() => navigation.GoToAsync(Routes.Root(Routes.Home));
+    [RelayCommand(CanExecute = nameof(IsNotBusy))]
+    private Task GoHomeAsync() => NavigateAsync(Routes.Root(Routes.Home));
+
+    /// <summary>Navigates while busy, so a quick tap on the other summary button cannot navigate twice.</summary>
+    private async Task NavigateAsync(string route)
+    {
+        IsBusy = true;
+        try
+        {
+            await navigation.GoToAsync(route);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 
     /// <summary>Reloads the quiz after a conflict (the question was already answered) and keeps going from there.</summary>
     private async Task ResyncAsync(Guid questionId, CancellationToken cancellationToken)
@@ -379,8 +409,11 @@ public sealed partial class QuizViewModel(
         ProgressText = $"Pregunta {_index + 1} de {total}";
         var answered = _questions.Count(q => q.Feedback is not null);
         Progress = total == 0 ? 0 : (double)answered / total;
-        ScoreText = $"{_correctCount} aciertos · {_incorrectCount} fallos";
+        ScoreText = FormatScore(_correctCount, _incorrectCount);
     }
+
+    private static string FormatScore(int correct, int incorrect) =>
+        $"{correct} {(correct == 1 ? "acierto" : "aciertos")} · {incorrect} {(incorrect == 1 ? "fallo" : "fallos")}";
 
     private void ShowSummary()
     {
@@ -399,7 +432,7 @@ public sealed partial class QuizViewModel(
                 q.Feedback?.LegalReference ?? string.Empty)),
         ];
         Progress = 1;
-        ScoreText = $"{_correctCount} aciertos · {_incorrectCount} fallos";
+        ScoreText = FormatScore(_correctCount, _incorrectCount);
         IsFinished = true;
     }
 

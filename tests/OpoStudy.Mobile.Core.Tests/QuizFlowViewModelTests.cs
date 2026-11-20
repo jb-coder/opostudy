@@ -90,6 +90,24 @@ public sealed class ExamsViewModelTests
             Arg.Is<IReadOnlyDictionary<string, object>>(p =>
                 (Guid)p[QueryKeys.ExamId] == exam.Id && (string)p[QueryKeys.ExamName] == "Programador C1"));
     }
+
+    [Fact]
+    public async Task SelectExamCommand_WhileNavigating_CannotExecute()
+    {
+        var exam = new ExamResponse(Guid.NewGuid(), "c1", "Programador C1", "Org", "C1");
+        var navigating = new TaskCompletionSource();
+        _navigation.GoToAsync(Arg.Any<string>(), Arg.Any<IReadOnlyDictionary<string, object>?>()).Returns(navigating.Task);
+        var sut = CreateSut();
+
+        var first = sut.SelectExamCommand.ExecuteAsync(exam);
+        // MAUI's TapGestureRecognizer and Button only execute a command when CanExecute is true.
+        sut.SelectExamCommand.CanExecute(exam).ShouldBeFalse();
+        navigating.SetResult();
+        await first;
+
+        sut.SelectExamCommand.CanExecute(exam).ShouldBeTrue();
+        await _navigation.Received(1).GoToAsync(Arg.Any<string>(), Arg.Any<IReadOnlyDictionary<string, object>?>());
+    }
 }
 
 public sealed class TopicsViewModelTests
@@ -238,6 +256,17 @@ public sealed class TopicsViewModelTests
         await _navigation.DidNotReceiveWithAnyArgs().GoToAsync(default!, default);
     }
 
+    [Fact]
+    public async Task OnAppearingAsync_MissingExamId_SetsErrorWithoutCallingApi()
+    {
+        var sut = new TopicsViewModel(_api, _navigation, NullLogger<TopicsViewModel>.Instance);
+
+        await sut.OnAppearingAsync();
+
+        sut.ErrorMessage.ShouldNotBeNullOrEmpty();
+        await _api.DidNotReceiveWithAnyArgs().GetTopicsAsync(default, TestContext.Current.CancellationToken);
+    }
+
     private QuizResponse EmptyQuiz(Guid id) =>
         new(id, _examId, null, "Random", DateTimeOffset.UtcNow, null, 0, 0, []);
 }
@@ -307,7 +336,7 @@ public sealed class QuizViewModelTests
         await sut.OnAppearingAsync();
 
         sut.ProgressText.ShouldBe("Pregunta 2 de 2");
-        sut.ScoreText.ShouldBe("1 aciertos · 0 fallos");
+        sut.ScoreText.ShouldBe("1 acierto · 0 fallos");
         sut.IsFinished.ShouldBeFalse();
     }
 
@@ -355,7 +384,7 @@ public sealed class QuizViewModelTests
         sut.FeedbackTitle.ShouldBe("¡Correcto!");
         sut.Explanation.ShouldBe("Explanation");
         sut.LegalReferenceText.ShouldBe("Referencia: Art. 1 CE");
-        sut.ScoreText.ShouldBe("1 aciertos · 0 fallos");
+        sut.ScoreText.ShouldBe("1 acierto · 0 fallos");
         sut.NextButtonText.ShouldBe("Siguiente pregunta");
     }
 
@@ -373,7 +402,7 @@ public sealed class QuizViewModelTests
         sut.Options.Select(o => o.State).ShouldBe([OptionState.Incorrect, OptionState.Dimmed, OptionState.Correct]);
         sut.Options[0].StateText.ShouldBe("Tu respuesta: incorrecta");
         sut.FeedbackTitle.ShouldBe("Incorrecto");
-        sut.ScoreText.ShouldBe("0 aciertos · 1 fallos");
+        sut.ScoreText.ShouldBe("0 aciertos · 1 fallo");
     }
 
     [Fact]
@@ -462,7 +491,7 @@ public sealed class QuizViewModelTests
         await _api.Received(2).GetQuizAsync(_quizId, Arg.Any<CancellationToken>());
         sut.IsAnswered.ShouldBeTrue();
         sut.Options[0].State.ShouldBe(OptionState.Correct);
-        sut.ScoreText.ShouldBe("1 aciertos · 0 fallos");
+        sut.ScoreText.ShouldBe("1 acierto · 0 fallos");
     }
 
     [Fact]
@@ -499,6 +528,69 @@ public sealed class QuizViewModelTests
         await sut.GoHomeCommand.ExecuteAsync(null);
 
         await _navigation.Received(1).GoToAsync(Routes.Root(Routes.Home));
+    }
+
+    [Fact]
+    public async Task GoHomeCommand_WhileAnotherQuizNavigates_CannotExecute()
+    {
+        var navigating = new TaskCompletionSource();
+        _navigation.GoToAsync(Routes.Back).Returns(navigating.Task);
+        var sut = CreateSut();
+
+        var first = sut.AnotherQuizCommand.ExecuteAsync(null);
+        sut.GoHomeCommand.CanExecute(null).ShouldBeFalse();
+        sut.AnotherQuizCommand.CanExecute(null).ShouldBeFalse();
+        navigating.SetResult();
+        await first;
+
+        sut.GoHomeCommand.CanExecute(null).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_MissingQuizId_SetsErrorWithoutCallingApi()
+    {
+        var sut = new QuizViewModel(_api, _navigation, NullLogger<QuizViewModel>.Instance);
+
+        await sut.OnAppearingAsync();
+
+        sut.ErrorMessage.ShouldNotBeNullOrEmpty();
+        sut.ShowLoadError.ShouldBeTrue();
+        await _api.DidNotReceiveWithAnyArgs().GetQuizAsync(default, TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_WhileLoading_IsLoadingUntilLoaded()
+    {
+        var loading = new TaskCompletionSource<QuizResponse>();
+        _api.GetQuizAsync(_quizId, Arg.Any<CancellationToken>()).Returns(loading.Task);
+        var sut = CreateSut();
+
+        var appearing = sut.OnAppearingAsync();
+        sut.IsLoading.ShouldBeTrue();
+        loading.SetResult(Quiz(0, 0, Question(1)));
+        await appearing;
+
+        sut.IsLoading.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task AnswerCommand_WhileSending_IsNotLoading()
+    {
+        var question = Question(1);
+        GivenQuiz(Quiz(0, 0, question));
+        var sending = new TaskCompletionSource<AnswerFeedbackResponse>();
+        _api.SubmitAnswerAsync(_quizId, Arg.Any<SubmitAnswerRequest>(), Arg.Any<CancellationToken>()).Returns(sending.Task);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        var answering = sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+        sut.IsBusy.ShouldBeTrue();
+        sut.IsLoading.ShouldBeFalse();
+        var correct = question.Options[0].Id;
+        sending.SetResult(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1));
+        await answering;
+
+        sut.IsAnswered.ShouldBeTrue();
     }
 
     private static async Task<ApiException> CreateApiExceptionAsync(HttpStatusCode status)
