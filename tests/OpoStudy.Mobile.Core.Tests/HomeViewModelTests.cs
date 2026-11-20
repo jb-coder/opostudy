@@ -488,7 +488,7 @@ public sealed class HomeViewModelTests
 
         sut.IsReminderToggleEnabled.ShouldBeFalse();
         permission.SetResult(true);
-        await Task.Delay(50, TestContext.Current.CancellationToken);
+        await sut.ToggleReminderCommand.ExecutionTask.ShouldNotBeNull();
         sut.IsReminderToggleEnabled.ShouldBeTrue();
         sut.ReminderEnabled.ShouldBeTrue();
     }
