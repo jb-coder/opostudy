@@ -16,7 +16,10 @@ internal sealed record AnswerProgress(DailyProgressResponse Daily, XpGainRespons
 /// </summary>
 internal sealed class ProgressRecorder(OpoStudyDbContext db)
 {
-    /// <summary>Counts one answered question for today (in the user's time zone) and grants its XP.</summary>
+    /// <summary>
+    /// Counts one answered question on the day of <paramref name="now"/> (in the user's time zone) and grants its XP.
+    /// <paramref name="now"/> is the time of the answer, not the server's: an answer synced late passes its own time.
+    /// </summary>
     public async Task<AnswerProgress> RecordAnswerAsync(User user, bool isCorrect, DateTimeOffset now, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -36,7 +39,8 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
         if (goalMetNow)
         {
             user.Streak.RegisterGoalMet(today);
-            bonus = XpRules.ForGoalMet(user.Streak.CurrentAt(today));
+            // A late answer for an already settled day: RegisterGoalMet ignores it and CurrentAt can be 0.
+            bonus = XpRules.ForGoalMet(Math.Max(1, user.Streak.CurrentAt(today)));
         }
 
         // Every XP change also touches today's activity (xmin concurrency token), so concurrent answers cannot lose XP.
@@ -162,6 +166,8 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
             freezesUsedNow);
     }
 
-    private Task<DailyActivity?> FindActivityAsync(Guid userId, DateOnly date, CancellationToken cancellationToken) =>
-        db.DailyActivities.FirstOrDefaultAsync(a => a.UserId == userId && a.Date == date, cancellationToken);
+    // Activities added by an earlier call and not saved yet (a quiz sync records many answers in one save) are only in the tracker.
+    private async Task<DailyActivity?> FindActivityAsync(Guid userId, DateOnly date, CancellationToken cancellationToken) =>
+        db.DailyActivities.Local.FirstOrDefault(a => a.UserId == userId && a.Date == date)
+        ?? await db.DailyActivities.FirstOrDefaultAsync(a => a.UserId == userId && a.Date == date, cancellationToken);
 }
