@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
+using Npgsql;
+
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Quizzes;
 
@@ -33,6 +35,8 @@ internal sealed class DomainRuleExceptionHandler : IExceptionHandler
             DbUpdateConcurrencyException concurrency => concurrency.Entries.Any(e => e.Entity is QuizAttempt)
                 ? DomainErrors.QuizConcurrentUpdate
                 : DomainErrors.ConcurrencyConflict,
+            // Two concurrent first answers of the day insert the same daily_activities row.
+            DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation } } => DomainErrors.ConcurrencyConflict,
             _ => null,
         };
         if (code is null)

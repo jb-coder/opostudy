@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 using OpoStudy.Api.Errors;
+using OpoStudy.Api.Features.Progress;
 using OpoStudy.Api.Features.Users;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Domain.Common;
@@ -212,6 +213,7 @@ internal static class QuizzesEndpoints
         Guid quizId,
         SubmitAnswerRequest request,
         CurrentUserService currentUser,
+        ProgressRecorder progress,
         OpoStudyDbContext db,
         TimeProvider timeProvider,
         CancellationToken cancellationToken)
@@ -257,7 +259,9 @@ internal static class QuizzesEndpoints
         }
 
         // Domain rule violations are translated by DomainRuleExceptionHandler; so is a concurrency conflict on save.
-        var result = attempt.Answer(question, request.OptionId, timeProvider.GetUtcNow());
+        var now = timeProvider.GetUtcNow();
+        var result = attempt.Answer(question, request.OptionId, now);
+        var dailyProgress = await progress.RecordAnswerAsync(user, now, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
 
         var feedback = new AnswerFeedback(
@@ -273,7 +277,8 @@ internal static class QuizzesEndpoints
             attempt.CorrectCount,
             attempt.IncorrectCount,
             attempt.Answers.Count(a => a.IsAnswered),
-            attempt.Answers.Count));
+            attempt.Answers.Count,
+            dailyProgress));
     }
 
     // Every question of an attempt is guaranteed to exist: the importer never deletes questions (it

@@ -4,4 +4,6 @@ namespace OpoStudy.Contracts.Users;
 /// <param name="Id">Internal user id.</param>
 /// <param name="CreatedAt">Moment the account was created (UTC).</param>
 /// <param name="ActiveExamId">Exam the user is currently preparing, if any.</param>
-public sealed record UserProfileResponse(Guid Id, DateTimeOffset CreatedAt, Guid? ActiveExamId);
+/// <param name="DailyGoal">Questions to answer per day.</param>
+/// <param name="TimeZone">IANA time zone that defines the user's day.</param>
+public sealed record UserProfileResponse(Guid Id, DateTimeOffset CreatedAt, Guid? ActiveExamId, int DailyGoal, string TimeZone);
