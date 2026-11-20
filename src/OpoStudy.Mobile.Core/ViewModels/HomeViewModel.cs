@@ -83,6 +83,12 @@ public sealed partial class HomeViewModel(
     {
         if (ApiVersion is not null)
         {
+            // Already loaded: only the daily goal card can change while away (e.g. after a quiz).
+            if (!IsBusy)
+            {
+                await LoadStreakAsync(CancellationToken.None);
+            }
+
             return;
         }
 

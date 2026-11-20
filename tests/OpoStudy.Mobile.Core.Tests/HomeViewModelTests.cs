@@ -93,6 +93,20 @@ public sealed class HomeViewModelTests
     }
 
     [Fact]
+    public async Task OnAppearingAsync_AlreadyLoaded_ReloadsOnlyStreak()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.OnAppearingAsync();
+
+        await _api.Received(1).GetVersionAsync(Arg.Any<CancellationToken>());
+        await _api.Received(1).GetMeAsync(Arg.Any<CancellationToken>());
+        await _api.Received(2).GetStreakAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task RefreshCommand_StreakLoaded_FillsCardTexts()
     {
         _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
