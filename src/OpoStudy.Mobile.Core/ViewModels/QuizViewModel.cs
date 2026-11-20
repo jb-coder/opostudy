@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Services;
 
 using Refit;
 
@@ -72,11 +73,22 @@ public sealed record SummaryItem(
 public sealed partial class QuizViewModel(
     IOpoStudyApi api,
     INavigationService navigation,
+    IDialogService dialogs,
     ILogger<QuizViewModel> logger) : ViewModelBase, IQueryReceiver
 {
     private const string MissingQuizMessage = "No se ha podido abrir el test. Vuelve atrás e inténtalo de nuevo.";
 
+    private const string AnotherQuizTitle = "Hacer otro test";
+
     private Guid _quizId;
+
+    private Guid _examId;
+
+    private Guid? _topicId;
+
+    private bool _isReview;
+
+    private bool _isLeaving;
 
     private List<QuestionState> _questions = [];
 
@@ -158,6 +170,17 @@ public sealed partial class QuizViewModel(
     [ObservableProperty]
     public partial string NextButtonText { get; set; } = "Siguiente pregunta";
 
+    /// <summary>Text of the first summary button: "Seguir repasando" when a review still has mistakes left.</summary>
+    [ObservableProperty]
+    public partial string AnotherQuizText { get; set; } = AnotherQuizTitle;
+
+    /// <summary>Mistakes left after a review (summary only); empty when unknown.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasMistakesLeftText))]
+    public partial string MistakesLeftText { get; set; } = string.Empty;
+
+    public bool HasMistakesLeftText => MistakesLeftText.Length > 0;
+
     [ObservableProperty]
     public partial string ResultText { get; set; } = string.Empty;
 
@@ -231,6 +254,10 @@ public sealed partial class QuizViewModel(
             ApplyQuiz(await api.GetQuizAsync(_quizId, cancellationToken));
             ShowFirstPending();
             IsLoaded = true;
+            if (IsFinished)
+            {
+                await LoadMistakesLeftAsync(cancellationToken);
+            }
         }
         catch (Exception ex)
         {
@@ -284,17 +311,86 @@ public sealed partial class QuizViewModel(
     private bool CanAnswer(QuizOptionItem? option) => IsNotBusy && !IsAnswered;
 
     [RelayCommand]
-    private void Next()
+    private async Task NextAsync()
     {
         ErrorMessage = null;
         var next = FindNextPending(_index);
         if (next < 0)
         {
             ShowSummary();
+            try
+            {
+                await LoadMistakesLeftAsync(PageToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // The page went away before the mistakes arrived.
+            }
+
             return;
         }
 
         ShowQuestion(next);
+    }
+
+    /// <summary>Back button (toolbar and Android): asks first when the quiz is started and not finished.</summary>
+    [RelayCommand]
+    private async Task BackAsync()
+    {
+        // A double tap must not open two dialogs (ExecuteAsync ignores AllowConcurrentExecutions).
+        if (_isLeaving)
+        {
+            return;
+        }
+
+        _isLeaving = true;
+        try
+        {
+            var started = !IsFinished && _questions.Any(q => q.Feedback is not null);
+            if (started)
+            {
+                var leave = await dialogs.ConfirmAsync(
+                    "¿Salir del test?",
+                    "Tus respuestas se guardan y podrás continuarlo desde el inicio.",
+                    "Salir",
+                    "Seguir con el test");
+                if (!leave)
+                {
+                    return;
+                }
+            }
+
+            await navigation.GoToAsync(Routes.Back);
+        }
+        finally
+        {
+            _isLeaving = false;
+        }
+    }
+
+    /// <summary>After a review, shows how many mistakes are left. A failure only omits the line.</summary>
+    private async Task LoadMistakesLeftAsync(CancellationToken cancellationToken)
+    {
+        MistakesLeftText = string.Empty;
+        AnotherQuizText = AnotherQuizTitle;
+        if (!_isReview)
+        {
+            return;
+        }
+
+        try
+        {
+            var summary = await api.GetMistakesAsync(_examId, cancellationToken);
+            var left = _topicId is { } topicId
+                ? summary.Topics.FirstOrDefault(t => t.TopicId == topicId)?.Count ?? 0
+                : summary.Total;
+            MistakesLeftText = QuizTitles.MistakesLeftText(left);
+            AnotherQuizText = left > 0 ? "Seguir repasando" : AnotherQuizTitle;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogMistakesFailed(ex, ex.GetType().FullName);
+        }
     }
 
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
@@ -331,6 +427,10 @@ public sealed partial class QuizViewModel(
             else
             {
                 ShowFirstPending();
+                if (IsFinished)
+                {
+                    await LoadMistakesLeftAsync(cancellationToken);
+                }
             }
         }
         catch (Exception ex)
@@ -345,6 +445,9 @@ public sealed partial class QuizViewModel(
         _questions = [.. quiz.Questions.OrderBy(q => q.Order).Select(q => new QuestionState(q))];
         _correctCount = quiz.CorrectCount;
         _incorrectCount = quiz.IncorrectCount;
+        _examId = quiz.ExamId;
+        _topicId = quiz.TopicId;
+        _isReview = quiz.Mode == QuizTitles.ReviewMode;
     }
 
     private void ShowFirstPending()
@@ -469,6 +572,9 @@ public sealed partial class QuizViewModel(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the quiz ({ExceptionType})")]
     private partial void LogLoadFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the mistakes left ({ExceptionType})")]
+    private partial void LogMistakesFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not submit the answer ({ExceptionType})")]
     private partial void LogAnswerFailed(Exception exception, string? exceptionType);

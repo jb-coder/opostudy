@@ -18,6 +18,8 @@ namespace OpoStudy.Mobile.Core.Api;
 [JsonSerializable(typeof(UserProfileResponse))]
 [JsonSerializable(typeof(IReadOnlyList<ExamResponse>))]
 [JsonSerializable(typeof(IReadOnlyList<TopicResponse>))]
+[JsonSerializable(typeof(MistakeSummaryResponse))]
+[JsonSerializable(typeof(IReadOnlyList<QuizSummaryResponse>))]
 [JsonSerializable(typeof(CreateQuizRequest))]
 [JsonSerializable(typeof(QuizResponse))]
 [JsonSerializable(typeof(SubmitAnswerRequest))]

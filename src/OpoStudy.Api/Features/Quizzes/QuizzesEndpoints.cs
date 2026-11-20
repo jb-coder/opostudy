@@ -87,32 +87,46 @@ internal static class QuizzesEndpoints
         }
 
         var examId = request.ExamId;
-        IQueryable<Question> candidates;
+        IQueryable<Guid> candidates;
         QuizMode mode;
-        if (request.TopicId is { } topicId)
+        if (request.TopicId is { } topicId
+            && !await db.Topics.AnyAsync(t => t.Id == topicId && t.ExamId == examId, cancellationToken))
         {
-            if (!await db.Topics.AnyAsync(t => t.Id == topicId && t.ExamId == examId, cancellationToken))
+            return DomainErrors.Problem(DomainErrors.TopicNotFound);
+        }
+
+        if (request.MistakesOnly)
+        {
+            mode = QuizMode.Review;
+            var mistakes = MistakeQueries.PendingMistakes(db, user.Id)
+                .Where(m => db.Topics.Any(t => t.Id == m.TopicId && t.ExamId == examId));
+            if (request.TopicId is { } reviewTopicId)
             {
-                return DomainErrors.Problem(DomainErrors.TopicNotFound);
+                mistakes = mistakes.Where(m => m.TopicId == reviewTopicId);
             }
 
+            candidates = mistakes.Select(m => m.QuestionId);
+        }
+        else if (request.TopicId is { } byTopicId)
+        {
             mode = QuizMode.ByTopic;
-            candidates = db.Questions.Where(q => q.IsActive && q.TopicId == topicId);
+            candidates = db.Questions.Where(q => q.IsActive && q.TopicId == byTopicId).Select(q => q.Id);
         }
         else
         {
             mode = QuizMode.Random;
-            candidates = db.Questions.Where(q => q.IsActive && db.Topics.Any(t => t.Id == q.TopicId && t.ExamId == examId));
+            candidates = db.Questions
+                .Where(q => q.IsActive && db.Topics.Any(t => t.Id == q.TopicId && t.ExamId == examId))
+                .Select(q => q.Id);
         }
 
         var questionIds = await candidates
             .OrderBy(_ => EF.Functions.Random())
-            .Select(q => q.Id)
             .Take(request.QuestionCount)
             .ToListAsync(cancellationToken);
         if (questionIds.Count == 0)
         {
-            return DomainErrors.Problem(DomainErrors.QuizNoQuestionsAvailable);
+            return DomainErrors.Problem(request.MistakesOnly ? DomainErrors.QuizNoMistakes : DomainErrors.QuizNoQuestionsAvailable);
         }
 
         var attempt = QuizAttempt.Create(user.Id, examId, request.TopicId, mode, questionIds, timeProvider.GetUtcNow());

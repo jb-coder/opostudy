@@ -104,6 +104,21 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <Border Style="{StaticResource CardBorder}" IsVisible="{Binding HasUnfinishedQuiz}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Test a medias"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <Label Text="{Binding UnfinishedQuizTitle}" />
+                        <Label Style="{StaticResource CaptionLabel}" Text="{Binding UnfinishedQuizProgressText}" />
+                        <Button
+                            Text="Continuar"
+                            Command="{Binding ContinueQuizCommand}"
+                            SemanticProperties.Hint="Retoma el último test en la primera pregunta pendiente" />
+                    </VerticalStackLayout>
+                </Border>
+
                 <Border Style="{StaticResource CardBorder}">
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">
                         <Label

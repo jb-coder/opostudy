@@ -11,6 +11,7 @@ using OpoStudy.Contracts.Exams;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
 
 using Refit;
@@ -275,13 +276,15 @@ public sealed class QuizViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
     private readonly Guid _quizId = Guid.NewGuid();
 
     private QuizViewModel CreateSut()
     {
-        var sut = new QuizViewModel(_api, _navigation, NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, NullLogger<QuizViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.QuizId] = _quizId, [QueryKeys.QuizTitle] = "Test aleatorio" });
         return sut;
     }
@@ -641,7 +644,7 @@ public sealed class QuizViewModelTests
     [Fact]
     public async Task OnAppearingAsync_MissingQuizId_SetsErrorWithoutCallingApi()
     {
-        var sut = new QuizViewModel(_api, _navigation, NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, NullLogger<QuizViewModel>.Instance);
 
         await sut.OnAppearingAsync();
 

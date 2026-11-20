@@ -127,6 +127,10 @@
                     Text="{Binding QuizXpText}"
                     IsVisible="{Binding HasQuizXpText}" />
                 <Label Style="{StaticResource CaptionLabel}" Text="{Binding ScoreText}" />
+                <Label
+                    Style="{StaticResource SubtitleLabel}"
+                    Text="{Binding MistakesLeftText}"
+                    IsVisible="{Binding HasMistakesLeftText}" />
 
                 <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding SummaryItems}">
                     <BindableLayout.ItemTemplate>
@@ -151,7 +155,7 @@
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
 
-                <Button Text="Hacer otro test" Command="{Binding AnotherQuizCommand}" />
+                <Button Text="{Binding AnotherQuizText}" Command="{Binding AnotherQuizCommand}" />
                 <Button
                     Style="{StaticResource SecondaryButton}"
                     Text="Volver al inicio"
