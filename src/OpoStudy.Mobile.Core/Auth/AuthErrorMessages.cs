@@ -15,7 +15,7 @@ public static class AuthErrorMessages
     public const string NotConfigured = "El inicio de sesión no está configurado en esta versión de la app.";
     public const string Unknown = "No se ha podido completar la operación. Inténtalo de nuevo.";
     public const string GoogleNoAccount = "No hay ninguna cuenta de Google en el dispositivo.";
-    public const string GoogleFailed = "No se ha podido iniciar sesión con Google.";
+    public const string GoogleFailed = "No se ha podido iniciar sesión con Google. Inténtalo de nuevo o entra con tu correo.";
 
     public static string From(string code) => code switch
     {

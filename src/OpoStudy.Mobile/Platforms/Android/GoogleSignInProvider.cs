@@ -6,6 +6,8 @@ using AndroidX.Credentials.Exceptions;
 
 using Java.Util.Concurrent;
 
+using Microsoft.Extensions.Logging;
+
 using OpoStudy.Mobile.Core.Auth;
 
 using Xamarin.GoogleAndroid.Libraries.Identity.GoogleId;
@@ -13,7 +15,7 @@ using Xamarin.GoogleAndroid.Libraries.Identity.GoogleId;
 namespace OpoStudy.Mobile.Platforms.Android;
 
 /// <summary>Google sign-in through the Android Credential Manager ("Sign in with Google" option).</summary>
-internal sealed class GoogleSignInProvider(FirebaseOptions options) : IGoogleSignInProvider
+internal sealed partial class GoogleSignInProvider(FirebaseOptions options, ILogger<GoogleSignInProvider> logger) : IGoogleSignInProvider
 {
     private static readonly TimeSpan SignOutTimeout = TimeSpan.FromSeconds(5);
 
@@ -51,23 +53,30 @@ internal sealed class GoogleSignInProvider(FirebaseOptions options) : IGoogleSig
 
             throw new GoogleSignInException(GoogleSignInFailure.Failed);
         }
-        catch (GetCredentialCancellationException)
+        catch (GoogleSignInException)
         {
-            return null;
+            throw;
         }
-        catch (NoCredentialException ex)
+        catch (Java.Lang.Throwable ex)
         {
-            throw new GoogleSignInException(GoogleSignInFailure.NoAccount, ex);
-        }
-        catch (GetCredentialException ex)
-        {
-            throw new GoogleSignInException(GoogleSignInFailure.Failed, ex);
-        }
-        catch (GoogleIdTokenParsingException ex)
-        {
-            throw new GoogleSignInException(GoogleSignInFailure.Failed, ex);
+            // Includes GoogleIdTokenParsingException (always a failure) and every GetCredentialException subtype.
+            var typeName = ex.Class?.SimpleName ?? "Unknown";
+            var outcome = GoogleSignInErrorClassifier.Classify(typeName, ex.Message);
+            if (outcome == GoogleSignInOutcome.Cancelled)
+            {
+                return null;
+            }
+
+            // Only the exception type and the Google status code are logged: the message may contain account data.
+            LogSignInFailed(typeName, GoogleSignInErrorClassifier.ExtractStatusCode(ex.Message));
+            throw new GoogleSignInException(
+                outcome == GoogleSignInOutcome.NoAccount ? GoogleSignInFailure.NoAccount : GoogleSignInFailure.Failed,
+                ex);
         }
     }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Google sign-in failed: {ExceptionType}, status code {StatusCode}")]
+    private partial void LogSignInFailed(string exceptionType, int? statusCode);
 
     public async Task SignOutAsync()
     {
