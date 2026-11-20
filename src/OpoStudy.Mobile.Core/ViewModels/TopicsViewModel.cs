@@ -45,6 +45,8 @@ public sealed partial class TopicsViewModel(
 {
     private const string RandomQuizTitle = "Test aleatorio";
 
+    private const string MissingExamMessage = "No se ha podido abrir la oposición. Vuelve atrás e inténtalo de nuevo.";
+
     private Guid _examId;
 
     private bool _loaded;
@@ -107,8 +109,14 @@ public sealed partial class TopicsViewModel(
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
     private async Task RefreshAsync(CancellationToken cancellationToken)
     {
-        IsBusy = true;
         ErrorMessage = null;
+        if (_examId == Guid.Empty)
+        {
+            ErrorMessage = MissingExamMessage;
+            return;
+        }
+
+        IsBusy = true;
         try
         {
             var topics = await api.GetTopicsAsync(_examId, cancellationToken);
