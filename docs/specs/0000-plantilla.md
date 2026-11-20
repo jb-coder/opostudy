@@ -1,7 +1,7 @@
 # NNNN — Título de la feature
 
 - **Issue:** #
-- **Milestone:** vX.Y.Z-alpha
+- **Milestone:** vX.Y.Z
 - **Estado:** borrador | lista | implementada
 
 ## Objetivo

@@ -1,7 +1,7 @@
 # 0002 — Modelo de dominio y persistencia con EF Core
 
 - **Issue:** #12
-- **Milestone:** v0.1.0-alpha
+- **Milestone:** v0.1.0
 - **Estado:** implementada
 
 > El código está en inglés y sigue el glosario del ADR 0001 (Oposición → `Exam`, Pregunta → `Question`, test realizado → `QuizAttempt`…).

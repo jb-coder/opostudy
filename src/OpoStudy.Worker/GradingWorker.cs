@@ -1,7 +1,7 @@
 namespace OpoStudy.Worker;
 
 /// <summary>
-/// Will process the grading queue of practical cases (milestone v0.3.0-alpha).
+/// Will process the grading queue of practical cases (milestone v0.3.0).
 /// For now it only starts and waits.
 /// </summary>
 internal sealed partial class GradingWorker(ILogger<GradingWorker> logger) : BackgroundService

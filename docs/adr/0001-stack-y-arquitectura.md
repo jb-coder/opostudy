@@ -39,11 +39,11 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
 - Las notificaciones de racha son locales.
 
 ### Infraestructura y coste
-- **Alpha**:
+- **Versiones 0.x**:
   - VPS low-cost con Docker Compose y Caddy.
   - La API solo es accesible por **Tailscale**: no se expone a Internet.
   - Backups con `pg_dump` y restic cifrado a Cloudflare R2 (free tier).
-- **Producción (opcional)**: dominio con Cloudflare, Firebase App Check, LLM de pago, anuncios y suscripción.
+- **Producción (opcional, desde 1.0.0)**: dominio con Cloudflare, Firebase App Check, LLM de pago, anuncios y suscripción.
 
 ### Repositorio público y secretos
 - Nunca se versionan secretos:
@@ -60,7 +60,12 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
 ### Flujo de trabajo
 - **Gitflow** (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`).
 - Todo cambio entra por PR, con CI obligatorio y revisión de un agente local antes del merge.
-- **Milestones de GitHub = releases alpha.** El APK se publica en GitHub Releases.
+- **Milestones de GitHub = releases.** El APK se publica en GitHub Releases.
+- **Versionado SemVer sin sufijos de fase**: `vMAJOR.MINOR.PATCH`.
+  - Las versiones `0.x` ya indican que el proyecto está en desarrollo y puede cambiar sin aviso, así que no se usa `-alpha` ni `-beta`. En GitHub Releases se marcan como *pre-release*.
+  - Cada milestone sube el MINOR (`v0.1.0`, `v0.2.0`…). Los hotfix suben el PATCH (`v0.1.1`).
+  - `v1.0.0` es la primera versión estable, publicable en tienda.
+  - Si hace falta probar un APK antes de cerrar una versión, se etiqueta como candidata: `v0.2.0-rc.1`.
 
 ### Idioma del código
 - **El código se escribe en inglés**:

@@ -1,7 +1,7 @@
 # 0006 — Endpoints de oposiciones, temas y tests con aclaración
 
 - **Issue:** #16
-- **Milestone:** v0.1.0-alpha
+- **Milestone:** v0.1.0
 - **Estado:** implementada
 
 > Las rutas siguen la regla del inglés (CLAUDE.md): `/exams`, `/topics`, `/quizzes`. La issue usaba los nombres en español de antes de la convención.

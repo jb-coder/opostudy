@@ -1,7 +1,7 @@
 # 0008 — Login en la app con Google y correo
 
 - **Issue:** #18
-- **Milestone:** v0.1.0-alpha
+- **Milestone:** v0.1.0
 - **Estado:** implementada
 
 > La issue apuntaba a `0007-login-app.md`, pero el número 0007 ya lo usa la spec de la base de la app.
