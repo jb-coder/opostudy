@@ -23,6 +23,7 @@ namespace OpoStudy.Mobile.Core.Api;
 [JsonSerializable(typeof(SubmitAnswerRequest))]
 [JsonSerializable(typeof(AnswerFeedbackResponse))]
 [JsonSerializable(typeof(StreakResponse))]
+[JsonSerializable(typeof(LevelResponse))]
 [JsonSerializable(typeof(UpdateDailyGoalRequest))]
 [JsonSerializable(typeof(UpdateTimeZoneRequest))]
 public sealed partial class ApiJsonContext : JsonSerializerContext;

@@ -70,4 +70,9 @@ public static class DailyGoalCard
 
     public static string GoalMetNotice(int currentStreak) =>
         string.Create(CultureInfo.InvariantCulture, $"🎯 ¡Objetivo diario cumplido! Racha: {currentStreak} {(currentStreak == 1 ? "día" : "días")}");
+
+    public static string GoalMetNotice(int currentStreak, int bonusXp) =>
+        bonusXp <= 0
+            ? GoalMetNotice(currentStreak)
+            : string.Create(CultureInfo.InvariantCulture, $"{GoalMetNotice(currentStreak)} · +{bonusXp} XP");
 }

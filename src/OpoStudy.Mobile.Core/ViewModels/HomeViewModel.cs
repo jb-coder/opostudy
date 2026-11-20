@@ -61,6 +61,31 @@ public sealed partial class HomeViewModel(
     [ObservableProperty]
     public partial IReadOnlyList<DayDot> Dots { get; set; } = [];
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasLevel))]
+    public partial LevelResponse? Level { get; set; }
+
+    [ObservableProperty]
+    public partial string LevelTitleText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial double LevelProgress { get; set; }
+
+    [ObservableProperty]
+    public partial string LevelDetailText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string XpTodayText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasLevelError))]
+    public partial string? LevelErrorMessage { get; set; }
+
+    /// <summary>Whether the level card has data to show.</summary>
+    public bool HasLevel => Level is not null;
+
+    public bool HasLevelError => LevelErrorMessage is not null;
+
     /// <summary>Whether the daily goal card has data to show.</summary>
     public bool HasStreak => Streak is not null;
 
@@ -87,6 +112,7 @@ public sealed partial class HomeViewModel(
             if (!IsBusy)
             {
                 await LoadStreakAsync(CancellationToken.None);
+                await LoadLevelAsync(CancellationToken.None);
             }
 
             return;
@@ -130,6 +156,7 @@ public sealed partial class HomeViewModel(
 
             await SyncTimeZoneAsync(me.TimeZone, cancellationToken);
             await LoadStreakAsync(cancellationToken);
+            await LoadLevelAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -185,6 +212,36 @@ public sealed partial class HomeViewModel(
         }
     }
 
+    /// <summary>Bumped by every level load, so a slower, older response never overwrites a newer one.</summary>
+    private int _levelVersion;
+
+    /// <summary>Loads the level card. A failure only shows an error on that card; the daily goal card is not affected.</summary>
+    private async Task LoadLevelAsync(CancellationToken cancellationToken)
+    {
+        var version = ++_levelVersion;
+        try
+        {
+            var level = await api.GetLevelAsync(cancellationToken);
+            if (version == _levelVersion)
+            {
+                Level = level;
+                LevelTitleText = LevelCard.TitleText(level);
+                LevelProgress = LevelCard.ProgressFraction(level);
+                LevelDetailText = LevelCard.DetailText(level);
+                XpTodayText = LevelCard.TodayText(level);
+                LevelErrorMessage = null;
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogLevelFailed(ex, ex.GetType().FullName);
+            if (version == _levelVersion)
+            {
+                LevelErrorMessage = ApiErrorMessages.From(ex);
+            }
+        }
+    }
+
     private void ApplyStreak(StreakResponse streak)
     {
         Streak = streak;
@@ -215,6 +272,7 @@ public sealed partial class HomeViewModel(
             var streak = await api.UpdateDailyGoalAsync(new UpdateDailyGoalRequest(goal), cancellationToken);
             _streakVersion++;
             ApplyStreak(streak);
+            await LoadLevelAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -298,6 +356,9 @@ public sealed partial class HomeViewModel(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the streak ({ExceptionType})")]
     private partial void LogStreakFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the level ({ExceptionType})")]
+    private partial void LogLevelFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not change the daily goal ({ExceptionType})")]
     private partial void LogGoalChangeFailed(Exception exception, string? exceptionType);

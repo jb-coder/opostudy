@@ -38,6 +38,9 @@ public interface IOpoStudyApi
     [Get("/api/v1/me/streak")]
     Task<StreakResponse> GetStreakAsync(CancellationToken cancellationToken = default);
 
+    [Get("/api/v1/me/level")]
+    Task<LevelResponse> GetLevelAsync(CancellationToken cancellationToken = default);
+
     [Put("/api/v1/me/daily-goal")]
     Task<StreakResponse> UpdateDailyGoalAsync([Body] UpdateDailyGoalRequest request, CancellationToken cancellationToken = default);
 

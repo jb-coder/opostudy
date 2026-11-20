@@ -83,6 +83,7 @@ public sealed partial class QuizViewModel(
     private int _index;
 
     private int _correctCount;
+    private int _quizXp;
 
     private int _incorrectCount;
 
@@ -138,6 +139,17 @@ public sealed partial class QuizViewModel(
     public partial string GoalNotice { get; set; } = string.Empty;
 
     public bool HasGoalNotice => GoalNotice.Length > 0;
+
+    /// <summary>XP label of the answer shown (e.g. "+10 XP"); empty when the XP is unknown (answer from an earlier session).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasXpText))]
+    public partial string XpText { get; set; } = string.Empty;
+
+    public bool HasXpText => XpText.Length > 0;
+
+    /// <summary>XP earned by the answers given on this screen, shown in the summary.</summary>
+    [ObservableProperty]
+    public partial string QuizXpText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string NextButtonText { get; set; } = "Siguiente pregunta";
@@ -241,14 +253,14 @@ public sealed partial class QuizViewModel(
         {
             var response = await api.SubmitAnswerAsync(_quizId, new SubmitAnswerRequest(question.QuestionId, option.Id), cancellationToken);
             question.Feedback = response.Feedback;
+            question.XpText = LevelCard.AnswerXpText(response.Xp);
+            XpText = question.XpText;
+            _quizXp += response.Xp.Gained;
             _correctCount = response.CorrectCount;
             _incorrectCount = response.IncorrectCount;
             ShowFeedback(response.Feedback);
             UpdateProgress();
-            if (response.DailyProgress is { GoalMetNow: true } daily)
-            {
-                GoalNotice = DailyGoalCard.GoalMetNotice(daily.CurrentStreak);
-            }
+            GoalNotice = LevelCard.Notice(response.DailyProgress, response.Xp);
         }
         catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
@@ -390,6 +402,7 @@ public sealed partial class QuizViewModel(
         FeedbackTitle = string.Empty;
         Explanation = string.Empty;
         LegalReferenceText = string.Empty;
+        XpText = question.XpText;
         NextButtonText = FindNextPending(index) < 0 ? "Ver resultado" : "Siguiente pregunta";
 
         if (question.Feedback is { } feedback)
@@ -444,6 +457,7 @@ public sealed partial class QuizViewModel(
                 q.Feedback?.Explanation ?? string.Empty,
                 q.Feedback?.LegalReference ?? string.Empty)),
         ];
+        QuizXpText = LevelCard.QuizTotalText(_quizXp);
         Progress = 1;
         ScoreText = FormatScore(_correctCount, _incorrectCount);
         IsFinished = true;
@@ -464,5 +478,7 @@ public sealed partial class QuizViewModel(
         public IReadOnlyList<QuizOptionResponse> Options { get; } = source.Options;
 
         public AnswerFeedback? Feedback { get; set; } = source.Feedback;
+
+        public string XpText { get; set; } = string.Empty;
     }
 }
