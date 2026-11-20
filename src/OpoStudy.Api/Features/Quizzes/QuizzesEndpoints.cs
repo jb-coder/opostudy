@@ -261,7 +261,7 @@ internal static class QuizzesEndpoints
         // Domain rule violations are translated by DomainRuleExceptionHandler; so is a concurrency conflict on save.
         var now = timeProvider.GetUtcNow();
         var result = attempt.Answer(question, request.OptionId, now);
-        var dailyProgress = await progress.RecordAnswerAsync(user, now, cancellationToken);
+        var recorded = await progress.RecordAnswerAsync(user, result.IsCorrect, now, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
 
         var feedback = new AnswerFeedback(
@@ -278,7 +278,8 @@ internal static class QuizzesEndpoints
             attempt.IncorrectCount,
             attempt.Answers.Count(a => a.IsAnswered),
             attempt.Answers.Count,
-            dailyProgress));
+            recorded.Daily,
+            recorded.Xp));
     }
 
     // Every question of an attempt is guaranteed to exist: the importer never deletes questions (it
