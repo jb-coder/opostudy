@@ -50,6 +50,29 @@ public sealed class QuizAttemptTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Create_ReviewWithOrWithoutTopic_Succeeds(bool withTopic)
+    {
+        Guid? topicId = withTopic ? Guid.CreateVersion7() : null;
+
+        var attempt = QuizAttempt.Create(UserId, ExamId, topicId, QuizMode.Review, [_q1.Id, _q2.Id], Now);
+
+        attempt.Mode.ShouldBe(QuizMode.Review);
+        attempt.TopicId.ShouldBe(topicId);
+        attempt.Answers.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public void Create_ReviewWithoutQuestions_ThrowsDomainRule()
+    {
+        var ex = Should.Throw<DomainRuleException>(() =>
+            QuizAttempt.Create(UserId, ExamId, null, QuizMode.Review, [], Now));
+
+        ex.Code.ShouldBe("quiz.invalid_question_count");
+    }
+
+    [Theory]
     [InlineData(0)]
     [InlineData(Limits.MaxQuestionsPerQuiz + 1)]
     public void Create_WithQuestionCountOutOfRange_ThrowsDomainRule(int count)

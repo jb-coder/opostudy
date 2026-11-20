@@ -16,7 +16,7 @@ public sealed class QuizAttempt
     public Guid UserId { get; private set; }
     public Guid ExamId { get; private set; }
 
-    /// <summary>Topic of the quiz; <c>null</c> for random quizzes.</summary>
+    /// <summary>Topic of the quiz; <c>null</c> for random quizzes and for reviews of the whole exam.</summary>
     public Guid? TopicId { get; private set; }
 
     public QuizMode Mode { get; private set; }
