@@ -132,6 +132,13 @@ public sealed partial class QuizViewModel(
     [ObservableProperty]
     public partial string LegalReferenceText { get; set; } = string.Empty;
 
+    /// <summary>Non-blocking notice shown when the answer just sent met the daily goal.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasGoalNotice))]
+    public partial string GoalNotice { get; set; } = string.Empty;
+
+    public bool HasGoalNotice => GoalNotice.Length > 0;
+
     [ObservableProperty]
     public partial string NextButtonText { get; set; } = "Siguiente pregunta";
 
@@ -229,6 +236,7 @@ public sealed partial class QuizViewModel(
         var question = _questions[_index];
         IsBusy = true;
         ErrorMessage = null;
+        GoalNotice = string.Empty;
         try
         {
             var response = await api.SubmitAnswerAsync(_quizId, new SubmitAnswerRequest(question.QuestionId, option.Id), cancellationToken);
@@ -237,6 +245,10 @@ public sealed partial class QuizViewModel(
             _incorrectCount = response.IncorrectCount;
             ShowFeedback(response.Feedback);
             UpdateProgress();
+            if (response.DailyProgress is { GoalMetNow: true } daily)
+            {
+                GoalNotice = DailyGoalCard.GoalMetNotice(daily.CurrentStreak);
+            }
         }
         catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
@@ -360,6 +372,7 @@ public sealed partial class QuizViewModel(
 
     private void ShowQuestion(int index)
     {
+        GoalNotice = string.Empty;
         _index = index;
         var question = _questions[index];
 

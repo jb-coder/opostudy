@@ -27,7 +27,7 @@ internal static class UsersEndpoints
     private static async Task<Ok<UserProfileResponse>> GetMe(CurrentUserService currentUser, CancellationToken cancellationToken)
     {
         var user = await currentUser.GetOrCreateAsync(cancellationToken);
-        return TypedResults.Ok(new UserProfileResponse(user.Id, user.CreatedAt, user.ActiveExamId));
+        return TypedResults.Ok(new UserProfileResponse(user.Id, user.CreatedAt, user.ActiveExamId, user.DailyGoal, user.TimeZone));
     }
 
     private static async Task<NoContent> DeleteMe(HttpContext http, OpoStudyDbContext db, CancellationToken cancellationToken)

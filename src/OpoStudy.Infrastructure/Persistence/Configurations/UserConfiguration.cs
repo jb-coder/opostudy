@@ -16,6 +16,14 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Id).ValueGeneratedNever();
         builder.Property(u => u.FirebaseUid).HasMaxLength(Limits.FirebaseUid);
         builder.HasIndex(u => u.FirebaseUid).IsUnique();
+        builder.Property(u => u.DailyGoal).HasDefaultValue(Limits.DefaultDailyGoal);
+        builder.Property(u => u.TimeZone).HasMaxLength(Limits.TimeZone).HasDefaultValue(Limits.DefaultTimeZone);
+        builder.ComplexProperty(u => u.Streak, streak =>
+        {
+            streak.Property(s => s.Longest).HasColumnName("streak_longest").HasDefaultValue(0);
+            streak.Property(s => s.LastLength).HasColumnName("streak_last_length").HasDefaultValue(0);
+            streak.Property(s => s.LastMetOn).HasColumnName("streak_last_met_on");
+        });
 
         builder.HasOne<Exam>().WithMany().HasForeignKey(u => u.ActiveExamId).OnDelete(DeleteBehavior.SetNull);
     }

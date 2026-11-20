@@ -4,6 +4,7 @@ using Microsoft.Extensions.Time.Testing;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
+using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.SystemInfo;
 using OpoStudy.Contracts.Users;
 using OpoStudy.Mobile.Core.Api;
@@ -29,8 +30,153 @@ public sealed class HomeViewModelTests
     public HomeViewModelTests()
     {
         _api.GetMeAsync(Arg.Any<CancellationToken>())
-            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 10, 0, 0, TimeSpan.Zero), null));
+            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 10, 0, 0, TimeSpan.Zero), null, 10, "Europe/Madrid"));
         _auth.Email.Returns("a@b.com");
+        _api.GetStreakAsync(Arg.Any<CancellationToken>()).Returns(StreakWith());
+    }
+
+    private static StreakResponse StreakWith(int goal = 10, int answered = 7, bool met = false, int current = 5, int longest = 12) =>
+        new(goal, new DateOnly(2026, 11, 20), answered, met, current, longest, []);
+
+    [Fact]
+    public async Task RefreshCommand_TimeZoneDiffers_UpdatesThenLoadsStreak()
+    {
+        _time.SetLocalTimeZone(TimeZoneInfo.CreateCustomTimeZone("Atlantic/Canary", TimeSpan.Zero, "x", "x"));
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        await _api.Received(1).UpdateTimeZoneAsync(Arg.Is<UpdateTimeZoneRequest>(r => r.TimeZone == "Atlantic/Canary"), Arg.Any<CancellationToken>());
+        await _api.Received(1).GetStreakAsync(Arg.Any<CancellationToken>());
+        sut.HasStreak.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task RefreshCommand_TimeZoneMatches_DoesNotUpdate()
+    {
+        _time.SetLocalTimeZone(TimeZoneInfo.CreateCustomTimeZone("Europe/Madrid", TimeSpan.FromHours(1), "x", "x"));
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        await _api.DidNotReceive().UpdateTimeZoneAsync(Arg.Any<UpdateTimeZoneRequest>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task RefreshCommand_TimeZoneUpdateFails_StillLoadsStreakWithoutError()
+    {
+        _time.SetLocalTimeZone(TimeZoneInfo.CreateCustomTimeZone("Atlantic/Canary", TimeSpan.Zero, "x", "x"));
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _api.UpdateTimeZoneAsync(Arg.Any<UpdateTimeZoneRequest>(), Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.HasError.ShouldBeFalse();
+        sut.HasStreak.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task RefreshCommand_StreakLoadFails_KeepsScreenWithoutError()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _api.GetStreakAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.HasError.ShouldBeFalse();
+        sut.IsConnected.ShouldBeTrue();
+        sut.HasStreak.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_AlreadyLoaded_ReloadsOnlyStreak()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.OnAppearingAsync();
+
+        await _api.Received(1).GetVersionAsync(Arg.Any<CancellationToken>());
+        await _api.Received(1).GetMeAsync(Arg.Any<CancellationToken>());
+        await _api.Received(2).GetStreakAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task RefreshCommand_StreakLoaded_FillsCardTexts()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.GoalProgressText.ShouldBe("7 de 10 preguntas");
+        sut.GoalProgress.ShouldBe(0.7);
+        sut.StreakText.ShouldBe("🔥 5 días");
+        sut.LongestStreakText.ShouldBe("Mejor racha: 12");
+        sut.KeepStreakText.ShouldBe("Responde 3 preguntas más para mantener tu racha");
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_StaleStreakArrivesAfterGoalChange_KeepsGoalChange()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+        var pending = new TaskCompletionSource<StreakResponse>();
+        _api.GetStreakAsync(Arg.Any<CancellationToken>()).Returns(pending.Task);
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns("20");
+        _api.UpdateDailyGoalAsync(Arg.Any<UpdateDailyGoalRequest>(), Arg.Any<CancellationToken>())
+            .Returns(StreakWith(goal: 20, answered: 7));
+
+        var reload = sut.OnAppearingAsync();
+        await sut.ChangeDailyGoalCommand.ExecuteAsync(null);
+        pending.SetResult(StreakWith(goal: 10, answered: 7));
+        await reload;
+
+        sut.GoalProgressText.ShouldBe("7 de 20 preguntas");
+    }
+
+    [Fact]
+    public async Task ChangeDailyGoalCommand_ChoiceMade_UpdatesGoalAndRefreshesCard()
+    {
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns("20");
+        _api.UpdateDailyGoalAsync(Arg.Is<UpdateDailyGoalRequest>(r => r.DailyGoal == 20), Arg.Any<CancellationToken>())
+            .Returns(StreakWith(goal: 20, answered: 7));
+        var sut = CreateSut();
+
+        await sut.ChangeDailyGoalCommand.ExecuteAsync(null);
+
+        sut.GoalProgressText.ShouldBe("7 de 20 preguntas");
+        await _dialogs.Received(1).ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Is<IReadOnlyList<string>>(o => o.Count == 4 && o[0] == "10" && o[1] == "20" && o[2] == "30" && o[3] == "50"));
+    }
+
+    [Fact]
+    public async Task ChangeDailyGoalCommand_Dismissed_DoesNotCallApi()
+    {
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns((string?)null);
+        var sut = CreateSut();
+
+        await sut.ChangeDailyGoalCommand.ExecuteAsync(null);
+
+        await _api.DidNotReceive().UpdateDailyGoalAsync(Arg.Any<UpdateDailyGoalRequest>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ChangeDailyGoalCommand_ApiFails_ShowsError()
+    {
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns("30");
+        _api.UpdateDailyGoalAsync(Arg.Any<UpdateDailyGoalRequest>(), Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        var sut = CreateSut();
+
+        await sut.ChangeDailyGoalCommand.ExecuteAsync(null);
+
+        sut.HasError.ShouldBeTrue();
+        sut.IsBusy.ShouldBeFalse();
     }
 
     private readonly FakeTimeProvider _time = new();
@@ -44,7 +190,7 @@ public sealed class HomeViewModelTests
         _time.SetLocalTimeZone(TimeZoneInfo.CreateCustomTimeZone("test", TimeSpan.FromHours(2), "test", "test"));
         _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
         _api.GetMeAsync(Arg.Any<CancellationToken>())
-            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 23, 30, 0, TimeSpan.Zero), null));
+            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 23, 30, 0, TimeSpan.Zero), null, 10, "Europe/Madrid"));
         var sut = CreateSut();
 
         await sut.RefreshCommand.ExecuteAsync(null);

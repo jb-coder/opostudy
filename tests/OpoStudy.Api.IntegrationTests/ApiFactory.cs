@@ -15,7 +15,14 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17-alpine").Build();
 
-    public async ValueTask InitializeAsync() => await _postgres.StartAsync();
+    public async ValueTask InitializeAsync()
+    {
+        await _postgres.StartAsync();
+
+        // Start the base host now so it applies the migrations once. Otherwise tests that build derived hosts
+        // (WithWebHostBuilder) in parallel would all try to migrate the empty database at the same time.
+        _ = Services;
+    }
 
     public override async ValueTask DisposeAsync()
     {

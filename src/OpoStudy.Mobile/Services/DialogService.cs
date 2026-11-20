@@ -11,5 +11,11 @@ internal sealed class DialogService : IDialogService
     public Task AlertAsync(string title, string message) =>
         MainThread.InvokeOnMainThreadAsync(() => CurrentShell().DisplayAlertAsync(title, message, "Aceptar"));
 
+    public async Task<string?> ChooseAsync(string title, string cancel, IReadOnlyList<string> options)
+    {
+        var choice = await MainThread.InvokeOnMainThreadAsync(() => CurrentShell().DisplayActionSheetAsync(title, cancel, null, [.. options]));
+        return choice == cancel ? null : choice;
+    }
+
     private static Shell CurrentShell() => Shell.Current ?? throw new InvalidOperationException("Shell is not initialized.");
 }

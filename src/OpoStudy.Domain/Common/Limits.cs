@@ -16,4 +16,11 @@ public static class Limits
     public const int MinOptions = 2;
     public const int MaxOptions = 6;
     public const int MaxQuestionsPerQuiz = 100;
+
+    public const int TimeZone = 64;
+    public const int MinDailyGoal = 5;
+    public const int MaxDailyGoal = 100;
+    public const int DefaultDailyGoal = 10;
+    public const string DefaultTimeZone = "Europe/Madrid";
+    public const int StreakHistoryDays = 7;
 }
