@@ -94,7 +94,7 @@ Sin cambios.
 - [x] Desde el inicio se llega a oposiciones → temas → test, y se completa un test de 10 preguntas en el emulador contra la API local (AppHost).
 - [x] Tras responder se ve si se ha acertado, la opción correcta, la aclaración y la referencia legal, sin depender solo del color.
 - [x] Al terminar se muestra el resumen con aciertos, fallos y porcentaje, y se puede hacer otro test o volver al inicio.
-- [x] La aclaración viene de la base de datos: en las trazas del AppHost solo hay llamadas a `/api/v1/quizzes…` y ninguna al Worker ni a proveedores LLM. (verificado en #31 por código: aún no existe ningún proveedor LLM (`ILlmCorrector` no está implementado) y la pantalla solo usa los endpoints de exams y quizzes; las trazas del panel de Aspire no se revisaron).
+- [ ] La aclaración viene de la base de datos: en las trazas del AppHost solo hay llamadas a `/api/v1/quizzes…` y ninguna al Worker ni a proveedores LLM. (solo verificado por código en #31: no hay ningún cliente HTTP ni proveedor LLM registrado en la API ni en el Worker; las trazas del panel de Aspire no se han revisado).
 - [x] Un error de red al responder muestra el mensaje y permite reintentar la misma pregunta; un 409 resincroniza el test. (cubierto con tests unitarios de `QuizViewModel`; no probado con modo avión en el emulador).
 - [x] Revisión visual con capturas en claro y oscuro de las cuatro vistas (oposiciones, temas, pregunta respondida, resumen) siguiendo el sistema de diseño.
 - [x] Tests unitarios de los ViewModels; build sin warnings (backend y `net10.0-android`).
