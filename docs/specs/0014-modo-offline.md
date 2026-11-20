@@ -93,7 +93,7 @@ Servidor: sin cambios de esquema ni migración (`Model_HasNoPendingChangesToMigr
 App: SQLite en `Mobile.Core/Offline`, paquete `Microsoft.Data.Sqlite` (versión en `Directory.Packages.props`; trae `SQLitePCLRaw.bundle_e_sqlite3` con el nativo de Android). Fichero `offline.db3` en `FileSystem.AppDataDirectory`; la ruta llega por opciones para usar un fichero temporal en los tests. Esquema versionado con `PRAGMA user_version`; la versión 1 crea:
 - `offline_content(exam_id TEXT PRIMARY KEY, version TEXT NOT NULL, downloaded_at TEXT NOT NULL, payload TEXT NOT NULL)`: `payload` es el `OfflineContentResponse` serializado con `ApiJsonContext`.
 - `local_quizzes(id TEXT PRIMARY KEY, user_id TEXT NOT NULL, exam_id TEXT NOT NULL, topic_id TEXT NULL, mode TEXT NOT NULL, title TEXT NOT NULL, started_at TEXT NOT NULL, question_ids TEXT NOT NULL, finished INTEGER NOT NULL DEFAULT 0)`: `question_ids` es un JSON con los ids en orden.
-- `pending_answers(quiz_id TEXT NOT NULL REFERENCES local_quizzes(id) ON DELETE CASCADE, question_id TEXT NOT NULL, option_id TEXT NOT NULL, answered_at TEXT NOT NULL, is_correct INTEGER NOT NULL, PRIMARY KEY (quiz_id, question_id))`.
+- `pending_answers(quiz_id TEXT NOT NULL REFERENCES local_quizzes(id) ON DELETE CASCADE, question_id TEXT NOT NULL, option_id TEXT NOT NULL, answered_at TEXT NOT NULL, is_correct INTEGER NOT NULL, synced INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (quiz_id, question_id))`. `synced = 1` marca las respuestas que ya están en el servidor: las adoptadas de un test online y las de un test sin terminar ya sincronizado, que así se puede seguir. La cola, el recuento de pendientes y la limpieza solo miran `synced = 0`.
 - Fechas en ISO 8601 UTC (`"O"`), guids en texto. `PRAGMA foreign_keys = ON` en cada conexión.
 
 ### App
@@ -114,8 +114,8 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
   - `AnswerAsync(quizId, questionId, optionId)`: corrige con la caché, inserta en `pending_answers` (`DateTimeOffset` del `TimeProvider`) y devuelve el `AnswerFeedback` con los recuentos. Marca `finished` al responder la última. Si la pregunta no está en la caché, lanza una excepción y el ViewModel muestra el error de envío actual.
   - `GetLatestUnfinishedAsync()` y `PendingAnswerCountAsync()`, del usuario actual.
 - `IQuizSyncService.FlushAsync(ct)`: con un `SemaphoreSlim` (una sola a la vez). Para cada test local del usuario actual con respuestas pendientes, por `started_at`, envía `SyncQuizAsync` con todas sus pendientes.
-  - **200:** borra esas pendientes en una transacción y, si el test está terminado, también el test local.
-  - **Error de conectividad, 401, 409 por concurrencia (`quiz.concurrent_update`, `concurrency.conflict`) o 5xx:** se deja para la próxima vez y se para el bucle.
+  - **200:** si el test está terminado, borra el test local con sus respuestas; si no, marca las enviadas como `synced = 1`.
+  - **Error de conectividad, 401, 408, 429, 409 por concurrencia (`quiz.concurrent_update`, `concurrency.conflict`) o 5xx:** se deja para la próxima vez y se para el bucle.
   - **Cualquier otro 4xx** (400, 404, 422, `quiz.sync_conflict`): no se arreglará reintentando. Se borra el test local con sus pendientes y se registra en el log (sin ids de usuario).
   - Devuelve cuántas respuestas se han sincronizado.
   - Limpieza: borra los tests locales sin pendientes que estén terminados o tengan más de 30 días.
