@@ -328,6 +328,12 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasColumnType("xid")
                         .HasColumnName("xmin");
 
+                    b.Property<int>("XpEarned")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("xp_earned");
+
                     b.HasKey("UserId", "Date")
                         .HasName("pk_daily_activities");
 
@@ -367,6 +373,12 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(64)")
                         .HasDefaultValue("Europe/Madrid")
                         .HasColumnName("time_zone");
+
+                    b.Property<int>("Xp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("xp");
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "Streak", "OpoStudy.Domain.Users.User.Streak#Streak", b1 =>
                         {
