@@ -23,4 +23,5 @@ public static class Limits
     public const int DefaultDailyGoal = 10;
     public const string DefaultTimeZone = "Europe/Madrid";
     public const int StreakHistoryDays = 7;
+    public const int MaxStreakFreezes = 2;
 }

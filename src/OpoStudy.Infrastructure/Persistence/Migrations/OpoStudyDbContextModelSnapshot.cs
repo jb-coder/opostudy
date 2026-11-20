@@ -314,6 +314,10 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("answered_count");
 
+                    b.Property<DateTimeOffset?>("FreezeUsedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("freeze_used_at");
+
                     b.Property<int>("Goal")
                         .HasColumnType("integer")
                         .HasColumnName("goal");
@@ -374,15 +378,33 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasDefaultValue("Europe/Madrid")
                         .HasColumnName("time_zone");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.Property<int>("Xp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasDefaultValue(0)
                         .HasColumnName("xp");
 
+                    b.Property<int>("XpSpent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("xp_spent");
+
                     b.ComplexProperty(typeof(Dictionary<string, object>), "Streak", "OpoStudy.Domain.Users.User.Streak#Streak", b1 =>
                         {
                             b1.IsRequired();
+
+                            b1.Property<int>("Freezes")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasDefaultValue(0)
+                                .HasColumnName("streak_freezes");
 
                             b1.Property<int>("LastLength")
                                 .ValueGeneratedOnAdd()
@@ -399,6 +421,10 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                                 .HasColumnType("integer")
                                 .HasDefaultValue(0)
                                 .HasColumnName("streak_longest");
+
+                            b1.Property<DateOnly?>("ProtectedThrough")
+                                .HasColumnType("date")
+                                .HasColumnName("streak_protected_through");
                         });
 
                     b.HasKey("Id")

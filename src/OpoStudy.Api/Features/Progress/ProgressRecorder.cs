@@ -22,6 +22,7 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
         ArgumentNullException.ThrowIfNull(user);
 
         var today = user.TodayAt(now);
+        await SettleStreakAsync(user, today, now, cancellationToken);
         var activity = await FindActivityAsync(user.Id, today, cancellationToken);
         if (activity is null)
         {
@@ -48,13 +49,48 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
             new XpGainResponse(gained, bonus, user.Xp, user.Level, user.Level > levelBefore));
     }
 
-    /// <summary>Changes the daily goal. It applies from today: past days are untouched and a met day stays met.</summary>
-    public async Task ChangeDailyGoalAsync(User user, int dailyGoal, DateTimeOffset now, CancellationToken cancellationToken)
+    /// <summary>
+    /// Settles the streak: spends freezes on the closed days that were not met, or loses the streak if there are not enough.
+    /// Returns the number of days protected.
+    /// </summary>
+    public async Task<int> SettleStreakAsync(User user, DateOnly today, DateTimeOffset now, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(user);
 
-        user.SetDailyGoal(dailyGoal);
+        var days = user.Streak.Settle(today);
+        foreach (var day in days)
+        {
+            var activity = await FindActivityAsync(user.Id, day, cancellationToken);
+            if (activity is null)
+            {
+                activity = DailyActivity.Start(user.Id, day, user.DailyGoal);
+                db.DailyActivities.Add(activity);
+            }
+
+            activity.Protect(now);
+        }
+
+        return days.Count;
+    }
+
+    /// <summary>Buys a streak freeze. The streak is settled first, so a lost streak is not recovered. Returns the days protected by the settlement.</summary>
+    public async Task<int> BuyStreakFreezeAsync(User user, DateTimeOffset now, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+
+        var protectedDays = await SettleStreakAsync(user, user.TodayAt(now), now, cancellationToken);
+        user.BuyStreakFreeze();
+        return protectedDays;
+    }
+
+    /// <summary>Changes the daily goal. It applies from today: past days are untouched and a met day stays met. Returns the days protected by the settlement.</summary>
+    public async Task<int> ChangeDailyGoalAsync(User user, int dailyGoal, DateTimeOffset now, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+
         var today = user.TodayAt(now);
+        var protectedDays = await SettleStreakAsync(user, today, now, cancellationToken);
+        user.SetDailyGoal(dailyGoal);
         var activity = await FindActivityAsync(user.Id, today, cancellationToken);
         if (activity is not null && activity.ChangeGoal(dailyGoal, now))
         {
@@ -63,6 +99,8 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
             user.GainXp(bonus);
             activity.AddXp(bonus);
         }
+
+        return protectedDays;
     }
 
     /// <summary>Reads the user's level, XP into the level and XP earned today (in the user's time zone).</summary>
@@ -80,11 +118,14 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
 
         var level = user.Level;
         var floor = XpRules.XpToReach(level);
-        return new LevelResponse(level, user.Xp, user.Xp - floor, XpRules.XpToReach(level + 1) - floor, xpToday);
+        return new LevelResponse(level, user.Xp, user.Xp - floor, XpRules.XpToReach(level + 1) - floor, xpToday, user.SpendableXp);
     }
 
-    /// <summary>Reads today's progress, the streak and the last <see cref="Limits.StreakHistoryDays"/> days.</summary>
-    public async Task<StreakResponse> GetStreakAsync(User user, DateTimeOffset now, CancellationToken cancellationToken)
+    /// <summary>
+    /// Reads today's progress, the streak and the last <see cref="Limits.StreakHistoryDays"/> days.
+    /// The caller settles and saves first; <paramref name="freezesUsedNow"/> are the days that settlement protected.
+    /// </summary>
+    public async Task<StreakResponse> GetStreakAsync(User user, DateTimeOffset now, int freezesUsedNow, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(user);
 
@@ -101,8 +142,8 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
             {
                 var date = from.AddDays(offset);
                 return activities.TryGetValue(date, out var a)
-                    ? new DayActivityResponse(date, a.AnsweredCount, a.Goal, a.IsGoalMet)
-                    : new DayActivityResponse(date, 0, user.DailyGoal, false);
+                    ? new DayActivityResponse(date, a.AnsweredCount, a.Goal, a.IsGoalMet, a.IsProtected)
+                    : new DayActivityResponse(date, 0, user.DailyGoal, false, false);
             })
             .ToList();
         var todayActivity = lastDays[^1];
@@ -114,7 +155,11 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
             todayActivity.GoalMet,
             user.Streak.CurrentAt(today),
             user.Streak.Longest,
-            lastDays);
+            lastDays,
+            user.Streak.Freezes,
+            Limits.MaxStreakFreezes,
+            XpRules.StreakFreezePrice,
+            freezesUsedNow);
     }
 
     private Task<DailyActivity?> FindActivityAsync(Guid userId, DateOnly date, CancellationToken cancellationToken) =>

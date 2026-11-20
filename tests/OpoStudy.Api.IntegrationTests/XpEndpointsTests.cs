@@ -45,7 +45,7 @@ public sealed class XpEndpointsTests(ApiFactory factory)
 
         var level = await client.GetFromJsonAsync<LevelResponse>(LevelUri, Ct);
 
-        level.ShouldBe(new LevelResponse(1, 0, 0, 100, 0));
+        level.ShouldBe(new LevelResponse(1, 0, 0, 100, 0, 0));
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public sealed class XpEndpointsTests(ApiFactory factory)
 
         var level = await bob.GetFromJsonAsync<LevelResponse>(LevelUri, Ct);
 
-        level.ShouldBe(new LevelResponse(1, 0, 0, 100, 0));
+        level.ShouldBe(new LevelResponse(1, 0, 0, 100, 0, 0));
     }
 
     // ---- Helpers ----

@@ -6,4 +6,5 @@ namespace OpoStudy.Contracts.Progress;
 /// <param name="XpIntoLevel">XP earned since reaching the current level.</param>
 /// <param name="XpForNextLevel">XP the current level needs to reach the next one.</param>
 /// <param name="XpToday">XP earned today in the user's time zone, bonus included.</param>
-public sealed record LevelResponse(int Level, int TotalXp, int XpIntoLevel, int XpForNextLevel, int XpToday);
+/// <param name="SpendableXp">XP available to spend (total XP minus spent XP).</param>
+public sealed record LevelResponse(int Level, int TotalXp, int XpIntoLevel, int XpForNextLevel, int XpToday, int SpendableXp);
