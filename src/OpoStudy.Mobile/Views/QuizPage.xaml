@@ -8,10 +8,6 @@
     x:DataType="vm:QuizViewModel"
     Title="{Binding QuizTitle}">
 
-    <Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding BackCommand}" />
-    </Shell.BackButtonBehavior>
-
     <ScrollView>
         <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceL}">
 

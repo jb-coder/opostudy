@@ -2,7 +2,7 @@
 
 - **Issue:** #39
 - **Milestone:** v0.2.0
-- **Estado:** lista
+- **Estado:** implementada
 
 ## Objetivo
 Que fallar una pregunta sirva para aprender: el usuario puede hacer tests solo con las preguntas que tiene falladas, de toda la oposición o de un tema, hasta acertarlas. Además, la app deja de perder tests a medias por error: pide confirmación al salir de un test empezado y ofrece continuarlo desde el inicio.
@@ -115,17 +115,17 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 - No hacen falta secretos nuevos.
 
 ## Criterios de aceptación
-- [ ] Un usuario sin respuestas tiene `Total = 0` y `Topics` vacío en `GET /exams/{examId}/mistakes`.
-- [ ] Tras fallar una pregunta, aparece en las falladas de su tema. Si después la acierta en otro test (de repaso o normal), deja de aparecer; si la vuelve a fallar, vuelve.
-- [ ] Una pregunta acertada y fallada después cuenta como fallada (manda la última respuesta).
-- [ ] Las preguntas sin responder de un test a medias y las preguntas desactivadas no cuentan como falladas.
-- [ ] `POST /quizzes` con `MistakesOnly` crea un test `Review` solo con falladas del ámbito pedido (tema u oposición), sin superar `QuestionCount`. Sin falladas devuelve `422 quiz.no_mistakes`.
-- [ ] Las respuestas de un repaso suman al objetivo diario, a la racha y al XP como las de cualquier test.
-- [ ] Las falladas y los repasos de un usuario no dependen de las respuestas de otro.
-- [ ] La pantalla de temas permite repasar las falladas de toda la oposición o de un tema, con sus contadores, y los recarga al volver de un test.
-- [ ] Salir de un test empezado y sin terminar pide confirmación (botón de la barra y botón atrás de Android); sin respuestas o terminado, sale directamente.
-- [ ] El inicio ofrece continuar el último test a medias, y al continuar se abre en la primera pregunta pendiente.
-- [ ] El resumen de un repaso indica cuántas falladas quedan (verificado en el emulador, tema claro y oscuro).
+- [x] Un usuario sin respuestas tiene `Total = 0` y `Topics` vacío en `GET /exams/{examId}/mistakes`.
+- [x] Tras fallar una pregunta, aparece en las falladas de su tema. Si después la acierta en otro test (de repaso o normal), deja de aparecer; si la vuelve a fallar, vuelve.
+- [x] Una pregunta acertada y fallada después cuenta como fallada (manda la última respuesta).
+- [x] Las preguntas sin responder de un test a medias y las preguntas desactivadas no cuentan como falladas.
+- [x] `POST /quizzes` con `MistakesOnly` crea un test `Review` solo con falladas del ámbito pedido (tema u oposición), sin superar `QuestionCount`. Sin falladas devuelve `422 quiz.no_mistakes`.
+- [x] Las respuestas de un repaso suman al objetivo diario, a la racha y al XP como las de cualquier test.
+- [x] Las falladas y los repasos de un usuario no dependen de las respuestas de otro.
+- [x] La pantalla de temas permite repasar las falladas de toda la oposición o de un tema, con sus contadores, y los recarga al volver de un test.
+- [x] Salir de un test empezado y sin terminar pide confirmación (botón de la barra y botón atrás de Android); sin respuestas o terminado, sale directamente.
+- [x] El inicio ofrece continuar el último test a medias, y al continuar se abre en la primera pregunta pendiente.
+- [x] El resumen de un repaso indica cuántas falladas quedan (verificado en el emulador, tema claro y oscuro).
 
 ## Plan de tests
 - **Unitarios (Domain):**
