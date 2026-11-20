@@ -94,8 +94,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # 0.x versions and release candidates (-rc.N) are published as pre-releases (ADR 0001).
           PRERELEASE=""
-          case "$GITHUB_REF_NAME" in *-*) PRERELEASE="--prerelease";; esac
+          case "$GITHUB_REF_NAME" in v0.*|*-*) PRERELEASE="--prerelease";; esac
           gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP/OpoStudy-${GITHUB_REF_NAME}.apk" \
             --title "OpoStudy $GITHUB_REF_NAME" --generate-notes $PRERELEASE
 
@@ -114,13 +115,16 @@ jobs:
         with:
           global-json-file: global.json
       - name: Login en GHCR
-        run: echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: echo "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
       - name: Publicar imágenes (api y worker)
         run: |
-          OWNER="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+          OWNER="$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
           VERSION="${GITHUB_REF_NAME#v}"
           TAGS="$VERSION"
-          case "$VERSION" in *-*) ;; *) TAGS="$VERSION;latest";; esac
+          # `latest` only for stable versions: neither 0.x nor release candidates.
+          case "$VERSION" in 0.*|*-*) ;; *) TAGS="$VERSION;latest";; esac
           for APP in Api Worker; do
             NAME="opostudy-$(echo "$APP" | tr '[:upper:]' '[:lower:]')"
             dotnet publish "src/OpoStudy.$APP/OpoStudy.$APP.csproj" -c Release -t:PublishContainer \
