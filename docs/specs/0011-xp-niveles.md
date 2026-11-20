@@ -2,7 +2,7 @@
 
 - **Issue:** #38
 - **Milestone:** v0.2.0
-- **Estado:** lista
+- **Estado:** implementada
 
 ## Objetivo
 Dar una recompensa inmediata a cada respuesta y una medida del avance a largo plazo. El usuario gana puntos de experiencia (XP) al responder, con un bonus al cumplir el objetivo diario que crece con la racha, y sube de nivel según el XP acumulado. Lo ve en la pantalla de inicio, en cada respuesta y al terminar un test. Se apoya en el punto único de registro de progreso de la 0010 (`ProgressRecorder`).
@@ -21,7 +21,7 @@ Dar una recompensa inmediata a cada respuesta y una medida del avance a largo pl
 - Dominio: reglas de XP y niveles (`XpRules`), XP total en `User` y XP del día en `DailyActivity`.
 - Concesión de XP en `ProgressRecorder` al responder y al cumplir el objetivo, en la misma transacción.
 - Endpoint para leer el nivel y ampliación de la respuesta de `SubmitAnswer`.
-- App: tarjeta «Nivel» en la pantalla de inicio, XP ganado en cada respuesta, aviso de subida de nivel y XP total del test en el resumen.
+- App: tarjeta «Experiencia» en la pantalla de inicio, XP ganado en cada respuesta, aviso de subida de nivel y XP total del test en el resumen.
 
 **No incluye:**
 - Protectores de racha pagados con XP (#43), nombres o insignias por nivel, logros ni clasificaciones.
@@ -79,8 +79,8 @@ Migración `AddXp` con la skill `new-ef-migration`:
 
 ### App
 Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
-- **Pantalla de inicio**, tarjeta «Nivel», justo debajo de «Objetivo diario»:
-  - «Nivel 4» destacado y una `ProgressBar` con `XpIntoLevel / XpForNextLevel`.
+- **Pantalla de inicio**, tarjeta «Experiencia», justo debajo de «Objetivo diario»:
+  - Título «Experiencia», «Nivel 4» destacado y una `ProgressBar` con `XpIntoLevel / XpForNextLevel`.
   - «230 / 400 XP para el nivel 5» y «Hoy: +120 XP» (o «Hoy aún no has ganado XP» si `XpToday` es 0).
   - Se carga con `GET /me/level` en el mismo refresco que la racha. Si falla, la tarjeta muestra el error sin bloquear la de «Objetivo diario».
   - Tras «Cambiar objetivo», se recarga también el nivel.
@@ -98,16 +98,16 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 - No hacen falta secretos nuevos.
 
 ## Criterios de aceptación
-- [ ] Un usuario nuevo tiene 0 XP, nivel 1, `XpIntoLevel = 0` y `XpForNextLevel = 100`.
-- [ ] Un acierto suma 10 XP y un fallo, 2, al total y al día. `XpGainResponse.Gained` lo refleja, con `Bonus = 0`.
-- [ ] La respuesta que cumple el objetivo diario suma, además, `50 + min(5·racha, 50)`: 55 con racha 1, 100 con racha 10 o más. Las siguientes respuestas del día no repiten el bonus.
-- [ ] Bajar el objetivo hasta cumplir el día concede el bonus una sola vez. Volver a cambiarlo no lo repite.
-- [ ] `LevelFor` devuelve 1 con 0 y 99 XP, 2 con 100, 2 con 299, 3 con 300, 10 con 4.500 y 9 con 4.499.
-- [ ] La respuesta que cruza un umbral de nivel devuelve `LeveledUp = true` y el nivel nuevo; la siguiente devuelve `false`.
-- [ ] `GET /me/level` devuelve el XP de hoy en la zona horaria del usuario: tras medianoche, `XpToday` vuelve a 0 y `TotalXp` se mantiene.
-- [ ] Dos respuestas simultáneas del mismo usuario no pierden XP: una se guarda y la otra recibe 409 sin cambiar nada.
-- [ ] Un usuario no ve ni modifica el XP de otro.
-- [ ] La app muestra la tarjeta «Nivel» en tema claro y oscuro, el XP de cada respuesta, el aviso de subida de nivel y el total del test en el resumen (verificado en el emulador).
+- [x] Un usuario nuevo tiene 0 XP, nivel 1, `XpIntoLevel = 0` y `XpForNextLevel = 100`.
+- [x] Un acierto suma 10 XP y un fallo, 2, al total y al día. `XpGainResponse.Gained` lo refleja, con `Bonus = 0`.
+- [x] La respuesta que cumple el objetivo diario suma, además, `50 + min(5·racha, 50)`: 55 con racha 1, 100 con racha 10 o más. Las siguientes respuestas del día no repiten el bonus.
+- [x] Bajar el objetivo hasta cumplir el día concede el bonus una sola vez. Volver a cambiarlo no lo repite.
+- [x] `LevelFor` devuelve 1 con 0 y 99 XP, 2 con 100, 2 con 299, 3 con 300, 10 con 4.500 y 9 con 4.499.
+- [x] La respuesta que cruza un umbral de nivel devuelve `LeveledUp = true` y el nivel nuevo; la siguiente devuelve `false`.
+- [x] `GET /me/level` devuelve el XP de hoy en la zona horaria del usuario: tras medianoche, `XpToday` vuelve a 0 y `TotalXp` se mantiene.
+- [ ] Dos respuestas simultáneas del mismo usuario no pierden XP: una se guarda y la otra recibe 409 sin cambiar nada. Sin test automático: lo garantiza el `xmin` de la `DailyActivity` del día, que se modifica junto con el XP.
+- [x] Un usuario no ve ni modifica el XP de otro.
+- [x] La app muestra la tarjeta «Experiencia» en tema claro y oscuro, el XP de cada respuesta, el aviso de subida de nivel y el total del test en el resumen (verificado en el emulador).
 
 ## Plan de tests
 - **Unitarios (Domain):**

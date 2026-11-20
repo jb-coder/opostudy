@@ -85,7 +85,7 @@
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">
                         <Label
                             Style="{StaticResource SubtitleLabel}"
-                            Text="Nivel"
+                            Text="Experiencia"
                             SemanticProperties.HeadingLevel="Level2" />
                         <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasLevel}">
                             <Label
