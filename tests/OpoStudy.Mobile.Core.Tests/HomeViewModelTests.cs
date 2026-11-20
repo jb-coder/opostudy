@@ -29,7 +29,7 @@ public sealed class HomeViewModelTests
     public HomeViewModelTests()
     {
         _api.GetMeAsync(Arg.Any<CancellationToken>())
-            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 10, 0, 0, TimeSpan.Zero), null));
+            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 10, 0, 0, TimeSpan.Zero), null, 10, "Europe/Madrid"));
         _auth.Email.Returns("a@b.com");
     }
 
@@ -44,7 +44,7 @@ public sealed class HomeViewModelTests
         _time.SetLocalTimeZone(TimeZoneInfo.CreateCustomTimeZone("test", TimeSpan.FromHours(2), "test", "test"));
         _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
         _api.GetMeAsync(Arg.Any<CancellationToken>())
-            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 23, 30, 0, TimeSpan.Zero), null));
+            .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 23, 30, 0, TimeSpan.Zero), null, 10, "Europe/Madrid"));
         var sut = CreateSut();
 
         await sut.RefreshCommand.ExecuteAsync(null);

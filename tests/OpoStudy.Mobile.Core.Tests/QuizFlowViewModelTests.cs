@@ -307,7 +307,7 @@ public sealed class QuizViewModelTests
 
     private void GivenAnswer(QuizQuestionResponse question, Guid selected, Guid correct, bool finished, int ok, int ko, int total) =>
         _api.SubmitAnswerAsync(_quizId, Arg.Is<SubmitAnswerRequest>(r => r.QuestionId == question.QuestionId), Arg.Any<CancellationToken>())
-            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total));
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0)));
 
     [Fact]
     public async Task OnAppearingAsync_NoAnswers_ShowsFirstQuestion()
@@ -587,7 +587,7 @@ public sealed class QuizViewModelTests
         sut.IsBusy.ShouldBeTrue();
         sut.IsLoading.ShouldBeFalse();
         var correct = question.Options[0].Id;
-        sending.SetResult(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1));
+        sending.SetResult(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0)));
         await answering;
 
         sut.IsAnswered.ShouldBeTrue();
