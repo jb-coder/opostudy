@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
 using OpoStudy.Contracts.Progress;
+using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
@@ -113,6 +114,7 @@ public sealed partial class HomeViewModel(
             {
                 await LoadStreakAsync(CancellationToken.None);
                 await LoadLevelAsync(CancellationToken.None);
+                await LoadUnfinishedQuizAsync(CancellationToken.None);
             }
 
             return;
@@ -157,6 +159,7 @@ public sealed partial class HomeViewModel(
             await SyncTimeZoneAsync(me.TimeZone, cancellationToken);
             await LoadStreakAsync(cancellationToken);
             await LoadLevelAsync(cancellationToken);
+            await LoadUnfinishedQuizAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -241,6 +244,65 @@ public sealed partial class HomeViewModel(
             }
         }
     }
+
+    /// <summary>Bumped by every load, so a slower, older response never overwrites a newer one.</summary>
+    private int _quizVersion;
+
+    private Guid _unfinishedQuizId;
+
+    /// <summary>Whether the "unfinished quiz" card is shown.</summary>
+    [ObservableProperty]
+    public partial bool HasUnfinishedQuiz { get; set; }
+
+    [ObservableProperty]
+    public partial string UnfinishedQuizTitle { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string UnfinishedQuizProgressText { get; set; } = string.Empty;
+
+    /// <summary>Loads the most recent quiz and shows it only if it is started and not finished. Failures hide the card.</summary>
+    private async Task LoadUnfinishedQuizAsync(CancellationToken cancellationToken)
+    {
+        var version = ++_quizVersion;
+        QuizSummaryResponse? unfinished = null;
+        try
+        {
+            var quizzes = await api.GetQuizzesAsync(0, 1, cancellationToken);
+            var latest = quizzes.Count > 0 ? quizzes[0] : null;
+            if (latest is { FinishedAt: null } && latest.CorrectCount + latest.IncorrectCount > 0)
+            {
+                unfinished = latest;
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogQuizzesFailed(ex, ex.GetType().FullName);
+        }
+
+        if (version != _quizVersion)
+        {
+            return;
+        }
+
+        if (unfinished is null)
+        {
+            HasUnfinishedQuiz = false;
+            return;
+        }
+
+        _unfinishedQuizId = unfinished.Id;
+        UnfinishedQuizTitle = QuizTitles.For(unfinished);
+        UnfinishedQuizProgressText = string.Create(
+            CultureInfo.InvariantCulture,
+            $"{unfinished.CorrectCount + unfinished.IncorrectCount} de {unfinished.QuestionCount} respondidas");
+        HasUnfinishedQuiz = true;
+    }
+
+    [RelayCommand]
+    private Task ContinueQuizAsync() =>
+        navigation.GoToAsync(
+            Routes.Quiz,
+            new Dictionary<string, object> { [QueryKeys.QuizId] = _unfinishedQuizId, [QueryKeys.QuizTitle] = UnfinishedQuizTitle });
 
     private void ApplyStreak(StreakResponse streak)
     {
@@ -356,6 +418,9 @@ public sealed partial class HomeViewModel(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the streak ({ExceptionType})")]
     private partial void LogStreakFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the last quiz ({ExceptionType})")]
+    private partial void LogQuizzesFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the level ({ExceptionType})")]
     private partial void LogLevelFailed(Exception exception, string? exceptionType);

@@ -56,6 +56,28 @@ public static class ApiErrorMessages
         return exception.InnerException is null ? null : Classify(exception.InnerException);
     }
 
+    /// <summary>Stable error <c>code</c> of a ProblemDetails response (4xx only), or <c>null</c>.</summary>
+    public static string? ProblemCode(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        if (exception is not ApiException { StatusCode: >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError } api
+            || string.IsNullOrWhiteSpace(api.Content))
+        {
+            return null;
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(api.Content);
+            return document.RootElement.ValueKind == JsonValueKind.Object ? ReadString(document.RootElement, "code") : null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
     private static string? FromProblemDetails(ApiException exception)
     {
         if (string.IsNullOrWhiteSpace(exception.Content))

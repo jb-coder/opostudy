@@ -26,6 +26,12 @@ public interface IOpoStudyApi
     [Get("/api/v1/exams/{examId}/topics")]
     Task<IReadOnlyList<TopicResponse>> GetTopicsAsync(Guid examId, CancellationToken cancellationToken = default);
 
+    [Get("/api/v1/exams/{examId}/mistakes")]
+    Task<MistakeSummaryResponse> GetMistakesAsync(Guid examId, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/quizzes")]
+    Task<IReadOnlyList<QuizSummaryResponse>> GetQuizzesAsync(int skip, int take, CancellationToken cancellationToken = default);
+
     [Post("/api/v1/quizzes")]
     Task<QuizResponse> CreateQuizAsync([Body] CreateQuizRequest request, CancellationToken cancellationToken = default);
 

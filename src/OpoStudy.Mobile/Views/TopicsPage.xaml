@@ -41,11 +41,27 @@
                         <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
                     </VerticalStackLayout>
 
+                    <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                        <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="{StaticResource MinTouchTarget}">
+                            <Label Text="Solo preguntas falladas" VerticalOptions="Center" />
+                            <Switch
+                                Grid.Column="1"
+                                IsToggled="{Binding MistakesOnly}"
+                                IsEnabled="{Binding CanReviewMistakes}"
+                                VerticalOptions="Center"
+                                SemanticProperties.Description="Solo preguntas falladas" />
+                        </Grid>
+                        <Label
+                            Style="{StaticResource CaptionLabel}"
+                            Text="{Binding MistakesHint}"
+                            IsVisible="{Binding HasMistakesHint}" />
+                    </VerticalStackLayout>
+
                     <Border
                         MinimumHeightRequest="{StaticResource MinTouchTarget}"
-                        SemanticProperties.Description="Test aleatorio. Preguntas de todos los temas">
+                        SemanticProperties.Description="{Binding RandomCardDescription}">
                         <Border.Triggers>
-                            <DataTrigger TargetType="Border" Binding="{Binding HasAnyQuestions}" Value="False">
+                            <DataTrigger TargetType="Border" Binding="{Binding IsRandomCardAvailable}" Value="False">
                                 <Setter Property="Opacity" Value="{StaticResource DimmedOpacity}" />
                             </DataTrigger>
                         </Border.Triggers>
@@ -53,8 +69,8 @@
                             <TapGestureRecognizer Command="{Binding StartRandomQuizCommand}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
-                            <Label Style="{StaticResource SubtitleLabel}" Text="Test aleatorio" />
-                            <Label Style="{StaticResource CaptionLabel}" Text="Preguntas de todos los temas" />
+                            <Label Style="{StaticResource SubtitleLabel}" Text="{Binding RandomCardTitle}" />
+                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding RandomCardSubtitle}" />
                         </VerticalStackLayout>
                     </Border>
 

@@ -10,4 +10,15 @@ public partial class QuizPage : ViewModelPage
     {
         InitializeComponent();
     }
+
+    /// <summary>Android back button: same confirmation as the toolbar back button.</summary>
+    protected override bool OnBackButtonPressed()
+    {
+        if (BindingContext is QuizViewModel { BackCommand: { } back })
+        {
+            back.Execute(null);
+        }
+
+        return true;
+    }
 }
