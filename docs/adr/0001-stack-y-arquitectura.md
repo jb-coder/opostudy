@@ -93,6 +93,7 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
   | Nivel | `Level` |
   | XP disponible (para gastar) | `SpendableXp` |
   | Protector de racha | `StreakFreeze` |
+  | Recordatorio diario | `DailyReminder` |
   | Pregunta fallada (pendiente de repaso) | `Mistake` |
   | Repaso (de falladas) | `Review` |
   | Supuesto práctico | `PracticalCase` |
