@@ -11,6 +11,7 @@ using OpoStudy.Contracts.Exams;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
 
@@ -282,9 +283,11 @@ public sealed class QuizViewModelTests
 
     private readonly Guid _quizId = Guid.NewGuid();
 
+    private readonly FakeReminderStore _reminderStore = new();
+
     private QuizViewModel CreateSut()
     {
-        var sut = new QuizViewModel(_api, _navigation, _dialogs, NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(_reminderStore), NullLogger<QuizViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.QuizId] = _quizId, [QueryKeys.QuizTitle] = "Test aleatorio" });
         return sut;
     }
@@ -311,6 +314,24 @@ public sealed class QuizViewModelTests
     private void GivenAnswer(QuizQuestionResponse question, Guid selected, Guid correct, bool finished, int ok, int ko, int total) =>
         _api.SubmitAnswerAsync(_quizId, Arg.Is<SubmitAnswerRequest>(r => r.QuestionId == question.QuestionId), Arg.Any<CancellationToken>())
             .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0), new OpoStudy.Contracts.Progress.XpGainResponse(10, 0, 10, 1, false)));
+
+    [Fact]
+    public async Task AnswerCommand_Answered_SavesReminderSnapshot()
+    {
+        var question = Question(1);
+        var correct = question.Options[0].Id;
+        GivenQuiz(Quiz(0, 0, question));
+        GivenAnswer(question, correct, correct, finished: true, ok: 1, ko: 0, total: 1);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+
+        var snapshot = _reminderStore.Snapshot.ShouldNotBeNull();
+        snapshot.AnsweredToday.ShouldBe(1);
+        snapshot.DailyGoal.ShouldBe(10);
+        snapshot.GoalMetToday.ShouldBeFalse();
+    }
 
     [Fact]
     public async Task AnswerCommand_GoalMetNow_ShowsNoticeWithStreak()
@@ -644,7 +665,7 @@ public sealed class QuizViewModelTests
     [Fact]
     public async Task OnAppearingAsync_MissingQuizId_SetsErrorWithoutCallingApi()
     {
-        var sut = new QuizViewModel(_api, _navigation, _dialogs, NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(), NullLogger<QuizViewModel>.Instance);
 
         await sut.OnAppearingAsync();
 

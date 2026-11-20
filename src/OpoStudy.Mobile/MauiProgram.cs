@@ -7,6 +7,7 @@ using OpoStudy.Mobile.Core;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
 using OpoStudy.Mobile.Services;
@@ -50,6 +51,15 @@ public static class MauiProgram
         services.AddSingleton<ISecureStore, SecureStore>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IAuthService, AuthService>();
+        services.AddSingleton(Preferences.Default);
+        services.AddSingleton<IPreferencesStore, MauiPreferencesStore>();
+        services.AddSingleton<IReminderStore, PreferencesReminderStore>();
+#if ANDROID
+        services.AddSingleton<IReminderScheduler, Platforms.Android.Reminders.AndroidReminderScheduler>();
+#else
+        services.AddSingleton<IReminderScheduler, NullReminderScheduler>();
+#endif
+        services.AddSingleton<ReminderService>();
         services.AddTransient<AuthHeaderHandler>();
 #if ANDROID
         services.AddSingleton<IGoogleSignInProvider, Platforms.Android.GoogleSignInProvider>();

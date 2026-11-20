@@ -10,6 +10,7 @@ using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 
 namespace OpoStudy.Mobile.Core.ViewModels;
@@ -22,8 +23,94 @@ public sealed partial class HomeViewModel(
     IAuthService auth,
     IDialogService dialogs,
     TimeProvider time,
+    ReminderService reminders,
     ILogger<HomeViewModel> logger) : ViewModelBase
 {
+    private const string ReminderDeniedNotice = "Activa las notificaciones de OpoStudy en los ajustes de Android para recibir el recordatorio.";
+
+    /// <summary>Set while the switch is changed from code, so it does not trigger the toggle command.</summary>
+    private bool _isSyncingReminder;
+
+    /// <summary>Whether the reminder card is shown (only on platforms with a scheduler).</summary>
+    public bool IsReminderSupported => reminders.IsSupported;
+
+    [ObservableProperty]
+    public partial bool ReminderEnabled { get; set; }
+
+    [ObservableProperty]
+    public partial string ReminderTimeText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasReminderNotice))]
+    public partial string ReminderNotice { get; set; } = string.Empty;
+
+    public bool HasReminderNotice => ReminderNotice.Length > 0;
+
+    partial void OnReminderEnabledChanged(bool value)
+    {
+        if (!_isSyncingReminder)
+        {
+            ToggleReminderCommand.Execute(null);
+        }
+    }
+
+    private void LoadReminder()
+    {
+        var settings = reminders.Settings;
+        SetReminderEnabled(settings.Enabled);
+        ReminderTimeText = ReminderTimeLabel(settings.Time);
+    }
+
+    private void SetReminderEnabled(bool value)
+    {
+        _isSyncingReminder = true;
+        try
+        {
+            ReminderEnabled = value;
+        }
+        finally
+        {
+            _isSyncingReminder = false;
+        }
+    }
+
+    private static string ReminderTimeLabel(TimeOnly time) =>
+        $"Todos los días a las {time.ToString("HH:mm", CultureInfo.InvariantCulture)} si no has cumplido el objetivo";
+
+    [RelayCommand]
+    private async Task ToggleReminderAsync()
+    {
+        ReminderNotice = string.Empty;
+        if (ReminderEnabled)
+        {
+            if (!await reminders.EnableAsync(reminders.Settings.Time))
+            {
+                SetReminderEnabled(false);
+                ReminderNotice = ReminderDeniedNotice;
+            }
+        }
+        else
+        {
+            reminders.Disable();
+        }
+    }
+
+    [RelayCommand]
+    private async Task ChangeReminderTimeAsync()
+    {
+        var choice = await dialogs.ChooseAsync(
+            "Hora del recordatorio",
+            "Cancelar",
+            [.. ReminderSettings.AllowedTimes.Select(t => t.ToString("HH:mm", CultureInfo.InvariantCulture))]);
+        if (choice is null || !TimeOnly.TryParseExact(choice, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var at))
+        {
+            return;
+        }
+
+        reminders.ChangeTime(at);
+        ReminderTimeText = ReminderTimeLabel(at);
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ConnectionText))]
     public partial string? ApiVersion { get; set; }
@@ -132,6 +219,8 @@ public sealed partial class HomeViewModel(
 
     public override async Task OnAppearingAsync()
     {
+        LoadReminder();
+
         if (ApiVersion is not null)
         {
             // Already loaded: only the daily goal card can change while away (e.g. after a quiz).
@@ -234,6 +323,7 @@ public sealed partial class HomeViewModel(
             if (version == _streakVersion)
             {
                 ApplyStreak(streak);
+                reminders.EnsureScheduled();
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -336,6 +426,7 @@ public sealed partial class HomeViewModel(
     private void ApplyStreak(StreakResponse streak)
     {
         Streak = streak;
+        reminders.UpdateFromStreak(streak);
         GoalProgressText = DailyGoalCard.ProgressText(streak);
         GoalProgress = DailyGoalCard.ProgressFraction(streak);
         StreakText = DailyGoalCard.StreakText(streak.CurrentStreak);
@@ -437,7 +528,16 @@ public sealed partial class HomeViewModel(
         ErrorMessage = null;
         try
         {
-            await auth.SignOutAsync();
+            try
+            {
+                await auth.SignOutAsync();
+            }
+            finally
+            {
+                // Even if sign-out fails, no reminder may stay scheduled with this account's data.
+                reminders.OnSignedOut();
+            }
+
             await navigation.GoToAsync(Routes.Root(Routes.Login));
         }
         catch (Exception ex)
@@ -471,10 +571,12 @@ public sealed partial class HomeViewModel(
             // API data first, while the ID token is still valid; then the Firebase account.
             await api.DeleteMeAsync(cancellationToken);
             await auth.DeleteFirebaseAccountAsync(cancellationToken);
+            reminders.OnSignedOut();
             await navigation.GoToAsync(Routes.Root(Routes.Login));
         }
         catch (FirebaseAuthException ex) when (ex.Code == "CREDENTIAL_TOO_OLD_LOGIN_AGAIN")
         {
+            reminders.OnSignedOut();
             // The API data is already gone and the session was closed: go back to login and explain.
             await navigation.GoToAsync(Routes.Root(Routes.Login));
             await dialogs.AlertAsync("Borrar cuenta", AuthErrorMessages.From(ex.Code));

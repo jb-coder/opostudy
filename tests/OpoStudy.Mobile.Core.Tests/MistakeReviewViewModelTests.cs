@@ -220,7 +220,7 @@ public sealed class QuizBackAndReviewViewModelTests
 
     private QuizViewModel CreateSut()
     {
-        var sut = new QuizViewModel(_api, _navigation, _dialogs, NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(), NullLogger<QuizViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.QuizId] = _quizId, [QueryKeys.QuizTitle] = "Repaso de falladas" });
         return sut;
     }
@@ -435,7 +435,7 @@ public sealed class HomeUnfinishedQuizViewModelTests
     }
 
     private HomeViewModel CreateSut() =>
-        new(_api, _navigation, new AppEnvironment(false), _auth, _dialogs, _time, NullLogger<HomeViewModel>.Instance);
+        new(_api, _navigation, new AppEnvironment(false), _auth, _dialogs, _time, ReminderTestSupport.CreateService(), NullLogger<HomeViewModel>.Instance);
 
     private static QuizSummaryResponse Summary(string mode, string? topicTitle, DateTimeOffset? finishedAt, int correct, int incorrect, int total = 10) =>
         new(Guid.NewGuid(), Guid.NewGuid(), topicTitle is null ? null : Guid.NewGuid(), topicTitle, mode, DateTimeOffset.UtcNow, finishedAt, total, correct, incorrect);
