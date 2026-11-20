@@ -61,7 +61,15 @@
                                                 <DataTrigger TargetType="Border" Binding="{Binding IsMet}" Value="True">
                                                     <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
                                                 </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding IsProtected}" Value="True">
+                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
+                                                </DataTrigger>
                                             </Border.Triggers>
+                                            <Label
+                                                Text="🛡️"
+                                                IsVisible="{Binding IsProtected}"
+                                                HorizontalOptions="Center"
+                                                VerticalOptions="Center" />
                                         </Border>
                                         <Label
                                             Style="{StaticResource CaptionLabel}"
@@ -74,6 +82,15 @@
                         <Label
                             Text="{Binding KeepStreakText}"
                             IsVisible="{Binding HasKeepStreakText}" />
+                        <Label
+                            Text="{Binding FreezesNotice}"
+                            IsVisible="{Binding HasFreezesNotice}"
+                            SemanticProperties.Description="{Binding FreezesNotice}" />
+                        <Label Text="{Binding FreezesText}" />
+                        <Button
+                            Style="{StaticResource SecondaryButton}"
+                            Text="{Binding BuyFreezeText}"
+                            Command="{Binding BuyStreakFreezeCommand}" />
                         <Button
                             Style="{StaticResource SecondaryButton}"
                             Text="Cambiar objetivo"
@@ -96,6 +113,10 @@
                                 SemanticProperties.Description="{Binding LevelDetailText}" />
                             <Label Text="{Binding LevelDetailText}" />
                             <Label Style="{StaticResource CaptionLabel}" Text="{Binding XpTodayText}" />
+                            <Label
+                                Style="{StaticResource CaptionLabel}"
+                                Text="{Binding SpendableXpText}"
+                                IsVisible="{Binding HasSpendableXpText}" />
                         </VerticalStackLayout>
                         <Label
                             Style="{StaticResource ErrorLabel}"

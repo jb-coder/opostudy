@@ -27,6 +27,15 @@ public static class LevelCard
             $"{level.XpIntoLevel} / {level.XpForNextLevel} XP para el nivel {level.Level + 1}");
     }
 
+    /// <summary>"Disponible: N XP" only when some XP was spent; empty otherwise.</summary>
+    public static string SpendableText(LevelResponse level)
+    {
+        ArgumentNullException.ThrowIfNull(level);
+        return level.SpendableXp < level.TotalXp
+            ? string.Create(CultureInfo.InvariantCulture, $"Disponible: {level.SpendableXp} XP")
+            : string.Empty;
+    }
+
     public static string TodayText(LevelResponse level)
     {
         ArgumentNullException.ThrowIfNull(level);

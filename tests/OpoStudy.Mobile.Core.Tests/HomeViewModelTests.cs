@@ -33,11 +33,11 @@ public sealed class HomeViewModelTests
             .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 10, 0, 0, TimeSpan.Zero), null, 10, "Europe/Madrid"));
         _auth.Email.Returns("a@b.com");
         _api.GetStreakAsync(Arg.Any<CancellationToken>()).Returns(StreakWith());
-        _api.GetLevelAsync(Arg.Any<CancellationToken>()).Returns(new LevelResponse(4, 1030, 230, 400, 120));
+        _api.GetLevelAsync(Arg.Any<CancellationToken>()).Returns(new LevelResponse(4, 1030, 230, 400, 120, 1030));
     }
 
     private static StreakResponse StreakWith(int goal = 10, int answered = 7, bool met = false, int current = 5, int longest = 12) =>
-        new(goal, new DateOnly(2026, 11, 20), answered, met, current, longest, []);
+        new(goal, new DateOnly(2026, 11, 20), answered, met, current, longest, [], 1, 2, 200, 0);
 
     [Fact]
     public async Task RefreshCommand_TimeZoneDiffers_UpdatesThenLoadsStreak()
@@ -155,6 +155,99 @@ public sealed class HomeViewModelTests
 
         sut.GoalProgressText.ShouldBe("7 de 20 preguntas");
         await _dialogs.Received(1).ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Is<IReadOnlyList<string>>(o => o.Count == 4 && o[0] == "10" && o[1] == "20" && o[2] == "30" && o[3] == "50"));
+    }
+
+    private async Task<HomeViewModel> LoadedSutAsync()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+        await sut.RefreshCommand.ExecuteAsync(null);
+        return sut;
+    }
+
+    [Fact]
+    public async Task RefreshCommand_StreakAndLevelLoaded_FillsFreezeTexts()
+    {
+        var sut = await LoadedSutAsync();
+
+        sut.FreezesText.ShouldBe("🛡️ Protectores: 1 de 2");
+        sut.BuyFreezeText.ShouldBe("Comprar protector · 200 XP");
+        sut.BuyStreakFreezeCommand.CanExecute(null).ShouldBeTrue();
+        sut.HasSpendableXpText.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task BuyStreakFreezeCommand_ConfirmationCancelled_DoesNotCallApi()
+    {
+        var sut = await LoadedSutAsync();
+        _dialogs.ConfirmAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(false);
+
+        await sut.BuyStreakFreezeCommand.ExecuteAsync(null);
+
+        await _api.DidNotReceive().BuyStreakFreezeAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task BuyStreakFreezeCommand_Confirmed_RefreshesStreakAndLevel()
+    {
+        var sut = await LoadedSutAsync();
+        _dialogs.ConfirmAsync(Arg.Any<string>(), "¿Comprar un protector de racha por 200 XP? Se gastará solo si un día no cumples el objetivo.", Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        _api.BuyStreakFreezeAsync(Arg.Any<CancellationToken>()).Returns(StreakWith() with { StreakFreezes = 2 });
+        _api.GetLevelAsync(Arg.Any<CancellationToken>()).Returns(new LevelResponse(4, 1030, 230, 400, 120, 830));
+
+        await sut.BuyStreakFreezeCommand.ExecuteAsync(null);
+
+        sut.FreezesText.ShouldBe("🛡️ Protectores: 2 de 2");
+        sut.BuyFreezeText.ShouldBe("Tienes el máximo de protectores");
+        sut.BuyStreakFreezeCommand.CanExecute(null).ShouldBeFalse();
+        sut.SpendableXpText.ShouldBe("Disponible: 830 XP");
+        sut.HasSpendableXpText.ShouldBeTrue();
+        sut.HasError.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task BuyStreakFreezeCommand_Rejected_ShowsProblemMessage()
+    {
+        var sut = await LoadedSutAsync();
+        _dialogs.ConfirmAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+        _api.BuyStreakFreezeAsync(Arg.Any<CancellationToken>())
+            .ThrowsAsync(await ProblemAsync("""{"title":"Ya tienes el máximo de 2 protectores.","code":"streak.freezes_full"}"""));
+
+        await sut.BuyStreakFreezeCommand.ExecuteAsync(null);
+
+        sut.ErrorMessage.ShouldBe("Ya tienes el máximo de 2 protectores.");
+    }
+
+    [Fact]
+    public async Task RefreshCommand_FreezesUsedNow_ShowsNotice()
+    {
+        _api.GetStreakAsync(Arg.Any<CancellationToken>()).Returns(StreakWith() with { FreezesUsedNow = 2 });
+
+        var sut = await LoadedSutAsync();
+
+        sut.HasFreezesNotice.ShouldBeTrue();
+        sut.FreezesNotice.ShouldBe("🛡️ 2 protectores han salvado tu racha");
+    }
+
+    [Fact]
+    public async Task BuyStreakFreezeCommand_NotEnoughSpendableXp_CannotExecute()
+    {
+        _api.GetLevelAsync(Arg.Any<CancellationToken>()).Returns(new LevelResponse(1, 150, 50, 100, 0, 150));
+
+        var sut = await LoadedSutAsync();
+
+        sut.BuyFreezeText.ShouldBe("Necesitas 200 XP disponibles");
+        sut.BuyStreakFreezeCommand.CanExecute(null).ShouldBeFalse();
+    }
+
+    private static async Task<Refit.ApiException> ProblemAsync(string json)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/v1/me/streak-freezes");
+        using var response = new HttpResponseMessage(System.Net.HttpStatusCode.UnprocessableEntity)
+        {
+            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/problem+json"),
+        };
+        return await Refit.ApiException.Create(request, HttpMethod.Post, response, new Refit.RefitSettings());
     }
 
     [Fact]

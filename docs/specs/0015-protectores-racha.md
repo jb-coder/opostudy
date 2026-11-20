@@ -2,7 +2,7 @@
 
 - **Issue:** #43
 - **Milestone:** v0.2.0
-- **Estado:** lista
+- **Estado:** implementada
 
 ## Objetivo
 Que un imprevisto no haga perder semanas de racha. El usuario compra protectores de racha con XP y, si un día no cumple el objetivo, se gasta uno automáticamente y la racha sigue viva. Es el primer uso del XP como moneda. Se apoya en la racha de la 0010 y en el XP de la 0011.
@@ -111,18 +111,18 @@ Usa la skill `maui-ui` (tema claro y oscuro, capturas en el emulador).
 - No hacen falta secretos nuevos.
 
 ## Criterios de aceptación
-- [ ] Un usuario nuevo tiene 0 protectores, `XpSpent = 0` y `SpendableXp = Xp`.
-- [ ] Con 200 XP disponibles, `POST /me/streak-freezes` suma un protector, resta 200 de `SpendableXp` y no cambia ni `TotalXp` ni `Level`.
-- [ ] Con 199 XP disponibles devuelve 422 `xp.insufficient`. Con 2 protectores devuelve 422 `streak.freezes_full`, aunque haya XP. En ambos casos no cambia nada.
-- [ ] Racha 5 cumplida el lunes, 1 protector y sin actividad el martes: el miércoles, `GET /me/streak` devuelve `CurrentStreak = 5`, `StreakFreezes = 0`, `FreezesUsedNow = 1` y el martes con `Protected = true`. Una segunda llamada devuelve `FreezesUsedNow = 0`.
-- [ ] Siguiendo con ese caso, cumplir el objetivo el miércoles deja la racha en 6 y da el bonus de racha 6.
-- [ ] Dos días sin cumplir con 2 protectores: se gastan los dos y la racha sigue. Con 1 protector: la racha queda a 0 y el protector se conserva.
-- [ ] Un día con respuestas pero sin cumplir el objetivo también se protege, y conserva su `AnsweredCount`.
-- [ ] Comprar un protector cuando la racha ya está perdida no la recupera.
-- [ ] Sin racha (usuario nuevo o racha perdida), pasar días sin estudiar no gasta protectores.
-- [ ] El primer gasto puede ocurrir en cualquier punto de entrada: responder, cambiar el objetivo o leer la racha.
-- [ ] Un usuario no ve ni compra protectores de otro.
-- [ ] La app muestra los protectores, compra con confirmación, desactiva el botón con su motivo, marca los días protegidos y muestra el aviso, en tema claro y oscuro (verificado en el emulador).
+- [x] Un usuario nuevo tiene 0 protectores, `XpSpent = 0` y `SpendableXp = Xp`.
+- [x] Con 200 XP disponibles, `POST /me/streak-freezes` suma un protector, resta 200 de `SpendableXp` y no cambia ni `TotalXp` ni `Level`.
+- [x] Con 199 XP disponibles devuelve 422 `xp.insufficient`. Con 2 protectores devuelve 422 `streak.freezes_full`, aunque haya XP. En ambos casos no cambia nada.
+- [x] Racha 5 cumplida el lunes, 1 protector y sin actividad el martes: el miércoles, `GET /me/streak` devuelve `CurrentStreak = 5`, `StreakFreezes = 0`, `FreezesUsedNow = 1` y el martes con `Protected = true`. Una segunda llamada devuelve `FreezesUsedNow = 0`.
+- [x] Siguiendo con ese caso, cumplir el objetivo el miércoles deja la racha en 6 y da el bonus de racha 6.
+- [x] Dos días sin cumplir con 2 protectores: se gastan los dos y la racha sigue. Con 1 protector: la racha queda a 0 y el protector se conserva.
+- [x] Un día con respuestas pero sin cumplir el objetivo también se protege, y conserva su `AnsweredCount`.
+- [x] Comprar un protector cuando la racha ya está perdida no la recupera.
+- [x] Sin racha (usuario nuevo o racha perdida), pasar días sin estudiar no gasta protectores.
+- [x] El primer gasto puede ocurrir en cualquier punto de entrada: responder, cambiar el objetivo o leer la racha.
+- [x] Un usuario no ve ni compra protectores de otro.
+- [x] La app muestra los protectores, compra con confirmación, desactiva el botón con su motivo, marca los días protegidos y muestra el aviso, en tema claro y oscuro (verificado en el emulador).
 
 ## Plan de tests
 - **Unitarios (Domain):**

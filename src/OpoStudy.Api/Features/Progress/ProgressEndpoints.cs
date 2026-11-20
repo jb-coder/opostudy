@@ -18,6 +18,14 @@ internal static class ProgressEndpoints
             .WithSummary("Progreso del día, racha y últimos 7 días")
             .RequireAuthorization();
 
+        api.MapPost("/me/streak-freezes", BuyStreakFreeze)
+            .WithName("BuyStreakFreeze")
+            .WithTags("Progress")
+            .WithSummary("Compra un protector de racha con XP disponible")
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .RequireAuthorization();
+
         api.MapGet("/me/level", GetLevel)
             .WithName("GetLevel")
             .WithTags("Progress")
@@ -45,11 +53,31 @@ internal static class ProgressEndpoints
     private static async Task<Ok<StreakResponse>> GetStreak(
         CurrentUserService currentUser,
         ProgressRecorder progress,
+        OpoStudyDbContext db,
         TimeProvider timeProvider,
         CancellationToken cancellationToken)
     {
         var user = await currentUser.GetOrCreateAsync(cancellationToken);
-        return TypedResults.Ok(await progress.GetStreakAsync(user, timeProvider.GetUtcNow(), cancellationToken));
+        var now = timeProvider.GetUtcNow();
+
+        // Reading the streak settles it, so it may write (idempotent: nothing changes after the first call of the day).
+        var used = await progress.SettleStreakAsync(user, user.TodayAt(now), now, cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
+        return TypedResults.Ok(await progress.GetStreakAsync(user, now, used, cancellationToken));
+    }
+
+    private static async Task<Ok<StreakResponse>> BuyStreakFreeze(
+        CurrentUserService currentUser,
+        ProgressRecorder progress,
+        OpoStudyDbContext db,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        var user = await currentUser.GetOrCreateAsync(cancellationToken);
+        var now = timeProvider.GetUtcNow();
+        var used = await progress.BuyStreakFreezeAsync(user, now, cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
+        return TypedResults.Ok(await progress.GetStreakAsync(user, now, used, cancellationToken));
     }
 
     private static async Task<Ok<LevelResponse>> GetLevel(
@@ -80,9 +108,9 @@ internal static class ProgressEndpoints
 
         var user = await currentUser.GetOrCreateAsync(cancellationToken);
         var now = timeProvider.GetUtcNow();
-        await progress.ChangeDailyGoalAsync(user, request.DailyGoal, now, cancellationToken);
+        var used = await progress.ChangeDailyGoalAsync(user, request.DailyGoal, now, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
-        return TypedResults.Ok(await progress.GetStreakAsync(user, now, cancellationToken));
+        return TypedResults.Ok(await progress.GetStreakAsync(user, now, used, cancellationToken));
     }
 
     private static async Task<Results<NoContent, ValidationProblem>> UpdateTimeZone(

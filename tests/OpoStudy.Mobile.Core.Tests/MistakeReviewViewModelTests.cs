@@ -430,8 +430,8 @@ public sealed class HomeUnfinishedQuizViewModelTests
         _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
         _api.GetMeAsync(Arg.Any<CancellationToken>())
             .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 10, 0, 0, TimeSpan.Zero), null, 10, _time.LocalTimeZone.Id));
-        _api.GetStreakAsync(Arg.Any<CancellationToken>()).Returns(new StreakResponse(10, new DateOnly(2026, 11, 20), 0, false, 0, 0, []));
-        _api.GetLevelAsync(Arg.Any<CancellationToken>()).Returns(new LevelResponse(1, 0, 0, 100, 0));
+        _api.GetStreakAsync(Arg.Any<CancellationToken>()).Returns(new StreakResponse(10, new DateOnly(2026, 11, 20), 0, false, 0, 0, [], 0, 2, 200, 0));
+        _api.GetLevelAsync(Arg.Any<CancellationToken>()).Returns(new LevelResponse(1, 0, 0, 100, 0, 0));
     }
 
     private HomeViewModel CreateSut() =>

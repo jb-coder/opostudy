@@ -60,6 +60,24 @@ public sealed partial class HomeViewModel(
     public partial string KeepStreakText { get; set; } = string.Empty;
 
     [ObservableProperty]
+    public partial string FreezesText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string BuyFreezeText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasFreezesNotice))]
+    public partial string FreezesNotice { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSpendableXpText))]
+    public partial string SpendableXpText { get; set; } = string.Empty;
+
+    public bool HasFreezesNotice => FreezesNotice.Length > 0;
+
+    public bool HasSpendableXpText => SpendableXpText.Length > 0;
+
+    [ObservableProperty]
     public partial IReadOnlyList<DayDot> Dots { get; set; } = [];
 
     [ObservableProperty]
@@ -139,6 +157,7 @@ public sealed partial class HomeViewModel(
         DeleteAccountCommand.NotifyCanExecuteChanged();
         SignOutCommand.NotifyCanExecuteChanged();
         ChangeDailyGoalCommand.NotifyCanExecuteChanged();
+        BuyStreakFreezeCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
@@ -232,6 +251,8 @@ public sealed partial class HomeViewModel(
                 LevelProgress = LevelCard.ProgressFraction(level);
                 LevelDetailText = LevelCard.DetailText(level);
                 XpTodayText = LevelCard.TodayText(level);
+                SpendableXpText = LevelCard.SpendableText(level);
+                RefreshBuyFreeze();
                 LevelErrorMessage = null;
             }
         }
@@ -313,6 +334,59 @@ public sealed partial class HomeViewModel(
         LongestStreakText = DailyGoalCard.LongestText(streak.LongestStreak);
         KeepStreakText = DailyGoalCard.KeepStreakText(streak);
         Dots = DailyGoalCard.Dots(streak);
+        FreezesText = DailyGoalCard.FreezesText(streak);
+        FreezesNotice = DailyGoalCard.FreezesUsedNotice(streak);
+        RefreshBuyFreeze();
+    }
+
+    private void RefreshBuyFreeze()
+    {
+        if (Streak is { } streak)
+        {
+            BuyFreezeText = DailyGoalCard.BuyFreezeButtonText(streak, Level);
+        }
+
+        BuyStreakFreezeCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool CanBuyStreakFreeze() => !IsBusy && Streak is { } streak && DailyGoalCard.CanBuyFreeze(streak, Level);
+
+    [RelayCommand(CanExecute = nameof(CanBuyStreakFreeze))]
+    private async Task BuyStreakFreezeAsync(CancellationToken cancellationToken)
+    {
+        if (Streak is not { } current)
+        {
+            return;
+        }
+
+        var confirmed = await dialogs.ConfirmAsync(
+            "Comprar protector",
+            DailyGoalCard.BuyFreezeConfirmText(current),
+            "Comprar",
+            "Cancelar");
+        if (!confirmed)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        ErrorMessage = null;
+        try
+        {
+            var streak = await api.BuyStreakFreezeAsync(cancellationToken);
+            _streakVersion++;
+            ApplyStreak(streak);
+            await LoadLevelAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            LogBuyFreezeFailed(ex, ex.GetType().FullName);
+            ErrorMessage = ApiErrorMessages.From(ex);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
@@ -427,6 +501,9 @@ public sealed partial class HomeViewModel(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not change the daily goal ({ExceptionType})")]
     private partial void LogGoalChangeFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not buy a streak freeze ({ExceptionType})")]
+    private partial void LogBuyFreezeFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not sign out ({ExceptionType})")]
     private partial void LogSignOutFailed(Exception exception, string? exceptionType);

@@ -30,6 +30,12 @@ public sealed class User
     /// <summary>Total experience points. It never decreases.</summary>
     public int Xp { get; private set; }
 
+    /// <summary>XP spent on purchases (streak freezes). <see cref="Xp"/> and the level are not affected.</summary>
+    public int XpSpent { get; private set; }
+
+    /// <summary>XP available to spend.</summary>
+    public int SpendableXp => Xp - XpSpent;
+
     public int Level => XpRules.LevelFor(Xp);
 
     public static User Create(string firebaseUid, DateTimeOffset now) => new()
@@ -43,6 +49,23 @@ public sealed class User
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
         Xp = checked(Xp + amount);
+    }
+
+    /// <summary>Buys a streak freeze for <see cref="XpRules.StreakFreezePrice"/> XP.</summary>
+    public void BuyStreakFreeze()
+    {
+        if (Streak.Freezes >= Limits.MaxStreakFreezes)
+        {
+            throw new DomainRuleException("streak.freezes_full", $"Ya tienes el máximo de {Limits.MaxStreakFreezes} protectores.");
+        }
+
+        if (SpendableXp < XpRules.StreakFreezePrice)
+        {
+            throw new DomainRuleException("xp.insufficient", $"Necesitas {XpRules.StreakFreezePrice} XP disponibles para comprar un protector.");
+        }
+
+        XpSpent = checked(XpSpent + XpRules.StreakFreezePrice);
+        Streak.AddFreeze();
     }
 
     public void ChooseExam(Guid examId) => ActiveExamId = examId;

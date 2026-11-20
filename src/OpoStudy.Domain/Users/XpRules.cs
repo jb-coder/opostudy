@@ -9,6 +9,9 @@ public static class XpRules
     public const int StreakBonusPerDay = 5;
     public const int MaxStreakBonus = 50;
 
+    /// <summary>XP price of one streak freeze.</summary>
+    public const int StreakFreezePrice = 200;
+
     /// <summary>Going from level N to N+1 costs <c>LevelStep * N</c> XP.</summary>
     public const int LevelStep = 100;
 

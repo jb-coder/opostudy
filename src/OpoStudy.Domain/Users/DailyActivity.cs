@@ -21,7 +21,12 @@ public sealed class DailyActivity
     /// <summary>XP earned that day, bonus included.</summary>
     public int XpEarned { get; private set; }
 
+    /// <summary>When a streak freeze covered this day.</summary>
+    public DateTimeOffset? FreezeUsedAt { get; private set; }
+
     public bool IsGoalMet => GoalMetAt is not null;
+
+    public bool IsProtected => FreezeUsedAt is not null;
 
     public static DailyActivity Start(Guid userId, DateOnly date, int goal)
     {
@@ -47,6 +52,17 @@ public sealed class DailyActivity
         CheckGoal(goal);
         Goal = goal;
         return TryMeetGoal(now);
+    }
+
+    /// <summary>Covers the day with a streak freeze. The day must be neither met nor already protected.</summary>
+    public void Protect(DateTimeOffset now)
+    {
+        if (IsGoalMet || IsProtected)
+        {
+            throw new InvalidOperationException("The day is already met or protected.");
+        }
+
+        FreezeUsedAt = now.ToUniversalTime();
     }
 
     public void AddXp(int amount)

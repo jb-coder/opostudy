@@ -7,7 +7,7 @@ namespace OpoStudy.Mobile.Core.Tests;
 
 public sealed class LevelCardTests
 {
-    private static readonly LevelResponse Level4 = new(4, 830, 230, 400, 120);
+    private static readonly LevelResponse Level4 = new(4, 830, 230, 400, 120, 830);
 
     [Fact]
     public void Texts_LevelWithXpToday_FormatsCard()
@@ -23,8 +23,16 @@ public sealed class LevelCardTests
         LevelCard.TodayText(Level4 with { XpToday = 0 }).ShouldBe("Hoy aún no has ganado XP");
 
     [Fact]
+    public void SpendableText_XpSpent_ShowsAvailable() =>
+        LevelCard.SpendableText(Level4 with { SpendableXp = 630 }).ShouldBe("Disponible: 630 XP");
+
+    [Fact]
+    public void SpendableText_NothingSpent_IsEmpty() =>
+        LevelCard.SpendableText(Level4).ShouldBeEmpty();
+
+    [Fact]
     public void ProgressFraction_NewUser_IsZero() =>
-        LevelCard.ProgressFraction(new LevelResponse(1, 0, 0, 100, 0)).ShouldBe(0);
+        LevelCard.ProgressFraction(new LevelResponse(1, 0, 0, 100, 0, 0)).ShouldBe(0);
 
     [Fact]
     public void AnswerXpText_WithBonus_ExcludesTheBonus() =>
