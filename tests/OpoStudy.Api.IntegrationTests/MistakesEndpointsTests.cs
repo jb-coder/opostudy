@@ -232,6 +232,43 @@ public sealed class MistakesEndpointsTests(ApiFactory factory)
         (await GetMistakesAsync(client, content.Exam.Id)).Total.ShouldBe(0);
     }
 
+    [Theory]
+    [InlineData(false, true, false)]
+    [InlineData(true, false, true)]
+    public async Task GetMistakes_AnswersAtTheSameInstant_NewestQuizIdDecides(bool olderCorrect, bool newerCorrect, bool expectedMistake)
+    {
+        var time = new FakeTimeProvider(new DateTimeOffset(2026, 1, 15, 10, 0, 0, TimeSpan.Zero));
+        using var host = WithTime(time);
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = ApiFactory.CreateClientFor(host, NewUid());
+        var older = await CreateQuizAsync(client, content.Exam.Id, content.Topic2.Id, 3);
+        await Task.Delay(20, Ct); // UUID v7 ids only order across milliseconds.
+        var newer = await CreateQuizAsync(client, content.Exam.Id, content.Topic2.Id, 3);
+        var questionId = older.Questions[0].QuestionId;
+
+        // The clock is frozen: both answers have exactly the same AnsweredAt.
+        await AnswerAsync(client, older, older.Questions.Single(q => q.QuestionId == questionId), content, olderCorrect);
+        await AnswerAsync(client, newer, newer.Questions.Single(q => q.QuestionId == questionId), content, newerCorrect);
+
+        var summary = await GetMistakesAsync(client, content.Exam.Id);
+        summary.Total.ShouldBe(expectedMistake ? 1 : 0);
+    }
+
+    [Fact]
+    public async Task CreateQuiz_MistakesOnlyWithTopicOfAnotherExam_Returns404TopicNotFound()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+
+        var response = await client.PostAsJsonAsync(
+            QuizzesUri,
+            new CreateQuizRequest(content.Exam.Id, content.OtherExamTopic.Id, 5, true),
+            Ct);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        (await response.Content.ReadAsStringAsync(Ct)).ShouldContain("topic.not_found");
+    }
+
     // ---- Helpers ----
 
     private WebApplicationFactory<Program> WithTime(FakeTimeProvider time) =>

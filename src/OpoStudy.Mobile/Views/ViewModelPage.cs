@@ -42,6 +42,12 @@ public abstract partial class ViewModelPage : ContentPage, IQueryAttributable
         }
     }
 
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        (BindingContext as IPageLifecycleAware)?.OnDisappearing();
+    }
+
     [LoggerMessage(Level = LogLevel.Error, Message = "OnAppearingAsync failed on {Page}")]
     private static partial void LogAppearingFailed(ILogger logger, Exception exception, string page);
 }

@@ -13,12 +13,24 @@ using OpoStudy.Mobile.Core.Navigation;
 
 namespace OpoStudy.Mobile.Core.ViewModels;
 
-/// <summary>A topic as shown in the list.</summary>
-/// <param name="Topic">The topic.</param>
-/// <param name="MistakeCount">Questions of the topic the user currently has wrong.</param>
-/// <param name="MistakesMode">Whether the list shows the mistakes to review instead of the questions available.</param>
-public sealed record TopicItem(TopicResponse Topic, int MistakeCount = 0, bool MistakesMode = false)
+/// <summary>A topic as shown in the list. The mistake data changes in place, so the list is not rebuilt.</summary>
+/// <param name="topic">The topic.</param>
+public sealed partial class TopicItem(TopicResponse topic) : ObservableObject
 {
+    public TopicResponse Topic { get; } = topic;
+
+    /// <summary>Questions of the topic the user currently has wrong.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsAvailable))]
+    [NotifyPropertyChangedFor(nameof(QuestionCountText))]
+    public partial int MistakeCount { get; set; }
+
+    /// <summary>Whether the list shows the mistakes to review instead of the questions available.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsAvailable))]
+    [NotifyPropertyChangedFor(nameof(QuestionCountText))]
+    public partial bool MistakesMode { get; set; }
+
     public Guid Id => Topic.Id;
 
     /// <summary>
@@ -155,14 +167,21 @@ public sealed partial class TopicsViewModel(
         // The topics do not change, but the mistakes do after every quiz.
         if (!IsBusy && _examId != Guid.Empty)
         {
-            await LoadMistakesAsync(CancellationToken.None);
-            RebuildTopics();
+            try
+            {
+                await LoadMistakesAsync(PageToken);
+                UpdateTopics();
+            }
+            catch (OperationCanceledException)
+            {
+                // The page went away before the mistakes arrived.
+            }
         }
     }
 
     partial void OnHasAnyQuestionsChanged(bool value) => OnPropertyChanged(nameof(IsRandomCardAvailable));
 
-    partial void OnMistakesOnlyChanged(bool value) => RebuildTopics();
+    partial void OnMistakesOnlyChanged(bool value) => UpdateTopics();
 
     protected override void OnBusyChanged()
     {
@@ -241,7 +260,19 @@ public sealed partial class TopicsViewModel(
         Topics.Clear();
         foreach (var topic in _topics)
         {
-            Topics.Add(new TopicItem(topic, _mistakesByTopic.GetValueOrDefault(topic.Id), MistakesOnly));
+            Topics.Add(new TopicItem(topic));
+        }
+
+        UpdateTopics();
+    }
+
+    /// <summary>Updates the mistake data of the existing items in place.</summary>
+    private void UpdateTopics()
+    {
+        foreach (var item in Topics)
+        {
+            item.MistakeCount = _mistakesByTopic.GetValueOrDefault(item.Id);
+            item.MistakesMode = MistakesOnly;
         }
     }
 
@@ -280,8 +311,8 @@ public sealed partial class TopicsViewModel(
                 && ApiErrorMessages.ProblemCode(ex) == NoMistakesCode)
             {
                 // The mistakes shown were out of date: refresh them.
-                await LoadMistakesAsync(CancellationToken.None);
-                RebuildTopics();
+                await LoadMistakesAsync(cancellationToken);
+                UpdateTopics();
             }
         }
         finally

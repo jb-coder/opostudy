@@ -88,6 +88,8 @@ public sealed partial class QuizViewModel(
 
     private bool _isReview;
 
+    private bool _isLeaving;
+
     private List<QuestionState> _questions = [];
 
     private int _index;
@@ -316,7 +318,15 @@ public sealed partial class QuizViewModel(
         if (next < 0)
         {
             ShowSummary();
-            await LoadMistakesLeftAsync(CancellationToken.None);
+            try
+            {
+                await LoadMistakesLeftAsync(PageToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // The page went away before the mistakes arrived.
+            }
+
             return;
         }
 
@@ -327,21 +337,35 @@ public sealed partial class QuizViewModel(
     [RelayCommand]
     private async Task BackAsync()
     {
-        var started = !IsFinished && _questions.Any(q => q.Feedback is not null);
-        if (started)
+        // A double tap must not open two dialogs (ExecuteAsync ignores AllowConcurrentExecutions).
+        if (_isLeaving)
         {
-            var leave = await dialogs.ConfirmAsync(
-                "¿Salir del test?",
-                "Tus respuestas se guardan y podrás continuarlo desde el inicio.",
-                "Salir",
-                "Seguir con el test");
-            if (!leave)
-            {
-                return;
-            }
+            return;
         }
 
-        await navigation.GoToAsync(Routes.Back);
+        _isLeaving = true;
+        try
+        {
+            var started = !IsFinished && _questions.Any(q => q.Feedback is not null);
+            if (started)
+            {
+                var leave = await dialogs.ConfirmAsync(
+                    "¿Salir del test?",
+                    "Tus respuestas se guardan y podrás continuarlo desde el inicio.",
+                    "Salir",
+                    "Seguir con el test");
+                if (!leave)
+                {
+                    return;
+                }
+            }
+
+            await navigation.GoToAsync(Routes.Back);
+        }
+        finally
+        {
+            _isLeaving = false;
+        }
     }
 
     /// <summary>After a review, shows how many mistakes are left. A failure only omits the line.</summary>

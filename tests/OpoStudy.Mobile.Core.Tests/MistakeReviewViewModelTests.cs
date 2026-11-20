@@ -255,6 +255,24 @@ public sealed class QuizBackAndReviewViewModelTests
     }
 
     [Fact]
+    public async Task BackCommand_ExecutedTwiceConcurrently_AsksOnce()
+    {
+        GivenQuiz("Random", null, Question(1, answered: true), Question(2, answered: false));
+        var answer = new TaskCompletionSource<bool>();
+        _dialogs.ConfirmAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(answer.Task);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        var first = sut.BackCommand.ExecuteAsync(null);
+        var second = sut.BackCommand.ExecuteAsync(null);
+        answer.SetResult(true);
+        await Task.WhenAll(first, second);
+
+        await _dialogs.Received(1).ConfirmAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>());
+        await _navigation.Received(1).GoToAsync(Routes.Back);
+    }
+
+    [Fact]
     public async Task BackCommand_StartedQuizAndRejected_DoesNotNavigate()
     {
         GivenQuiz("Random", null, Question(1, answered: true), Question(2, answered: false));
