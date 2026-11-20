@@ -85,6 +85,29 @@
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">
                         <Label
                             Style="{StaticResource SubtitleLabel}"
+                            Text="Experiencia"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasLevel}">
+                            <Label
+                                Style="{StaticResource DisplayLabel}"
+                                Text="{Binding LevelTitleText}" />
+                            <ProgressBar
+                                Progress="{Binding LevelProgress}"
+                                SemanticProperties.Description="{Binding LevelDetailText}" />
+                            <Label Text="{Binding LevelDetailText}" />
+                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding XpTodayText}" />
+                        </VerticalStackLayout>
+                        <Label
+                            Style="{StaticResource ErrorLabel}"
+                            Text="{Binding LevelErrorMessage}"
+                            IsVisible="{Binding HasLevelError}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
                             Text="Practicar"
                             SemanticProperties.HeadingLevel="Level2" />
                         <Label Text="Haz un test y repasa la aclaración de cada pregunta." />

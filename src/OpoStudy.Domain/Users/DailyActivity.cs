@@ -18,6 +18,9 @@ public sealed class DailyActivity
 
     public DateTimeOffset? GoalMetAt { get; private set; }
 
+    /// <summary>XP earned that day, bonus included.</summary>
+    public int XpEarned { get; private set; }
+
     public bool IsGoalMet => GoalMetAt is not null;
 
     public static DailyActivity Start(Guid userId, DateOnly date, int goal)
@@ -44,6 +47,12 @@ public sealed class DailyActivity
         CheckGoal(goal);
         Goal = goal;
         return TryMeetGoal(now);
+    }
+
+    public void AddXp(int amount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+        XpEarned = checked(XpEarned + amount);
     }
 
     private bool TryMeetGoal(DateTimeOffset now)

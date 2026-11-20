@@ -18,6 +18,12 @@ internal static class ProgressEndpoints
             .WithSummary("Progreso del día, racha y últimos 7 días")
             .RequireAuthorization();
 
+        api.MapGet("/me/level", GetLevel)
+            .WithName("GetLevel")
+            .WithTags("Progress")
+            .WithSummary("Nivel, XP total, XP dentro del nivel y XP de hoy")
+            .RequireAuthorization();
+
         api.MapPut("/me/daily-goal", UpdateDailyGoal)
             .WithName("UpdateDailyGoal")
             .WithTags("Progress")
@@ -44,6 +50,16 @@ internal static class ProgressEndpoints
     {
         var user = await currentUser.GetOrCreateAsync(cancellationToken);
         return TypedResults.Ok(await progress.GetStreakAsync(user, timeProvider.GetUtcNow(), cancellationToken));
+    }
+
+    private static async Task<Ok<LevelResponse>> GetLevel(
+        CurrentUserService currentUser,
+        ProgressRecorder progress,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        var user = await currentUser.GetOrCreateAsync(cancellationToken);
+        return TypedResults.Ok(await progress.GetLevelAsync(user, timeProvider.GetUtcNow(), cancellationToken));
     }
 
     private static async Task<Results<Ok<StreakResponse>, ValidationProblem>> UpdateDailyGoal(

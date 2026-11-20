@@ -11,4 +11,5 @@ public sealed record AnswerFeedbackResponse(
     int IncorrectCount,
     int AnsweredCount,
     int QuestionCount,
-    DailyProgressResponse DailyProgress);
+    DailyProgressResponse DailyProgress,
+    XpGainResponse Xp);

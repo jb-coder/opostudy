@@ -307,7 +307,7 @@ public sealed class QuizViewModelTests
 
     private void GivenAnswer(QuizQuestionResponse question, Guid selected, Guid correct, bool finished, int ok, int ko, int total) =>
         _api.SubmitAnswerAsync(_quizId, Arg.Is<SubmitAnswerRequest>(r => r.QuestionId == question.QuestionId), Arg.Any<CancellationToken>())
-            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0)));
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0), new OpoStudy.Contracts.Progress.XpGainResponse(10, 0, 10, 1, false)));
 
     [Fact]
     public async Task AnswerCommand_GoalMetNow_ShowsNoticeWithStreak()
@@ -316,15 +316,75 @@ public sealed class QuizViewModelTests
         var correct = question.Options[0].Id;
         GivenQuiz(Quiz(0, 0, question));
         _api.SubmitAnswerAsync(_quizId, Arg.Any<SubmitAnswerRequest>(), Arg.Any<CancellationToken>())
-            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(10, 10, true, 3)));
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(10, 10, true, 3), new OpoStudy.Contracts.Progress.XpGainResponse(65, 55, 65, 1, false)));
         var sut = CreateSut();
         await sut.OnAppearingAsync();
 
         await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
 
         sut.HasGoalNotice.ShouldBeTrue();
-        sut.GoalNotice.ShouldBe("🎯 ¡Objetivo diario cumplido! Racha: 3 días");
+        sut.GoalNotice.ShouldBe("🎯 ¡Objetivo diario cumplido! Racha: 3 días · +55 XP");
     }
+
+    [Fact]
+    public async Task AnswerCommand_TwoAnswers_ShowsXpPerAnswerAndTotalInSummary()
+    {
+        var q1 = Question(1);
+        var q2 = Question(2);
+        GivenQuiz(Quiz(0, 0, q1, q2));
+        GivenAnswerWithXp(q1, q1.Options[0].Id, q1.Options[0].Id, false, 1, 0, 2, new OpoStudy.Contracts.Progress.XpGainResponse(10, 0, 10, 1, false));
+        GivenAnswerWithXp(q2, q2.Options[0].Id, q2.Options[1].Id, true, 1, 1, 2, new OpoStudy.Contracts.Progress.XpGainResponse(2, 0, 12, 1, false));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+        var firstLabel = sut.XpText;
+        sut.NextCommand.Execute(null);
+        sut.XpText.ShouldBeEmpty();
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+        var secondLabel = sut.XpText;
+        sut.NextCommand.Execute(null);
+
+        firstLabel.ShouldBe("+10 XP");
+        secondLabel.ShouldBe("+2 XP");
+        sut.QuizXpText.ShouldBe("+12 XP en este test");
+    }
+
+    [Fact]
+    public async Task NextCommand_ResumedQuizWithoutNewAnswers_HidesQuizXp()
+    {
+        var q = Question(1);
+        var answered = q with { Feedback = Feedback(q.Options[0].Id, q.Options[0].Id) };
+        GivenQuiz(Quiz(1, 0, answered));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        sut.NextCommand.Execute(null);
+
+        sut.IsFinished.ShouldBeTrue();
+        sut.QuizXpText.ShouldBeEmpty();
+        sut.HasQuizXpText.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task AnswerCommand_LevelUpAndGoalMet_ShowsSingleCombinedNotice()
+    {
+        var question = Question(1);
+        var correct = question.Options[0].Id;
+        GivenQuiz(Quiz(0, 0, question));
+        _api.SubmitAnswerAsync(_quizId, Arg.Any<SubmitAnswerRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(10, 10, true, 1), new OpoStudy.Contracts.Progress.XpGainResponse(65, 55, 120, 2, true)));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+
+        sut.GoalNotice.ShouldBe("🎯 ¡Objetivo diario cumplido! Racha: 1 día · +55 XP\n⭐ ¡Has subido al nivel 2!");
+    }
+
+    private void GivenAnswerWithXp(QuizQuestionResponse question, Guid selected, Guid correct, bool finished, int ok, int ko, int total, OpoStudy.Contracts.Progress.XpGainResponse xp) =>
+        _api.SubmitAnswerAsync(_quizId, Arg.Is<SubmitAnswerRequest>(r => r.QuestionId == question.QuestionId), Arg.Any<CancellationToken>())
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0), xp));
 
     [Fact]
     public async Task AnswerCommand_GoalNotMetNow_ShowsNoNotice()
@@ -619,7 +679,7 @@ public sealed class QuizViewModelTests
         sut.IsBusy.ShouldBeTrue();
         sut.IsLoading.ShouldBeFalse();
         var correct = question.Options[0].Id;
-        sending.SetResult(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0)));
+        sending.SetResult(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0), new OpoStudy.Contracts.Progress.XpGainResponse(10, 0, 10, 1, false)));
         await answering;
 
         sut.IsAnswered.ShouldBeTrue();

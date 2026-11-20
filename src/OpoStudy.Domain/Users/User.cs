@@ -27,12 +27,23 @@ public sealed class User
 
     public Streak Streak { get; private set; }
 
+    /// <summary>Total experience points. It never decreases.</summary>
+    public int Xp { get; private set; }
+
+    public int Level => XpRules.LevelFor(Xp);
+
     public static User Create(string firebaseUid, DateTimeOffset now) => new()
     {
         Id = Guid.CreateVersion7(),
         FirebaseUid = Guard.RequiredText(firebaseUid, Limits.FirebaseUid, "user.invalid_firebase_uid"),
         CreatedAt = now.ToUniversalTime(),
     };
+
+    public void GainXp(int amount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+        Xp = checked(Xp + amount);
+    }
 
     public void ChooseExam(Guid examId) => ActiveExamId = examId;
 

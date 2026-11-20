@@ -97,6 +97,10 @@
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
+                        <Label
+                            Style="{StaticResource CaptionLabel}"
+                            Text="{Binding XpText}"
+                            IsVisible="{Binding HasXpText}" />
                         <Label Style="{StaticResource BodyLabel}" Text="{Binding Explanation}" />
                         <Label Style="{StaticResource CaptionLabel}" Text="{Binding LegalReferenceText}" />
                         <Button Text="{Binding NextButtonText}" Command="{Binding NextCommand}" />
@@ -118,6 +122,10 @@
                     SemanticProperties.HeadingLevel="Level1" />
                 <Label Style="{StaticResource DisplayLabel}" Text="{Binding ResultText}" />
                 <Label Style="{StaticResource SubtitleLabel}" Text="{Binding PercentageText}" />
+                <Label
+                    Style="{StaticResource SubtitleLabel}"
+                    Text="{Binding QuizXpText}"
+                    IsVisible="{Binding HasQuizXpText}" />
                 <Label Style="{StaticResource CaptionLabel}" Text="{Binding ScoreText}" />
 
                 <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding SummaryItems}">

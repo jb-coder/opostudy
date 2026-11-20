@@ -33,6 +33,7 @@ public sealed class HomeViewModelTests
             .Returns(new UserProfileResponse(Guid.NewGuid(), new DateTimeOffset(2026, 3, 5, 10, 0, 0, TimeSpan.Zero), null, 10, "Europe/Madrid"));
         _auth.Email.Returns("a@b.com");
         _api.GetStreakAsync(Arg.Any<CancellationToken>()).Returns(StreakWith());
+        _api.GetLevelAsync(Arg.Any<CancellationToken>()).Returns(new LevelResponse(4, 1030, 230, 400, 120));
     }
 
     private static StreakResponse StreakWith(int goal = 10, int answered = 7, bool met = false, int current = 5, int longest = 12) =>
@@ -104,6 +105,7 @@ public sealed class HomeViewModelTests
         await _api.Received(1).GetVersionAsync(Arg.Any<CancellationToken>());
         await _api.Received(1).GetMeAsync(Arg.Any<CancellationToken>());
         await _api.Received(2).GetStreakAsync(Arg.Any<CancellationToken>());
+        await _api.Received(2).GetLevelAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -153,6 +155,49 @@ public sealed class HomeViewModelTests
 
         sut.GoalProgressText.ShouldBe("7 de 20 preguntas");
         await _dialogs.Received(1).ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Is<IReadOnlyList<string>>(o => o.Count == 4 && o[0] == "10" && o[1] == "20" && o[2] == "30" && o[3] == "50"));
+    }
+
+    [Fact]
+    public async Task RefreshCommand_LevelLoaded_FillsCardTexts()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.HasLevel.ShouldBeTrue();
+        sut.LevelTitleText.ShouldBe("Nivel 4");
+        sut.LevelDetailText.ShouldBe("230 / 400 XP para el nivel 5");
+        sut.XpTodayText.ShouldBe("Hoy: +120 XP");
+        sut.LevelProgress.ShouldBe(0.575);
+    }
+
+    [Fact]
+    public async Task RefreshCommand_LevelFails_ShowsErrorOnlyOnLevelCard()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _api.GetLevelAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        sut.HasLevelError.ShouldBeTrue();
+        sut.HasLevel.ShouldBeFalse();
+        sut.HasStreak.ShouldBeTrue();
+        sut.HasError.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ChangeDailyGoalCommand_ChoiceMade_ReloadsLevel()
+    {
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns("20");
+        _api.UpdateDailyGoalAsync(Arg.Any<UpdateDailyGoalRequest>(), Arg.Any<CancellationToken>()).Returns(StreakWith(goal: 20));
+        var sut = CreateSut();
+
+        await sut.ChangeDailyGoalCommand.ExecuteAsync(null);
+
+        await _api.Received(1).GetLevelAsync(Arg.Any<CancellationToken>());
+        sut.XpTodayText.ShouldBe("Hoy: +120 XP");
     }
 
     [Fact]

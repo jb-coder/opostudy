@@ -18,6 +18,8 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(u => u.FirebaseUid).IsUnique();
         builder.Property(u => u.DailyGoal).HasDefaultValue(Limits.DefaultDailyGoal);
         builder.Property(u => u.TimeZone).HasMaxLength(Limits.TimeZone).HasDefaultValue(Limits.DefaultTimeZone);
+        builder.Property(u => u.Xp).HasDefaultValue(0);
+        builder.Ignore(u => u.Level);
         builder.ComplexProperty(u => u.Streak, streak =>
         {
             streak.Property(s => s.Longest).HasColumnName("streak_longest").HasDefaultValue(0);
