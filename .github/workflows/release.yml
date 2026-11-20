@@ -1,0 +1,135 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  verify:
+    name: Verificar tag en main y tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: El tag debe apuntar a un commit de main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::El tag $GITHUB_REF_NAME no apunta a un commit de main. Release cancelada."; exit 1
+          fi
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Build y tests
+        run: |
+          dotnet build OpoStudy.Backend.slnf -c Release
+          dotnet test --solution OpoStudy.Backend.slnf --no-build -c Release
+
+  android:
+    name: APK Android firmado
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-java@v6
+        with:
+          distribution: microsoft
+          java-version: '17'
+      - name: Instalar workload MAUI Android
+        run: dotnet workload install maui-android
+
+      - name: Restaurar keystore desde secrets
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::Falta el secret ANDROID_KEYSTORE_BASE64 (environment 'release')"; exit 1
+          fi
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/opostudy.keystore"
+
+      - name: Restaurar google-services.json desde secrets
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "::error::Falta el secret GOOGLE_SERVICES_JSON_BASE64 (environment 'release')"; exit 1
+          fi
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 -d > src/OpoStudy.Mobile/Platforms/Android/google-services.json
+
+      - name: Publicar APK firmado
+        env:
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASS: ${{ secrets.ANDROID_KEY_PASS }}
+          ANDROID_STORE_PASS: ${{ secrets.ANDROID_STORE_PASS }}
+        run: |
+          dotnet publish src/OpoStudy.Mobile/OpoStudy.Mobile.csproj -f net10.0-android -c Release \
+            -p:AndroidPackageFormat=apk \
+            -p:AndroidKeyStore=true \
+            -p:AndroidSigningKeyStore="$RUNNER_TEMP/opostudy.keystore" \
+            -p:AndroidSigningKeyAlias="$ANDROID_KEY_ALIAS" \
+            -p:AndroidSigningKeyPass=env:ANDROID_KEY_PASS \
+            -p:AndroidSigningStorePass=env:ANDROID_STORE_PASS \
+            -o "$RUNNER_TEMP/out"
+          cp "$(ls "$RUNNER_TEMP"/out/*-Signed.apk | head -1)" "$RUNNER_TEMP/OpoStudy-${GITHUB_REF_NAME}.apk"
+
+      - name: Borrar keystore y google-services.json
+        if: always()
+        run: rm -f "$RUNNER_TEMP/opostudy.keystore" src/OpoStudy.Mobile/Platforms/Android/google-services.json
+
+      - name: Crear GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # 0.x versions and release candidates (-rc.N) are published as pre-releases (ADR 0001).
+          PRERELEASE=""
+          case "$GITHUB_REF_NAME" in v0.*|*-*) PRERELEASE="--prerelease";; esac
+          gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP/OpoStudy-${GITHUB_REF_NAME}.apk" \
+            --title "OpoStudy $GITHUB_REF_NAME" --generate-notes $PRERELEASE
+
+  api-image:
+    name: Imagen de la API (GHCR)
+    # Sin environment propio: depende de `android`, que ya exige la aprobación del environment
+    # `release`. Así cada tag pide una sola aprobación y los secrets del keystore solo los ve `android`.
+    needs: [verify, android]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Login en GHCR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: echo "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Publicar imágenes (api y worker)
+        run: |
+          OWNER="$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          VERSION="${GITHUB_REF_NAME#v}"
+          TAGS="$VERSION"
+          # `latest` only for stable versions: neither 0.x nor release candidates.
+          case "$VERSION" in 0.*|*-*) ;; *) TAGS="$VERSION;latest";; esac
+          for APP in Api Worker; do
+            NAME="opostudy-$(echo "$APP" | tr '[:upper:]' '[:lower:]')"
+            dotnet publish "src/OpoStudy.$APP/OpoStudy.$APP.csproj" -c Release -t:PublishContainer \
+              -p:Version="$VERSION" \
+              -p:ContainerRegistry=ghcr.io \
+              -p:ContainerRepository="$OWNER/$NAME" \
+              -p:ContainerImageTags="\"$TAGS\""
+          done

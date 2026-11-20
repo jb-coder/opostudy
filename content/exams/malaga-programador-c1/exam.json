@@ -1,0 +1,249 @@
+{
+  "$schema": "../../schema/exam.schema.json",
+  "slug": "malaga-programador-c1",
+  "name": "Programador Informático",
+  "organization": "Diputación Provincial de Málaga",
+  "group": "C1",
+  "topics": [
+    {
+      "number": 1,
+      "slug": "constitucion",
+      "title": "Tema 1. La Constitución española de 1978: principios generales. Características y estructura. Reforma de la Constitución",
+      "section": "Bloque I. Materias comunes"
+    },
+    {
+      "number": 2,
+      "slug": "lpac-interesados-actividad",
+      "title": "Tema 2. Procedimiento Administrativo Común (I): derechos del ciudadano, el interesado (concepto y capacidad de obrar), identificación y firma, y normas generales de actuación de las Administraciones Públicas",
+      "section": "Bloque I. Materias comunes"
+    },
+    {
+      "number": 3,
+      "slug": "lpac-acto-administrativo",
+      "title": "Tema 3. Procedimiento Administrativo Común (II): el acto administrativo. Concepto, elementos y clases. Requisitos: motivación y forma. Eficacia. Notificación y publicación",
+      "section": "Bloque I. Materias comunes"
+    },
+    {
+      "number": 4,
+      "slug": "lpac-fases-procedimiento",
+      "title": "Tema 4. Procedimiento Administrativo Común (III): fases del procedimiento (iniciación, ordenación, instrucción y finalización). La ejecución",
+      "section": "Bloque I. Materias comunes"
+    },
+    {
+      "number": 5,
+      "slug": "regimen-local",
+      "title": "Tema 5. Régimen local español: principios constitucionales y Ley 7/1985. Organización y competencias provinciales y municipales",
+      "section": "Bloque I. Materias comunes"
+    },
+    {
+      "number": 6,
+      "slug": "personal-entidades-locales",
+      "title": "Tema 6. Personal al servicio de las entidades locales: función pública local, selección, situaciones administrativas, derechos y deberes",
+      "section": "Bloque I. Materias comunes"
+    },
+    {
+      "number": 7,
+      "slug": "presupuesto-local",
+      "title": "Tema 7. El presupuesto de las entidades locales: elaboración, aprobación, ejecución, control y fiscalización",
+      "section": "Bloque I. Materias comunes"
+    },
+    {
+      "number": 8,
+      "slug": "contratos-sector-publico",
+      "title": "Tema 8. Ley de Contratos del Sector Público: objeto, ámbito de aplicación y tipos contractuales",
+      "section": "Bloque I. Materias comunes"
+    },
+    {
+      "number": 9,
+      "slug": "linux-cloud",
+      "title": "Tema 1. El sistema operativo Linux. Computación en la nube: IaaS, PaaS, SaaS. Nubes privadas, públicas e híbridas",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 10,
+      "slug": "bases-de-datos-sql",
+      "title": "Tema 2. Sistemas gestores de bases de datos relacionales. Modelo entidad-relación. SQL",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 11,
+      "slug": "redes-sara-nerea",
+      "title": "Tema 3. Redes corporativas. Infraestructuras comunes: Red SARA y Red NEREA",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 12,
+      "slug": "ens",
+      "title": "Tema 4. Esquema Nacional de Seguridad (ENS)",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 13,
+      "slug": "bpmn",
+      "title": "Tema 5. Modelado de procesos de negocio. Notación BPMN 2.0",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 14,
+      "slug": "auditoria-informatica",
+      "title": "Tema 6. Auditoría informática: concepto, contenidos, prácticas operativas, peritajes, marco legal y herramientas",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 15,
+      "slug": "proteccion-datos",
+      "title": "Tema 7. La protección de datos personales: marco normativo, principios, derechos, responsables y encargados, autoridades de control. Propiedad intelectual en el entorno digital",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 16,
+      "slug": "proteccion-software",
+      "title": "Tema 8. La protección jurídica de los programas de ordenador. Comprobación de la legalidad y control del software",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 17,
+      "slug": "accesibilidad-usabilidad",
+      "title": "Tema 9. Accesibilidad y usabilidad. W3C. Diseño universal. Diseño web adaptativo",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 18,
+      "slug": "normalizacion",
+      "title": "Tema 10. Organizaciones de normalización. Pruebas de conformidad y certificación",
+      "section": "Bloque II-A. Materias específicas"
+    },
+    {
+      "number": 19,
+      "slug": "java",
+      "title": "Tema 11. Lenguaje de programación Java. Arquitectura. Frameworks",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 20,
+      "slug": "dotnet",
+      "title": "Tema 12. Entorno de desarrollo Microsoft .NET",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 21,
+      "slug": "html-css-javascript",
+      "title": "Tema 13. Desarrollo web con HTML y CSS. Lenguaje JavaScript",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 22,
+      "slug": "php",
+      "title": "Tema 14. Programación de páginas y aplicaciones web con PHP",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 23,
+      "slug": "arquitectura-mvc",
+      "title": "Tema 15. Arquitectura de programación DNA. Modelo-Vista-Controlador (MVC). Casos de uso",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 24,
+      "slug": "soa-servicios-web",
+      "title": "Tema 16. Arquitectura SOA. Servicios web. Tecnologías XML. WS-Security. SAML",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 25,
+      "slug": "servidores-web",
+      "title": "Tema 17. Servidores web. Tecnologías para el desarrollo de aplicaciones web. Aplicaciones en entornos PHP y MySQL",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 26,
+      "slug": "metodologias-agiles",
+      "title": "Tema 18. Metodologías ágiles. Dirección y gestión de proyectos TI. Métrica",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 27,
+      "slug": "gantt-pert",
+      "title": "Tema 19. Metodologías predictivas para la gestión de proyectos: GANTT, PERT",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 28,
+      "slug": "control-versiones",
+      "title": "Tema 20. Herramientas de control de versiones. Estrategias. Repositorios locales y distribuidos. Soluciones de código abierto",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 29,
+      "slug": "pruebas-integracion-despliegue",
+      "title": "Tema 21. Pruebas con JUnit y Selenium. Integración con Nexus, Jenkins y SonarQube. Despliegue con Ansible y LXC",
+      "section": "Bloque II-B. Materias específicas"
+    },
+    {
+      "number": 30,
+      "slug": "sia-dir3",
+      "title": "Tema 22. Sistema de Información Administrativa (SIA). Directorio Común (DIR3). Servicios web e integraciones",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 31,
+      "slug": "notificaciones-notifica",
+      "title": "Tema 23. Notificaciones y comunicaciones en las Leyes 39/2015 y 40/2015. Notifica. Servicios web e integraciones",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 32,
+      "slug": "pag-carpeta-sede",
+      "title": "Tema 24. Punto de Acceso General electrónico. Carpeta Ciudadana. Sede electrónica",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 33,
+      "slug": "registro-electronico",
+      "title": "Tema 25. Registro de entrada/salida. SICRES 4.0. Registro Electrónico Común. SIR, GEISER y ORVE",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 34,
+      "slug": "expediente-electronico",
+      "title": "Tema 26. Archivo, documento y expediente electrónico. INSIDE y Archive. Esquema Nacional de Interoperabilidad y Normas Técnicas",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 35,
+      "slug": "firma-electronica",
+      "title": "Tema 27. Firma electrónica. Plataforma @firma. Autoridades de certificación. Reglamento eIDAS",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 36,
+      "slug": "clave",
+      "title": "Tema 28. Gestión de identidades. Cl@ve",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 37,
+      "slug": "factura-electronica",
+      "title": "Tema 29. Ley 25/2013 de impulso de la factura electrónica. Punto General de Entrada de Facturas Electrónicas. Integración",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 38,
+      "slug": "facturae",
+      "title": "Tema 30. El formato de factura electrónica Facturae",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 39,
+      "slug": "transparencia-proteccion-datos",
+      "title": "Tema 31. Transparencia (Ley 19/2013 y Ley 1/2014 de Andalucía) y protección de datos (RGPD y Ley Orgánica 3/2018)",
+      "section": "Bloque II-C. Materias específicas"
+    },
+    {
+      "number": 40,
+      "slug": "prevencion-igualdad",
+      "title": "Tema 32. Prevención de riesgos laborales. Igualdad efectiva de mujeres y hombres (LO 3/2007, Ley 12/2007 de Andalucía y Ley 9/2018)",
+      "section": "Bloque II-C. Materias específicas"
+    }
+  ]
+}

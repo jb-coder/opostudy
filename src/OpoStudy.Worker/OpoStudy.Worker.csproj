@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+    <UserSecretsId>dotnet-OpoStudy.Worker-2984a431-d14c-48e8-a73c-578323fe2b45</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpoStudy.ServiceDefaults\OpoStudy.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\OpoStudy.Infrastructure\OpoStudy.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

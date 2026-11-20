@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.QuizPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:QuizViewModel"
+    Title="{Binding QuizTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceL}">
+
+            <!-- Loading and load error -->
+            <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsLoading}">
+                <ActivityIndicator IsRunning="{Binding IsLoading}" />
+                <Label Text="Cargando test…" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!-- Question view -->
+            <VerticalStackLayout Spacing="{StaticResource SpaceL}" IsVisible="{Binding IsQuestionVisible}">
+                <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                    <ProgressBar Progress="{Binding Progress}" SemanticProperties.Description="Progreso del test" />
+                    <Label
+                        Style="{StaticResource CaptionLabel}"
+                        Text="{Binding ProgressText}"
+                        SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource CaptionLabel}" Text="{Binding ScoreText}" />
+                </VerticalStackLayout>
+
+                <Border>
+                    <Label Style="{StaticResource TitleLabel}" Text="{Binding CurrentStatement}" />
+                </Border>
+
+                <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding Options}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:QuizOptionItem">
+                            <Border
+                                MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                                SemanticProperties.Description="{Binding AccessibilityText}">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding State}" Value="{x:Static vm:OptionState.Correct}">
+                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding State}" Value="{x:Static vm:OptionState.Incorrect}">
+                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorDark}}" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding State}" Value="{x:Static vm:OptionState.Dimmed}">
+                                        <Setter Property="Opacity" Value="{StaticResource DimmedOpacity}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding AnswerCommand, Source={RelativeSource AncestorType={x:Type vm:QuizViewModel}}}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                    <HorizontalStackLayout Spacing="{StaticResource SpaceM}">
+                                        <Label Style="{StaticResource SubtitleLabel}" Text="{Binding Letter}" />
+                                        <Label Text="{Binding Text}" VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding StateText}" IsVisible="{Binding HasStateText}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding State}" Value="{x:Static vm:OptionState.Correct}">
+                                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding State}" Value="{x:Static vm:OptionState.Incorrect}">
+                                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorDark}}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label
+                    Style="{StaticResource ErrorLabel}"
+                    Text="{Binding ErrorMessage}"
+                    IsVisible="{Binding HasError}" />
+
+                <Border IsVisible="{Binding IsAnswered}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label Text="{Binding FeedbackTitle}" Style="{StaticResource SuccessLabel}" SemanticProperties.HeadingLevel="Level2">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsCorrect}" Value="False">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorDark}}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Style="{StaticResource BodyLabel}" Text="{Binding Explanation}" />
+                        <Label Style="{StaticResource CaptionLabel}" Text="{Binding LegalReferenceText}" />
+                        <Button Text="{Binding NextButtonText}" Command="{Binding NextCommand}" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Load error (before the quiz is shown) -->
+            <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding ShowLoadError}">
+                <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                <Button Text="Reintentar" Command="{Binding LoadCommand}" />
+            </VerticalStackLayout>
+
+            <!-- Summary -->
+            <VerticalStackLayout Spacing="{StaticResource SpaceL}" IsVisible="{Binding IsFinished}">
+                <Label
+                    Style="{StaticResource TitleLabel}"
+                    Text="Resultado"
+                    SemanticProperties.HeadingLevel="Level1" />
+                <Label Style="{StaticResource DisplayLabel}" Text="{Binding ResultText}" />
+                <Label Style="{StaticResource SubtitleLabel}" Text="{Binding PercentageText}" />
+                <Label Style="{StaticResource CaptionLabel}" Text="{Binding ScoreText}" />
+
+                <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding SummaryItems}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SummaryItem">
+                            <Border>
+                                <VerticalStackLayout Spacing="{StaticResource SpaceS}">
+                                    <Label Text="{Binding NumberedStatement}" />
+                                    <Label Text="{Binding ResultText}" Style="{StaticResource SuccessLabel}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsCorrect}" Value="False">
+                                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorDark}}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <VerticalStackLayout Spacing="{StaticResource SpaceXs}" IsVisible="{Binding ShowDetails}">
+                                        <Label Text="{Binding Explanation}" />
+                                        <Label Style="{StaticResource CaptionLabel}" Text="{Binding ReferenceText}" />
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Button Text="Hacer otro test" Command="{Binding AnotherQuizCommand}" />
+                <Button
+                    Style="{StaticResource SecondaryButton}"
+                    Text="Volver al inicio"
+                    Command="{Binding GoHomeCommand}" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</views:ViewModelPage>

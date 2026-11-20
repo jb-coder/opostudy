@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "lpac-acto-administrativo",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0001",
+      "statement": "Según el artículo 35.1 de la Ley 39/2015, ¿cuál de los siguientes actos deberá ser motivado, con sucinta referencia de hechos y fundamentos de derecho?",
+      "options": [
+        {
+          "text": "Los actos de mero trámite que no afecten a derechos ni a intereses legítimos",
+          "isCorrect": false
+        },
+        {
+          "text": "Los actos que se separen del criterio seguido en actuaciones precedentes o del dictamen de órganos consultivos",
+          "isCorrect": true
+        },
+        {
+          "text": "Los actos de convocatoria de las sesiones de los órganos colegiados",
+          "isCorrect": false
+        },
+        {
+          "text": "Los actos que concedan lo solicitado por el interesado en ejercicio de potestades regladas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 35.1.c) obliga a motivar «los actos que se separen del criterio seguido en actuaciones precedentes o del dictamen de órganos consultivos». Los demás supuestos no figuran en el listado del art. 35.1: este alcanza, por ejemplo, a los actos que limiten derechos subjetivos o intereses legítimos y a los dictados en ejercicio de potestades discrecionales, no a los de mero trámite ni a los de convocatoria ni a los que concedan lo solicitado en ejercicio de potestades regladas.",
+      "legalReference": "Ley 39/2015, art. 35.1.c)"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0002",
+      "statement": "Según el artículo 36.1 de la Ley 39/2015, los actos administrativos se producirán:",
+      "options": [
+        {
+          "text": "Por escrito en soporte papel, a menos que el interesado solicite expresamente su emisión electrónica",
+          "isCorrect": false
+        },
+        {
+          "text": "De forma verbal, con constancia escrita posterior en todo caso",
+          "isCorrect": false
+        },
+        {
+          "text": "Por escrito en soporte papel o electrónico, a elección del órgano competente",
+          "isCorrect": false
+        },
+        {
+          "text": "Por escrito a través de medios electrónicos, a menos que su naturaleza exija otra forma más adecuada de expresión y constancia",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 36.1 establece que «los actos administrativos se producirán por escrito a través de medios electrónicos, a menos que su naturaleza exija otra forma más adecuada de expresión y constancia». La forma electrónica es, por tanto, la regla general y no depende de la elección del órgano ni de la petición del interesado. La forma verbal aparece regulada en el art. 36.2 para «los casos en que los órganos administrativos ejerzan su competencia de forma verbal», y aun entonces la constancia escrita del acto se efectúa «cuando sea necesaria»; no es una regla general que sustituya a la forma escrita electrónica.",
+      "legalReference": "Ley 39/2015, art. 36.1"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0003",
+      "statement": "Según el artículo 39.1 de la Ley 39/2015, los actos de las Administraciones Públicas sujetos al Derecho Administrativo se presumirán válidos y producirán efectos desde:",
+      "options": [
+        {
+          "text": "La fecha en que se dicten, salvo que en ellos se disponga otra cosa",
+          "isCorrect": true
+        },
+        {
+          "text": "La fecha de su notificación al interesado, salvo que en ellos se disponga otra cosa",
+          "isCorrect": false
+        },
+        {
+          "text": "El día siguiente al de su publicación en el diario oficial correspondiente",
+          "isCorrect": false
+        },
+        {
+          "text": "La fecha en que adquieran firmeza en vía administrativa",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 39.1 dice que los actos «se presumirán válidos y producirán efectos desde la fecha en que se dicten, salvo que en ellos se disponga otra cosa». La eficacia solo queda demorada cuando así lo exija el contenido del acto o esté supeditada a su notificación, publicación o aprobación superior (art. 39.2), pero no es la regla general.",
+      "legalReference": "Ley 39/2015, art. 39.1"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0004",
+      "statement": "Según el artículo 39.3 de la Ley 39/2015, ¿en cuál de los siguientes supuestos podrá otorgarse excepcionalmente eficacia retroactiva a los actos administrativos?",
+      "options": [
+        {
+          "text": "Cuando impongan una sanción más grave que la vigente en el momento de los hechos",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando limiten derechos de otras personas, si así lo exige el interés general",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando se dicten en sustitución de actos anulados",
+          "isCorrect": true
+        },
+        {
+          "text": "Cuando así lo decida el órgano superior, aunque aún no existieran los supuestos de hecho necesarios",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 39.3 permite excepcionalmente la eficacia retroactiva «cuando se dicten en sustitución de actos anulados, así como cuando produzcan efectos favorables al interesado», siempre que los supuestos de hecho necesarios existieran ya en la fecha a la que se retrotrae la eficacia y esta no lesione derechos o intereses legítimos de otras personas. Por eso fallan las opciones que perjudican a terceros o que prescinden de los supuestos de hecho.",
+      "legalReference": "Ley 39/2015, art. 39.3"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0005",
+      "statement": "Según el artículo 40.2 de la Ley 39/2015, toda notificación deberá ser cursada dentro del plazo de ... a partir de la fecha en que el acto haya sido dictado.",
+      "options": [
+        {
+          "text": "Cinco días",
+          "isCorrect": false
+        },
+        {
+          "text": "Diez días",
+          "isCorrect": true
+        },
+        {
+          "text": "Quince días",
+          "isCorrect": false
+        },
+        {
+          "text": "Un mes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 40.2 dispone que «toda notificación deberá ser cursada dentro del plazo de diez días a partir de la fecha en que el acto haya sido dictado», y que debe contener el texto íntegro de la resolución, la indicación de si pone fin o no a la vía administrativa, los recursos que procedan, el órgano ante el que presentarlos y el plazo para interponerlos. Los demás plazos no son los de este precepto.",
+      "legalReference": "Ley 39/2015, art. 40.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0006",
+      "statement": "Según el artículo 41.2 de la Ley 39/2015, ¿qué notificaciones quedan excluidas en todo caso de la práctica por medios electrónicos?",
+      "options": [
+        {
+          "text": "Las dirigidas a personas físicas que no estén obligadas a relacionarse electrónicamente con la Administración",
+          "isCorrect": false
+        },
+        {
+          "text": "Las que pongan fin al procedimiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Las que contengan medios de pago a favor de los obligados, tales como cheques",
+          "isCorrect": true
+        },
+        {
+          "text": "Las relativas a procedimientos de naturaleza sancionadora",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 41.2 prohíbe en todo caso las notificaciones electrónicas de aquellas en las que el acto vaya acompañado de elementos no susceptibles de conversión en formato electrónico y de «las que contengan medios de pago a favor de los obligados, tales como cheques». Las personas físicas no obligadas pueden decidir recibir notificaciones electrónicas (art. 41.1), y ni la terminación del procedimiento ni su naturaleza sancionadora excluyen la vía electrónica.",
+      "legalReference": "Ley 39/2015, art. 41.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0007",
+      "statement": "Según el artículo 42.2 de la Ley 39/2015, cuando la notificación en papel se practique en el domicilio del interesado y nadie se hiciera cargo de ella, el intento se repetirá:",
+      "options": [
+        {
+          "text": "Por una sola vez, en una hora distinta, dentro de los tres días siguientes",
+          "isCorrect": true
+        },
+        {
+          "text": "Por dos veces, en horas distintas, dentro de los cinco días siguientes",
+          "isCorrect": false
+        },
+        {
+          "text": "Por una sola vez, a la misma hora, dentro de los diez días siguientes",
+          "isCorrect": false
+        },
+        {
+          "text": "Por una sola vez, en una hora distinta, dentro de los quince días siguientes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 42.2 señala que, si nadie se hiciera cargo de la notificación, el intento «se repetirá por una sola vez y en una hora distinta dentro de los tres días siguientes». Si el primer intento fue antes de las quince horas, el segundo debe hacerse después, y viceversa, con una diferencia mínima de tres horas. Si también resulta infructuoso, se procede según el art. 44.",
+      "legalReference": "Ley 39/2015, art. 42.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0008",
+      "statement": "Según el artículo 43.2 de la Ley 39/2015, cuando la notificación por medios electrónicos sea obligatoria o haya sido expresamente elegida por el interesado, se entenderá rechazada cuando hayan transcurrido ... desde la puesta a disposición de la notificación sin que se acceda a su contenido.",
+      "options": [
+        {
+          "text": "Cinco días naturales",
+          "isCorrect": false
+        },
+        {
+          "text": "Diez días hábiles",
+          "isCorrect": false
+        },
+        {
+          "text": "Diez días naturales",
+          "isCorrect": true
+        },
+        {
+          "text": "Quince días hábiles",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 43.2 establece que la notificación electrónica obligatoria o expresamente elegida «se entenderá rechazada cuando hayan transcurrido diez días naturales desde la puesta a disposición de la notificación sin que se acceda a su contenido». El plazo es de días naturales, no hábiles, y es de diez, no de cinco ni de quince.",
+      "legalReference": "Ley 39/2015, art. 43.2"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0009",
+      "statement": "Según el artículo 44 de la Ley 39/2015, cuando los interesados en un procedimiento sean desconocidos o se ignore el lugar de la notificación, la notificación se hará por medio de un anuncio publicado en:",
+      "options": [
+        {
+          "text": "El boletín oficial de la Comunidad Autónoma o de la Provincia",
+          "isCorrect": false
+        },
+        {
+          "text": "El tablón de edictos del Ayuntamiento del último domicilio del interesado",
+          "isCorrect": false
+        },
+        {
+          "text": "La sede electrónica de la Administración actuante",
+          "isCorrect": false
+        },
+        {
+          "text": "El «Boletín Oficial del Estado»",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 44 dispone que la notificación «se hará por medio de un anuncio publicado en el «Boletín Oficial del Estado»». Previamente y con carácter facultativo, las Administraciones podrán publicar un anuncio en el boletín oficial de la Comunidad Autónoma o de la Provincia, en el tablón de edictos del Ayuntamiento del último domicilio o en el Consulado, pero esas publicaciones no sustituyen al anuncio en el BOE.",
+      "legalReference": "Ley 39/2015, art. 44"
+    },
+    {
+      "key": "malaga-programador-c1/lpac-acto-administrativo/0010",
+      "statement": "Según el artículo 45.1.b) de la Ley 39/2015, los actos integrantes de un procedimiento selectivo o de concurrencia competitiva de cualquier tipo serán objeto de publicación, surtiendo esta los efectos de la notificación. ¿Dónde deben efectuarse las sucesivas publicaciones?",
+      "options": [
+        {
+          "text": "En el «Boletín Oficial del Estado» en todo caso",
+          "isCorrect": false
+        },
+        {
+          "text": "En cualquier medio de difusión que elija el órgano competente, siendo válidas todas ellas",
+          "isCorrect": false
+        },
+        {
+          "text": "En el tablón de edictos del Ayuntamiento del último domicilio de cada aspirante",
+          "isCorrect": false
+        },
+        {
+          "text": "En el medio que indique la convocatoria del procedimiento, careciendo de validez las que se lleven a cabo en lugares distintos",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 45.1.b) establece que «la convocatoria del procedimiento deberá indicar el medio donde se efectuarán las sucesivas publicaciones, careciendo de validez las que se lleven a cabo en lugares distintos». No se impone el BOE en todo caso ni se admite cualquier medio a elección del órgano.",
+      "legalReference": "Ley 39/2015, art. 45.1.b)"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="OpoStudy.Mobile.Views.StyleGuidePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    x:DataType="views:StyleGuidePage"
+    Title="Catálogo de estilos">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceXl}">
+
+            <Label Style="{StaticResource TitleLabel}" Text="Colores" SemanticProperties.HeadingLevel="Level1" />
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                <Border Grid.Row="0" Grid.Column="0" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}">
+                    <Label Text="Primary" TextColor="{AppThemeBinding Light={StaticResource OnPrimaryLight}, Dark={StaticResource OnPrimaryDark}}" />
+                </Border>
+                <Border Grid.Row="0" Grid.Column="1">
+                    <Label Text="Surface" />
+                </Border>
+                <Border Grid.Row="1" Grid.Column="0">
+                    <Label Text="OnSurface" />
+                </Border>
+                <Border Grid.Row="1" Grid.Column="1">
+                    <Label Style="{StaticResource CaptionLabel}" Text="OnSurfaceVariant" />
+                </Border>
+                <Border Grid.Row="2" Grid.Column="0">
+                    <Label Style="{StaticResource SuccessLabel}" Text="Success" />
+                </Border>
+                <Border Grid.Row="2" Grid.Column="1">
+                    <Label Style="{StaticResource ErrorLabel}" Text="Error" />
+                </Border>
+                <Border Grid.Row="3" Grid.Column="0">
+                    <Label Style="{StaticResource WarningLabel}" Text="Warning" />
+                </Border>
+                <Border Grid.Row="3" Grid.Column="1" Stroke="{AppThemeBinding Light={StaticResource OutlineLight}, Dark={StaticResource OutlineDark}}" StrokeThickness="4">
+                    <Label Text="Outline" />
+                </Border>
+            </Grid>
+
+            <Label Style="{StaticResource TitleLabel}" Text="Tipografía" SemanticProperties.HeadingLevel="Level1" />
+            <VerticalStackLayout Spacing="{StaticResource SpaceS}">
+                <Label Style="{StaticResource DisplayLabel}" Text="Display 28" />
+                <Label Style="{StaticResource TitleLabel}" Text="Title 22" />
+                <Label Style="{StaticResource SubtitleLabel}" Text="Subtitle 18" />
+                <Label Text="Body 16" />
+                <Label Style="{StaticResource CaptionLabel}" Text="Caption 13" />
+            </VerticalStackLayout>
+
+            <Label Style="{StaticResource TitleLabel}" Text="Botones" SemanticProperties.HeadingLevel="Level1" />
+            <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                <Button Text="Principal" />
+                <Button Style="{StaticResource SecondaryButton}" Text="Secundario" />
+                <Button Style="{StaticResource TextButton}" Text="Texto" />
+                <Button Text="Deshabilitado" IsEnabled="False" />
+            </VerticalStackLayout>
+
+            <Label Style="{StaticResource TitleLabel}" Text="Tarjeta y estados" SemanticProperties.HeadingLevel="Level1" />
+            <Border Style="{StaticResource CardBorder}">
+                <VerticalStackLayout Spacing="{StaticResource SpaceS}">
+                    <Label Style="{StaticResource SubtitleLabel}" Text="Título de tarjeta" />
+                    <Label Text="Texto principal de la tarjeta." />
+                    <Label Style="{StaticResource SuccessLabel}" Text="Correcta: respuesta acertada" />
+                    <Label Style="{StaticResource ErrorLabel}" Text="Incorrecta: respuesta fallada" />
+                    <Label Style="{StaticResource WarningLabel}" Text="Aviso: revisa este tema" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

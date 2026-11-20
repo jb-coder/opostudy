@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: nuget
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    ignore:
+      # Los paquetes Microsoft.* siguen la versión de .NET: una major nueva (p. ej. 11.x) implica
+      # cambiar de runtime, y eso se hace a mano junto con global.json y los TargetFramework.
+      - dependency-name: "Microsoft.*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      opentelemetry:
+        patterns: ["OpenTelemetry*"]
+      aspire:
+        patterns: ["Aspire.*"]
+      microsoft:
+        patterns: ["Microsoft.*"]
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: monthly

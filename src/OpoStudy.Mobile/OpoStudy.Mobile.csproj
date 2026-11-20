@@ -1,0 +1,110 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
+		<!-- iOS will be enabled in the final phase: add net10.0-ios here -->
+
+
+		<OutputType>Exe</OutputType>
+		<RootNamespace>OpoStudy.Mobile</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+
+		<!-- Enable XAML source generation for faster build times and improved performance.
+		     This generates C# code from XAML at compile time instead of runtime inflation.
+		     To disable, remove this line.
+		     For individual files, you can override by setting Inflator metadata:
+		       <MauiXaml Update="MyPage.xaml" Inflator="Default" /> (reverts to defaults: Runtime for Debug, XamlC for Release)
+		       <MauiXaml Update="MyPage.xaml" Inflator="Runtime" /> (force runtime inflation) -->
+		<MauiXamlInflator>SourceGen</MauiXamlInflator>
+
+		<!-- Display name -->
+		<ApplicationTitle>OpoStudy</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.opostudy.app</ApplicationId>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>2</ApplicationVersion>
+
+		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
+		<WindowsPackageType>None</WindowsPackageType>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#1E5AA8" />
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1E5AA8" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" Condition="Exists('Resources\Images')" />
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" VersionOverride="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+		<PackageReference Include="Refit.HttpClientFactory" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<PackageReference Include="Xamarin.AndroidX.Credentials" />
+		<PackageReference Include="Xamarin.AndroidX.Credentials.PlayServicesAuth" />
+		<PackageReference Include="Xamarin.GoogleAndroid.Libraries.Identity.GoogleId" />
+	</ItemGroup>
+
+	<!-- Firebase configuration (not versioned: .gitignore + gitleaks). Copy it by hand locally; release.yml writes it from a secret.
+	     Debug builds compile without it; Release builds fail if it is missing. -->
+	<PropertyGroup>
+		<GoogleServicesFile>$(MSBuildProjectDirectory)/Platforms/Android/google-services.json</GoogleServicesFile>
+	</PropertyGroup>
+
+	<ItemGroup Condition="Exists('$(GoogleServicesFile)')">
+		<EmbeddedResource Include="$(GoogleServicesFile)" LogicalName="google-services.json" />
+	</ItemGroup>
+
+	<Target Name="RequireGoogleServices" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release' And !Exists('$(GoogleServicesFile)')">
+		<Error Text="Missing Platforms/Android/google-services.json (required in Release). Download it from the Firebase console, or in CI set the GOOGLE_SERVICES_JSON_BASE64 secret." />
+	</Target>
+
+	<!-- API base URL, fixed at build time. Debug default: Android emulator -> host loopback (AppHost API port).
+	     USB device: `adb reverse tcp:5054 tcp:5054` and build with -p:ApiBaseUrl=http://localhost:5054.
+	     Release has no default: it is defined with the production deployment. -->
+	<PropertyGroup Condition="'$(ApiBaseUrl)' == '' And '$(Configuration)' == 'Debug'">
+		<ApiBaseUrl>http://10.0.2.2:5054</ApiBaseUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+			<_Parameter1>ApiBaseUrl</_Parameter1>
+			<_Parameter2>$(ApiBaseUrl)</_Parameter2>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<!-- Network security config is chosen per configuration (same resource name, referenced by the manifest):
+	     Debug allows cleartext HTTP to the emulator host/loopback; Release is HTTPS only. -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AndroidResource Include="Platforms\Android\NetworkConfig\network_security_config.$(Configuration).xml"
+		                 Condition="'$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'"
+		                 LogicalName="xml\network_security_config.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\OpoStudy.Contracts\OpoStudy.Contracts.csproj" />
+	  <ProjectReference Include="..\OpoStudy.Mobile.Core\OpoStudy.Mobile.Core.csproj" />
+	</ItemGroup>
+
+</Project>
