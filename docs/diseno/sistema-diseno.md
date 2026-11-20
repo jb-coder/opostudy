@@ -85,7 +85,7 @@ Escala de 4 (`Spacing.xaml`):
 
 ## Estilos
 
-Implícitos (se aplican solos): `ContentPage` (fondo), `Shell`, `Label` (Body + `OnSurface`), `Button` (principal), `Border` (tarjeta), `Entry` (campo de texto: fondo `Surface`, texto `OnSurface`, marcador `OnSurfaceVariant`, alto mínimo 48), `ActivityIndicator`, `RefreshView`, `CollectionView`.
+Implícitos (se aplican solos): `ContentPage` (fondo), `Shell`, `Label` (Body + `OnSurface`), `Button` (principal), `Border` (tarjeta), `Entry` (campo de texto: fondo `Surface`, texto `OnSurface`, marcador `OnSurfaceVariant`, alto mínimo 48), `Picker` (selector: mismos colores y alto que `Entry`, título `OnSurfaceVariant`), `ActivityIndicator`, `RefreshView`, `CollectionView`.
 
 Con clave:
 

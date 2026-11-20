@@ -2,7 +2,7 @@
 
 - **Issue:** #19
 - **Milestone:** v0.1.0-alpha
-- **Estado:** lista
+- **Estado:** implementada
 
 ## Objetivo
 Flujo principal de la app: desde el inicio, elegir oposición y tema (o test aleatorio), hacer un test pregunta a pregunta viendo al momento si se ha acertado, la aclaración y la referencia legal, y terminar con un resumen de aciertos y fallos. Todo sale de la base de datos a través de los endpoints de #16 (spec 0006): ninguna llamada al LLM.
@@ -91,13 +91,13 @@ Sin cambios.
 - Ningún secreto nuevo.
 
 ## Criterios de aceptación
-- [ ] Desde el inicio se llega a oposiciones → temas → test, y se completa un test de 10 preguntas en el emulador contra la API local (AppHost).
-- [ ] Tras responder se ve si se ha acertado, la opción correcta, la aclaración y la referencia legal, sin depender solo del color.
-- [ ] Al terminar se muestra el resumen con aciertos, fallos y porcentaje, y se puede hacer otro test o volver al inicio.
-- [ ] La aclaración viene de la base de datos: en las trazas del AppHost solo hay llamadas a `/api/v1/quizzes…` y ninguna al Worker ni a proveedores LLM.
-- [ ] Un error de red al responder muestra el mensaje y permite reintentar la misma pregunta; un 409 resincroniza el test.
-- [ ] Revisión visual con capturas en claro y oscuro de las cuatro vistas (oposiciones, temas, pregunta respondida, resumen) siguiendo el sistema de diseño.
-- [ ] Tests unitarios de los ViewModels; build sin warnings (backend y `net10.0-android`).
+- [x] Desde el inicio se llega a oposiciones → temas → test, y se completa un test de 10 preguntas en el emulador contra la API local (AppHost).
+- [x] Tras responder se ve si se ha acertado, la opción correcta, la aclaración y la referencia legal, sin depender solo del color.
+- [x] Al terminar se muestra el resumen con aciertos, fallos y porcentaje, y se puede hacer otro test o volver al inicio.
+- [x] La aclaración viene de la base de datos: en las trazas del AppHost solo hay llamadas a `/api/v1/quizzes…` y ninguna al Worker ni a proveedores LLM. (verificado en #31: la app solo llama a `/api/v1/exams…` y `/api/v1/quizzes…`; aún no existe ningún proveedor LLM en el código).
+- [x] Un error de red al responder muestra el mensaje y permite reintentar la misma pregunta; un 409 resincroniza el test. (cubierto con tests unitarios de `QuizViewModel`; no probado con modo avión en el emulador).
+- [x] Revisión visual con capturas en claro y oscuro de las cuatro vistas (oposiciones, temas, pregunta respondida, resumen) siguiendo el sistema de diseño.
+- [x] Tests unitarios de los ViewModels; build sin warnings (backend y `net10.0-android`).
 
 ## Plan de tests
 - **Unitarios** (`tests/OpoStudy.Mobile.Core.Tests`, NSubstitute para `IOpoStudyApi`/`INavigationService`, Shouldly):

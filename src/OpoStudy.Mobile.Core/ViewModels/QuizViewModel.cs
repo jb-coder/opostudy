@@ -409,8 +409,11 @@ public sealed partial class QuizViewModel(
         ProgressText = $"Pregunta {_index + 1} de {total}";
         var answered = _questions.Count(q => q.Feedback is not null);
         Progress = total == 0 ? 0 : (double)answered / total;
-        ScoreText = $"{_correctCount} aciertos · {_incorrectCount} fallos";
+        ScoreText = FormatScore(_correctCount, _incorrectCount);
     }
+
+    private static string FormatScore(int correct, int incorrect) =>
+        $"{correct} {(correct == 1 ? "acierto" : "aciertos")} · {incorrect} {(incorrect == 1 ? "fallo" : "fallos")}";
 
     private void ShowSummary()
     {
@@ -429,7 +432,7 @@ public sealed partial class QuizViewModel(
                 q.Feedback?.LegalReference ?? string.Empty)),
         ];
         Progress = 1;
-        ScoreText = $"{_correctCount} aciertos · {_incorrectCount} fallos";
+        ScoreText = FormatScore(_correctCount, _incorrectCount);
         IsFinished = true;
     }
 

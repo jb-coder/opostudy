@@ -336,7 +336,7 @@ public sealed class QuizViewModelTests
         await sut.OnAppearingAsync();
 
         sut.ProgressText.ShouldBe("Pregunta 2 de 2");
-        sut.ScoreText.ShouldBe("1 aciertos · 0 fallos");
+        sut.ScoreText.ShouldBe("1 acierto · 0 fallos");
         sut.IsFinished.ShouldBeFalse();
     }
 
@@ -384,7 +384,7 @@ public sealed class QuizViewModelTests
         sut.FeedbackTitle.ShouldBe("¡Correcto!");
         sut.Explanation.ShouldBe("Explanation");
         sut.LegalReferenceText.ShouldBe("Referencia: Art. 1 CE");
-        sut.ScoreText.ShouldBe("1 aciertos · 0 fallos");
+        sut.ScoreText.ShouldBe("1 acierto · 0 fallos");
         sut.NextButtonText.ShouldBe("Siguiente pregunta");
     }
 
@@ -402,7 +402,7 @@ public sealed class QuizViewModelTests
         sut.Options.Select(o => o.State).ShouldBe([OptionState.Incorrect, OptionState.Dimmed, OptionState.Correct]);
         sut.Options[0].StateText.ShouldBe("Tu respuesta: incorrecta");
         sut.FeedbackTitle.ShouldBe("Incorrecto");
-        sut.ScoreText.ShouldBe("0 aciertos · 1 fallos");
+        sut.ScoreText.ShouldBe("0 aciertos · 1 fallo");
     }
 
     [Fact]
@@ -491,7 +491,7 @@ public sealed class QuizViewModelTests
         await _api.Received(2).GetQuizAsync(_quizId, Arg.Any<CancellationToken>());
         sut.IsAnswered.ShouldBeTrue();
         sut.Options[0].State.ShouldBe(OptionState.Correct);
-        sut.ScoreText.ShouldBe("1 aciertos · 0 fallos");
+        sut.ScoreText.ShouldBe("1 acierto · 0 fallos");
     }
 
     [Fact]
