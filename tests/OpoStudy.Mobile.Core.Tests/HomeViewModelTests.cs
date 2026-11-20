@@ -10,6 +10,7 @@ using OpoStudy.Contracts.Users;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
 
@@ -353,8 +354,168 @@ public sealed class HomeViewModelTests
 
     private readonly FakeTimeProvider _time = new();
 
+    private static readonly string[] AllowedTimeLabels = ["18:00", "19:00", "20:00", "21:00", "22:00"];
+
+    private readonly FakeReminderStore _reminderStore = new();
+
+    private readonly IReminderScheduler _scheduler = ReminderTestSupport.SupportedScheduler();
+
     private HomeViewModel CreateSut(bool isDebug = false) =>
-        new(_api, _navigation, new AppEnvironment(isDebug), _auth, _dialogs, _time, NullLogger<HomeViewModel>.Instance);
+        new(_api, _navigation, new AppEnvironment(isDebug), _auth, _dialogs, _time, new ReminderService(_reminderStore, _scheduler, _time), NullLogger<HomeViewModel>.Instance);
+
+    [Fact]
+    public async Task OnAppearingAsync_ReminderSaved_ShowsSettings()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _reminderStore.Settings = new ReminderSettings(true, new TimeOnly(21, 0));
+        var sut = CreateSut();
+
+        await sut.OnAppearingAsync();
+
+        sut.IsReminderSupported.ShouldBeTrue();
+        sut.ReminderEnabled.ShouldBeTrue();
+        sut.ReminderTimeText.ShouldBe("Todos los días a las 21:00 si no has cumplido el objetivo");
+        await _scheduler.DidNotReceive().RequestPermissionAsync();
+    }
+
+    [Fact]
+    public async Task ReminderEnabled_SwitchedOnWithPermission_EnablesAndSchedules()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        sut.ReminderEnabled = true;
+
+        _reminderStore.Settings.Enabled.ShouldBeTrue();
+        _scheduler.Received().Schedule(Arg.Any<DateTimeOffset>());
+        sut.HasReminderNotice.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ReminderEnabled_SwitchedOnWithPermissionDenied_TurnsBackOffAndExplains()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _scheduler.RequestPermissionAsync().Returns(false);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        sut.ReminderEnabled = true;
+
+        sut.ReminderEnabled.ShouldBeFalse();
+        _reminderStore.Settings.Enabled.ShouldBeFalse();
+        sut.ReminderNotice.ShouldBe("Activa las notificaciones de OpoStudy en los ajustes de Android para recibir el recordatorio.");
+        sut.HasReminderNotice.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ReminderEnabled_SwitchedOff_DisablesAndCancels()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _reminderStore.Settings = new ReminderSettings(true, ReminderSettings.DefaultTime);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        sut.ReminderEnabled = false;
+
+        _reminderStore.Settings.Enabled.ShouldBeFalse();
+        _scheduler.Received().Cancel();
+    }
+
+    [Fact]
+    public async Task ChangeReminderTimeCommand_TimeChosen_SavesAndUpdatesText()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _dialogs.ChooseAsync("Hora del recordatorio", "Cancelar", Arg.Is<IReadOnlyList<string>>(o => o.SequenceEqual(AllowedTimeLabels)))
+            .Returns("22:00");
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.ChangeReminderTimeCommand.ExecuteAsync(null);
+
+        _reminderStore.Settings.Time.ShouldBe(new TimeOnly(22, 0));
+        sut.ReminderTimeText.ShouldBe("Todos los días a las 22:00 si no has cumplido el objetivo");
+    }
+
+    [Fact]
+    public async Task ChangeReminderTimeCommand_Dismissed_KeepsTime()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns((string?)null);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.ChangeReminderTimeCommand.ExecuteAsync(null);
+
+        _reminderStore.Settings.Time.ShouldBe(ReminderSettings.DefaultTime);
+    }
+
+    [Fact]
+    public async Task RefreshCommand_StreakLoaded_SavesSnapshotAndEnsuresSchedule()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _reminderStore.Settings = new ReminderSettings(true, ReminderSettings.DefaultTime);
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        _reminderStore.Snapshot.ShouldNotBeNull().AnsweredToday.ShouldBe(7);
+        _scheduler.Received().Schedule(Arg.Any<DateTimeOffset>());
+    }
+
+    [Fact]
+    public async Task RefreshCommand_StreakLoaded_LiftsReminderSuspension()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        _reminderStore.Suspended = true;
+        var sut = CreateSut();
+
+        await sut.RefreshCommand.ExecuteAsync(null);
+
+        _reminderStore.Suspended.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ToggleReminderCommand_PermissionPending_DisablesSwitchUntilDone()
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        var permission = new TaskCompletionSource<bool>();
+        _scheduler.RequestPermissionAsync().Returns(permission.Task);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        sut.ReminderEnabled = true;
+
+        sut.IsReminderToggleEnabled.ShouldBeFalse();
+        permission.SetResult(true);
+        await sut.ToggleReminderCommand.ExecutionTask.ShouldNotBeNull();
+        sut.IsReminderToggleEnabled.ShouldBeTrue();
+        sut.ReminderEnabled.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task SignOutCommand_Executed_CancelsReminderAndClearsSnapshot()
+    {
+        _reminderStore.Snapshot = new ReminderSnapshot(new DateOnly(2026, 11, 20), 3, 10, false, 2);
+        var sut = CreateSut();
+
+        await sut.SignOutCommand.ExecuteAsync(null);
+
+        _scheduler.Received(1).Cancel();
+        _reminderStore.Snapshot.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task SignOutCommand_SignOutFails_StillCancelsReminder()
+    {
+        _auth.SignOutAsync().ThrowsAsync(new HttpRequestException());
+        var sut = CreateSut();
+
+        await sut.SignOutCommand.ExecuteAsync(null);
+
+        _scheduler.Received(1).Cancel();
+        _reminderStore.Snapshot.ShouldBeNull();
+    }
 
     [Fact]
     public async Task RefreshCommand_CreatedNearMidnightUtc_UsesLocalDate()

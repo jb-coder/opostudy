@@ -1,15 +1,17 @@
 using Microsoft.Extensions.Logging;
 
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 
 namespace OpoStudy.Mobile.Core.Auth;
 
-/// <summary>When the session is closed by Firebase, sends the user to login and explains why.</summary>
+/// <summary>When the session is closed by Firebase, stops the reminder, sends the user to login and explains why.</summary>
 public sealed partial class SessionExpiredHandler(
     IAuthService auth,
     INavigationService navigation,
     IDialogService dialogs,
+    ReminderService reminders,
     ILogger<SessionExpiredHandler> logger)
 {
     private bool _started;
@@ -29,6 +31,8 @@ public sealed partial class SessionExpiredHandler(
     {
         try
         {
+            // Same as signing out: no reminder may stay scheduled without a session.
+            reminders.OnSignedOut();
             await navigation.GoToAsync(Routes.Root(Routes.Login));
             await dialogs.AlertAsync("Sesión cerrada", AuthErrorMessages.From(code));
         }

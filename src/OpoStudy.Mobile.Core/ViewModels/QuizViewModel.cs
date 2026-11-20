@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 
 using Refit;
@@ -74,6 +75,7 @@ public sealed partial class QuizViewModel(
     IOpoStudyApi api,
     INavigationService navigation,
     IDialogService dialogs,
+    ReminderService reminders,
     ILogger<QuizViewModel> logger) : ViewModelBase, IQueryReceiver
 {
     private const string MissingQuizMessage = "No se ha podido abrir el test. Vuelve atrás e inténtalo de nuevo.";
@@ -291,6 +293,7 @@ public sealed partial class QuizViewModel(
             _incorrectCount = response.IncorrectCount;
             ShowFeedback(response.Feedback);
             UpdateProgress();
+            reminders.UpdateFromProgress(response.DailyProgress);
             GoalNotice = LevelCard.Notice(response.DailyProgress, response.Xp);
         }
         catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.Conflict)

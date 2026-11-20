@@ -1,10 +1,12 @@
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Time.Testing;
 
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 
 using Shouldly;
@@ -16,9 +18,30 @@ public sealed class SessionExpiredHandlerTests
     private readonly IAuthService _auth = Substitute.For<IAuthService>();
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
+    private readonly FakeReminderStore _reminderStore = new();
+    private readonly IReminderScheduler _scheduler = ReminderTestSupport.SupportedScheduler();
 
     private SessionExpiredHandler CreateSut() =>
-        new(_auth, _navigation, _dialogs, NullLogger<SessionExpiredHandler>.Instance);
+        new(
+            _auth,
+            _navigation,
+            _dialogs,
+            new ReminderService(_reminderStore, _scheduler, new FakeTimeProvider()),
+            NullLogger<SessionExpiredHandler>.Instance);
+
+    [Fact]
+    public async Task HandleAsync_SessionExpired_CancelsReminderAndSuspendsIt()
+    {
+        _reminderStore.Settings = new ReminderSettings(true, new TimeOnly(20, 0));
+        _reminderStore.Snapshot = new ReminderSnapshot(new DateOnly(2026, 11, 20), 3, 10, false, 2);
+
+        await CreateSut().HandleAsync("TOKEN_EXPIRED");
+
+        _scheduler.Received(1).Cancel();
+        _reminderStore.Snapshot.ShouldBeNull();
+        _reminderStore.Suspended.ShouldBeTrue();
+        _reminderStore.Settings.Enabled.ShouldBeTrue();
+    }
 
     [Fact]
     public async Task HandleAsync_UserDisabled_NavigatesToLoginThenAlerts()
