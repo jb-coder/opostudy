@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using OpoStudy.Api.Errors;
 using OpoStudy.Api.Features.Users;
 using OpoStudy.Contracts.Gradings;
+using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Gradings;
 using OpoStudy.Domain.PracticalCases;
 using OpoStudy.Infrastructure.Gradings;
@@ -23,7 +24,7 @@ internal static class GradingsEndpoints
             .WithName("SubmitGrading")
             .WithTags("Gradings")
             .WithSummary("Envía las respuestas a un supuesto práctico para que se corrijan de forma asíncrona")
-            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status422UnprocessableEntity);
@@ -48,7 +49,7 @@ internal static class GradingsEndpoints
         return api;
     }
 
-    private static async Task<Results<Accepted<GradingResponse>, ValidationProblem, ProblemHttpResult>> SubmitGrading(
+    private static async Task<Results<Accepted<GradingResponse>, ProblemHttpResult>> SubmitGrading(
         Guid id,
         SubmitGradingRequest request,
         CurrentUserService currentUser,
@@ -57,9 +58,9 @@ internal static class GradingsEndpoints
         TimeProvider timeProvider,
         CancellationToken cancellationToken)
     {
-        if (request.Answers is null)
+        if (request.Answers is null || request.Answers.Count > Limits.MaxCaseParts)
         {
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]> { ["answers"] = ["Las respuestas son obligatorias."] });
+            return DomainErrors.Problem(DomainErrors.GradingInvalidAnswerCount);
         }
 
         var user = await currentUser.GetOrCreateAsync(cancellationToken);
@@ -207,15 +208,20 @@ internal static class GradingsEndpoints
 
         // The rubric and the model answers stay hidden until the grading is completed.
         var answers = grading.Answers
-            .Select(a => new GradingAnswerResponse(
-                a.Order,
-                parts[a.Order].Statement,
-                a.Text,
-                a.MaxPoints,
-                completed ? a.Score : null,
-                completed ? a.Feedback : null,
-                completed ? parts[a.Order].ModelAnswer : null,
-                completed ? [.. a.Criteria.Select(c => new CriterionScoreResponse(c.Description, c.Points, c.Awarded ?? 0m))] : null))
+            .Select(a =>
+            {
+                // The case may have changed since the submission: a missing part must not turn the read into a 500.
+                var part = parts.FirstOrDefault(p => p.Order == a.Order);
+                return new GradingAnswerResponse(
+                    a.Order,
+                    part?.Statement ?? string.Empty,
+                    a.Text,
+                    a.MaxPoints,
+                    completed ? a.Score : null,
+                    completed ? a.Feedback : null,
+                    completed ? part?.ModelAnswer : null,
+                    completed ? [.. a.Criteria.Select(c => new CriterionScoreResponse(c.Description, c.Points, c.Awarded ?? 0m))] : null);
+            })
             .ToList();
 
         return new GradingResponse(

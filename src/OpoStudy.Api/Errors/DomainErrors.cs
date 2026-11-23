@@ -22,6 +22,7 @@ internal static class DomainErrors
     public const string QuizSyncConflict = "quiz.sync_conflict";
     public const string GradingNotFound = "grading.not_found";
     public const string GradingAlreadyPending = "grading.already_pending";
+    public const string GradingInvalidAnswerCount = "grading.invalid_answer_count";
     public const string GradingQuotaExceeded = "grading.quota_exceeded";
     public const string InvalidRequest = "request.invalid";
     public const string ConcurrencyConflict = "concurrency.conflict";
@@ -38,7 +39,7 @@ internal static class DomainErrors
             [ConcurrencyConflict] = (StatusCodes.Status409Conflict, "Los datos se han modificado desde otra petición. Vuelve a intentarlo."),
             [GradingAlreadyPending] = (StatusCodes.Status409Conflict, "Ya tienes una corrección en curso. Espera a que termine."),
             [GradingQuotaExceeded] = (StatusCodes.Status422UnprocessableEntity, "Has agotado tus correcciones de este mes."),
-            ["grading.invalid_answer_count"] = (StatusCodes.Status422UnprocessableEntity, "Hay que enviar una respuesta por apartado."),
+            [GradingInvalidAnswerCount] = (StatusCodes.Status422UnprocessableEntity, "Hay que enviar una respuesta por apartado."),
             ["grading.invalid_answer"] = (StatusCodes.Status422UnprocessableEntity, $"Cada respuesta puede tener como máximo {Limits.PartAnswer} caracteres."),
             ["grading.empty"] = (StatusCodes.Status422UnprocessableEntity, "Responde al menos un apartado para pedir la corrección."),
             ["grading.case_inactive"] = (StatusCodes.Status422UnprocessableEntity, "El supuesto práctico ya no está disponible."),

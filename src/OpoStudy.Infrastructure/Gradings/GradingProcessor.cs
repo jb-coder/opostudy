@@ -41,10 +41,19 @@ public sealed partial class GradingProcessor(
         }
 
         var startedAt = timeProvider.GetTimestamp();
-        var request = await BuildRequestAsync(grading, cancellationToken);
 
         try
         {
+            if (grading.Attempts > _options.MaxAttempts)
+            {
+                // Reclaimed after an expired lease with the attempts already spent: give up instead of looping forever.
+                grading.Fail(GradingFailureCodes.ProviderUnavailable, timeProvider.GetUtcNow());
+                await db.SaveChangesAsync(cancellationToken);
+                LogProcessed(logger, grading.Id, grading.Status, grading.Attempts, 0);
+                return true;
+            }
+
+            var request = await BuildRequestAsync(grading, cancellationToken);
             var outcome = await GradeWithTimeoutAsync(request, cancellationToken);
             Complete(grading, outcome);
         }
@@ -116,11 +125,16 @@ public sealed partial class GradingProcessor(
         var answers = grading.Answers;
 
         var partRequests = answers
-            .Select(a => new GradingPartRequest(
-                parts[a.Order].Statement,
-                parts[a.Order].ModelAnswer,
-                [.. a.Criteria.Select(c => new GradingCriterion(c.Description, c.Points))],
-                a.Text))
+            .Select(a =>
+            {
+                // A missing part throws here and ends in Fail: the grading must never stay in Processing.
+                var part = parts.Single(p => p.Order == a.Order);
+                return new GradingPartRequest(
+                    part.Statement,
+                    part.ModelAnswer,
+                    [.. a.Criteria.Select(c => new GradingCriterion(c.Description, c.Points))],
+                    a.Text);
+            })
             .ToList();
         return new GradingRequest(practicalCase.Statement, partRequests);
     }

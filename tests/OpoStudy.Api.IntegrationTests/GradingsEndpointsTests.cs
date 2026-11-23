@@ -176,6 +176,40 @@ public sealed class GradingsEndpointsTests(ApiFactory factory)
     }
 
     [Fact]
+    public async Task SubmitGrading_WithMoreAnswersThanTheMaximumOfParts_Returns422()
+    {
+        using var client = factory.CreateClientFor(NewUid());
+        var answers = Enumerable.Repeat("answer", 11).ToArray();
+
+        // Rejected before any lookup, so the case does not even need to exist.
+        var response = await client.PostAsJsonAsync(SubmitUri(Guid.NewGuid()), new SubmitGradingRequest(answers), Ct);
+
+        await response.ShouldBeProblemAsync(HttpStatusCode.UnprocessableEntity, "grading.invalid_answer_count");
+    }
+
+    [Fact]
+    public async Task GetGrading_WhenTheCaseLostAPart_ReturnsEmptyStatementInsteadOfFailing()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+        var submitted = await SubmitOkAsync(client, content.PracticalCases.CaseA.Id);
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<OpoStudyDbContext>();
+            var caseId = content.PracticalCases.CaseA.Id;
+            await db.Database.ExecuteSqlInterpolatedAsync(
+                $"""DELETE FROM practical_case_parts WHERE practical_case_id = {caseId} AND "order" = 1""", Ct);
+        }
+
+        var response = await client.GetAsync(DetailUri(submitted.Id), Ct);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var grading = await response.Content.ReadFromJsonAsync<GradingResponse>(Ct);
+        grading!.Answers[1].Statement.ShouldBe(string.Empty);
+        grading.Answers[0].Statement.ShouldNotBeEmpty();
+    }
+
+    [Fact]
     public async Task SubmitGrading_WithTooLongAnswer_Returns422()
     {
         var content = await ContentSeeder.SeedAsync(factory.Services);
@@ -198,14 +232,14 @@ public sealed class GradingsEndpointsTests(ApiFactory factory)
     }
 
     [Fact]
-    public async Task SubmitGrading_WithoutAnswers_Returns400()
+    public async Task SubmitGrading_WithoutAnswers_Returns422()
     {
         var content = await ContentSeeder.SeedAsync(factory.Services);
         using var client = factory.CreateClientFor(NewUid());
 
         var response = await client.PostAsJsonAsync(SubmitUri(content.PracticalCases.CaseA.Id), new { answers = (string[]?)null }, Ct);
 
-        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        await response.ShouldBeProblemAsync(HttpStatusCode.UnprocessableEntity, "grading.invalid_answer_count");
     }
 
     [Fact]

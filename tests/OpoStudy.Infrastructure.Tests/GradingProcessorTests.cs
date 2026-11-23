@@ -303,6 +303,59 @@ public sealed class GradingProcessorTests(PostgresFixture postgres)
     }
 
     [Fact]
+    public async Task ProcessNextAsync_RequestBuildFails_MarksFailed()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+        await using (var setup = postgres.CreateContext())
+        {
+            // The case lost its second part after the submission, so the request cannot be built.
+            await setup.Database.ExecuteSqlInterpolatedAsync(
+                $"""DELETE FROM practical_case_parts WHERE practical_case_id = {seeded.PracticalCaseId} AND "order" = 1""", Ct);
+        }
+
+        var corrector = Substitute.For<ILlmCorrector>();
+        await using var db = postgres.CreateContext();
+
+        (await NewProcessor(db, corrector, time).ProcessNextAsync(Ct)).ShouldBeTrue();
+
+        var grading = await ReloadAsync(seeded.Id);
+        grading.Status.ShouldBe(GradingStatus.Failed);
+        grading.FailureCode.ShouldBe("grading.provider_error");
+        await corrector.DidNotReceive().GradeAsync(Arg.Any<GradingRequest>(), Arg.Any<CancellationToken>());
+        await using var check = postgres.CreateContext();
+        (await check.Gradings.AnyAsync(g => g.Status == GradingStatus.Pending || g.Status == GradingStatus.Processing, Ct)).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ProcessNextAsync_ExpiredLeaseAtMaxAttempts_MarksFailedWithoutCallingCorrector()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start, g =>
+        {
+            g.Start(Start);
+            g.Retry(Start, TimeSpan.Zero);
+            g.Start(Start);
+            g.Retry(Start, TimeSpan.Zero);
+            g.Start(Start);
+        });
+        time.Advance(TimeSpan.FromMinutes(11));
+        var corrector = Substitute.For<ILlmCorrector>();
+        await using var db = postgres.CreateContext();
+
+        (await NewProcessor(db, corrector, time).ProcessNextAsync(Ct)).ShouldBeTrue();
+
+        var grading = await ReloadAsync(seeded.Id);
+        grading.Status.ShouldBe(GradingStatus.Failed);
+        grading.FailureCode.ShouldBe("grading.provider_unavailable");
+        await corrector.DidNotReceive().GradeAsync(Arg.Any<GradingRequest>(), Arg.Any<CancellationToken>());
+        await using var check = postgres.CreateContext();
+        (await check.Gradings.AnyAsync(g => g.Status == GradingStatus.Pending || g.Status == GradingStatus.Processing, Ct)).ShouldBeFalse();
+    }
+
+    [Fact]
     public async Task ProcessNextAsync_WithValidLease_DoesNotTakeIt()
     {
         await ClearQueueAsync();
