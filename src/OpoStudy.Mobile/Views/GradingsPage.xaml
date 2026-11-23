@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.GradingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:controls="clr-namespace:OpoStudy.Mobile.Views.Controls"
+    xmlns:texts="clr-namespace:OpoStudy.Mobile.Core.PracticalCases;assembly=OpoStudy.Mobile.Core"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:GradingsViewModel"
+    Title="Mis correcciones">
+
+    <RefreshView
+        Command="{Binding RefreshCommand}"
+        IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+        <CollectionView
+            ItemsSource="{Binding Items}"
+            Margin="{StaticResource PagePadding}">
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="{StaticResource SpaceM}" Padding="0,0,0,12">
+                    <Label
+                        Style="{StaticResource TitleLabel}"
+                        Text="{x:Static texts:PracticalCaseTexts.MyGradings}"
+                        SemanticProperties.HeadingLevel="Level1" />
+
+                    <controls:OfflineBanner IsVisible="{Binding ShowOfflineBanner}" Text="{Binding OfflineBannerText}" />
+
+                    <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsBusy}">
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" />
+                        <Label Text="{x:Static texts:PracticalCaseTexts.LoadingGradings}" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasError}">
+                        <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                        <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding NeedsConnection}">
+                        <Label Style="{StaticResource WarningLabel}" Text="{x:Static texts:PracticalCaseTexts.NeedsConnection}" />
+                        <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <Label
+                        Style="{StaticResource CaptionLabel}"
+                        Text="{x:Static texts:PracticalCaseTexts.NoGradings}"
+                        IsVisible="{Binding IsEmpty}" />
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SpaceM}" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:GradingHistoryItem">
+                    <Border
+                        MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                        SemanticProperties.Description="{Binding AccessibilityText}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding OpenGradingCommand, Source={RelativeSource AncestorType={x:Type vm:GradingsViewModel}}}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                            <Label Style="{StaticResource SubtitleLabel}" Text="{Binding CaseTitle}" />
+                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding Section}" IsVisible="{Binding HasSection}" />
+                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding DateText}" />
+                            <!-- The status is icon plus text, never only colour. -->
+                            <HorizontalStackLayout Spacing="{StaticResource SpaceS}" IsVisible="{Binding IsCompleted}">
+                                <Label Style="{StaticResource SuccessLabel}" Text="{Binding StatusIcon}" />
+                                <Label Style="{StaticResource SuccessLabel}" Text="{Binding StatusText}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="{StaticResource SpaceS}" IsVisible="{Binding IsInProgress}">
+                                <Label Style="{StaticResource WarningLabel}" Text="{Binding StatusIcon}" />
+                                <Label Style="{StaticResource WarningLabel}" Text="{Binding StatusText}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="{StaticResource SpaceS}" IsVisible="{Binding IsFailed}">
+                                <Label Style="{StaticResource ErrorLabel}" Text="{Binding StatusIcon}" />
+                                <Label Style="{StaticResource ErrorLabel}" Text="{Binding StatusText}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <Button
+                    Style="{StaticResource SecondaryButton}"
+                    Text="{x:Static texts:PracticalCaseTexts.LoadMore}"
+                    Command="{Binding LoadMoreCommand}"
+                    IsVisible="{Binding CanLoadMore}"
+                    Margin="0,12,0,0" />
+            </CollectionView.Footer>
+        </CollectionView>
+    </RefreshView>
+</views:ViewModelPage>

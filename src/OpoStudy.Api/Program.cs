@@ -13,6 +13,7 @@ using OpoStudy.Api.OpenApi;
 using OpoStudy.Api.RateLimiting;
 using OpoStudy.Infrastructure.Gradings;
 using OpoStudy.Infrastructure.Persistence;
+using OpoStudy.Infrastructure.Progress;
 
 using Scalar.AspNetCore;
 
@@ -29,6 +30,7 @@ builder.Services.AddGradingOptions(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.TryAddSingleton(TimeProvider.System);
 builder.Services.AddScoped<CurrentUserService>();
+builder.Services.AddProgressTracking();
 builder.Services.AddScoped<ProgressRecorder>();
 
 builder.Services.AddExceptionHandler<DomainRuleExceptionHandler>();

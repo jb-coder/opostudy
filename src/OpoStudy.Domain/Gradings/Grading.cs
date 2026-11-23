@@ -39,6 +39,12 @@ public sealed class Grading
     /// <summary>Stable code of the reason it failed (e.g. <c>grading.provider_unavailable</c>).</summary>
     public string? FailureCode { get; private set; }
 
+    /// <summary>XP earned (goal bonus included). <c>null</c> until the progress is recorded.</summary>
+    public int? XpEarned { get; private set; }
+
+    /// <summary>Whether this grading met the daily goal of the day it was submitted.</summary>
+    public bool MetDailyGoal { get; private set; }
+
     public string? Corrector { get; private set; }
     public int? InputTokens { get; private set; }
     public int? OutputTokens { get; private set; }
@@ -134,6 +140,20 @@ public sealed class Grading
         FailureCode = null;
         Status = GradingStatus.Completed;
         CompletedAt = now.ToUniversalTime();
+    }
+
+    /// <summary>Stores the progress it gave. Only once and only when <see cref="GradingStatus.Completed"/>.</summary>
+    public void RecordProgress(int xpEarned, bool metDailyGoal)
+    {
+        RequireStatus(GradingStatus.Completed);
+        if (XpEarned is not null)
+        {
+            throw new InvalidOperationException("The progress of the grading was already recorded.");
+        }
+
+        ArgumentOutOfRangeException.ThrowIfNegative(xpEarned);
+        XpEarned = xpEarned;
+        MetDailyGoal = metDailyGoal;
     }
 
     /// <summary>Puts it back in the queue to be tried again after <paramref name="delay"/>.</summary>

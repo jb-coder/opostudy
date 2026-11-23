@@ -2,10 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using Npgsql;
+
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Gradings;
 using OpoStudy.Domain.PracticalCases;
 using OpoStudy.Infrastructure.Persistence;
+using OpoStudy.Infrastructure.Progress;
 
 namespace OpoStudy.Infrastructure.Gradings;
 
@@ -25,10 +28,14 @@ public static class GradingFailureCodes
 public sealed partial class GradingProcessor(
     OpoStudyDbContext db,
     ILlmCorrector corrector,
+    ProgressTracker progress,
     IOptions<GradingOptions> options,
     TimeProvider timeProvider,
     ILogger<GradingProcessor> logger)
 {
+    // Retries after a concurrency conflict when saving the result (the corrector is not called again).
+    private const int MaxSaveRetries = 3;
+
     private readonly GradingOptions _options = options.Value;
 
     /// <summary>Takes the next due grading and processes it. Returns <c>false</c> when there was nothing to do.</summary>
@@ -41,6 +48,7 @@ public sealed partial class GradingProcessor(
         }
 
         var startedAt = timeProvider.GetTimestamp();
+        GradingOutcome? outcome = null;
 
         try
         {
@@ -49,12 +57,12 @@ public sealed partial class GradingProcessor(
                 // Reclaimed after an expired lease with the attempts already spent: give up instead of looping forever.
                 grading.Fail(GradingFailureCodes.ProviderUnavailable, timeProvider.GetUtcNow());
                 await db.SaveChangesAsync(cancellationToken);
-                LogProcessed(logger, grading.Id, grading.Status, grading.Attempts, 0);
+                LogProcessed(logger, grading.Id, grading.Status, grading.Attempts, 0, null, false);
                 return true;
             }
 
             var request = await BuildRequestAsync(grading, cancellationToken);
-            var outcome = await GradeWithTimeoutAsync(request, cancellationToken);
+            outcome = await GradeWithTimeoutAsync(request, cancellationToken);
             Complete(grading, outcome);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -75,11 +83,85 @@ public sealed partial class GradingProcessor(
             grading.Fail(GradingFailureCodes.ProviderError, timeProvider.GetUtcNow());
         }
 
-        await db.SaveChangesAsync(cancellationToken);
+        var claimedAt = grading.StartedAt;
+        var gradingId = grading.Id;
+        if (grading.Status == GradingStatus.Completed)
+        {
+            var saved = await SaveCompletedAsync(grading, outcome!, claimedAt, cancellationToken);
+            if (saved is null)
+            {
+                return true;
+            }
+
+            grading = saved;
+        }
+        else
+        {
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
         var durationMs = (long)timeProvider.GetElapsedTime(startedAt).TotalMilliseconds;
-        LogProcessed(logger, grading.Id, grading.Status, grading.Attempts, durationMs);
+        LogProcessed(logger, gradingId, grading.Status, grading.Attempts, durationMs, grading.XpEarned, grading.MetDailyGoal);
         return true;
     }
+
+    /// <summary>
+    /// Saves a completed grading together with the progress it gives, in one save. If a concurrent change of the user
+    /// (e.g. a quiz answer) conflicts, the tracker is cleared and the stored outcome is applied again, without calling the corrector.
+    /// Returns the saved grading, or <c>null</c> when it was given up.
+    /// </summary>
+    private async Task<Grading?> SaveCompletedAsync(Grading grading, GradingOutcome outcome, DateTimeOffset? claimedAt, CancellationToken cancellationToken)
+    {
+        var gradingId = grading.Id;
+        for (var retry = 0; retry <= MaxSaveRetries; retry++)
+        {
+            if (retry > 0)
+            {
+                db.ChangeTracker.Clear();
+                var reloaded = await db.Gradings.SingleOrDefaultAsync(g => g.Id == gradingId, cancellationToken);
+                if (reloaded is null || reloaded.Status != GradingStatus.Processing || !SameInstant(reloaded.StartedAt, claimedAt))
+                {
+                    LogAbandoned(logger, gradingId);
+                    return null;
+                }
+
+                grading = reloaded;
+                grading.Complete(outcome, timeProvider.GetUtcNow());
+            }
+
+            var user = await db.Users.SingleOrDefaultAsync(u => u.Id == grading.UserId, cancellationToken);
+            if (user is null)
+            {
+                // The account was deleted while it was being corrected: the cascade already deleted the grading.
+                LogUserGone(logger, gradingId);
+                return null;
+            }
+
+            var result = await progress.RecordPracticalCaseAsync(user, grading.Score!.Value, grading.MaxPoints, grading.SubmittedAt, cancellationToken);
+            grading.RecordProgress(result.XpEarned, result.MetDailyGoal);
+
+            try
+            {
+                await db.SaveChangesAsync(cancellationToken);
+                return grading;
+            }
+            catch (Exception ex) when (ex is DbUpdateConcurrencyException || IsDailyActivityCreatedConcurrently(ex))
+            {
+                LogConflict(logger, gradingId, retry + 1);
+            }
+        }
+
+        LogSaveGaveUp(logger, gradingId);
+        return null;
+    }
+
+    // A concurrent answer of the API inserted today's daily_activities row first: the retry finds it.
+    private static bool IsDailyActivityCreatedConcurrently(Exception ex) =>
+        ex is DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.DailyActivitiesPrimaryKey } };
+
+    // timestamptz keeps microseconds and the clock has ticks: compare with a tolerance far below any lease timeout.
+    private static bool SameInstant(DateTimeOffset? a, DateTimeOffset? b) =>
+        a is not null && b is not null && (a.Value - b.Value).Duration() < TimeSpan.FromMilliseconds(1);
 
     private async Task<Grading?> ClaimAsync(CancellationToken cancellationToken)
     {
@@ -172,8 +254,20 @@ public sealed partial class GradingProcessor(
         }
     }
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Grading {GradingId} left in status {Status} after {Attempts} attempt(s), {DurationMs} ms")]
-    private static partial void LogProcessed(ILogger logger, Guid gradingId, GradingStatus status, int attempts, long durationMs);
+    [LoggerMessage(Level = LogLevel.Information, Message = "Grading {GradingId} left in status {Status} after {Attempts} attempt(s), {DurationMs} ms (XpEarned {XpEarned}, MetDailyGoal {MetDailyGoal})")]
+    private static partial void LogProcessed(ILogger logger, Guid gradingId, GradingStatus status, int attempts, long durationMs, int? xpEarned, bool metDailyGoal);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Grading {GradingId}: concurrency conflict saving the result (attempt {Attempt})")]
+    private static partial void LogConflict(ILogger logger, Guid gradingId, int attempt);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Grading {GradingId}: no longer claimed by this worker, result discarded")]
+    private static partial void LogAbandoned(ILogger logger, Guid gradingId);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Grading {GradingId}: the user no longer exists, result discarded")]
+    private static partial void LogUserGone(ILogger logger, Guid gradingId);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Grading {GradingId}: could not save the result after repeated conflicts; it stays in Processing until its lease expires")]
+    private static partial void LogSaveGaveUp(ILogger logger, Guid gradingId);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Grading {GradingId}: transient corrector error ({ErrorType}) at attempt {Attempts}")]
     private static partial void LogTransientError(ILogger logger, Guid gradingId, string errorType, int attempts);

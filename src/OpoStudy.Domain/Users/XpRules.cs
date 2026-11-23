@@ -9,6 +9,9 @@ public static class XpRules
     public const int StreakBonusPerDay = 5;
     public const int MaxStreakBonus = 50;
 
+    /// <summary>XP of a practical case with the maximum score (equivalent to 10 correct answers).</summary>
+    public const int PracticalCaseMaxXp = 100;
+
     /// <summary>XP price of one streak freeze.</summary>
     public const int StreakFreezePrice = 200;
 
@@ -16,6 +19,15 @@ public static class XpRules
     public const int LevelStep = 100;
 
     public static int ForAnswer(bool isCorrect) => isCorrect ? CorrectAnswer : IncorrectAnswer;
+
+    /// <summary>XP of a corrected practical case: proportional to the score, rounded away from zero and kept in [0, <see cref="PracticalCaseMaxXp"/>].</summary>
+    public static int ForPracticalCase(decimal score, int maxPoints)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxPoints, 0);
+        ArgumentOutOfRangeException.ThrowIfNegative(score);
+        var xp = (int)Math.Round(PracticalCaseMaxXp * score / maxPoints, MidpointRounding.AwayFromZero);
+        return Math.Clamp(xp, 0, PracticalCaseMaxXp);
+    }
 
     /// <summary>Bonus for meeting the daily goal; <paramref name="currentStreak"/> is the streak after meeting today.</summary>
     public static int ForGoalMet(int currentStreak)

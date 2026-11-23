@@ -236,6 +236,8 @@ internal static class GradingsEndpoints
             completed ? grading.Score : null,
             completed ? grading.Feedback : null,
             grading.FailureCode,
-            answers);
+            answers,
+            completed ? grading.XpEarned : null,
+            completed && grading.MetDailyGoal);
     }
 }

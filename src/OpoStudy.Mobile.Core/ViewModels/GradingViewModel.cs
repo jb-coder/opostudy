@@ -59,10 +59,22 @@ public sealed partial class GradingViewModel(
     public partial string StatusText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string? DetailText { get; set; }
+    public partial string? ScoreText { get; set; }
+
+    /// <summary>General comment of the corrector.</summary>
+    [ObservableProperty]
+    public partial string? FeedbackText { get; set; }
+
+    /// <summary>"+74 XP"; <c>null</c> when the grading has no recorded progress.</summary>
+    [ObservableProperty]
+    public partial string? XpText { get; set; }
 
     [ObservableProperty]
-    public partial string? ScoreText { get; set; }
+    public partial bool MetDailyGoal { get; set; }
+
+    /// <summary>The parts of a completed grading, in order.</summary>
+    [ObservableProperty]
+    public partial IReadOnlyList<GradingPartItem> Parts { get; set; } = [];
 
     /// <summary>Shown while the server cannot be reached; the polling keeps trying.</summary>
     [ObservableProperty]
@@ -74,7 +86,9 @@ public sealed partial class GradingViewModel(
     [ObservableProperty]
     public partial bool IsFailed { get; set; }
 
-    public bool HasDetail => !string.IsNullOrEmpty(DetailText);
+    public bool HasFeedback => !string.IsNullOrWhiteSpace(FeedbackText);
+
+    public bool HasXp => !string.IsNullOrEmpty(XpText);
 
     public bool HasScore => !string.IsNullOrEmpty(ScoreText);
 
@@ -240,7 +254,10 @@ public sealed partial class GradingViewModel(
         OnPropertyChanged(nameof(ShowInProgressHint));
 
         ScoreText = IsCompleted ? PracticalCaseTexts.Score(grading.Score, grading.MaxPoints) : null;
-        DetailText = IsCompleted ? PracticalCaseTexts.CompletedDetailLater : null;
+        FeedbackText = IsCompleted ? grading.Feedback : null;
+        XpText = IsCompleted && grading.XpEarned is { } xp ? PracticalCaseTexts.Xp(xp) : null;
+        MetDailyGoal = IsCompleted && grading.MetDailyGoal;
+        Parts = IsCompleted ? [.. grading.Answers.OrderBy(a => a.Order).Select(a => new GradingPartItem(a))] : [];
         StatusText = grading.Status switch
         {
             GradingStatus.Completed => PracticalCaseTexts.StatusCompleted,
@@ -256,10 +273,12 @@ public sealed partial class GradingViewModel(
 
     private Task AlertFinishedAsync(GradingResponse grading) =>
         grading.Status == GradingStatus.Completed
-            ? dialogs.AlertAsync("Corrección lista", PracticalCaseTexts.ScoreAlert(grading.Score, grading.MaxPoints))
+            ? dialogs.AlertAsync("Corrección lista", PracticalCaseTexts.ScoreAlert(grading.Score, grading.MaxPoints, grading.XpEarned))
             : dialogs.AlertAsync("No se ha podido corregir", PracticalCaseTexts.Failure(grading.FailureCode));
 
-    partial void OnDetailTextChanged(string? value) => OnPropertyChanged(nameof(HasDetail));
+    partial void OnFeedbackTextChanged(string? value) => OnPropertyChanged(nameof(HasFeedback));
+
+    partial void OnXpTextChanged(string? value) => OnPropertyChanged(nameof(HasXp));
 
     partial void OnScoreTextChanged(string? value) => OnPropertyChanged(nameof(HasScore));
 
@@ -267,6 +286,13 @@ public sealed partial class GradingViewModel(
 
     [RelayCommand]
     private Task GoBackAsync() => navigation.GoToAsync(Routes.Back);
+
+    /// <summary>Opens the editor of the same case, on top of this page (a saved draft is recovered as usual).</summary>
+    [RelayCommand]
+    private Task RepeatCaseAsync() =>
+        _grading is { } grading
+            ? navigation.GoToAsync(Routes.PracticalCase, new Dictionary<string, object> { [QueryKeys.PracticalCaseId] = grading.PracticalCaseId })
+            : Task.CompletedTask;
 
     private bool CanRecoverAnswers() => IsFailed && _grading is { Answers.Count: > 0 };
 

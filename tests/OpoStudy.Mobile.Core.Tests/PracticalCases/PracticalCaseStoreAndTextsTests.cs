@@ -105,13 +105,17 @@ public sealed class PracticalCaseStoreAndTextsTests
             [
                 new GradingAnswerResponse(0, "A", "t", 10, 8.5m, "f", "modelo", [new CriterionScoreResponse("c", 5, 4.5m)]),
                 new GradingAnswerResponse(1, "B", "t", 15, null, null, null, null),
-            ]);
+            ],
+            74,
+            true);
 
         var json = JsonSerializer.Serialize(withCriteria, ApiJsonContext.Default.GradingResponse);
         var back = JsonSerializer.Deserialize(json, ApiJsonContext.Default.GradingResponse);
 
         back.ShouldNotBeNull();
         back.Score.ShouldBe(18.5m);
+        back.XpEarned.ShouldBe(74);
+        back.MetDailyGoal.ShouldBeTrue();
         back.Answers[0].Criteria.ShouldNotBeNull();
         back.Answers[0].Criteria![0].Awarded.ShouldBe(4.5m);
         back.Answers[1].Criteria.ShouldBeNull();

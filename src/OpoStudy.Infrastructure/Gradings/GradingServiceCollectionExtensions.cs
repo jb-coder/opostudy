@@ -5,6 +5,7 @@ using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
 
 using OpoStudy.Infrastructure.Gradings.Gemini;
+using OpoStudy.Infrastructure.Progress;
 
 namespace OpoStudy.Infrastructure.Gradings;
 
@@ -40,6 +41,7 @@ public static class GradingServiceCollectionExtensions
             services.TryAddSingleton<ILlmCorrector, FakeLlmCorrector>();
         }
 
+        services.AddProgressTracking();
         services.TryAddScoped<GradingProcessor>();
         return services;
     }

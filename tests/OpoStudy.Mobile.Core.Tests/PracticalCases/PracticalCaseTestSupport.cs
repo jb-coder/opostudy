@@ -51,7 +51,7 @@ internal static class PracticalCaseTestData
     public static GradingSummaryResponse SummaryGrading(string status) =>
         new(GradingId, CaseId, "Supuesto 1", "Bloque A", status, DateTimeOffset.UtcNow, 25, null);
 
-    public static GradingResponse Grading(string status, int attempts = 0, decimal? score = null, string? failureCode = null) => new(
+    public static GradingResponse Grading(string status, int attempts = 0, decimal? score = null, string? failureCode = null, int? xpEarned = null, bool metDailyGoal = false) => new(
         GradingId,
         CaseId,
         "Supuesto 1",
@@ -63,7 +63,9 @@ internal static class PracticalCaseTestData
         score,
         null,
         failureCode,
-        [new GradingAnswerResponse(1, "B", "segunda", 10, null, null, null, null), new GradingAnswerResponse(0, "A", "primera", 15, null, null, null, null)]);
+        [new GradingAnswerResponse(1, "B", "segunda", 10, null, null, null, null), new GradingAnswerResponse(0, "A", "primera", 15, null, null, null, null)],
+        xpEarned,
+        metDailyGoal);
 
     public static async Task<ApiException> ApiExceptionAsync(HttpStatusCode status, string? code = null, string? detail = null)
     {

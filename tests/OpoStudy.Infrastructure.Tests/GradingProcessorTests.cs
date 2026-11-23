@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Time.Testing;
@@ -11,6 +12,7 @@ using OpoStudy.Domain.PracticalCases;
 using OpoStudy.Domain.Users;
 using OpoStudy.Infrastructure.Gradings;
 using OpoStudy.Infrastructure.Persistence;
+using OpoStudy.Infrastructure.Progress;
 
 using Shouldly;
 
@@ -52,7 +54,7 @@ public sealed class GradingProcessorTests(PostgresFixture postgres)
     private static string Unique(string prefix) => $"{prefix}-{Guid.NewGuid():N}";
 
     private static GradingProcessor NewProcessor(OpoStudyDbContext db, ILlmCorrector corrector, FakeTimeProvider time, GradingOptions? options = null) =>
-        new(db, corrector, Microsoft.Extensions.Options.Options.Create(options ?? Options()), time, NullLogger<GradingProcessor>.Instance);
+        new(db, corrector, new ProgressTracker(db), Microsoft.Extensions.Options.Options.Create(options ?? Options()), time, NullLogger<GradingProcessor>.Instance);
 
     private async Task<Grading> SeedGradingAsync(DateTimeOffset now, Action<Grading>? configure = null)
     {
@@ -461,5 +463,221 @@ public sealed class GradingProcessorTests(PostgresFixture postgres)
         save.AddRange(exam, practicalCase, second);
 
         await save.SaveChangesAsync(Ct);
+    }
+
+    // ---- Progress (spec 0021) ----
+
+    private static readonly DateOnly Day = new(2026, 3, 10);
+
+    private async Task<(User User, DailyActivity? Activity)> LoadProgressAsync(Guid userId, DateOnly day)
+    {
+        await using var db = postgres.CreateContext();
+        var user = await db.Users.AsNoTracking().SingleAsync(u => u.Id == userId, Ct);
+        var activity = await db.DailyActivities.AsNoTracking().SingleOrDefaultAsync(a => a.UserId == userId && a.Date == day, Ct);
+        return (user, activity);
+    }
+
+    private async Task ProcessWithAsync(FakeTimeProvider time, ILlmCorrector? corrector = null, params IInterceptor[] interceptors)
+    {
+        await using var db = postgres.CreateContext(interceptors);
+        await NewProcessor(db, corrector ?? new FakeLlmCorrector(), time).ProcessNextAsync(Ct);
+    }
+
+    [Fact]
+    public async Task ProcessNextAsync_WhenCompleted_GivesXpGoalBonusAndStreak()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+
+        await ProcessWithAsync(time);
+
+        // Score 5 of 9 (the rubric): round(100 * 5 / 9) = 56, plus the goal bonus of a streak of 1 (55).
+        var (user, activity) = await LoadProgressAsync(seeded.UserId, Day);
+        user.Xp.ShouldBe(111);
+        user.Streak.CurrentAt(Day).ShouldBe(1);
+        activity.ShouldNotBeNull();
+        activity.XpEarned.ShouldBe(111);
+        activity.IsGoalMet.ShouldBeTrue();
+        activity.AnsweredCount.ShouldBe(0);
+        var grading = await ReloadAsync(seeded.Id);
+        grading.Status.ShouldBe(GradingStatus.Completed);
+        grading.XpEarned.ShouldBe(111);
+        grading.MetDailyGoal.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ProcessNextAsync_WhenTheDayWasAlreadyMet_GivesNoBonus()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+        await using (var setup = postgres.CreateContext())
+        {
+            var met = DailyActivity.Start(seeded.UserId, Day, 10);
+            met.MeetGoal(Start);
+            setup.DailyActivities.Add(met);
+            await setup.SaveChangesAsync(Ct);
+        }
+
+        await ProcessWithAsync(time);
+
+        var (user, activity) = await LoadProgressAsync(seeded.UserId, Day);
+        user.Xp.ShouldBe(56);
+        activity.ShouldNotBeNull();
+        activity.XpEarned.ShouldBe(56);
+        var grading = await ReloadAsync(seeded.Id);
+        grading.XpEarned.ShouldBe(56);
+        grading.MetDailyGoal.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ProcessNextAsync_SubmittedBeforeMidnightAndCompletedAfter_CountsForTheSubmissionDay()
+    {
+        await ClearQueueAsync();
+        // Madrid is UTC+1 on 10 March: 22:59 UTC is 23:59 on the 10th and 23:01 UTC is 00:01 on the 11th.
+        var submittedAt = new DateTimeOffset(2026, 3, 10, 22, 59, 0, TimeSpan.Zero);
+        var time = new FakeTimeProvider(submittedAt.AddMinutes(2));
+        var seeded = await SeedGradingAsync(submittedAt);
+
+        await ProcessWithAsync(time);
+
+        (await LoadProgressAsync(seeded.UserId, Day)).Activity.ShouldNotBeNull();
+        (await LoadProgressAsync(seeded.UserId, Day.AddDays(1))).Activity.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ProcessNextAsync_WhenItFails_GivesNoXpAndCreatesNoActivity(bool invalidResult)
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+        var corrector = StubCorrector((_, _) => invalidResult
+            ? Task.FromResult(new GradingOutcome([], "x", "stub", null, null))
+            : throw new InvalidOperationException("boom"));
+
+        await ProcessWithAsync(time, corrector);
+
+        var (user, activity) = await LoadProgressAsync(seeded.UserId, Day);
+        user.Xp.ShouldBe(0);
+        activity.ShouldBeNull();
+        var grading = await ReloadAsync(seeded.Id);
+        grading.Status.ShouldBe(GradingStatus.Failed);
+        grading.XpEarned.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task ProcessNextAsync_WithConcurrentChangeOfTheUser_RetriesWithoutCallingTheCorrectorAgain()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+        var calls = 0;
+        var corrector = StubCorrector((request, _) =>
+        {
+            calls++;
+            return Task.FromResult(ValidOutcome(request));
+        });
+        var interceptor = new ConcurrentUserChange(postgres, seeded.UserId);
+
+        await ProcessWithAsync(time, corrector, interceptor);
+
+        interceptor.Fired.ShouldBeTrue();
+        calls.ShouldBe(1);
+        var (user, _) = await LoadProgressAsync(seeded.UserId, Day);
+        // The concurrent 25 XP plus the 155 of the grading (full marks: 100, plus the goal bonus 55).
+        user.Xp.ShouldBe(180);
+        (await ReloadAsync(seeded.Id)).XpEarned.ShouldBe(155);
+    }
+
+    [Fact]
+    public async Task ProcessNextAsync_WhenTheDayActivityIsCreatedConcurrently_RetriesAndGrantsTheXpOnce()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+        var calls = 0;
+        var corrector = StubCorrector((request, _) =>
+        {
+            calls++;
+            return Task.FromResult(ValidOutcome(request));
+        });
+        var interceptor = new ConcurrentUserChange(postgres, seeded.UserId, insertActivity: true);
+
+        await ProcessWithAsync(time, corrector, interceptor);
+
+        interceptor.Fired.ShouldBeTrue();
+        calls.ShouldBe(1);
+        var (user, activity) = await LoadProgressAsync(seeded.UserId, Day);
+        var grading = await ReloadAsync(seeded.Id);
+        grading.Status.ShouldBe(GradingStatus.Completed);
+        // The concurrent activity had already met the day: full marks (100) and no bonus.
+        grading.XpEarned.ShouldBe(100);
+        user.Xp.ShouldBe(100);
+        activity.ShouldNotBeNull();
+        activity.XpEarned.ShouldBe(100);
+    }
+
+    [Fact]
+    public async Task ProcessNextAsync_WhenTheSubmitDayIsAlreadyClosedByTheStreak_GivesTheBonusOfAStreakOfOne()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+        await using (var setup = postgres.CreateContext())
+        {
+            var user = await setup.Users.SingleAsync(u => u.Id == seeded.UserId, Ct);
+            for (var d = 8; d <= 12; d++)
+            {
+                user.Streak.RegisterGoalMet(new DateOnly(2026, 3, d));
+            }
+
+            await setup.SaveChangesAsync(Ct);
+        }
+
+        await ProcessWithAsync(time);
+
+        var (user2, _) = await LoadProgressAsync(seeded.UserId, Day);
+        // Score 56 + the bonus of a streak of 1 (55), not the one of the current streak of 5.
+        user2.Xp.ShouldBe(111);
+        user2.Streak.LastLength.ShouldBe(5);
+        user2.Streak.LastMetOn.ShouldBe(new DateOnly(2026, 3, 12));
+        (await ReloadAsync(seeded.Id)).MetDailyGoal.ShouldBeTrue();
+    }
+
+    /// <summary>Changes the user from another connection right before the completed grading is saved for the first time.</summary>
+    private sealed class ConcurrentUserChange(PostgresFixture postgres, Guid userId, bool insertActivity = false) : SaveChangesInterceptor
+    {
+        public bool Fired { get; private set; }
+
+        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
+        {
+            var completing = eventData.Context!.ChangeTracker.Entries<Grading>().Any(e => e.Entity.Status == GradingStatus.Completed);
+            if (completing && !Fired)
+            {
+                Fired = true;
+                await using var other = postgres.CreateContext();
+                if (insertActivity)
+                {
+                    var met = DailyActivity.Start(userId, new DateOnly(2026, 3, 10), 10);
+                    met.MeetGoal(new DateTimeOffset(2026, 3, 10, 12, 0, 0, TimeSpan.Zero));
+                    other.DailyActivities.Add(met);
+                }
+                else
+                {
+                    var user = await other.Users.SingleAsync(u => u.Id == userId, cancellationToken);
+                    user.GainXp(25);
+                }
+
+                await other.SaveChangesAsync(cancellationToken);
+            }
+
+            return result;
+        }
     }
 }

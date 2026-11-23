@@ -15,6 +15,7 @@ public static class Routes
     public const string PracticalCases = "practical-cases";
     public const string PracticalCase = "practical-case";
     public const string Grading = "grading";
+    public const string Gradings = "gradings";
 
     /// <summary>Relative route that pops the current page.</summary>
     public const string Back = "..";

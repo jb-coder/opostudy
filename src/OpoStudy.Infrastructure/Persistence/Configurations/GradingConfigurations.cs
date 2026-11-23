@@ -19,6 +19,7 @@ internal sealed class GradingConfiguration : IEntityTypeConfiguration<Grading>
         builder.Property(g => g.Score).HasPrecision(5, 2);
         builder.Property(g => g.Feedback).HasMaxLength(Limits.GradingFeedback);
         builder.Property(g => g.FailureCode).HasMaxLength(Limits.FailureCode);
+        builder.Property(g => g.MetDailyGoal).HasDefaultValue(false);
         builder.Property(g => g.Corrector).HasMaxLength(Limits.Corrector);
 
         // Optimistic concurrency with the PostgreSQL system column xmin (no real column: see the migration).
