@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using Npgsql;
+
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Gradings;
 using OpoStudy.Domain.PracticalCases;
@@ -143,7 +145,7 @@ public sealed partial class GradingProcessor(
                 await db.SaveChangesAsync(cancellationToken);
                 return grading;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex) when (ex is DbUpdateConcurrencyException || IsDailyActivityCreatedConcurrently(ex))
             {
                 LogConflict(logger, gradingId, retry + 1);
             }
@@ -152,6 +154,10 @@ public sealed partial class GradingProcessor(
         LogSaveGaveUp(logger, gradingId);
         return null;
     }
+
+    // A concurrent answer of the API inserted today's daily_activities row first: the retry finds it.
+    private static bool IsDailyActivityCreatedConcurrently(Exception ex) =>
+        ex is DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.DailyActivitiesPrimaryKey } };
 
     // timestamptz keeps microseconds and the clock has ticks: compare with a tolerance far below any lease timeout.
     private static bool SameInstant(DateTimeOffset? a, DateTimeOffset? b) =>

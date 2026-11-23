@@ -592,8 +592,36 @@ public sealed class GradingProcessorTests(PostgresFixture postgres)
         (await ReloadAsync(seeded.Id)).XpEarned.ShouldBe(155);
     }
 
+    [Fact]
+    public async Task ProcessNextAsync_WhenTheDayActivityIsCreatedConcurrently_RetriesAndGrantsTheXpOnce()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+        var calls = 0;
+        var corrector = StubCorrector((request, _) =>
+        {
+            calls++;
+            return Task.FromResult(ValidOutcome(request));
+        });
+        var interceptor = new ConcurrentUserChange(postgres, seeded.UserId, insertActivity: true);
+
+        await ProcessWithAsync(time, corrector, interceptor);
+
+        interceptor.Fired.ShouldBeTrue();
+        calls.ShouldBe(1);
+        var (user, activity) = await LoadProgressAsync(seeded.UserId, Day);
+        var grading = await ReloadAsync(seeded.Id);
+        grading.Status.ShouldBe(GradingStatus.Completed);
+        // The concurrent activity had already met the day: full marks (100) and no bonus.
+        grading.XpEarned.ShouldBe(100);
+        user.Xp.ShouldBe(100);
+        activity.ShouldNotBeNull();
+        activity.XpEarned.ShouldBe(100);
+    }
+
     /// <summary>Changes the user from another connection right before the completed grading is saved for the first time.</summary>
-    private sealed class ConcurrentUserChange(PostgresFixture postgres, Guid userId) : SaveChangesInterceptor
+    private sealed class ConcurrentUserChange(PostgresFixture postgres, Guid userId, bool insertActivity = false) : SaveChangesInterceptor
     {
         public bool Fired { get; private set; }
 
@@ -607,8 +635,18 @@ public sealed class GradingProcessorTests(PostgresFixture postgres)
             {
                 Fired = true;
                 await using var other = postgres.CreateContext();
-                var user = await other.Users.SingleAsync(u => u.Id == userId, cancellationToken);
-                user.GainXp(25);
+                if (insertActivity)
+                {
+                    var met = DailyActivity.Start(userId, new DateOnly(2026, 3, 10), 10);
+                    met.MeetGoal(new DateTimeOffset(2026, 3, 10, 12, 0, 0, TimeSpan.Zero));
+                    other.DailyActivities.Add(met);
+                }
+                else
+                {
+                    var user = await other.Users.SingleAsync(u => u.Id == userId, cancellationToken);
+                    user.GainXp(25);
+                }
+
                 await other.SaveChangesAsync(cancellationToken);
             }
 
