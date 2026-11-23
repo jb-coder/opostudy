@@ -32,6 +32,26 @@ public sealed class QuizAttemptTests
     }
 
     [Fact]
+    public void Create_WithGivenId_UsesThatId()
+    {
+        var id = Guid.CreateVersion7();
+
+        var attempt = QuizAttempt.Create(id, UserId, ExamId, null, QuizMode.Random, [_q1.Id, _q2.Id], Now);
+
+        attempt.Id.ShouldBe(id);
+        attempt.Answers.Select(a => a.QuizAttemptId).ShouldAllBe(x => x == id);
+    }
+
+    [Fact]
+    public void Create_WithEmptyId_ThrowsDomainRule()
+    {
+        var ex = Should.Throw<DomainRuleException>(() =>
+            QuizAttempt.Create(Guid.Empty, UserId, ExamId, null, QuizMode.Random, [_q1.Id], Now));
+
+        ex.Code.ShouldBe("quiz.invalid_id");
+    }
+
+    [Fact]
     public void Create_ByTopicWithoutTopic_ThrowsDomainRule()
     {
         var ex = Should.Throw<DomainRuleException>(() =>
@@ -47,6 +67,29 @@ public sealed class QuizAttemptTests
             QuizAttempt.Create(UserId, ExamId, Guid.CreateVersion7(), QuizMode.Random, [_q1.Id], Now));
 
         ex.Code.ShouldBe("quiz.topic_not_allowed");
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Create_ReviewWithOrWithoutTopic_Succeeds(bool withTopic)
+    {
+        Guid? topicId = withTopic ? Guid.CreateVersion7() : null;
+
+        var attempt = QuizAttempt.Create(UserId, ExamId, topicId, QuizMode.Review, [_q1.Id, _q2.Id], Now);
+
+        attempt.Mode.ShouldBe(QuizMode.Review);
+        attempt.TopicId.ShouldBe(topicId);
+        attempt.Answers.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public void Create_ReviewWithoutQuestions_ThrowsDomainRule()
+    {
+        var ex = Should.Throw<DomainRuleException>(() =>
+            QuizAttempt.Create(UserId, ExamId, null, QuizMode.Review, [], Now));
+
+        ex.Code.ShouldBe("quiz.invalid_question_count");
     }
 
     [Theory]

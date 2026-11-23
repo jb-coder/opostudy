@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:controls="clr-namespace:OpoStudy.Mobile.Views.Controls"
     xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
     x:DataType="vm:ExamsViewModel"
     Title="Elige oposición">
@@ -20,6 +21,8 @@
                         Style="{StaticResource TitleLabel}"
                         Text="Elige oposición"
                         SemanticProperties.HeadingLevel="Level1" />
+
+                    <controls:OfflineBanner IsVisible="{Binding ShowOfflineBanner}" Text="{Binding OfflineBannerText}" />
 
                     <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsBusy}">
                         <ActivityIndicator IsRunning="{Binding IsBusy}" />

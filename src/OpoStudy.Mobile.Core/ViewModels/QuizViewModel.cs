@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Offline;
+using OpoStudy.Mobile.Core.Reminders;
+using OpoStudy.Mobile.Core.Services;
 
 using Refit;
 
@@ -72,21 +75,59 @@ public sealed record SummaryItem(
 public sealed partial class QuizViewModel(
     IOpoStudyApi api,
     INavigationService navigation,
-    ILogger<QuizViewModel> logger) : ViewModelBase, IQueryReceiver
+    IDialogService dialogs,
+    ReminderService reminders,
+    IOfflineQuizService offlineQuizzes,
+    IOfflineSynchronizer synchronizer,
+    OfflineState offlineState,
+    ILogger<QuizViewModel> logger) : OfflineAwareViewModel(offlineState), IQueryReceiver
 {
+    /// <summary>Shown instead of the XP while the answer waits to be synchronized.</summary>
+    public const string PendingXpText = "XP pendiente de sincronizar";
+
+    /// <summary>Shown in the summary instead of the XP total of an offline quiz.</summary>
+    public const string PendingSyncText = "Tus respuestas se sincronizarán cuando haya conexión.";
+
     private const string MissingQuizMessage = "No se ha podido abrir el test. Vuelve atrás e inténtalo de nuevo.";
 
+    private const string AnotherQuizTitle = "Hacer otro test";
+
     private Guid _quizId;
+
+    private Guid _examId;
+
+    private Guid? _topicId;
+
+    private bool _isReview;
+
+    private bool _isLeaving;
 
     private List<QuestionState> _questions = [];
 
     private int _index;
 
     private int _correctCount;
+    private int _quizXp;
 
     private int _incorrectCount;
 
+    /// <summary>The quiz as the server sent it, needed to adopt it locally if the connection drops.</summary>
+    private QuizResponse? _quiz;
+
     public ObservableCollection<QuizOptionItem> Options { get; } = [];
+
+    /// <summary>
+    /// Whether the quiz is corrected with the local copy. Once true it stays true until the quiz is left,
+    /// so the answers of one quiz are never split between the server and the queue.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsOffline { get; set; }
+
+    public override bool ShowOfflineBanner => IsOffline || base.ShowOfflineBanner;
+
+    public override string OfflineBannerText => IsOffline ? OfflineState.BannerText : base.OfflineBannerText;
+
+    partial void OnIsOfflineChanged(bool value) => RaiseOfflineChanged();
 
     [ObservableProperty]
     public partial string QuizTitle { get; set; } = string.Empty;
@@ -132,8 +173,41 @@ public sealed partial class QuizViewModel(
     [ObservableProperty]
     public partial string LegalReferenceText { get; set; } = string.Empty;
 
+    /// <summary>Non-blocking notice shown when the answer just sent met the daily goal.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasGoalNotice))]
+    public partial string GoalNotice { get; set; } = string.Empty;
+
+    public bool HasGoalNotice => GoalNotice.Length > 0;
+
+    /// <summary>XP label of the answer shown (e.g. "+10 XP"); empty when the XP is unknown (answer from an earlier session).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasXpText))]
+    public partial string XpText { get; set; } = string.Empty;
+
+    public bool HasXpText => XpText.Length > 0;
+
+    /// <summary>XP earned by the answers given on this screen, shown in the summary.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasQuizXpText))]
+    public partial string QuizXpText { get; set; } = string.Empty;
+
+    /// <summary>False when no XP was earned on this screen (e.g. a resumed quiz with no new answers).</summary>
+    public bool HasQuizXpText => QuizXpText.Length > 0;
+
     [ObservableProperty]
     public partial string NextButtonText { get; set; } = "Siguiente pregunta";
+
+    /// <summary>Text of the first summary button: "Seguir repasando" when a review still has mistakes left.</summary>
+    [ObservableProperty]
+    public partial string AnotherQuizText { get; set; } = AnotherQuizTitle;
+
+    /// <summary>Mistakes left after a review (summary only); empty when unknown.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasMistakesLeftText))]
+    public partial string MistakesLeftText { get; set; } = string.Empty;
+
+    public bool HasMistakesLeftText => MistakesLeftText.Length > 0;
 
     [ObservableProperty]
     public partial string ResultText { get; set; } = string.Empty;
@@ -170,6 +244,7 @@ public sealed partial class QuizViewModel(
 
     public override async Task OnAppearingAsync()
     {
+        ListenToOfflineState();
         if (IsLoaded)
         {
             return;
@@ -205,9 +280,33 @@ public sealed partial class QuizViewModel(
         IsLoading = true;
         try
         {
-            ApplyQuiz(await api.GetQuizAsync(_quizId, cancellationToken));
+            // A quiz created or adopted offline is always opened locally: the server does not know it (or not all of it).
+            var local = await FindLocalQuizAsync(cancellationToken);
+            if (local is not null)
+            {
+                IsOffline = true;
+                ApplyQuiz(local);
+            }
+            else
+            {
+                try
+                {
+                    ApplyQuiz(await api.GetQuizAsync(_quizId, cancellationToken));
+                    OfflineState.ReportSuccess();
+                }
+                catch (Exception ex) when (ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
+                {
+                    OfflineState.ReportConnectivityFailure();
+                    throw;
+                }
+            }
+
             ShowFirstPending();
             IsLoaded = true;
+            if (IsFinished)
+            {
+                await LoadMistakesLeftAsync(cancellationToken);
+            }
         }
         catch (Exception ex)
         {
@@ -229,18 +328,47 @@ public sealed partial class QuizViewModel(
         var question = _questions[_index];
         IsBusy = true;
         ErrorMessage = null;
+        GoalNotice = string.Empty;
         try
         {
+            if (IsOffline)
+            {
+                await AnswerOfflineAsync(question, option, cancellationToken);
+                return;
+            }
+
             var response = await api.SubmitAnswerAsync(_quizId, new SubmitAnswerRequest(question.QuestionId, option.Id), cancellationToken);
+            OfflineState.ReportSuccess();
             question.Feedback = response.Feedback;
+            question.XpText = LevelCard.AnswerXpText(response.Xp);
+            XpText = question.XpText;
+            _quizXp += response.Xp.Gained;
             _correctCount = response.CorrectCount;
             _incorrectCount = response.IncorrectCount;
             ShowFeedback(response.Feedback);
             UpdateProgress();
+            reminders.UpdateFromProgress(response.DailyProgress);
+            GoalNotice = LevelCard.Notice(response.DailyProgress, response.Xp);
         }
         catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
             await ResyncAsync(question.QuestionId, cancellationToken);
+        }
+        catch (Exception ex) when (!IsOffline && ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
+        {
+            // The connection dropped in the middle of the quiz: from here on it is corrected locally.
+            LogAnswerFailed(ex, ex.GetType().FullName);
+            OfflineState.ReportConnectivityFailure();
+            try
+            {
+                await AdoptCurrentQuizAsync(cancellationToken);
+                await AnswerOfflineAsync(question, option, cancellationToken);
+            }
+            catch (Exception inner) when (inner is not OperationCanceledException)
+            {
+                LogAnswerFailed(inner, inner.GetType().FullName);
+                ErrorMessage = ApiErrorMessages.From(inner);
+            }
         }
         catch (Exception ex)
         {
@@ -253,20 +381,138 @@ public sealed partial class QuizViewModel(
         }
     }
 
+    /// <summary>The local copy of the quiz, or null when it is not stored (a normal online quiz) or cannot be read.</summary>
+    private async Task<QuizResponse?> FindLocalQuizAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await offlineQuizzes.GetAsync(_quizId, cancellationToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogLoadFailed(ex, ex.GetType().FullName);
+            return null;
+        }
+    }
+
+    /// <summary>Stores the quiz, with the answers given so far, in the local database. Adopting twice does nothing.</summary>
+    private async Task AdoptCurrentQuizAsync(CancellationToken cancellationToken)
+    {
+        if (_quiz is not { } quiz)
+        {
+            throw new InvalidOperationException("The quiz has not been loaded.");
+        }
+
+        var current = quiz with
+        {
+            CorrectCount = _correctCount,
+            IncorrectCount = _incorrectCount,
+            Questions = [.. _questions.Select(q => q.ToResponse())],
+        };
+        await offlineQuizzes.AdoptAsync(current, QuizTitle, cancellationToken);
+    }
+
+    private async Task AnswerOfflineAsync(QuestionState question, QuizOptionItem option, CancellationToken cancellationToken)
+    {
+        var result = await offlineQuizzes.AnswerAsync(_quizId, question.QuestionId, option.Id, cancellationToken);
+        IsOffline = true;
+        question.Feedback = result.Feedback;
+        question.XpText = PendingXpText;
+        XpText = PendingXpText;
+        _correctCount = result.CorrectCount;
+        _incorrectCount = result.IncorrectCount;
+        ShowFeedback(result.Feedback);
+        UpdateProgress();
+        if (result.QuizFinished && OfflineState.HasInternet)
+        {
+            // Not awaited: the user should not wait for the server to see the result.
+            _ = synchronizer.SyncAsync(CancellationToken.None);
+        }
+    }
+
     private bool CanAnswer(QuizOptionItem? option) => IsNotBusy && !IsAnswered;
 
     [RelayCommand]
-    private void Next()
+    private async Task NextAsync()
     {
         ErrorMessage = null;
         var next = FindNextPending(_index);
         if (next < 0)
         {
             ShowSummary();
+            try
+            {
+                await LoadMistakesLeftAsync(PageToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // The page went away before the mistakes arrived.
+            }
+
             return;
         }
 
         ShowQuestion(next);
+    }
+
+    /// <summary>Back button (toolbar and Android): asks first when the quiz is started and not finished.</summary>
+    [RelayCommand]
+    private async Task BackAsync()
+    {
+        // A double tap must not open two dialogs (ExecuteAsync ignores AllowConcurrentExecutions).
+        if (_isLeaving)
+        {
+            return;
+        }
+
+        _isLeaving = true;
+        try
+        {
+            var started = !IsFinished && _questions.Any(q => q.Feedback is not null);
+            if (started)
+            {
+                var leave = await dialogs.ConfirmAsync(
+                    "¿Salir del test?",
+                    "Tus respuestas se guardan y podrás continuarlo desde el inicio.",
+                    "Salir",
+                    "Seguir con el test");
+                if (!leave)
+                {
+                    return;
+                }
+            }
+
+            await navigation.GoToAsync(Routes.Back);
+        }
+        finally
+        {
+            _isLeaving = false;
+        }
+    }
+
+    /// <summary>After a review, shows how many mistakes are left. A failure only omits the line.</summary>
+    private async Task LoadMistakesLeftAsync(CancellationToken cancellationToken)
+    {
+        MistakesLeftText = string.Empty;
+        AnotherQuizText = AnotherQuizTitle;
+        if (!_isReview || IsOffline)
+        {
+            return;
+        }
+
+        try
+        {
+            var summary = await api.GetMistakesAsync(_examId, cancellationToken);
+            var left = _topicId is { } topicId
+                ? summary.Topics.FirstOrDefault(t => t.TopicId == topicId)?.Count ?? 0
+                : summary.Total;
+            MistakesLeftText = QuizTitles.MistakesLeftText(left);
+            AnotherQuizText = left > 0 ? "Seguir repasando" : AnotherQuizTitle;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogMistakesFailed(ex, ex.GetType().FullName);
+        }
     }
 
     [RelayCommand(CanExecute = nameof(IsNotBusy))]
@@ -303,6 +549,10 @@ public sealed partial class QuizViewModel(
             else
             {
                 ShowFirstPending();
+                if (IsFinished)
+                {
+                    await LoadMistakesLeftAsync(cancellationToken);
+                }
             }
         }
         catch (Exception ex)
@@ -314,9 +564,13 @@ public sealed partial class QuizViewModel(
 
     private void ApplyQuiz(QuizResponse quiz)
     {
+        _quiz = quiz;
         _questions = [.. quiz.Questions.OrderBy(q => q.Order).Select(q => new QuestionState(q))];
         _correctCount = quiz.CorrectCount;
         _incorrectCount = quiz.IncorrectCount;
+        _examId = quiz.ExamId;
+        _topicId = quiz.TopicId;
+        _isReview = quiz.Mode == QuizTitles.ReviewMode;
     }
 
     private void ShowFirstPending()
@@ -360,6 +614,7 @@ public sealed partial class QuizViewModel(
 
     private void ShowQuestion(int index)
     {
+        GoalNotice = string.Empty;
         _index = index;
         var question = _questions[index];
 
@@ -377,6 +632,7 @@ public sealed partial class QuizViewModel(
         FeedbackTitle = string.Empty;
         Explanation = string.Empty;
         LegalReferenceText = string.Empty;
+        XpText = question.XpText;
         NextButtonText = FindNextPending(index) < 0 ? "Ver resultado" : "Siguiente pregunta";
 
         if (question.Feedback is { } feedback)
@@ -431,6 +687,7 @@ public sealed partial class QuizViewModel(
                 q.Feedback?.Explanation ?? string.Empty,
                 q.Feedback?.LegalReference ?? string.Empty)),
         ];
+        QuizXpText = IsOffline ? PendingSyncText : _quizXp > 0 ? LevelCard.QuizTotalText(_quizXp) : string.Empty;
         Progress = 1;
         ScoreText = FormatScore(_correctCount, _incorrectCount);
         IsFinished = true;
@@ -438,6 +695,9 @@ public sealed partial class QuizViewModel(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the quiz ({ExceptionType})")]
     private partial void LogLoadFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the mistakes left ({ExceptionType})")]
+    private partial void LogMistakesFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not submit the answer ({ExceptionType})")]
     private partial void LogAnswerFailed(Exception exception, string? exceptionType);
@@ -451,5 +711,10 @@ public sealed partial class QuizViewModel(
         public IReadOnlyList<QuizOptionResponse> Options { get; } = source.Options;
 
         public AnswerFeedback? Feedback { get; set; } = source.Feedback;
+
+        public string XpText { get; set; } = string.Empty;
+
+        /// <summary>The question as the API sends it, with the feedback known now.</summary>
+        public QuizQuestionResponse ToResponse() => source with { Feedback = Feedback };
     }
 }

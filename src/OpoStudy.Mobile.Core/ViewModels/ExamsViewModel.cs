@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using OpoStudy.Contracts.Exams;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Offline;
 
 namespace OpoStudy.Mobile.Core.ViewModels;
 
@@ -23,7 +24,9 @@ public sealed record ExamItem(ExamResponse Exam)
 public sealed partial class ExamsViewModel(
     IOpoStudyApi api,
     INavigationService navigation,
-    ILogger<ExamsViewModel> logger) : ViewModelBase
+    IOfflineContentStore offlineContent,
+    OfflineState offlineState,
+    ILogger<ExamsViewModel> logger) : OfflineAwareViewModel(offlineState)
 {
     private bool _loaded;
 
@@ -34,6 +37,7 @@ public sealed partial class ExamsViewModel(
 
     public override async Task OnAppearingAsync()
     {
+        ListenToOfflineState();
         if (_loaded)
         {
             return;
@@ -55,6 +59,7 @@ public sealed partial class ExamsViewModel(
         try
         {
             var exams = await api.GetExamsAsync(cancellationToken);
+            OfflineState.ReportSuccess();
             Exams.Clear();
             foreach (var exam in exams)
             {
@@ -63,6 +68,12 @@ public sealed partial class ExamsViewModel(
 
             _loaded = true;
             IsEmpty = Exams.Count == 0;
+        }
+        catch (Exception ex) when (ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
+        {
+            LogLoadFailed(ex, ex.GetType().FullName);
+            OfflineState.ReportConnectivityFailure();
+            await ShowDownloadedExamsAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -73,6 +84,29 @@ public sealed partial class ExamsViewModel(
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    /// <summary>Without connection: the exams whose content was downloaded. Not marked as loaded, so the next visit tries the server again.</summary>
+    private async Task ShowDownloadedExamsAsync(CancellationToken cancellationToken)
+    {
+        Exams.Clear();
+        IsEmpty = false;
+        try
+        {
+            foreach (var exam in await offlineContent.ListExamsAsync(cancellationToken))
+            {
+                Exams.Add(new ExamItem(exam));
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogLoadFailed(ex, ex.GetType().FullName);
+        }
+
+        if (Exams.Count == 0)
+        {
+            ErrorMessage = OfflineQuizException.NoContentDownloaded;
         }
     }
 

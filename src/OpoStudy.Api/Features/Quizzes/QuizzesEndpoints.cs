@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 using OpoStudy.Api.Errors;
+using OpoStudy.Api.Features.Progress;
 using OpoStudy.Api.Features.Users;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Domain.Common;
@@ -47,6 +48,15 @@ internal static class QuizzesEndpoints
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status422UnprocessableEntity);
 
+        api.MapPost("/quizzes/sync", SyncQuiz)
+            .WithName("SyncQuiz")
+            .WithTags("Quizzes")
+            .WithSummary("Sincroniza un test hecho sin conexión: lo crea si no existe y aplica sus respuestas pendientes")
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity);
+
         return api;
     }
 
@@ -86,32 +96,46 @@ internal static class QuizzesEndpoints
         }
 
         var examId = request.ExamId;
-        IQueryable<Question> candidates;
+        IQueryable<Guid> candidates;
         QuizMode mode;
-        if (request.TopicId is { } topicId)
+        if (request.TopicId is { } topicId
+            && !await db.Topics.AnyAsync(t => t.Id == topicId && t.ExamId == examId, cancellationToken))
         {
-            if (!await db.Topics.AnyAsync(t => t.Id == topicId && t.ExamId == examId, cancellationToken))
+            return DomainErrors.Problem(DomainErrors.TopicNotFound);
+        }
+
+        if (request.MistakesOnly)
+        {
+            mode = QuizMode.Review;
+            var mistakes = MistakeQueries.PendingMistakes(db, user.Id)
+                .Where(m => db.Topics.Any(t => t.Id == m.TopicId && t.ExamId == examId));
+            if (request.TopicId is { } reviewTopicId)
             {
-                return DomainErrors.Problem(DomainErrors.TopicNotFound);
+                mistakes = mistakes.Where(m => m.TopicId == reviewTopicId);
             }
 
+            candidates = mistakes.Select(m => m.QuestionId);
+        }
+        else if (request.TopicId is { } byTopicId)
+        {
             mode = QuizMode.ByTopic;
-            candidates = db.Questions.Where(q => q.IsActive && q.TopicId == topicId);
+            candidates = db.Questions.Where(q => q.IsActive && q.TopicId == byTopicId).Select(q => q.Id);
         }
         else
         {
             mode = QuizMode.Random;
-            candidates = db.Questions.Where(q => q.IsActive && db.Topics.Any(t => t.Id == q.TopicId && t.ExamId == examId));
+            candidates = db.Questions
+                .Where(q => q.IsActive && db.Topics.Any(t => t.Id == q.TopicId && t.ExamId == examId))
+                .Select(q => q.Id);
         }
 
         var questionIds = await candidates
             .OrderBy(_ => EF.Functions.Random())
-            .Select(q => q.Id)
             .Take(request.QuestionCount)
             .ToListAsync(cancellationToken);
         if (questionIds.Count == 0)
         {
-            return DomainErrors.Problem(DomainErrors.QuizNoQuestionsAvailable);
+            return DomainErrors.Problem(request.MistakesOnly ? DomainErrors.QuizNoMistakes : DomainErrors.QuizNoQuestionsAvailable);
         }
 
         var attempt = QuizAttempt.Create(user.Id, examId, request.TopicId, mode, questionIds, timeProvider.GetUtcNow());
@@ -212,6 +236,7 @@ internal static class QuizzesEndpoints
         Guid quizId,
         SubmitAnswerRequest request,
         CurrentUserService currentUser,
+        ProgressRecorder progress,
         OpoStudyDbContext db,
         TimeProvider timeProvider,
         CancellationToken cancellationToken)
@@ -257,7 +282,9 @@ internal static class QuizzesEndpoints
         }
 
         // Domain rule violations are translated by DomainRuleExceptionHandler; so is a concurrency conflict on save.
-        var result = attempt.Answer(question, request.OptionId, timeProvider.GetUtcNow());
+        var now = timeProvider.GetUtcNow();
+        var result = attempt.Answer(question, request.OptionId, now);
+        var recorded = await progress.RecordAnswerAsync(user, result.IsCorrect, now, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
 
         var feedback = new AnswerFeedback(
@@ -273,7 +300,151 @@ internal static class QuizzesEndpoints
             attempt.CorrectCount,
             attempt.IncorrectCount,
             attempt.Answers.Count(a => a.IsAnswered),
-            attempt.Answers.Count));
+            attempt.Answers.Count,
+            recorded.Daily,
+            recorded.Xp));
+    }
+
+    private static async Task<Results<Ok<SyncQuizResponse>, ValidationProblem, ProblemHttpResult>> SyncQuiz(
+        SyncQuizRequest request,
+        CurrentUserService currentUser,
+        ProgressRecorder progress,
+        OpoStudyDbContext db,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        var errors = ValidateSync(request);
+        if (errors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        var user = await currentUser.GetOrCreateAsync(cancellationToken);
+        var now = timeProvider.GetUtcNow();
+        var oldest = now - Limits.MaxOfflineAge;
+        DateTimeOffset Clamp(DateTimeOffset time) => time > now ? now : time < oldest ? oldest : time;
+
+        var attempt = await db.QuizAttempts.FirstOrDefaultAsync(q => q.Id == request.Id, cancellationToken);
+        if (attempt is not null)
+        {
+            // Do not reveal anything about a quiz of another user.
+            if (attempt.UserId != user.Id || !attempt.Answers.Select(a => a.QuestionId).SequenceEqual(request.QuestionIds))
+            {
+                return DomainErrors.Problem(DomainErrors.QuizSyncConflict);
+            }
+        }
+        else
+        {
+            if (!Enum.TryParse<QuizMode>(request.Mode, ignoreCase: true, out var mode)
+                || mode is not (QuizMode.ByTopic or QuizMode.Random)
+                || (mode == QuizMode.ByTopic) != (request.TopicId is not null))
+            {
+                return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["mode"] = ["El modo del test no es válido: solo se crean sin conexión tests por tema o aleatorios."],
+                });
+            }
+
+            if (!await db.Exams.AnyAsync(e => e.Id == request.ExamId && e.IsActive, cancellationToken))
+            {
+                return DomainErrors.Problem(DomainErrors.ExamNotFound);
+            }
+
+            if (request.TopicId is { } topicId
+                && !await db.Topics.AnyAsync(t => t.Id == topicId && t.ExamId == request.ExamId, cancellationToken))
+            {
+                return DomainErrors.Problem(DomainErrors.TopicNotFound);
+            }
+
+            // Questions deactivated since the app cached them are accepted: the cache can be stale.
+            var requestedIds = request.QuestionIds;
+            var examId = request.ExamId;
+            var validCount = await db.Questions
+                .Where(q => requestedIds.Contains(q.Id)
+                    && db.Topics.Any(t => t.Id == q.TopicId && t.ExamId == examId && (request.TopicId == null || t.Id == request.TopicId)))
+                .CountAsync(cancellationToken);
+            if (validCount != requestedIds.Count)
+            {
+                return DomainErrors.Problem(DomainErrors.QuizInvalidQuestions);
+            }
+
+            attempt = QuizAttempt.Create(request.Id, user.Id, request.ExamId, request.TopicId, mode, requestedIds, Clamp(request.StartedAt));
+            db.QuizAttempts.Add(attempt);
+        }
+
+        var questions = await LoadQuestionsAsync(db, [.. request.QuestionIds], cancellationToken);
+        var answered = attempt.Answers.Where(a => a.IsAnswered).Select(a => a.QuestionId).ToHashSet();
+        var ordered = request.Answers
+            .Select((answer, index) => (Answer: answer, At: Clamp(answer.AnsweredAt), Index: index))
+            .OrderBy(x => x.At)
+            .ThenBy(x => x.Index);
+
+        int accepted = 0, duplicates = 0, rejected = 0, xp = 0;
+        foreach (var (answer, at, _) in ordered)
+        {
+            if (answered.Contains(answer.QuestionId))
+            {
+                duplicates++;
+            }
+            else if (!questions.TryGetValue(answer.QuestionId, out var question)
+                || !question.Options.Any(o => o.Id == answer.OptionId))
+            {
+                rejected++;
+            }
+            else
+            {
+                var result = attempt.Answer(question, answer.OptionId, at);
+                var recorded = await progress.RecordAnswerAsync(user, result.IsCorrect, at, cancellationToken);
+                xp += recorded.Xp.Gained;
+                answered.Add(answer.QuestionId);
+                accepted++;
+            }
+        }
+
+        // Domain rule violations and concurrency conflicts are translated by the exception handler.
+        await db.SaveChangesAsync(cancellationToken);
+        return TypedResults.Ok(new SyncQuizResponse(attempt.Id, accepted, duplicates, rejected, xp, attempt.IsFinished));
+    }
+
+    private static Dictionary<string, string[]> ValidateSync(SyncQuizRequest request)
+    {
+        var errors = new Dictionary<string, string[]>();
+        if (request.Id == Guid.Empty)
+        {
+            errors["id"] = ["El identificador del test es obligatorio."];
+        }
+
+        if (request.ExamId == Guid.Empty)
+        {
+            errors["examId"] = ["La oposición es obligatoria."];
+        }
+
+        var questionIds = request.QuestionIds;
+        if (questionIds is null || questionIds.Count is < 1 or > Limits.MaxQuestionsPerQuiz)
+        {
+            errors["questionIds"] = [$"El número de preguntas debe estar entre 1 y {Limits.MaxQuestionsPerQuiz}."];
+        }
+        else if (questionIds.Any(id => id == Guid.Empty) || questionIds.Distinct().Count() != questionIds.Count)
+        {
+            errors["questionIds"] = ["Las preguntas no pueden estar vacías ni repetidas."];
+        }
+
+        var answers = request.Answers;
+        if (answers is null)
+        {
+            errors["answers"] = ["Las respuestas son obligatorias."];
+        }
+        else if (questionIds is not null && answers.Count > questionIds.Count)
+        {
+            errors["answers"] = ["No puede haber más respuestas que preguntas."];
+        }
+        else if (answers.Any(a => a.QuestionId == Guid.Empty || a.OptionId == Guid.Empty)
+            || answers.Select(a => a.QuestionId).Distinct().Count() != answers.Count)
+        {
+            errors["answers"] = ["Las respuestas deben tener pregunta y opción, y no repetir la pregunta."];
+        }
+
+        return errors;
     }
 
     // Every question of an attempt is guaranteed to exist: the importer never deletes questions (it

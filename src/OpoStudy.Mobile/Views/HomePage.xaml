@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:controls="clr-namespace:OpoStudy.Mobile.Views.Controls"
     xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
     x:DataType="vm:HomeViewModel"
     Shell.NavBarIsVisible="False">
@@ -23,6 +24,157 @@
                         Style="{StaticResource CaptionLabel}"
                         Text="Programador/a C1 · Diputación de Málaga" />
                 </VerticalStackLayout>
+
+                <controls:OfflineBanner IsVisible="{Binding ShowOfflineBanner}" Text="{Binding OfflineBannerText}" />
+
+                <controls:OfflineBanner IsVisible="{Binding HasDiscardedNotice}" Text="{Binding DiscardedNotice}" />
+
+                <Border IsVisible="{Binding HasStreak}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Objetivo diario"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <ProgressBar
+                            Progress="{Binding GoalProgress}"
+                            SemanticProperties.Description="{Binding GoalProgressText}" />
+                        <Label Text="{Binding GoalProgressText}" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Style="{StaticResource SubtitleLabel}"
+                                Text="{Binding StreakText}"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                Style="{StaticResource CaptionLabel}"
+                                Text="{Binding LongestStreakText}"
+                                VerticalOptions="Center" />
+                        </Grid>
+                        <HorizontalStackLayout
+                            Spacing="{StaticResource SpaceM}"
+                            HorizontalOptions="Center"
+                            BindableLayout.ItemsSource="{Binding Dots}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:DayDot">
+                                    <VerticalStackLayout
+                                        Spacing="{StaticResource SpaceXs}"
+                                        SemanticProperties.Description="{Binding AccessibilityText}">
+                                        <Border
+                                            Style="{StaticResource DayDotBorder}"
+                                            StrokeThickness="2">
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding IsMet}" Value="True">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding IsProtected}" Value="True">
+                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
+                                                </DataTrigger>
+                                            </Border.Triggers>
+                                            <Label
+                                                Text="🛡️"
+                                                IsVisible="{Binding IsProtected}"
+                                                HorizontalOptions="Center"
+                                                VerticalOptions="Center" />
+                                        </Border>
+                                        <Label
+                                            Style="{StaticResource CaptionLabel}"
+                                            Text="{Binding Initial}"
+                                            HorizontalOptions="Center" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </HorizontalStackLayout>
+                        <Label
+                            Text="{Binding KeepStreakText}"
+                            IsVisible="{Binding HasKeepStreakText}" />
+                        <Label
+                            Text="{Binding FreezesNotice}"
+                            IsVisible="{Binding HasFreezesNotice}"
+                            SemanticProperties.Description="{Binding FreezesNotice}" />
+                        <Label Text="{Binding FreezesText}" />
+                        <Button
+                            Style="{StaticResource SecondaryButton}"
+                            Text="{Binding BuyFreezeText}"
+                            Command="{Binding BuyStreakFreezeCommand}" />
+                        <Label
+                            Style="{StaticResource ErrorLabel}"
+                            Text="{Binding BuyFreezeErrorMessage}"
+                            IsVisible="{Binding HasBuyFreezeError}" />
+                        <Button
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Cambiar objetivo"
+                            Command="{Binding ChangeDailyGoalCommand}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}" IsVisible="{Binding IsReminderSupported}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Recordatorio"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="{StaticResource MinTouchTarget}">
+                            <Label Text="Avisarme cada día" VerticalOptions="Center" />
+                            <Switch
+                                Grid.Column="1"
+                                IsToggled="{Binding ReminderEnabled}"
+                                IsEnabled="{Binding IsReminderToggleEnabled}"
+                                VerticalOptions="Center"
+                                SemanticProperties.Description="Avisarme cada día" />
+                        </Grid>
+                        <Label Style="{StaticResource CaptionLabel}" Text="{Binding ReminderTimeText}" />
+                        <Label
+                            Style="{StaticResource ErrorLabel}"
+                            Text="{Binding ReminderNotice}"
+                            IsVisible="{Binding HasReminderNotice}" />
+                        <Button
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Cambiar hora"
+                            Command="{Binding ChangeReminderTimeCommand}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Experiencia"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasLevel}">
+                            <Label
+                                Style="{StaticResource DisplayLabel}"
+                                Text="{Binding LevelTitleText}" />
+                            <ProgressBar
+                                Progress="{Binding LevelProgress}"
+                                SemanticProperties.Description="{Binding LevelDetailText}" />
+                            <Label Text="{Binding LevelDetailText}" />
+                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding XpTodayText}" />
+                            <Label
+                                Style="{StaticResource CaptionLabel}"
+                                Text="{Binding SpendableXpText}"
+                                IsVisible="{Binding HasSpendableXpText}" />
+                        </VerticalStackLayout>
+                        <Label
+                            Style="{StaticResource ErrorLabel}"
+                            Text="{Binding LevelErrorMessage}"
+                            IsVisible="{Binding HasLevelError}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}" IsVisible="{Binding HasUnfinishedQuiz}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Test a medias"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <Label Text="{Binding UnfinishedQuizTitle}" />
+                        <Label Style="{StaticResource CaptionLabel}" Text="{Binding UnfinishedQuizProgressText}" />
+                        <Button
+                            Text="Continuar"
+                            Command="{Binding ContinueQuizCommand}"
+                            SemanticProperties.Hint="Retoma el último test en la primera pregunta pendiente" />
+                    </VerticalStackLayout>
+                </Border>
 
                 <Border Style="{StaticResource CardBorder}">
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">

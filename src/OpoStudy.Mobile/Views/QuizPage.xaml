@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:controls="clr-namespace:OpoStudy.Mobile.Views.Controls"
     xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
     x:DataType="vm:QuizViewModel"
     Title="{Binding QuizTitle}">
@@ -11,11 +12,21 @@
     <ScrollView>
         <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceL}">
 
+            <controls:OfflineBanner IsVisible="{Binding ShowOfflineBanner}" Text="{Binding OfflineBannerText}" />
+
             <!-- Loading and load error -->
             <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsLoading}">
                 <ActivityIndicator IsRunning="{Binding IsLoading}" />
                 <Label Text="Cargando test…" VerticalOptions="Center" />
             </HorizontalStackLayout>
+
+            <!-- Daily goal notice (non-blocking) -->
+            <Border IsVisible="{Binding HasGoalNotice}">
+                <Label
+                    Style="{StaticResource SuccessLabel}"
+                    Text="{Binding GoalNotice}"
+                    SemanticProperties.Description="{Binding GoalNotice}" />
+            </Border>
 
             <!-- Question view -->
             <VerticalStackLayout Spacing="{StaticResource SpaceL}" IsVisible="{Binding IsQuestionVisible}">
@@ -89,6 +100,10 @@
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
+                        <Label
+                            Style="{StaticResource CaptionLabel}"
+                            Text="{Binding XpText}"
+                            IsVisible="{Binding HasXpText}" />
                         <Label Style="{StaticResource BodyLabel}" Text="{Binding Explanation}" />
                         <Label Style="{StaticResource CaptionLabel}" Text="{Binding LegalReferenceText}" />
                         <Button Text="{Binding NextButtonText}" Command="{Binding NextCommand}" />
@@ -110,7 +125,15 @@
                     SemanticProperties.HeadingLevel="Level1" />
                 <Label Style="{StaticResource DisplayLabel}" Text="{Binding ResultText}" />
                 <Label Style="{StaticResource SubtitleLabel}" Text="{Binding PercentageText}" />
+                <Label
+                    Style="{StaticResource SubtitleLabel}"
+                    Text="{Binding QuizXpText}"
+                    IsVisible="{Binding HasQuizXpText}" />
                 <Label Style="{StaticResource CaptionLabel}" Text="{Binding ScoreText}" />
+                <Label
+                    Style="{StaticResource SubtitleLabel}"
+                    Text="{Binding MistakesLeftText}"
+                    IsVisible="{Binding HasMistakesLeftText}" />
 
                 <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding SummaryItems}">
                     <BindableLayout.ItemTemplate>
@@ -135,7 +158,7 @@
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
 
-                <Button Text="Hacer otro test" Command="{Binding AnotherQuizCommand}" />
+                <Button Text="{Binding AnotherQuizText}" Command="{Binding AnotherQuizCommand}" />
                 <Button
                     Style="{StaticResource SecondaryButton}"
                     Text="Volver al inicio"

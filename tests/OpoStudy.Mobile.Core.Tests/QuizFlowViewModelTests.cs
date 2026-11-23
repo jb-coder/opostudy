@@ -11,6 +11,8 @@ using OpoStudy.Contracts.Exams;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Reminders;
+using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
 
 using Refit;
@@ -23,9 +25,11 @@ public sealed class ExamsViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
-    private ExamsViewModel CreateSut() => new(_api, _navigation, NullLogger<ExamsViewModel>.Instance);
+    private ExamsViewModel CreateSut() => new(_api, _navigation, _offline.Content, _offline.State, NullLogger<ExamsViewModel>.Instance);
 
     [Fact]
     public async Task OnAppearingAsync_ApiReturnsExams_LoadsList()
@@ -56,7 +60,7 @@ public sealed class ExamsViewModelTests
     [Fact]
     public async Task OnAppearingAsync_ApiFails_SetsErrorMessage()
     {
-        _api.GetExamsAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        _api.GetExamsAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
 
         await sut.OnAppearingAsync();
@@ -114,13 +118,15 @@ public sealed class TopicsViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
     private readonly Guid _examId = Guid.NewGuid();
 
     private TopicsViewModel CreateSut()
     {
-        var sut = new TopicsViewModel(_api, _navigation, NullLogger<TopicsViewModel>.Instance);
+        var sut = new TopicsViewModel(_api, _navigation, _offline.Content, _offline.Quizzes, _offline.State, NullLogger<TopicsViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.ExamId] = _examId, [QueryKeys.ExamName] = "Programador C1" });
         return sut;
     }
@@ -147,7 +153,7 @@ public sealed class TopicsViewModelTests
     [Fact]
     public async Task OnAppearingAsync_ApiFails_SetsErrorMessage()
     {
-        _api.GetTopicsAsync(_examId, Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        _api.GetTopicsAsync(_examId, Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
 
         await sut.OnAppearingAsync();
@@ -246,7 +252,7 @@ public sealed class TopicsViewModelTests
     public async Task StartRandomQuizCommand_ApiFails_SetsErrorAndDoesNotNavigate()
     {
         GivenTopics(Topic(1, 3));
-        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
         await sut.OnAppearingAsync();
 
@@ -259,7 +265,7 @@ public sealed class TopicsViewModelTests
     [Fact]
     public async Task OnAppearingAsync_MissingExamId_SetsErrorWithoutCallingApi()
     {
-        var sut = new TopicsViewModel(_api, _navigation, NullLogger<TopicsViewModel>.Instance);
+        var sut = new TopicsViewModel(_api, _navigation, _offline.Content, _offline.Quizzes, _offline.State, NullLogger<TopicsViewModel>.Instance);
 
         await sut.OnAppearingAsync();
 
@@ -275,13 +281,19 @@ public sealed class QuizViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
+    private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
     private readonly Guid _quizId = Guid.NewGuid();
 
+    private readonly FakeReminderStore _reminderStore = new();
+
     private QuizViewModel CreateSut()
     {
-        var sut = new QuizViewModel(_api, _navigation, NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(_reminderStore), _offline.Quizzes, _offline.Synchronizer, _offline.State, NullLogger<QuizViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.QuizId] = _quizId, [QueryKeys.QuizTitle] = "Test aleatorio" });
         return sut;
     }
@@ -307,7 +319,117 @@ public sealed class QuizViewModelTests
 
     private void GivenAnswer(QuizQuestionResponse question, Guid selected, Guid correct, bool finished, int ok, int ko, int total) =>
         _api.SubmitAnswerAsync(_quizId, Arg.Is<SubmitAnswerRequest>(r => r.QuestionId == question.QuestionId), Arg.Any<CancellationToken>())
-            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total));
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0), new OpoStudy.Contracts.Progress.XpGainResponse(10, 0, 10, 1, false)));
+
+    [Fact]
+    public async Task AnswerCommand_Answered_SavesReminderSnapshot()
+    {
+        var question = Question(1);
+        var correct = question.Options[0].Id;
+        GivenQuiz(Quiz(0, 0, question));
+        GivenAnswer(question, correct, correct, finished: true, ok: 1, ko: 0, total: 1);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+
+        var snapshot = _reminderStore.Snapshot.ShouldNotBeNull();
+        snapshot.AnsweredToday.ShouldBe(1);
+        snapshot.DailyGoal.ShouldBe(10);
+        snapshot.GoalMetToday.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task AnswerCommand_GoalMetNow_ShowsNoticeWithStreak()
+    {
+        var question = Question(1);
+        var correct = question.Options[0].Id;
+        GivenQuiz(Quiz(0, 0, question));
+        _api.SubmitAnswerAsync(_quizId, Arg.Any<SubmitAnswerRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(10, 10, true, 3), new OpoStudy.Contracts.Progress.XpGainResponse(65, 55, 65, 1, false)));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+
+        sut.HasGoalNotice.ShouldBeTrue();
+        sut.GoalNotice.ShouldBe("🎯 ¡Objetivo diario cumplido! Racha: 3 días · +55 XP");
+    }
+
+    [Fact]
+    public async Task AnswerCommand_TwoAnswers_ShowsXpPerAnswerAndTotalInSummary()
+    {
+        var q1 = Question(1);
+        var q2 = Question(2);
+        GivenQuiz(Quiz(0, 0, q1, q2));
+        GivenAnswerWithXp(q1, q1.Options[0].Id, q1.Options[0].Id, false, 1, 0, 2, new OpoStudy.Contracts.Progress.XpGainResponse(10, 0, 10, 1, false));
+        GivenAnswerWithXp(q2, q2.Options[0].Id, q2.Options[1].Id, true, 1, 1, 2, new OpoStudy.Contracts.Progress.XpGainResponse(2, 0, 12, 1, false));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+        var firstLabel = sut.XpText;
+        sut.NextCommand.Execute(null);
+        sut.XpText.ShouldBeEmpty();
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+        var secondLabel = sut.XpText;
+        sut.NextCommand.Execute(null);
+
+        firstLabel.ShouldBe("+10 XP");
+        secondLabel.ShouldBe("+2 XP");
+        sut.QuizXpText.ShouldBe("+12 XP en este test");
+    }
+
+    [Fact]
+    public async Task NextCommand_ResumedQuizWithoutNewAnswers_HidesQuizXp()
+    {
+        var q = Question(1);
+        var answered = q with { Feedback = Feedback(q.Options[0].Id, q.Options[0].Id) };
+        GivenQuiz(Quiz(1, 0, answered));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        sut.NextCommand.Execute(null);
+
+        sut.IsFinished.ShouldBeTrue();
+        sut.QuizXpText.ShouldBeEmpty();
+        sut.HasQuizXpText.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task AnswerCommand_LevelUpAndGoalMet_ShowsSingleCombinedNotice()
+    {
+        var question = Question(1);
+        var correct = question.Options[0].Id;
+        GivenQuiz(Quiz(0, 0, question));
+        _api.SubmitAnswerAsync(_quizId, Arg.Any<SubmitAnswerRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(10, 10, true, 1), new OpoStudy.Contracts.Progress.XpGainResponse(65, 55, 120, 2, true)));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+
+        sut.GoalNotice.ShouldBe("🎯 ¡Objetivo diario cumplido! Racha: 1 día · +55 XP\n⭐ ¡Has subido al nivel 2!");
+    }
+
+    private void GivenAnswerWithXp(QuizQuestionResponse question, Guid selected, Guid correct, bool finished, int ok, int ko, int total, OpoStudy.Contracts.Progress.XpGainResponse xp) =>
+        _api.SubmitAnswerAsync(_quizId, Arg.Is<SubmitAnswerRequest>(r => r.QuestionId == question.QuestionId), Arg.Any<CancellationToken>())
+            .Returns(new AnswerFeedbackResponse(question.QuestionId, Feedback(selected, correct), finished, ok, ko, ok + ko, total, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0), xp));
+
+    [Fact]
+    public async Task AnswerCommand_GoalNotMetNow_ShowsNoNotice()
+    {
+        var question = Question(1);
+        var correct = question.Options[0].Id;
+        GivenQuiz(Quiz(0, 0, question));
+        GivenAnswer(question, correct, correct, true, 1, 0, 1);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.AnswerCommand.ExecuteAsync(sut.Options[0]);
+
+        sut.HasGoalNotice.ShouldBeFalse();
+    }
 
     [Fact]
     public async Task OnAppearingAsync_NoAnswers_ShowsFirstQuestion()
@@ -499,7 +621,7 @@ public sealed class QuizViewModelTests
     {
         GivenQuiz(Quiz(0, 0, Question(1)));
         _api.SubmitAnswerAsync(_quizId, Arg.Any<SubmitAnswerRequest>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HttpRequestException());
+            .ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
         await sut.OnAppearingAsync();
 
@@ -549,7 +671,7 @@ public sealed class QuizViewModelTests
     [Fact]
     public async Task OnAppearingAsync_MissingQuizId_SetsErrorWithoutCallingApi()
     {
-        var sut = new QuizViewModel(_api, _navigation, NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(), _offline.Quizzes, _offline.Synchronizer, _offline.State, NullLogger<QuizViewModel>.Instance);
 
         await sut.OnAppearingAsync();
 
@@ -587,7 +709,7 @@ public sealed class QuizViewModelTests
         sut.IsBusy.ShouldBeTrue();
         sut.IsLoading.ShouldBeFalse();
         var correct = question.Options[0].Id;
-        sending.SetResult(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1));
+        sending.SetResult(new AnswerFeedbackResponse(question.QuestionId, Feedback(correct, correct), true, 1, 0, 1, 1, new OpoStudy.Contracts.Progress.DailyProgressResponse(1, 10, false, 0), new OpoStudy.Contracts.Progress.XpGainResponse(10, 0, 10, 1, false)));
         await answering;
 
         sut.IsAnswered.ShouldBeTrue();

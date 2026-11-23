@@ -11,5 +11,11 @@ public class MainApplication : MauiApplication
 	{
 	}
 
+	public override void OnCreate()
+	{
+		base.OnCreate();
+		global::OpoStudy.Mobile.Platforms.Android.Reminders.ReminderNotifications.EnsureChannel(this);
+	}
+
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 }

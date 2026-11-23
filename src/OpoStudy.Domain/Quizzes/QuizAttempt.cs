@@ -16,7 +16,7 @@ public sealed class QuizAttempt
     public Guid UserId { get; private set; }
     public Guid ExamId { get; private set; }
 
-    /// <summary>Topic of the quiz; <c>null</c> for random quizzes.</summary>
+    /// <summary>Topic of the quiz; <c>null</c> for random quizzes and for reviews of the whole exam.</summary>
     public Guid? TopicId { get; private set; }
 
     public QuizMode Mode { get; private set; }
@@ -42,9 +42,25 @@ public sealed class QuizAttempt
         Guid? topicId,
         QuizMode mode,
         IReadOnlyList<Guid> questionIds,
+        DateTimeOffset now) =>
+        Create(Guid.CreateVersion7(), userId, examId, topicId, mode, questionIds, now);
+
+    /// <summary>Creates a quiz with an id chosen by the creator (e.g. the app, when it creates the quiz offline).</summary>
+    public static QuizAttempt Create(
+        Guid id,
+        Guid userId,
+        Guid examId,
+        Guid? topicId,
+        QuizMode mode,
+        IReadOnlyList<Guid> questionIds,
         DateTimeOffset now)
     {
         ArgumentNullException.ThrowIfNull(questionIds);
+
+        if (id == Guid.Empty)
+        {
+            throw new DomainRuleException("quiz.invalid_id", "El identificador del test no es válido.");
+        }
 
         if (mode == QuizMode.ByTopic && topicId is null)
         {
@@ -70,7 +86,7 @@ public sealed class QuizAttempt
 
         var attempt = new QuizAttempt
         {
-            Id = Guid.CreateVersion7(),
+            Id = id,
             UserId = userId,
             ExamId = examId,
             TopicId = topicId,

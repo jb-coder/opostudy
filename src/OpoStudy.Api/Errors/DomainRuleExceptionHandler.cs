@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
+using Npgsql;
+
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Quizzes;
+using OpoStudy.Infrastructure.Persistence;
 
 namespace OpoStudy.Api.Errors;
 
@@ -33,6 +36,11 @@ internal sealed class DomainRuleExceptionHandler : IExceptionHandler
             DbUpdateConcurrencyException concurrency => concurrency.Entries.Any(e => e.Entity is QuizAttempt)
                 ? DomainErrors.QuizConcurrentUpdate
                 : DomainErrors.ConcurrencyConflict,
+            // Two identical sync requests creating the same quiz id insert the same quiz_attempts row: the app retries.
+            DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.QuizAttemptsPrimaryKey } } => DomainErrors.QuizConcurrentUpdate,
+            // Two concurrent first answers of the day insert the same daily_activities row.
+            // Other unique violations stay unhandled (500) so real bugs are not disguised as conflicts.
+            DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.DailyActivitiesPrimaryKey } } => DomainErrors.ConcurrencyConflict,
             _ => null,
         };
         if (code is null)

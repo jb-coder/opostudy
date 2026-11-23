@@ -2,6 +2,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using OpoStudy.Contracts.Exams;
+using OpoStudy.Contracts.Offline;
+using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Contracts.SystemInfo;
 using OpoStudy.Contracts.Users;
@@ -17,8 +19,17 @@ namespace OpoStudy.Mobile.Core.Api;
 [JsonSerializable(typeof(UserProfileResponse))]
 [JsonSerializable(typeof(IReadOnlyList<ExamResponse>))]
 [JsonSerializable(typeof(IReadOnlyList<TopicResponse>))]
+[JsonSerializable(typeof(MistakeSummaryResponse))]
+[JsonSerializable(typeof(IReadOnlyList<QuizSummaryResponse>))]
 [JsonSerializable(typeof(CreateQuizRequest))]
 [JsonSerializable(typeof(QuizResponse))]
 [JsonSerializable(typeof(SubmitAnswerRequest))]
 [JsonSerializable(typeof(AnswerFeedbackResponse))]
+[JsonSerializable(typeof(StreakResponse))]
+[JsonSerializable(typeof(LevelResponse))]
+[JsonSerializable(typeof(UpdateDailyGoalRequest))]
+[JsonSerializable(typeof(UpdateTimeZoneRequest))]
+[JsonSerializable(typeof(OfflineContentResponse))]
+[JsonSerializable(typeof(SyncQuizRequest))]
+[JsonSerializable(typeof(SyncQuizResponse))]
 public sealed partial class ApiJsonContext : JsonSerializerContext;

@@ -71,6 +71,18 @@
 
     <Style TargetType="Border" BasedOn="{StaticResource CardBorder}" />
 
+    <!-- Dot of a day on the daily goal card: outline by default, filled by a trigger when the goal was met. -->
+    <Style x:Key="DayDotBorder" TargetType="Border" BasedOn="{StaticResource CardBorder}">
+        <Setter Property="WidthRequest" Value="32" />
+        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+        <Setter Property="StrokeShape">
+            <Ellipse />
+        </Setter>
+    </Style>
+
     <Style x:Key="ErrorLabel" TargetType="Label">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorDark}}" />
     </Style>

@@ -95,6 +95,7 @@ Con clave:
 | `SecondaryButton` | Botón de contorno (borde `Primary`) |
 | `TextButton` | Botón de texto, sin fondo |
 | `CardBorder` | Tarjeta (`Surface` + trazo `Outline`, base del `Border` implícito) |
+| `DayDotBorder` | Punto de día (círculo de 32 dp): contorno si no se cumplió, relleno con `Success` si sí |
 | `ErrorLabel`, `SuccessLabel`, `WarningLabel` | Mensajes de estado |
 | `DisplayLabel`, `TitleLabel`, `SubtitleLabel`, `BodyLabel`, `CaptionLabel` | Tipografía |
 

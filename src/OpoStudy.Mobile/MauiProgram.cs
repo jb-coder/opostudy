@@ -7,6 +7,8 @@ using OpoStudy.Mobile.Core;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Offline;
+using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
 using OpoStudy.Mobile.Services;
@@ -50,6 +52,15 @@ public static class MauiProgram
         services.AddSingleton<ISecureStore, SecureStore>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IAuthService, AuthService>();
+        services.AddSingleton(Preferences.Default);
+        services.AddSingleton<IPreferencesStore, MauiPreferencesStore>();
+        services.AddSingleton<IReminderStore, PreferencesReminderStore>();
+#if ANDROID
+        services.AddSingleton<IReminderScheduler, Platforms.Android.Reminders.AndroidReminderScheduler>();
+#else
+        services.AddSingleton<IReminderScheduler, NullReminderScheduler>();
+#endif
+        services.AddSingleton<ReminderService>();
         services.AddTransient<AuthHeaderHandler>();
 #if ANDROID
         services.AddSingleton<IGoogleSignInProvider, Platforms.Android.GoogleSignInProvider>();
@@ -71,6 +82,18 @@ public static class MauiProgram
             .AddHttpMessageHandler(() => new JavaNetworkExceptionHandler())
 #endif
             ;
+
+        services.AddSingleton(Connectivity.Current);
+        services.AddSingleton<INetworkStatus, MauiNetworkStatus>();
+        services.AddSingleton<OfflineState>();
+        services.AddSingleton(new OfflineDatabaseOptions(Path.Combine(FileSystem.AppDataDirectory, "offline.db3")));
+        services.AddSingleton<OfflineDatabase>();
+        services.AddSingleton<LocalQuizStore>();
+        services.AddSingleton<IOfflineContentStore, OfflineContentStore>();
+        services.AddSingleton<IOfflineQuizService, OfflineQuizService>();
+        services.AddSingleton<IQuizSyncService, QuizSyncService>();
+        services.AddSingleton<OfflineSynchronizer>();
+        services.AddSingleton<IOfflineSynchronizer>(sp => sp.GetRequiredService<OfflineSynchronizer>());
 
         services.AddSingleton<INavigationService, ShellNavigationService>();
 
@@ -97,7 +120,11 @@ public static class MauiProgram
         services.AddTransient<StyleGuidePage>();
 #endif
 
-        return builder.Build();
+        var app = builder.Build();
+
+        // Flushes the offline queue every time the Internet comes back.
+        app.Services.GetRequiredService<OfflineSynchronizer>().Start();
+        return app;
     }
 
     /// <summary>Reads the embedded <c>google-services.json</c>; without it the app runs but sign-in reports NOT_CONFIGURED.</summary>
