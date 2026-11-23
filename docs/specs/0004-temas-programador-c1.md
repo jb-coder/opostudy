@@ -98,22 +98,50 @@ Los conceptos puramente doctrinales («elementos» y «clases» de actos) solo s
 - `statement`: enunciado autónomo, sin prefijos `a)`/`1.`. Formulación como en el examen real: «Según el artículo X de…, …» o «Señale la respuesta correcta…». Las preguntas en negativo («no es…», «es incorrecta…») llevan la negación en MAYÚSCULAS (NO, INCORRECTA) y son como mucho 1 de cada 5.
 - `options`: **exactamente 4**, una sola correcta. La posición de la correcta varía (repartida aproximadamente igual entre las 4 posiciones en cada fichero). Sin «Todas las anteriores» ni «Ninguna de las anteriores», porque la app puede barajar las opciones.
 - `explanation` (2-6 frases):
-  1. Por qué la opción correcta lo es, citando el artículo y, si ayuda, reproduciendo entre comillas el fragmento literal del BOE consolidado.
+  1. Por qué la opción correcta lo es, citando el artículo (o la sección de la fuente técnica) y, si ayuda, reproduciendo entre comillas el fragmento literal del BOE consolidado o de la fuente (traducido si está en inglés).
   2. Por qué fallan los distractores principales (p. ej., «El plazo de 10 días es el de subsanación del art. 68.1, no el de…»).
-- `legalReference`: norma abreviada y artículo con apartado. Formatos: `CE, art. 167.1`, `CE, arts. 166-169`, `Ley 39/2015, art. 21.3.a)`.
+- `legalReference` (en la app, «Fuente»): la referencia legal o técnica de la que sale la pregunta.
+  - **Norma:** norma abreviada y artículo con apartado. Formatos: `CE, art. 167.1`, `CE, arts. 166-169`, `Ley 39/2015, art. 21.3.a)`.
+  - **Fuente técnica:** `<Fuente abreviada con versión>, <sección>`. La sección es la que permite encontrar el dato: número de apartado, criterio, capítulo o título de la página.
+
+    | Fuente | Ejemplo |
+    |---|---|
+    | W3C WCAG | `WCAG 2.2, criterio 1.4.3` |
+    | ECMA-262 | `ECMA-262 (2025), §14.7.5` |
+    | OMG BPMN | `BPMN 2.0.2, §10.6.2` |
+    | RFC | `RFC 9110, §9.3.1` |
+    | NIST | `NIST SP 800-145, §2` |
+    | Microsoft Learn | `Microsoft Learn (.NET 10), «Garbage collection fundamentals»` |
+    | Java | `JLS (Java SE 21), §8.4.3.1` |
+    | PHP | `Manual de PHP, «Declaración de tipos»` |
+    | Git | `Pro Git (2.ª ed.), §3.2` |
+    | Métrica v3 | `Métrica v3, Procesos principales, ASI 5` |
+    | CCN-STIC | `CCN-STIC 808, §4.2` |
+
+### Regla de fuentes (spec 0022)
+1. **Prioridad del BOE.** Si el tema o el dato está regulado por una norma (ley, real decreto, orden, reglamento UE publicado en el DOUE, ley autonómica publicada en el BOE), se cita la norma, aunque el tema sea técnico (p. ej., accesibilidad → RD 1112/2018; ENS → RD 311/2022; factura → Ley 25/2013).
+2. **Fuentes técnicas admitidas**, solo cuando no hay norma, en este orden:
+   - **Especificaciones y estándares oficiales:** W3C (WCAG, XML, XML Schema, XPath, SOAP, WSDL), WHATWG (HTML, DOM), ECMA-262, OMG BPMN 2.0.2, OASIS (SAML 2.0, WS-Security), RFC del IETF (p. ej. RFC 9110 HTTP), NIST SP 800-145 (cloud).
+   - **Documentación oficial del fabricante o proyecto:** Microsoft Learn (.NET, C#, ASP.NET Core), Oracle/OpenJDK (Java SE, JLS), php.net, PostgreSQL, git-scm (Pro Git, referencia), JUnit, Selenium, Jenkins, SonarQube, Ansible, LXC/linuxcontainers.org, páginas man de Linux.
+   - **Administración electrónica:** guías del PAe (Métrica v3, Normas Técnicas de Interoperabilidad, SIA, DIR3, SICRES, Facturae) y guías CCN-STIC.
+3. **No valen:** blogs, Wikipedia, cursos, apuntes de academias, Stack Overflow, respuestas de una IA ni la memoria. Los conceptos de manual sin especificación (p. ej. PERT/Gantt, modelo E-R) solo entran si una fuente admitida los define; si no, la pregunta no entra.
+4. **Versión.** Se usa la versión vigente al redactar y se nombra en la referencia cuando la fuente está versionada (WCAG 2.2, Java SE 21, .NET 10, PHP 8.x, BPMN 2.0.2). Se evitan los detalles que cambian entre versiones menores (valores por defecto, nombres de flags recientes, APIs marcadas como preview u obsoletas).
+5. **Mismo rigor que el BOE.** El texto de la fuente se descarga (HTML o PDF) y se convierte a texto plano. Se trabaja sobre ese texto, nunca de memoria. La segunda pasada de verificación comprueba cada pregunta contra él.
 
 ### Criterios de calidad
-- **Nada inventado:** cada afirmación de la pregunta, de la respuesta correcta y de la aclaración está en el texto consolidado vigente del BOE. Si no se puede citar un artículo, la pregunta no entra.
+- **Nada inventado:** cada afirmación de la pregunta, de la respuesta correcta y de la aclaración está en el texto vigente **de la fuente citada** (BOE consolidado o fuente técnica admitida). Si no se puede citar un artículo o una sección, la pregunta no entra.
 - **Texto vigente:** se comprueba contra la última versión consolidada (p. ej., el art. 49 CE tras la reforma de 2024). No se usan redacciones derogadas ni plazos antiguos de la Ley 30/1992.
 - **Distractores creíbles:** cifras, plazos, mayorías u órganos reales de la misma norma u otra cercana (otro apartado, otro plazo, otra mayoría). Nada absurdo, nada que se descarte por la forma (longitud, gramática o «siempre/nunca» solo en las falsas).
+- **Distractores técnicos creíbles:** otros métodos, palabras clave, comandos, códigos de estado o elementos reales de la misma tecnología. Nada inventado ni que no compile o no exista.
+- **Código en el enunciado:** corto (≤ 10 líneas), en bloque de texto plano, y el resultado esperado se comprueba ejecutándolo (SQL en el contenedor de Postgres, C# compilado, Java/PHP/JS con su intérprete si está disponible). Si no se puede ejecutar, la pregunta no lleva código.
 - **Una sola correcta indiscutible:** ningún distractor puede ser también correcto según otro artículo o una lectura razonable.
 - **Sin duplicados:** dos preguntas no evalúan el mismo dato con distinta redacción.
 - **Español correcto:** tildes, mayúsculas institucionales como en el BOE («Cortes Generales», «Administraciones Públicas»).
 
 ### Proceso de autoría
-1. Se descargan los textos consolidados del BOE (API de datos abiertos, `legislacion-consolidada/id/<BOE-A-…>/texto`), se convierten a texto plano y se trabaja sobre ellos, no de memoria.
+1. Se descargan los textos consolidados del BOE (API de datos abiertos, `legislacion-consolidada/id/<BOE-A-…>/texto`) o, en temas técnicos, el texto de la fuente admitida (HTML o PDF, a un directorio vacío fuera del repo y sin ejecutarlo). Se convierten a texto plano y se trabaja sobre ellos, no de memoria.
 2. Una IA redacta las preguntas siguiendo esta spec.
-3. Una segunda pasada, independiente, comprueba cada pregunta contra el texto consolidado: la cita, la opción correcta, que ningún distractor sea correcto y la aclaración. Las que no pasan se corrigen o se descartan.
+3. Una segunda pasada, independiente, comprueba cada pregunta contra el texto de la fuente: la cita, la opción correcta, que ningún distractor sea correcto y la aclaración. Las que no pasan se corrigen o se descartan.
 4. `--validate-only` y los tests de `content/` pasan.
 5. Revisión humana de todas las preguntas antes del merge.
 

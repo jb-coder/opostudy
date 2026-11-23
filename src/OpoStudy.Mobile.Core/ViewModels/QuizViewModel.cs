@@ -65,7 +65,7 @@ public sealed record SummaryItem(
 
     public string NumberedStatement => $"{Number}. {Statement}";
 
-    public string ReferenceText => $"Referencia: {LegalReference}";
+    public string ReferenceText => $"Fuente: {LegalReference}";
 
     /// <summary>Failed questions show their explanation and legal reference.</summary>
     public bool ShowDetails => !IsCorrect;
@@ -655,7 +655,7 @@ public sealed partial class QuizViewModel(
         IsCorrect = feedback.IsCorrect;
         FeedbackTitle = feedback.IsCorrect ? "¡Correcto!" : "Incorrecto";
         Explanation = feedback.Explanation;
-        LegalReferenceText = $"Referencia: {feedback.LegalReference}";
+        LegalReferenceText = $"Fuente: {feedback.LegalReference}";
         IsAnswered = true;
     }
 

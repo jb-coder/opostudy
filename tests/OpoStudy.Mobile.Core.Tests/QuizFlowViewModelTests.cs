@@ -518,7 +518,7 @@ public sealed class QuizViewModelTests
         sut.IsCorrect.ShouldBeTrue();
         sut.FeedbackTitle.ShouldBe("¡Correcto!");
         sut.Explanation.ShouldBe("Explanation");
-        sut.LegalReferenceText.ShouldBe("Referencia: Art. 1 CE");
+        sut.LegalReferenceText.ShouldBe("Fuente: Art. 1 CE");
         sut.ScoreText.ShouldBe("1 acierto · 0 fallos");
         sut.NextButtonText.ShouldBe("Siguiente pregunta");
     }
@@ -607,6 +607,7 @@ public sealed class QuizViewModelTests
         sut.PercentageText.ShouldBe("67 %");
         sut.SummaryItems.Select(s => s.ResultText).ShouldBe(["Acertada", "Acertada", "Fallada"]);
         sut.SummaryItems[2].ShowDetails.ShouldBeTrue();
+        sut.SummaryItems[2].ReferenceText.ShouldBe("Fuente: Art. 1 CE");
         sut.SummaryItems[0].ShowDetails.ShouldBeFalse();
     }
 
