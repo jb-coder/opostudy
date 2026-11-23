@@ -8,6 +8,7 @@ public sealed record ImportReport(
     ImportCounts Exams,
     ImportCounts Topics,
     ImportCounts Questions,
+    ImportCounts PracticalCases,
     IReadOnlyList<string> Warnings,
     bool DryRun);
 

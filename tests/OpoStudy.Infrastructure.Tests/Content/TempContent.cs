@@ -26,6 +26,30 @@ internal sealed class TempContent : IDisposable
     public void WriteTopic(string exam, string topic, params string[] questionJson) =>
         Write($"exams/{exam}/topics/{topic}.json", TopicJson(topic, questionJson));
 
+    public void WritePracticalCase(string exam, string name, string json) =>
+        Write($"exams/{exam}/practical-cases/{name}.json", json);
+
+    /// <summary>A valid practical case with <paramref name="partCount"/> parts of two criteria each (3 + 2 points).</summary>
+    public static string PracticalCaseJson(string key, int partCount = 2, int points = 3, string title = "Supuesto")
+    {
+        var parts = Enumerable.Range(0, partCount).Select(i => (JsonNode)new JsonObject
+        {
+            ["statement"] = "Apartado " + i,
+            ["modelAnswer"] = "Respuesta modelo " + i,
+            ["criteria"] = new JsonArray(
+                new JsonObject { ["description"] = "Criterio A" + i, ["points"] = points },
+                new JsonObject { ["description"] = "Criterio B" + i, ["points"] = 2 }),
+        });
+        return new JsonObject
+        {
+            ["key"] = key,
+            ["title"] = title,
+            ["statement"] = "Enunciado del supuesto",
+            ["estimatedMinutes"] = 30,
+            ["parts"] = new JsonArray([.. parts]),
+        }.ToJsonString();
+    }
+
     public void Dispose() => Directory.Delete(Root, recursive: true);
 
     public static string ExamJson(string slug, params (string Slug, int Number)[] topics) =>

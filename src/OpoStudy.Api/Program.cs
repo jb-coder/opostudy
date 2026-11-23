@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using OpoStudy.Api.Authentication;
 using OpoStudy.Api.Errors;
 using OpoStudy.Api.Features.Exams;
+using OpoStudy.Api.Features.PracticalCases;
 using OpoStudy.Api.Features.Progress;
 using OpoStudy.Api.Features.Quizzes;
 using OpoStudy.Api.Features.SystemInfo;
@@ -56,6 +57,7 @@ var api = app.MapGroup("/api/v1").RequireRateLimiting(RateLimitingExtensions.Per
 api.MapSystemInfoEndpoints();
 api.MapUsersEndpoints();
 api.MapExamsEndpoints();
+api.MapPracticalCasesEndpoints();
 api.MapQuizzesEndpoints();
 api.MapProgressEndpoints();
 

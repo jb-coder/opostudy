@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../schema/practical-case.schema.json",
+  "key": "malaga-programador-c1/practical-cases/0001",
+  "title": "Gestión de solicitudes de subvenciones",
+  "statement": "La Diputación quiere una aplicación web para gestionar las solicitudes de subvenciones que presentan los ayuntamientos de la provincia.\n\nCada ayuntamiento (código INE, nombre y correo de contacto) puede presentar varias solicitudes. Cada solicitud tiene una convocatoria (código, nombre y año), un importe solicitado en euros, una fecha de presentación y un estado: PRESENTADA, EN_REVISION, CONCEDIDA o DENEGADA. Una solicitud pertenece a un único ayuntamiento y a una única convocatoria. Cuando se resuelve, se guarda el importe concedido (puede ser inferior al solicitado) y la fecha de resolución.\n\nLa aplicación utilizará una base de datos relacional y una API REST desarrollada en C# con ASP.NET Core.",
+  "estimatedMinutes": 45,
+  "parts": [
+    {
+      "statement": "Diseña el modelo de datos relacional necesario. Indica las tablas, sus columnas con el tipo de dato, las claves primarias y las claves ajenas, y justifica brevemente cómo resuelves la relación entre ayuntamientos, convocatorias y solicitudes.",
+      "modelAnswer": "Tablas:\n\nayuntamientos(id PK, codigo_ine CHAR(5) UNIQUE NOT NULL, nombre VARCHAR(200) NOT NULL, email_contacto VARCHAR(200) NOT NULL)\n\nconvocatorias(id PK, codigo VARCHAR(30) UNIQUE NOT NULL, nombre VARCHAR(300) NOT NULL, anio INT NOT NULL)\n\nsolicitudes(id PK, ayuntamiento_id FK -> ayuntamientos(id) NOT NULL, convocatoria_id FK -> convocatorias(id) NOT NULL, importe_solicitado NUMERIC(12,2) NOT NULL CHECK (importe_solicitado > 0), fecha_presentacion DATE NOT NULL, estado VARCHAR(20) NOT NULL CHECK (estado IN ('PRESENTADA','EN_REVISION','CONCEDIDA','DENEGADA')), importe_concedido NUMERIC(12,2) NULL CHECK (importe_concedido >= 0 AND importe_concedido <= importe_solicitado), fecha_resolucion DATE NULL)\n\nRelaciones: un ayuntamiento tiene muchas solicitudes (1:N) y una convocatoria tiene muchas solicitudes (1:N). Las claves ajenas viven en solicitudes, que es la entidad que une ambas. El importe concedido y la fecha de resolución son opcionales porque solo se rellenan al resolver. Conviene un índice sobre solicitudes(ayuntamiento_id) y sobre solicitudes(convocatoria_id, estado) para las consultas habituales. Los importes se guardan como NUMERIC y no como FLOAT para evitar errores de redondeo.",
+      "criteria": [
+        { "description": "Identifica las tres entidades (ayuntamiento, convocatoria y solicitud) con sus atributos y claves primarias", "points": 2 },
+        { "description": "Modela correctamente las relaciones 1:N con las claves ajenas en la tabla de solicitudes", "points": 2 },
+        { "description": "Elige tipos de datos adecuados (importes decimales exactos, fechas, estado acotado)", "points": 2 },
+        { "description": "Contempla que el importe concedido y la fecha de resolución son opcionales y añade restricciones de integridad (únicos, CHECK, NOT NULL)", "points": 2 }
+      ]
+    },
+    {
+      "statement": "Escribe una consulta SQL que devuelva, para la convocatoria con código 'SUB-2025', el nombre de cada ayuntamiento, el número de solicitudes concedidas y el total concedido, ordenado de mayor a menor total. Solo deben aparecer los ayuntamientos con al menos una solicitud concedida.",
+      "modelAnswer": "SELECT a.nombre,\n       COUNT(*) AS solicitudes_concedidas,\n       SUM(s.importe_concedido) AS total_concedido\nFROM solicitudes s\nJOIN ayuntamientos a ON a.id = s.ayuntamiento_id\nJOIN convocatorias c ON c.id = s.convocatoria_id\nWHERE c.codigo = 'SUB-2025'\n  AND s.estado = 'CONCEDIDA'\nGROUP BY a.id, a.nombre\nORDER BY total_concedido DESC;\n\nComo el filtro por estado está en el WHERE, solo se agrupan solicitudes concedidas, y por eso solo aparecen ayuntamientos con al menos una. Si se filtrara por estado en un LEFT JOIN, o se usara HAVING COUNT(*) > 0 sobre todas las solicitudes, el resultado cambiaría. Agrupar por a.id además de por el nombre evita mezclar ayuntamientos distintos con el mismo nombre.",
+      "criteria": [
+        { "description": "Une correctamente las tres tablas con las condiciones de JOIN adecuadas", "points": 2 },
+        { "description": "Filtra por el código de convocatoria y por el estado CONCEDIDA", "points": 1 },
+        { "description": "Agrupa por ayuntamiento y usa COUNT y SUM correctamente", "points": 2 },
+        { "description": "Ordena por el total concedido de mayor a menor", "points": 1 }
+      ]
+    },
+    {
+      "statement": "En C#, implementa un endpoint POST /api/solicitudes/{id}/resolucion (ASP.NET Core Minimal API) que reciba el importe concedido y el estado final (CONCEDIDA o DENEGADA) de una solicitud. Valida los datos (la solicitud debe existir, estar EN_REVISION y, si se concede, el importe debe ser mayor que 0 y no superar el solicitado), devuelve los códigos HTTP adecuados y explica qué pruebas unitarias escribirías.",
+      "modelAnswer": "public sealed record ResolverSolicitudRequest(string Estado, decimal? ImporteConcedido);\n\napp.MapPost(\"/api/solicitudes/{id:int}/resolucion\", async (\n    int id, ResolverSolicitudRequest request, AppDbContext db, TimeProvider time, CancellationToken ct) =>\n{\n    var solicitud = await db.Solicitudes.FirstOrDefaultAsync(s => s.Id == id, ct);\n    if (solicitud is null)\n    {\n        return Results.NotFound();\n    }\n\n    if (solicitud.Estado != \"EN_REVISION\")\n    {\n        return Results.Conflict(new { error = \"La solicitud no está en revisión.\" });\n    }\n\n    if (request.Estado is not (\"CONCEDIDA\" or \"DENEGADA\"))\n    {\n        return Results.BadRequest(new { error = \"El estado final debe ser CONCEDIDA o DENEGADA.\" });\n    }\n\n    if (request.Estado == \"CONCEDIDA\")\n    {\n        if (request.ImporteConcedido is null or <= 0 || request.ImporteConcedido > solicitud.ImporteSolicitado)\n        {\n            return Results.BadRequest(new { error = \"El importe debe ser mayor que 0 y no superar el solicitado.\" });\n        }\n\n        solicitud.ImporteConcedido = request.ImporteConcedido;\n    }\n\n    solicitud.Estado = request.Estado;\n    solicitud.FechaResolucion = DateOnly.FromDateTime(time.GetUtcNow().UtcDateTime);\n    await db.SaveChangesAsync(ct);\n    return Results.NoContent();\n});\n\nCódigos: 404 si no existe, 409 si el estado actual no permite resolver, 400 si los datos son inválidos, 204 si todo va bien (o 200 con la solicitud actualizada).\n\nPruebas unitarias: resolución correcta como CONCEDIDA y como DENEGADA; solicitud inexistente (404); solicitud que no está EN_REVISION (409); importe cero, negativo, nulo o superior al solicitado (400); estado final no permitido (400). Se inyecta TimeProvider para fijar la fecha de resolución en los tests.",
+      "criteria": [
+        { "description": "Define el endpoint con la ruta, el método y el cuerpo de la petición adecuados y accede a los datos de forma asíncrona", "points": 1 },
+        { "description": "Valida que la solicitud existe y que está EN_REVISION antes de resolverla", "points": 1 },
+        { "description": "Valida el importe concedido (mayor que 0 y no superior al solicitado) y el estado final permitido", "points": 1 },
+        { "description": "Devuelve códigos HTTP coherentes (404, 409, 400 y éxito)", "points": 1 },
+        { "description": "Actualiza estado, importe y fecha de resolución y persiste los cambios", "points": 1 },
+        { "description": "Propone pruebas unitarias que cubren el caso correcto y los casos de error", "points": 1 }
+      ]
+    }
+  ]
+}

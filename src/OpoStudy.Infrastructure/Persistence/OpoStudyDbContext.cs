@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using OpoStudy.Domain.Exams;
+using OpoStudy.Domain.PracticalCases;
 using OpoStudy.Domain.Questions;
 using OpoStudy.Domain.Quizzes;
 using OpoStudy.Domain.Users;
@@ -12,6 +13,7 @@ public sealed class OpoStudyDbContext(DbContextOptions<OpoStudyDbContext> option
     public DbSet<Exam> Exams => Set<Exam>();
     public DbSet<Topic> Topics => Set<Topic>();
     public DbSet<Question> Questions => Set<Question>();
+    public DbSet<PracticalCase> PracticalCases => Set<PracticalCase>();
     public DbSet<User> Users => Set<User>();
     public DbSet<QuizAttempt> QuizAttempts => Set<QuizAttempt>();
     public DbSet<DailyActivity> DailyActivities => Set<DailyActivity>();

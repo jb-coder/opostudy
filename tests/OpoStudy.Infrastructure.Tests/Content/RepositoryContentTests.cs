@@ -27,11 +27,13 @@ public sealed class RepositoryContentTests
     {
         var examSchema = LoadSchema("exam.schema.json");
         var topicSchema = LoadSchema("topic.schema.json");
+        var caseSchema = LoadSchema("practical-case.schema.json");
         var problems = new List<string>();
 
         foreach (var file in Directory.EnumerateFiles(Path.Combine(ContentRoot, "exams"), "*.json", SearchOption.AllDirectories))
         {
-            var schema = Path.GetFileName(file) == "exam.json" ? examSchema : topicSchema;
+            var schema = Path.GetFileName(file) == "exam.json" ? examSchema
+                : Path.GetFileName(Path.GetDirectoryName(file)) == "practical-cases" ? caseSchema : topicSchema;
             using var document = JsonDocument.Parse(File.ReadAllText(file));
             var result = schema.Evaluate(document.RootElement, new EvaluationOptions { OutputFormat = OutputFormat.List });
             if (!result.IsValid)

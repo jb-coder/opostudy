@@ -267,4 +267,86 @@ public sealed class ContentReaderTests
         result.Errors.Count.ShouldBeGreaterThanOrEqualTo(4);
         result.Errors.Select(e => e.File).Distinct().Count().ShouldBe(3);
     }
+
+    [Fact]
+    public void Read_ValidPracticalCase_ReturnsItInTheExam()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001"));
+
+        var result = ContentReader.Read(content.Root);
+
+        result.Errors.ShouldBeEmpty();
+        var practicalCase = result.Exams.ShouldHaveSingleItem().PracticalCases.ShouldHaveSingleItem();
+        practicalCase.Key.ShouldBe("exam-a/practical-cases/0001");
+        practicalCase.Parts.Count.ShouldBe(2);
+        practicalCase.Parts[1].Criteria.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public void Read_PracticalCaseWithUnknownProperty_ReportsIt()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001").Replace("\"title\"", "\"extra\":1,\"title\"", StringComparison.Ordinal));
+
+        var error = ContentReader.Read(content.Root).Errors.ShouldHaveSingleItem();
+
+        error.File.ShouldBe($"exams/{Exam}/practical-cases/0001-uno.json");
+        error.Message.ShouldContain("extra");
+    }
+
+    [Fact]
+    public void Read_PracticalCaseCriterionPointsOutOfRange_ReportsExactPath()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001", points: 0));
+
+        var result = ContentReader.Read(content.Root);
+
+        result.Exams.ShouldBeEmpty();
+        result.Errors.Select(e => e.Path).ShouldBe(["$.parts[0].criteria[0].points", "$.parts[1].criteria[0].points"]);
+        result.Errors[0].Message.ShouldContain("practical_case.invalid_criterion_points");
+    }
+
+    [Fact]
+    public void Read_PracticalCaseWithoutParts_ReportsPartsPath()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001", partCount: 0));
+
+        var error = ContentReader.Read(content.Root).Errors.ShouldHaveSingleItem();
+
+        error.Path.ShouldBe("$.parts");
+    }
+
+    [Fact]
+    public void Read_DuplicatePracticalCaseKey_ReportsTheSecondFile()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001"));
+        content.WritePracticalCase(Exam, "0002-dos", TempContent.PracticalCaseJson("exam-a/practical-cases/0001"));
+
+        var error = ContentReader.Read(content.Root).Errors.ShouldHaveSingleItem();
+
+        error.File.ShouldBe($"exams/{Exam}/practical-cases/0002-dos.json");
+        error.Path.ShouldBe("$.key");
+        error.Message.ShouldContain("repetida");
+    }
+
+    [Fact]
+    public void Read_PracticalCaseOfExamWithoutExamFile_ReportsStructureError()
+    {
+        using var content = new TempContent();
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001"));
+
+        var result = ContentReader.Read(content.Root);
+
+        result.Exams.ShouldBeEmpty();
+        result.Errors.ShouldHaveSingleItem().Message.ShouldContain("exam.json");
+    }
 }

@@ -112,6 +112,95 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                     b.ToTable("topics", (string)null);
                 });
 
+            modelBuilder.Entity("OpoStudy.Domain.PracticalCases.PracticalCase", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("EstimatedMinutes")
+                        .HasColumnType("integer")
+                        .HasColumnName("estimated_minutes");
+
+                    b.Property<Guid>("ExamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("exam_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("key");
+
+                    b.Property<string>("Statement")
+                        .IsRequired()
+                        .HasMaxLength(8000)
+                        .HasColumnType("character varying(8000)")
+                        .HasColumnName("statement");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_practical_cases");
+
+                    b.HasIndex("ExamId")
+                        .HasDatabaseName("ix_practical_cases_exam_id");
+
+                    b.HasIndex("Key")
+                        .IsUnique()
+                        .HasDatabaseName("ix_practical_cases_key");
+
+                    b.ToTable("practical_cases", (string)null);
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.PracticalCases.PracticalCasePart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("max_points");
+
+                    b.Property<string>("ModelAnswer")
+                        .IsRequired()
+                        .HasMaxLength(8000)
+                        .HasColumnType("character varying(8000)")
+                        .HasColumnName("model_answer");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.Property<Guid>("PracticalCaseId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("practical_case_id");
+
+                    b.Property<string>("Statement")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("statement");
+
+                    b.HasKey("Id")
+                        .HasName("pk_practical_case_parts");
+
+                    b.HasIndex("PracticalCaseId", "Order")
+                        .IsUnique()
+                        .HasDatabaseName("ix_practical_case_parts_practical_case_id_order");
+
+                    b.ToTable("practical_case_parts", (string)null);
+                });
+
             modelBuilder.Entity("OpoStudy.Domain.Questions.AnswerOption", b =>
                 {
                     b.Property<Guid>("Id")
@@ -450,6 +539,54 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_topics_exams_exam_id");
                 });
 
+            modelBuilder.Entity("OpoStudy.Domain.PracticalCases.PracticalCase", b =>
+                {
+                    b.HasOne("OpoStudy.Domain.Exams.Exam", null)
+                        .WithMany()
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_practical_cases_exams_exam_id");
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.PracticalCases.PracticalCasePart", b =>
+                {
+                    b.HasOne("OpoStudy.Domain.PracticalCases.PracticalCase", null)
+                        .WithMany("Parts")
+                        .HasForeignKey("PracticalCaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_practical_case_parts_practical_cases_practical_case_id");
+
+                    b.OwnsMany("OpoStudy.Domain.PracticalCases.GradingCriterion", "Criteria", b1 =>
+                        {
+                            b1.Property<Guid>("PracticalCasePartId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAdd();
+
+                            b1.Property<string>("Description")
+                                .IsRequired();
+
+                            b1.Property<int>("Points");
+
+                            b1.HasKey("PracticalCasePartId", "__synthesizedOrdinal")
+                                .HasName("pk_practical_case_parts");
+
+                            b1.ToTable("practical_case_parts");
+
+                            b1
+                                .ToJson("criteria")
+                                .HasColumnType("jsonb");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PracticalCasePartId")
+                                .HasConstraintName("fk_practical_case_parts_practical_case_parts_practical_case_part");
+                        });
+
+                    b.Navigation("Criteria");
+                });
+
             modelBuilder.Entity("OpoStudy.Domain.Questions.AnswerOption", b =>
                 {
                     b.HasOne("OpoStudy.Domain.Questions.Question", null)
@@ -533,6 +670,11 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasForeignKey("ActiveExamId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("fk_users_exams_active_exam_id");
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.PracticalCases.PracticalCase", b =>
+                {
+                    b.Navigation("Parts");
                 });
 
             modelBuilder.Entity("OpoStudy.Domain.Questions.Question", b =>
