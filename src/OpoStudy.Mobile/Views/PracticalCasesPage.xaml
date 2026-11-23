@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.PracticalCasesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:controls="clr-namespace:OpoStudy.Mobile.Views.Controls"
+    xmlns:texts="clr-namespace:OpoStudy.Mobile.Core.PracticalCases;assembly=OpoStudy.Mobile.Core"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:PracticalCasesViewModel"
+    Title="Supuestos prácticos">
+
+    <RefreshView
+        Command="{Binding RefreshCommand}"
+        IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+        <CollectionView
+            ItemsSource="{Binding Groups}"
+            IsGrouped="True"
+            Margin="{StaticResource PagePadding}">
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="{StaticResource SpaceM}" Padding="0,0,0,12">
+                    <Label
+                        Style="{StaticResource TitleLabel}"
+                        Text="Supuestos prácticos"
+                        SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource CaptionLabel}" Text="{Binding ExamName}" />
+
+                    <controls:OfflineBanner IsVisible="{Binding ShowOfflineBanner}" Text="{Binding OfflineBannerText}" />
+
+                    <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsBusy}">
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" />
+                        <Label Text="Cargando supuestos…" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasError}">
+                        <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                        <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding NeedsConnection}">
+                        <Label Style="{StaticResource WarningLabel}" Text="{x:Static texts:PracticalCaseTexts.NeedsConnection}" />
+                        <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <Border IsVisible="{Binding HasQuota}">
+                        <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                            <Label Text="{Binding QuotaText}" SemanticProperties.Description="{Binding QuotaText}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsQuotaExhausted}" Value="True">
+                                        <Setter Property="Style" Value="{StaticResource WarningLabel}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding QuotaResetText}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border
+                        IsVisible="{Binding HasPendingGrading}"
+                        MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                        SemanticProperties.Description="{Binding PendingGradingText}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenPendingGradingCommand}" />
+                        </Border.GestureRecognizers>
+                        <Label Style="{StaticResource SubtitleLabel}" Text="{Binding PendingGradingText}" />
+                    </Border>
+
+                    <Label
+                        Style="{StaticResource CaptionLabel}"
+                        Text="{x:Static texts:PracticalCaseTexts.NoCases}"
+                        IsVisible="{Binding IsEmpty}" />
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SpaceM}" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="vm:PracticalCaseGroup">
+                    <Label
+                        Style="{StaticResource SubtitleLabel}"
+                        Text="{Binding Title}"
+                        Padding="0,12,0,4"
+                        SemanticProperties.HeadingLevel="Level2" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:PracticalCaseItem">
+                    <Border
+                        MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                        SemanticProperties.Description="{Binding AccessibilityText}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding OpenCaseCommand, Source={RelativeSource AncestorType={x:Type vm:PracticalCasesViewModel}}}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                            <Label Style="{StaticResource SubtitleLabel}" Text="{Binding Title}" />
+                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding Details}" />
+                            <Label
+                                Style="{StaticResource WarningLabel}"
+                                Text="{x:Static texts:PracticalCaseTexts.DraftMark}"
+                                IsVisible="{Binding HasDraft}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</views:ViewModelPage>

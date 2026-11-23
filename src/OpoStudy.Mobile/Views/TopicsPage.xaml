@@ -77,6 +77,26 @@
                         </VerticalStackLayout>
                     </Border>
 
+                    <Border
+                        MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                        SemanticProperties.Description="Supuestos prácticos">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenPracticalCasesCommand}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                <Label Style="{StaticResource SubtitleLabel}" Text="Supuestos prácticos" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="Redacta y recibe una corrección" />
+                            </VerticalStackLayout>
+                            <Label
+                                Grid.Column="1"
+                                Style="{StaticResource SubtitleLabel}"
+                                Text="›"
+                                VerticalOptions="Center"
+                                SemanticProperties.Description="Abrir" />
+                        </Grid>
+                    </Border>
+
                     <Label
                         Style="{StaticResource CaptionLabel}"
                         Text="Esta oposición aún no tiene temas."

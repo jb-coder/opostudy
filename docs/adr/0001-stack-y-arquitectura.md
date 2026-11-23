@@ -103,6 +103,7 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
   | Apartado (de un supuesto) | `PracticalCasePart` |
   | Criterio de corrección (de la rúbrica de un apartado) | `GradingCriterion` |
   | Respuesta modelo (de un apartado) | `ModelAnswer` |
+  | Borrador (de un supuesto) | `PracticalCaseDraft` |
   | Corrección (de un supuesto) | `Grading` |
   | Estado de una corrección | `GradingStatus` |
   | Respuesta a un apartado (dentro de una corrección) | `GradingAnswer` |
