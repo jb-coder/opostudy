@@ -1,5 +1,7 @@
 using OpoStudy.Contracts.Exams;
+using OpoStudy.Contracts.Gradings;
 using OpoStudy.Contracts.Offline;
+using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Contracts.SystemInfo;
@@ -65,4 +67,22 @@ public interface IOpoStudyApi
 
     [Put("/api/v1/me/time-zone")]
     Task UpdateTimeZoneAsync([Body] UpdateTimeZoneRequest request, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/exams/{examId}/practical-cases")]
+    Task<IReadOnlyList<PracticalCaseSummaryResponse>> GetPracticalCasesAsync(Guid examId, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/practical-cases/{id}")]
+    Task<PracticalCaseResponse> GetPracticalCaseAsync(Guid id, CancellationToken cancellationToken = default);
+
+    [Post("/api/v1/practical-cases/{id}/gradings")]
+    Task<GradingResponse> SubmitGradingAsync(Guid id, [Body] SubmitGradingRequest request, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/gradings/{id}")]
+    Task<GradingResponse> GetGradingAsync(Guid id, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/gradings")]
+    Task<IReadOnlyList<GradingSummaryResponse>> GetGradingsAsync(int skip, int take, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/me/grading-quota")]
+    Task<GradingQuotaResponse> GetGradingQuotaAsync(CancellationToken cancellationToken = default);
 }

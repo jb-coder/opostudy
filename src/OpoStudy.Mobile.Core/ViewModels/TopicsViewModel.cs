@@ -407,6 +407,13 @@ public sealed partial class TopicsViewModel(
         }
     }
 
+    /// <summary>Opens the practical cases of the exam. Always available: the list handles the empty and offline states.</summary>
+    [RelayCommand]
+    private Task OpenPracticalCasesAsync() =>
+        navigation.GoToAsync(
+            Routes.PracticalCases,
+            new Dictionary<string, object> { [QueryKeys.ExamId] = _examId, [QueryKeys.ExamName] = ExamName });
+
     /// <summary>Creates the quiz from the offline copy and opens it. Failures are shown in <see cref="ViewModelBase.ErrorMessage"/>.</summary>
     private async Task StartOfflineQuizAsync(Guid? topicId, string title, CancellationToken cancellationToken)
     {
