@@ -26,7 +26,7 @@ Consecuencia: la corrección con LLM (0018/0019) sirve para los formatos desarro
 - Campo opcional `section` en `PracticalCase`: contenido, schema, dominio, migración, importador y DTOs.
 - Cinco supuestos nuevos y la revisión del 0001 (ver la tabla): 6 en total, 2 por bloque, todos de **25 puntos**.
 - Nueva sección «Supuestos prácticos» en la skill `content-author`, que además actualiza su `description`.
-- `docs/specs/0004-temas-programador-c1.md`: añadir a «Modificaciones» el BOP nº 247/2024 y el BOP nº 145/2026 (base octava, sistema selectivo).
+- `docs/specs/0004-temas-programador-c1.md`: citar el BOP nº 145/2026 (base octava, sistema selectivo).
 
 **No incluye:**
 - Supuestos tipo test ni simulacros de examen con tiempo.
@@ -104,7 +104,7 @@ Sin cambios respecto a la 0016: rutas autenticadas, contenido sin datos personal
 - [ ] `GET /exams/{id}/practical-cases` y `GET /practical-cases/{id}` devuelven `section`.
 - [ ] Cambiar solo `section` cuenta como actualización en `ImportReport`. Una segunda importación sin cambios no cuenta nada.
 - [ ] La skill `content-author` tiene la sección de supuestos y su `description` la menciona.
-- [ ] La spec 0004 cita los BOP nº 247/2024 y nº 145/2026.
+- [ ] La spec 0004 cita el BOP nº 145/2026.
 - [ ] El AppHost importa los 6 supuestos al arrancar.
 
 ## Plan de tests
