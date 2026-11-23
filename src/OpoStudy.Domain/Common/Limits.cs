@@ -25,6 +25,11 @@ public static class Limits
     public const int MinEstimatedMinutes = 5;
     public const int MaxEstimatedMinutes = 240;
 
+    public const int PartAnswer = 8000;
+    public const int GradingFeedback = 4000;
+    public const int Corrector = 100;
+    public const int FailureCode = 100;
+
     public const int MinOptions = 2;
     public const int MaxOptions = 6;
     public const int MaxQuestionsPerQuiz = 100;

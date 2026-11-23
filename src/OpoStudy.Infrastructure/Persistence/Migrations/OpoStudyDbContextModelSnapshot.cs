@@ -112,6 +112,149 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                     b.ToTable("topics", (string)null);
                 });
 
+            modelBuilder.Entity("OpoStudy.Domain.Gradings.Grading", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempts");
+
+                    b.Property<DateTimeOffset?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
+
+                    b.Property<string>("Corrector")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("corrector");
+
+                    b.Property<string>("FailureCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("failure_code");
+
+                    b.Property<string>("Feedback")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
+                        .HasColumnName("feedback");
+
+                    b.Property<int?>("InputTokens")
+                        .HasColumnType("integer")
+                        .HasColumnName("input_tokens");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("max_points");
+
+                    b.Property<DateTimeOffset>("NextAttemptAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_attempt_at");
+
+                    b.Property<int?>("OutputTokens")
+                        .HasColumnType("integer")
+                        .HasColumnName("output_tokens");
+
+                    b.Property<Guid>("PracticalCaseId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("practical_case_id");
+
+                    b.Property<decimal?>("Score")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("score");
+
+                    b.Property<DateTimeOffset?>("StartedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("started_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_gradings");
+
+                    b.HasIndex("PracticalCaseId")
+                        .HasDatabaseName("ix_gradings_practical_case_id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_gradings_one_in_progress_per_user")
+                        .HasFilter("status IN ('Pending', 'Processing')");
+
+                    b.HasIndex("Status", "NextAttemptAt")
+                        .HasDatabaseName("ix_gradings_status_next_attempt_at");
+
+                    b.HasIndex("UserId", "SubmittedAt")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_gradings_user_id_submitted_at");
+
+                    b.ToTable("gradings", (string)null);
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.Gradings.GradingAnswer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Feedback")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
+                        .HasColumnName("feedback");
+
+                    b.Property<Guid>("GradingId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("grading_id");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("max_points");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
+                        .HasColumnName("order");
+
+                    b.Property<decimal?>("Score")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("score");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(8000)
+                        .HasColumnType("character varying(8000)")
+                        .HasColumnName("text");
+
+                    b.HasKey("Id")
+                        .HasName("pk_grading_answers");
+
+                    b.HasIndex("GradingId", "Order")
+                        .IsUnique()
+                        .HasDatabaseName("ix_grading_answers_grading_id_order");
+
+                    b.ToTable("grading_answers", (string)null);
+                });
+
             modelBuilder.Entity("OpoStudy.Domain.PracticalCases.PracticalCase", b =>
                 {
                     b.Property<Guid>("Id")
@@ -544,6 +687,63 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_topics_exams_exam_id");
                 });
 
+            modelBuilder.Entity("OpoStudy.Domain.Gradings.Grading", b =>
+                {
+                    b.HasOne("OpoStudy.Domain.PracticalCases.PracticalCase", null)
+                        .WithMany()
+                        .HasForeignKey("PracticalCaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_gradings_practical_cases_practical_case_id");
+
+                    b.HasOne("OpoStudy.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_gradings_users_user_id");
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.Gradings.GradingAnswer", b =>
+                {
+                    b.HasOne("OpoStudy.Domain.Gradings.Grading", null)
+                        .WithMany("Answers")
+                        .HasForeignKey("GradingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_grading_answers_gradings_grading_id");
+
+                    b.OwnsMany("OpoStudy.Domain.Gradings.CriterionScore", "Criteria", b1 =>
+                        {
+                            b1.Property<Guid>("GradingAnswerId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAdd();
+
+                            b1.Property<decimal?>("Awarded");
+
+                            b1.Property<string>("Description")
+                                .IsRequired();
+
+                            b1.Property<int>("Points");
+
+                            b1.HasKey("GradingAnswerId", "__synthesizedOrdinal")
+                                .HasName("pk_grading_answers");
+
+                            b1.ToTable("grading_answers");
+
+                            b1
+                                .ToJson("criteria")
+                                .HasColumnType("jsonb");
+
+                            b1.WithOwner()
+                                .HasForeignKey("GradingAnswerId")
+                                .HasConstraintName("fk_grading_answers_grading_answers_grading_answer_id");
+                        });
+
+                    b.Navigation("Criteria");
+                });
+
             modelBuilder.Entity("OpoStudy.Domain.PracticalCases.PracticalCase", b =>
                 {
                     b.HasOne("OpoStudy.Domain.Exams.Exam", null)
@@ -675,6 +875,11 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasForeignKey("ActiveExamId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("fk_users_exams_active_exam_id");
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.Gradings.Grading", b =>
+                {
+                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("OpoStudy.Domain.PracticalCases.PracticalCase", b =>
