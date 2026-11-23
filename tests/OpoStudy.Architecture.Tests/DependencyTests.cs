@@ -69,6 +69,7 @@ public sealed class DependencyTests
             .HaveDependencyOnAny(
                 "OpoStudy.Infrastructure.Gradings.ILlmCorrector",
                 "OpoStudy.Infrastructure.Gradings.FakeLlmCorrector",
+                "OpoStudy.Infrastructure.Gradings.Gemini",
                 "OpoStudy.Infrastructure.Gradings.GradingProcessor")
             .GetResult();
 

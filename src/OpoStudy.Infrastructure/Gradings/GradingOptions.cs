@@ -7,10 +7,11 @@ public sealed class GradingOptions
 {
     public const string SectionName = "Grading";
     public const string FakeProvider = "Fake";
+    public const string GeminiProvider = "Gemini";
 
     private static readonly TimeSpan[] DefaultRetryDelays = [TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5)];
 
-    /// <summary>Which <see cref="ILlmCorrector"/> to use. Only <c>Fake</c> until a real provider exists.</summary>
+    /// <summary>Which <see cref="ILlmCorrector"/> to use. <c>Fake</c> or <c>Gemini</c>.</summary>
     public string Provider { get; set; } = FakeProvider;
 
     /// <summary>Corrections per user and calendar month (API).</summary>
@@ -50,9 +51,10 @@ internal sealed class GradingOptionsValidator : IValidateOptions<GradingOptions>
         ArgumentNullException.ThrowIfNull(options);
 
         var errors = new List<string>();
-        if (!string.Equals(options.Provider, GradingOptions.FakeProvider, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(options.Provider, GradingOptions.FakeProvider, StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(options.Provider, GradingOptions.GeminiProvider, StringComparison.OrdinalIgnoreCase))
         {
-            errors.Add($"Grading:Provider '{options.Provider}' is not supported (only '{GradingOptions.FakeProvider}').");
+            errors.Add($"Grading:Provider '{options.Provider}' is not supported (use '{GradingOptions.FakeProvider}' or '{GradingOptions.GeminiProvider}').");
         }
 
         if (options.MonthlyQuota < 1)

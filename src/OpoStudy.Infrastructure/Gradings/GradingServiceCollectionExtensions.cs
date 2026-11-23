@@ -1,7 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
+
+using OpoStudy.Infrastructure.Gradings.Gemini;
 
 namespace OpoStudy.Infrastructure.Gradings;
 
@@ -26,9 +29,38 @@ public static class GradingServiceCollectionExtensions
         services.AddGradingOptions(configuration);
         services.TryAddSingleton(TimeProvider.System);
 
-        // The validator guarantees the provider is a known one (only the fake one for now).
-        services.TryAddSingleton<ILlmCorrector, FakeLlmCorrector>();
+        // The validator guarantees the provider is a known one.
+        var provider = configuration[$"{GradingOptions.SectionName}:Provider"];
+        if (string.Equals(provider, GradingOptions.GeminiProvider, StringComparison.OrdinalIgnoreCase))
+        {
+            AddGemini(services, configuration);
+        }
+        else
+        {
+            services.TryAddSingleton<ILlmCorrector, FakeLlmCorrector>();
+        }
+
         services.TryAddScoped<GradingProcessor>();
         return services;
+    }
+
+    private static void AddGemini(IServiceCollection services, IConfiguration configuration)
+    {
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<GeminiOptions>, GeminiOptionsValidator>());
+        services.AddOptions<GeminiOptions>()
+            .Bind(configuration.GetSection(GeminiOptions.SectionName))
+            .ValidateOnStart();
+
+#pragma warning disable EXTEXP0001 // Experimental API, but it is the only way to opt a client out of the ConfigureHttpClientDefaults handler; covered by a registration test.
+        services.AddHttpClient<ILlmCorrector, GeminiLlmCorrector>((provider, client) =>
+            {
+                client.BaseAddress = new Uri(provider.GetRequiredService<IOptions<GeminiOptions>>().Value.BaseUrl);
+                // The timeout is GradingProcessor's (CorrectorTimeout) and the retries are the queue's.
+                client.Timeout = Timeout.InfiniteTimeSpan;
+            })
+            // ServiceDefaults adds the standard resilience handler to every HttpClient (10 s per try, retries): it would cut
+            // long corrections and multiply the calls, which count against the free tier.
+            .RemoveAllResilienceHandlers();
+#pragma warning restore EXTEXP0001
     }
 }
