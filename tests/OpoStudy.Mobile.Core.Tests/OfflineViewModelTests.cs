@@ -327,7 +327,7 @@ public sealed class QuizOfflineViewModelTests
         sut.IsAnswered.ShouldBeTrue();
         sut.IsCorrect.ShouldBeTrue();
         sut.Explanation.ShouldBe("Explanation");
-        sut.LegalReferenceText.ShouldBe("Referencia: Art. 1 CE");
+        sut.LegalReferenceText.ShouldBe("Fuente: Art. 1 CE");
         sut.XpText.ShouldBe("XP pendiente de sincronizar");
         sut.HasGoalNotice.ShouldBeFalse();
         sut.ScoreText.ShouldBe("1 acierto · 0 fallos");
