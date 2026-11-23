@@ -12,6 +12,7 @@ internal static class DomainErrors
 {
     public const string ExamNotFound = "exam.not_found";
     public const string TopicNotFound = "topic.not_found";
+    public const string PracticalCaseNotFound = "practical_case.not_found";
     public const string QuizNotFound = "quiz.not_found";
     public const string QuizForeignQuestion = "quiz.foreign_question";
     public const string QuizNoQuestionsAvailable = "quiz.no_questions_available";
@@ -43,6 +44,7 @@ internal static class DomainErrors
             [ExamNotFound] = (StatusCodes.Status404NotFound, "La oposición no existe."),
             [TopicNotFound] = (StatusCodes.Status404NotFound, "El tema no existe."),
             [QuizNotFound] = (StatusCodes.Status404NotFound, "El test no existe."),
+            [PracticalCaseNotFound] = (StatusCodes.Status404NotFound, "El supuesto práctico no existe."),
         }.ToFrozenDictionary();
 
     public static (int StatusCode, string Message) Describe(string code) =>
