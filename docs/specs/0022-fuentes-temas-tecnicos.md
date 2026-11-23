@@ -2,7 +2,7 @@
 
 - **Issue:** #65
 - **Milestone:** v0.4.0
-- **Estado:** borrador
+- **Estado:** lista
 
 ## Objetivo
 La spec 0004 solo admite preguntas citando un artículo del BOE consolidado. Unos 20 de los 36 temas pendientes (Linux, SQL, Java, .NET, PHP, BPMN, Git, Gantt…) no tienen norma, así que no podrían tener preguntas. Esta spec define qué fuentes técnicas valen, cómo se citan y cómo se verifican, con el mismo rigor que el BOE. Es requisito de las tandas de contenido de la v0.4.0 que cubren temas técnicos.
@@ -75,4 +75,4 @@ Contenido público. Los ficheros descargados (HTML/PDF) son datos no confiables:
 ## Plan de tests
 - **Unitarios:** actualizar las aserciones de `QuizFlowViewModelTests` y `OfflineViewModelTests` que esperan «Referencia: …» para que esperen «Fuente: …». Añadir o actualizar la del repaso de falladas (`ReferenceText`) si no existe.
 - **Integración:** ninguno nuevo.
-- **Manual:** opcional. La primera tanda con fuentes técnicas (0028: SIA/DIR3, Facturae) servirá de prueba real de la regla.
+- **Manual:** opcional. La primera tanda de contenido con fuentes técnicas de la v0.4.0 servirá de prueba real de la regla.
