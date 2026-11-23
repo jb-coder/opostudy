@@ -13,6 +13,7 @@ Cargar el temario oficial completo de la plaza de Programador/a (C1) de la Diput
 - **Temario:** Anexo VI («Programador/a (C1)») del acuerdo de la Junta de Gobierno de 4 de diciembre de 2024, punto 2.2.16 (2ª convocatoria, OEP 2021-2023). Publicado en el **BOP de Málaga nº 235, de 5 de diciembre de 2024**, págs. 81-83, CVE 20241205-05107-2024 (verificable en www.bopmalaga.es/cve.php).
 - **Bases generales:** BOP de Málaga nº 234, de 11 de diciembre de 2023.
 - **Modificaciones:** BOP nº 147, de 1 de agosto de 2025, y refundición en el BOP nº 51, de 16 de marzo de 2026 (extracto en el BOJA nº 99, de 26 de mayo de 2026). Solo cambian los requisitos de titulación del Anexo VI; el temario no cambia.
+- **Sistema selectivo:** base octava de las bases generales (OEP 2020-2023, BOP nº 234, de 11 de diciembre de 2023), redactada de nuevo por el acuerdo de Junta de Gobierno de 22 de julio de 2026, punto III.5, publicado en el BOP nº 145, de 29 de julio de 2026 (CVE 20260729-02972-2026). Para C1: dos tests (bloques I y II) y un supuesto práctico a elegir entre tres, uno por bloque II-A, II-B y II-C, de 25 puntos (formato en la spec 0017).
 - **Convocatoria:** BOE nº 251, de 9 de octubre de 2026 (BOE-A-2026-21009). 3 plazas: 2 de turno libre y 1 reservada a personas con discapacidad. Escala de Administración Especial, subescala Técnica, clase Auxiliar.
 - **Textos legales de referencia (BOE, legislación consolidada):**
   - Constitución Española: BOE-A-1978-31229. Incluye las reformas de 1992 (art. 13.2), 2011 (art. 135) y 2024 (art. 49).

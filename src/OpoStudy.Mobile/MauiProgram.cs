@@ -8,6 +8,7 @@ using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
 using OpoStudy.Mobile.Core.Offline;
+using OpoStudy.Mobile.Core.PracticalCases;
 using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
@@ -55,6 +56,7 @@ public static class MauiProgram
         services.AddSingleton(Preferences.Default);
         services.AddSingleton<IPreferencesStore, MauiPreferencesStore>();
         services.AddSingleton<IReminderStore, PreferencesReminderStore>();
+        services.AddSingleton<IPracticalCaseDraftStore, PreferencesPracticalCaseDraftStore>();
 #if ANDROID
         services.AddSingleton<IReminderScheduler, Platforms.Android.Reminders.AndroidReminderScheduler>();
 #else
@@ -116,6 +118,14 @@ public static class MauiProgram
         services.AddTransient<TopicsPage>();
         services.AddTransient<QuizViewModel>();
         services.AddTransient<QuizPage>();
+        services.AddTransient<PracticalCasesViewModel>();
+        services.AddTransient<PracticalCasesPage>();
+        services.AddTransient<PracticalCaseViewModel>();
+        services.AddTransient<PracticalCasePage>();
+        services.AddTransient<GradingViewModel>();
+        services.AddTransient<GradingPage>();
+        services.AddTransient<GradingsViewModel>();
+        services.AddTransient<GradingsPage>();
 #if DEBUG
         services.AddTransient<StyleGuidePage>();
 #endif

@@ -47,3 +47,29 @@ internal sealed class TopicFileOption
     public required string Text { get; init; }
     public required bool IsCorrect { get; init; }
 }
+
+internal sealed class PracticalCaseFile
+{
+    [JsonPropertyName("$schema")]
+    public string? Schema { get; init; }
+
+    public required string Key { get; init; }
+    public required string Title { get; init; }
+    public string? Section { get; init; }
+    public required string Statement { get; init; }
+    public required int EstimatedMinutes { get; init; }
+    public required IReadOnlyList<PracticalCaseFilePart> Parts { get; init; }
+}
+
+internal sealed class PracticalCaseFilePart
+{
+    public required string Statement { get; init; }
+    public required string ModelAnswer { get; init; }
+    public required IReadOnlyList<PracticalCaseFileCriterion> Criteria { get; init; }
+}
+
+internal sealed class PracticalCaseFileCriterion
+{
+    public required string Description { get; init; }
+    public required int Points { get; init; }
+}

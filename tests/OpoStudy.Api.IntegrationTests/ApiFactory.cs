@@ -46,6 +46,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         builder.UseSetting("ConnectionStrings:opostudy", _postgres.GetConnectionString());
         builder.UseSetting("Firebase:ProjectId", "test-project");
+        builder.UseSetting("Grading:MonthlyQuota", "2");
 
         builder.ConfigureTestServices(services =>
         {

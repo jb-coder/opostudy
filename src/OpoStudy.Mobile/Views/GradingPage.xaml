@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.GradingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:texts="clr-namespace:OpoStudy.Mobile.Core.PracticalCases;assembly=OpoStudy.Mobile.Core"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:GradingViewModel"
+    Title="Corrección">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceL}">
+
+            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                <Label
+                    Style="{StaticResource TitleLabel}"
+                    Text="{Binding CaseTitle}"
+                    SemanticProperties.HeadingLevel="Level1" />
+                <Label Style="{StaticResource CaptionLabel}" Text="{Binding SubmittedText}" />
+            </VerticalStackLayout>
+
+            <Border>
+                <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                    <!-- In progress: the spinner is accompanied by the status text. -->
+                    <ActivityIndicator IsRunning="{Binding IsInProgress}" IsVisible="{Binding IsInProgress}" />
+
+                    <!-- The state is in the text, never only in the icon or the colour. -->
+                    <Label
+                        Style="{StaticResource SuccessLabel}"
+                        Text="✓"
+                        FontSize="{StaticResource FontSizeDisplay}"
+                        IsVisible="{Binding IsCompleted}"
+                        SemanticProperties.Description="Corrección completada" />
+                    <Label
+                        Style="{StaticResource ErrorLabel}"
+                        Text="✕"
+                        FontSize="{StaticResource FontSizeDisplay}"
+                        IsVisible="{Binding IsFailed}"
+                        SemanticProperties.Description="Corrección fallida" />
+
+                    <Label
+                        Style="{StaticResource SubtitleLabel}"
+                        Text="{Binding StatusText}"
+                        SemanticProperties.Description="{Binding StatusText}" />
+                    <Label
+                        Style="{StaticResource DisplayLabel}"
+                        Text="{Binding ScoreText}"
+                        IsVisible="{Binding HasScore}" />
+                    <Label
+                        Style="{StaticResource SubtitleLabel}"
+                        Text="{Binding XpText}"
+                        IsVisible="{Binding HasXp}" />
+                    <!-- The goal is announced with icon and text, never only with colour. -->
+                    <HorizontalStackLayout Spacing="{StaticResource SpaceS}" IsVisible="{Binding MetDailyGoal}">
+                        <Label Style="{StaticResource SuccessLabel}" Text="✓" />
+                        <Label Style="{StaticResource SuccessLabel}" Text="{x:Static texts:PracticalCaseTexts.GoalMet}" />
+                    </HorizontalStackLayout>
+                    <Label Text="{Binding FeedbackText}" IsVisible="{Binding HasFeedback}" />
+                    <Label Style="{StaticResource CaptionLabel}" Text="{x:Static texts:PracticalCaseTexts.FailedNotCounted}" IsVisible="{Binding IsFailed}" />
+                    <Label Style="{StaticResource CaptionLabel}" Text="{x:Static texts:PracticalCaseTexts.InProgressHint}" IsVisible="{Binding ShowInProgressHint}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- At most 8 parts with long text: a plain layout is enough (no virtualisation needed). Everything from the
+                 corrector or the user is plain text (Label without Html). -->
+            <VerticalStackLayout
+                Spacing="{StaticResource SpaceL}"
+                IsVisible="{Binding IsCompleted}"
+                BindableLayout.ItemsSource="{Binding Parts}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:GradingPartItem">
+                        <Border>
+                            <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                                <Label
+                                    Style="{StaticResource SubtitleLabel}"
+                                    Text="{Binding Title}"
+                                    SemanticProperties.HeadingLevel="Level2" />
+                                <Label Text="{Binding Feedback}" IsVisible="{Binding HasFeedback}" />
+
+                                <VerticalStackLayout
+                                    Spacing="{StaticResource SpaceS}"
+                                    IsVisible="{Binding HasCriteria}"
+                                    BindableLayout.ItemsSource="{Binding Criteria}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:CriterionItem">
+                                            <Grid
+                                                ColumnDefinitions="*,Auto"
+                                                ColumnSpacing="{StaticResource SpaceM}"
+                                                SemanticProperties.Description="{Binding AccessibilityText}">
+                                                <Label Text="{Binding Description}" />
+                                                <VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
+                                                    <Label Text="{Binding PointsText}" HorizontalTextAlignment="End" />
+                                                    <Label
+                                                        Style="{StaticResource SuccessLabel}"
+                                                        Text="{Binding MarkLabel}"
+                                                        HorizontalTextAlignment="End"
+                                                        IsVisible="{Binding IsComplete}" />
+                                                    <Label
+                                                        Style="{StaticResource ErrorLabel}"
+                                                        Text="{Binding MarkLabel}"
+                                                        HorizontalTextAlignment="End"
+                                                        IsVisible="{Binding IsNone}" />
+                                                    <Label
+                                                        Style="{StaticResource WarningLabel}"
+                                                        Text="{Binding MarkLabel}"
+                                                        HorizontalTextAlignment="End"
+                                                        IsVisible="{Binding IsPartial}" />
+                                                </VerticalStackLayout>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout
+                                    Spacing="{StaticResource SpaceS}"
+                                    BindableLayout.ItemsSource="{Binding Blocks}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:GradingBlock">
+                                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                                <HorizontalStackLayout
+                                                    Spacing="{StaticResource SpaceS}"
+                                                    MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                                                    SemanticProperties.Description="{Binding StateText}"
+                                                    SemanticProperties.Hint="Toca dos veces para desplegar o plegar">
+                                                    <HorizontalStackLayout.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding ToggleCommand}" />
+                                                    </HorizontalStackLayout.GestureRecognizers>
+                                                    <Label Text="{Binding Indicator}" VerticalOptions="Center" />
+                                                    <Label
+                                                        Style="{StaticResource SubtitleLabel}"
+                                                        Text="{Binding Title}"
+                                                        VerticalOptions="Center" />
+                                                </HorizontalStackLayout>
+                                                <Label Text="{Binding Content}" IsVisible="{Binding IsExpanded}" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <Label
+                Style="{StaticResource WarningLabel}"
+                Text="{Binding ConnectionNotice}"
+                IsVisible="{Binding HasConnectionNotice}" />
+            <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" />
+
+            <Button
+                Text="Recuperar mis respuestas"
+                Command="{Binding RecoverAnswersCommand}"
+                IsVisible="{Binding IsFailed}" />
+            <Button
+                Text="{x:Static texts:PracticalCaseTexts.RepeatCase}"
+                Command="{Binding RepeatCaseCommand}"
+                IsVisible="{Binding IsCompleted}" />
+            <Button
+                Style="{StaticResource SecondaryButton}"
+                Text="Volver a los supuestos"
+                Command="{Binding GoBackCommand}"
+                IsVisible="{Binding IsCompleted}" />
+            <Button
+                Style="{StaticResource SecondaryButton}"
+                Text="Volver"
+                Command="{Binding GoBackCommand}"
+                IsVisible="{Binding IsInProgress}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</views:ViewModelPage>

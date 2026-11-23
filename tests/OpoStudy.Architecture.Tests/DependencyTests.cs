@@ -14,6 +14,7 @@ public sealed class DependencyTests
     private static readonly Assembly Domain = Assembly.Load("OpoStudy.Domain");
     private static readonly Assembly Contracts = Assembly.Load("OpoStudy.Contracts");
     private static readonly Assembly Infrastructure = Assembly.Load("OpoStudy.Infrastructure");
+    private static readonly Assembly Api = Assembly.Load("OpoStudy.Api");
     private static readonly Assembly MobileCore = Assembly.Load("OpoStudy.Mobile.Core");
 
     [Fact]
@@ -58,6 +59,35 @@ public sealed class DependencyTests
             .GetResult();
 
         result.IsSuccessful.ShouldBeTrue(FailingTypes(result));
+    }
+
+    [Fact]
+    public void Api_DoesNotReferenceTheLlmCorrector()
+    {
+        var result = Types.InAssembly(Api)
+            .ShouldNot()
+            .HaveDependencyOnAny(
+                "OpoStudy.Infrastructure.Gradings.ILlmCorrector",
+                "OpoStudy.Infrastructure.Gradings.FakeLlmCorrector",
+                "OpoStudy.Infrastructure.Gradings.Gemini",
+                "OpoStudy.Infrastructure.Gradings.GradingProcessor")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(FailingTypes(result));
+    }
+
+    [Fact]
+    public void LlmCorrector_LivesInInfrastructure()
+    {
+        var result = Types.InAssembly(Infrastructure)
+            .That()
+            .HaveName("ILlmCorrector")
+            .Should()
+            .ResideInNamespace("OpoStudy.Infrastructure.Gradings")
+            .GetResult();
+
+        result.IsSuccessful.ShouldBeTrue(FailingTypes(result));
+        Types.InAssembly(Domain).That().HaveName("ILlmCorrector").GetTypes().ShouldBeEmpty();
     }
 
     [Fact]

@@ -65,7 +65,8 @@ try
 
     var topicCount = read.Exams.Sum(e => e.Topics.Count);
     var questionCount = read.Exams.Sum(e => e.Topics.Sum(t => t.Questions.Count));
-    Console.WriteLine($"Contenido válido: {read.Exams.Count} oposición(es), {topicCount} tema(s), {questionCount} pregunta(s).");
+    var caseCount = read.Exams.Sum(e => e.PracticalCases.Count);
+    Console.WriteLine($"Contenido válido: {read.Exams.Count} oposición(es), {topicCount} tema(s), {questionCount} pregunta(s), {caseCount} supuesto(s).");
     if (validateOnly)
     {
         return Ok;
@@ -87,6 +88,7 @@ try
     PrintCounts("Oposiciones", report.Exams);
     PrintCounts("Temas", report.Topics);
     PrintCounts("Preguntas", report.Questions);
+    PrintCounts("Supuestos", report.PracticalCases);
     foreach (var warning in report.Warnings)
     {
         Console.WriteLine($"Aviso: {warning}");

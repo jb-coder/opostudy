@@ -13,6 +13,23 @@ public static class Limits
     public const int Key = 150;
     public const int FirebaseUid = 128;
 
+    public const int CaseStatement = 8000;
+    public const int ModelAnswer = 8000;
+    public const int CriterionDescription = 500;
+    public const int MinCaseParts = 1;
+    public const int MaxCaseParts = 10;
+    public const int MinCriteriaPerPart = 1;
+    public const int MaxCriteriaPerPart = 10;
+    public const int MinCriterionPoints = 1;
+    public const int MaxCriterionPoints = 10;
+    public const int MinEstimatedMinutes = 5;
+    public const int MaxEstimatedMinutes = 240;
+
+    public const int PartAnswer = 8000;
+    public const int GradingFeedback = 4000;
+    public const int Corrector = 100;
+    public const int FailureCode = 100;
+
     public const int MinOptions = 2;
     public const int MaxOptions = 6;
     public const int MaxQuestionsPerQuiz = 100;

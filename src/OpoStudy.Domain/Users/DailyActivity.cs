@@ -41,6 +41,18 @@ public sealed class DailyActivity
         return TryMeetGoal(now);
     }
 
+    /// <summary>Meets the goal without counting an answer (e.g. a corrected practical case). Returns <c>true</c> only if the day was not met yet.</summary>
+    public bool MeetGoal(DateTimeOffset now)
+    {
+        if (IsGoalMet)
+        {
+            return false;
+        }
+
+        GoalMetAt = now.ToUniversalTime();
+        return true;
+    }
+
     /// <summary>Changes the goal of the day. A day already met stays untouched. Returns <c>true</c> if the new goal leaves the day met.</summary>
     public bool ChangeGoal(int goal, DateTimeOffset now)
     {

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Exams;
+using OpoStudy.Domain.PracticalCases;
 using OpoStudy.Domain.Questions;
 using OpoStudy.Infrastructure.Persistence;
 
@@ -71,11 +72,14 @@ public sealed class ContentImporter(OpoStudyDbContext db)
         var examCounts = new Counter();
         var topicCounts = new Counter();
         var questionCounts = new Counter();
+        var caseCounts = new Counter();
         var warnings = new List<string>();
 
         var slugs = exams.Select(e => e.Slug).ToList();
         var contentKeys = exams.SelectMany(e => e.Topics).SelectMany(t => t.Questions).Select(q => q.Key).ToHashSet(StringComparer.Ordinal);
         var keyList = contentKeys.ToList();
+        var contentCaseKeys = exams.SelectMany(e => e.PracticalCases).Select(c => c.Key).ToHashSet(StringComparer.Ordinal);
+        var caseKeyList = contentCaseKeys.ToList();
 
         var dbExams = await db.Exams.Where(e => slugs.Contains(e.Slug)).ToDictionaryAsync(e => e.Slug, StringComparer.Ordinal, ct);
         var examIds = dbExams.Values.Select(e => e.Id).ToList();
@@ -84,6 +88,10 @@ public sealed class ContentImporter(OpoStudyDbContext db)
         var dbQuestions = await db.Questions
             .Where(q => topicIds.Contains(q.TopicId) || keyList.Contains(q.Key))
             .ToDictionaryAsync(q => q.Key, StringComparer.Ordinal, ct);
+
+        var dbCases = await db.PracticalCases
+            .Where(c => examIds.Contains(c.ExamId) || caseKeyList.Contains(c.Key))
+            .ToDictionaryAsync(c => c.Key, StringComparer.Ordinal, ct);
 
         foreach (var content in exams)
         {
@@ -99,6 +107,17 @@ public sealed class ContentImporter(OpoStudyDbContext db)
                 }
             }
 
+            foreach (var practicalCase in content.PracticalCases)
+            {
+                UpsertPracticalCase(practicalCase, exam.Id, dbCases, caseCounts);
+            }
+
+            foreach (var practicalCase in dbCases.Values.Where(c => c.IsActive && c.ExamId == exam.Id && !contentCaseKeys.Contains(c.Key)))
+            {
+                practicalCase.Deactivate();
+                caseCounts.Deactivated++;
+            }
+
             // Questions of this exam's topics (including topics no longer in the content) that are gone from the content.
             var examTopicIds = existingTopics.Select(t => t.Id).ToHashSet();
             foreach (var question in dbQuestions.Values.Where(q => q.IsActive && examTopicIds.Contains(q.TopicId) && !contentKeys.Contains(q.Key)))
@@ -109,7 +128,7 @@ public sealed class ContentImporter(OpoStudyDbContext db)
         }
 
         await db.SaveChangesAsync(ct);
-        return new ImportReport(examCounts.ToCounts(), topicCounts.ToCounts(), questionCounts.ToCounts(), warnings, dryRun);
+        return new ImportReport(examCounts.ToCounts(), topicCounts.ToCounts(), questionCounts.ToCounts(), caseCounts.ToCounts(), warnings, dryRun);
     }
 
     private Exam UpsertExam(ExamContent content, Dictionary<string, Exam> dbExams, Counter counts)
@@ -205,6 +224,58 @@ public sealed class ContentImporter(OpoStudyDbContext db)
         if (!question.IsActive)
         {
             question.Activate();
+            counts.Reactivated++;
+        }
+    }
+
+    private static bool SamePracticalCase(PracticalCase practicalCase, Guid examId, PracticalCaseContent content)
+    {
+        if (practicalCase.ExamId != examId
+            || practicalCase.Title != content.Title.Trim()
+            || practicalCase.Section != (string.IsNullOrWhiteSpace(content.Section) ? null : content.Section.Trim())
+            || practicalCase.Statement != content.Statement.Trim()
+            || practicalCase.EstimatedMinutes != content.EstimatedMinutes
+            || practicalCase.Parts.Count != content.Parts.Count)
+        {
+            return false;
+        }
+
+        return !practicalCase.Parts.Where((part, i) => !SamePart(part, content.Parts[i])).Any();
+    }
+
+    private static bool SamePart(PracticalCasePart part, PracticalCasePartData data) =>
+        part.Statement == data.Statement.Trim()
+        && part.ModelAnswer == data.ModelAnswer.Trim()
+        && part.Criteria.SequenceEqual(data.Criteria.Select(c => new GradingCriterion(c.Description.Trim(), c.Points)));
+
+    private void UpsertPracticalCase(PracticalCaseContent content, Guid examId, Dictionary<string, PracticalCase> dbCases, Counter counts)
+    {
+        if (!dbCases.TryGetValue(content.Key, out var practicalCase))
+        {
+            practicalCase = PracticalCase.Create(examId, content.Key, content.Title, content.Section, content.Statement, content.EstimatedMinutes, content.Parts);
+            db.PracticalCases.Add(practicalCase);
+            dbCases[content.Key] = practicalCase;
+            counts.Created++;
+            return;
+        }
+
+        if (!SamePracticalCase(practicalCase, examId, content))
+        {
+            try
+            {
+                practicalCase.Update(examId, content.Title, content.Section, content.Statement, content.EstimatedMinutes, content.Parts);
+            }
+            catch (DomainRuleException ex)
+            {
+                throw new ContentImportException($"No se puede importar el supuesto '{content.Key}': {ex.Message} [{ex.Code}]", ex);
+            }
+
+            counts.Updated++;
+        }
+
+        if (!practicalCase.IsActive)
+        {
+            practicalCase.Activate();
             counts.Reactivated++;
         }
     }

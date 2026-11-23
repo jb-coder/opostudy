@@ -82,6 +82,7 @@ Escala de 4 (`Spacing.xaml`):
 | `CornerRadius` | 12 |
 | `MinTouchTarget` | 48 |
 | `DimmedOpacity` | 0,6 (elementos atenuados o no disponibles; nunca como único indicador de estado) |
+| `AnswerEditorMinHeight` | 160 (alto mínimo del editor de respuestas de los supuestos) |
 
 ## Estilos
 
@@ -96,7 +97,8 @@ Con clave:
 | `TextButton` | Botón de texto, sin fondo |
 | `CardBorder` | Tarjeta (`Surface` + trazo `Outline`, base del `Border` implícito) |
 | `DayDotBorder` | Punto de día (círculo de 32 dp): contorno si no se cumplió, relleno con `Success` si sí |
-| `ErrorLabel`, `SuccessLabel`, `WarningLabel` | Mensajes de estado |
+| `ErrorLabel`, `SuccessLabel`, `WarningLabel` | Mensajes de estado (`WarningLabel` también para avisos de límite, borrador o conexión: siempre acompañado de texto) |
+| `AnswerEditorStyle` | `Editor` multilínea de respuesta (supuestos): fondo `Surface`, texto `OnSurface`, alto mínimo `AnswerEditorMinHeight` (160 dp, ~6 líneas); se envuelve en un `Border` y crece con `AutoSize="TextChanges"` |
 | `DisplayLabel`, `TitleLabel`, `SubtitleLabel`, `BodyLabel`, `CaptionLabel` | Tipografía |
 
 En modo `Debug`, la pantalla de inicio tiene un botón "Catálogo de estilos" (ruta `styleguide`) para revisar todo en claro y oscuro (`adb shell cmd uimode night yes|no`).

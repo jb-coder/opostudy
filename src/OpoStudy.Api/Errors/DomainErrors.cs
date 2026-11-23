@@ -12,6 +12,7 @@ internal static class DomainErrors
 {
     public const string ExamNotFound = "exam.not_found";
     public const string TopicNotFound = "topic.not_found";
+    public const string PracticalCaseNotFound = "practical_case.not_found";
     public const string QuizNotFound = "quiz.not_found";
     public const string QuizForeignQuestion = "quiz.foreign_question";
     public const string QuizNoQuestionsAvailable = "quiz.no_questions_available";
@@ -19,6 +20,10 @@ internal static class DomainErrors
     public const string QuizConcurrentUpdate = "quiz.concurrent_update";
     public const string QuizInvalidQuestions = "quiz.invalid_questions";
     public const string QuizSyncConflict = "quiz.sync_conflict";
+    public const string GradingNotFound = "grading.not_found";
+    public const string GradingAlreadyPending = "grading.already_pending";
+    public const string GradingInvalidAnswerCount = "grading.invalid_answer_count";
+    public const string GradingQuotaExceeded = "grading.quota_exceeded";
     public const string InvalidRequest = "request.invalid";
     public const string ConcurrencyConflict = "concurrency.conflict";
 
@@ -32,6 +37,12 @@ internal static class DomainErrors
             [QuizConcurrentUpdate] = (StatusCodes.Status409Conflict, "El test se ha modificado desde otra petición. Vuelve a cargarlo."),
             [QuizSyncConflict] = (StatusCodes.Status409Conflict, "El test no coincide con el guardado en el servidor."),
             [ConcurrencyConflict] = (StatusCodes.Status409Conflict, "Los datos se han modificado desde otra petición. Vuelve a intentarlo."),
+            [GradingAlreadyPending] = (StatusCodes.Status409Conflict, "Ya tienes una corrección en curso. Espera a que termine."),
+            [GradingQuotaExceeded] = (StatusCodes.Status422UnprocessableEntity, "Has agotado tus correcciones de este mes."),
+            [GradingInvalidAnswerCount] = (StatusCodes.Status422UnprocessableEntity, "Hay que enviar una respuesta por apartado."),
+            ["grading.invalid_answer"] = (StatusCodes.Status422UnprocessableEntity, $"Cada respuesta puede tener como máximo {Limits.PartAnswer} caracteres."),
+            ["grading.empty"] = (StatusCodes.Status422UnprocessableEntity, "Responde al menos un apartado para pedir la corrección."),
+            ["grading.case_inactive"] = (StatusCodes.Status422UnprocessableEntity, "El supuesto práctico ya no está disponible."),
             ["streak.freezes_full"] = (StatusCodes.Status422UnprocessableEntity, $"Ya tienes el máximo de {Limits.MaxStreakFreezes} protectores."),
             ["xp.insufficient"] = (StatusCodes.Status422UnprocessableEntity, $"Necesitas {XpRules.StreakFreezePrice} XP disponibles para comprar un protector."),
             [QuizForeignQuestion] = (StatusCodes.Status422UnprocessableEntity, "La pregunta no forma parte de este test."),
@@ -43,10 +54,19 @@ internal static class DomainErrors
             [ExamNotFound] = (StatusCodes.Status404NotFound, "La oposición no existe."),
             [TopicNotFound] = (StatusCodes.Status404NotFound, "El tema no existe."),
             [QuizNotFound] = (StatusCodes.Status404NotFound, "El test no existe."),
+            [GradingNotFound] = (StatusCodes.Status404NotFound, "La corrección no existe."),
+            [PracticalCaseNotFound] = (StatusCodes.Status404NotFound, "El supuesto práctico no existe."),
         }.ToFrozenDictionary();
 
     public static (int StatusCode, string Message) Describe(string code) =>
         Errors.TryGetValue(code, out var error) ? error : (StatusCodes.Status422UnprocessableEntity, FallbackMessage);
+
+    /// <summary>Like <see cref="Problem(string)"/> but with a message that includes data of the request (e.g. the quota limit).</summary>
+    public static ProblemHttpResult Problem(string code, string message) =>
+        TypedResults.Problem(
+            title: message,
+            statusCode: Describe(code).StatusCode,
+            extensions: new Dictionary<string, object?> { ["code"] = code });
 
     /// <summary>ProblemDetails with <c>title</c> = user message and the stable <c>code</c> as an extension.</summary>
     public static ProblemHttpResult Problem(string code)

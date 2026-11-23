@@ -1,0 +1,104 @@
+{
+  "$schema": "../../../schema/practical-case.schema.json",
+  "key": "malaga-programador-c1/practical-cases/0006",
+  "title": "Facturación electrónica de un proveedor al Ayuntamiento",
+  "section": "Bloque II-C. Materias específicas",
+  "statement": "El Ayuntamiento de Villasierra, municipio de la provincia de Málaga con 12.000 habitantes, está adherido a FACe, el Punto General de Entrada de Facturas Electrónicas de la Administración General del Estado. La Diputación de Málaga presta apoyo técnico al Ayuntamiento para tramitar las facturas.\n\nInformática del Sur, S.L., empresa proveedora, ha prestado un servicio de mantenimiento de equipos por 4.200 euros y desea facturarlo. Un trabajador autónomo, persona física, también ha prestado al Ayuntamiento un servicio puntual y pregunta si debe facturar electrónicamente. El proveedor de software que usa Informática del Sur quiere enviar sus facturas por servicio web desde su sistema de gestión.\n\nEres el programador del Servicio de Administración Electrónica de la Diputación y debes asesorar al Ayuntamiento y al proveedor. Cita la norma y el artículo cuando proceda.",
+  "estimatedMinutes": 70,
+  "parts": [
+    {
+      "statement": "Obligación y presentación de la factura. Responde de forma breve: a) ¿Está obligada Informática del Sur, S.L. a facturar electrónicamente al Ayuntamiento? b) ¿Y el trabajador autónomo, persona física? c) El Ayuntamiento no ha aprobado ninguna norma sobre importes mínimos: ¿puede dejar de exigir factura electrónica por ser inferior a 5.000 euros? d) ¿En qué plazo debe presentarse la factura en el registro? e) ¿Por dónde debe presentarla el proveedor y qué recibe al hacerlo?",
+      "modelAnswer": "a) Sí. Las sociedades de responsabilidad limitada están obligadas al uso de la factura electrónica y a su presentación a través del punto general de entrada que corresponda (Ley 25/2013, art. 4.1.b).\n\nb) No está obligado, pero puede expedir y remitir factura electrónica, porque todos los proveedores que hayan entregado bienes o prestado servicios a la Administración Pública podrán hacerlo (art. 4.1, primer párrafo). Solo están obligadas las entidades enumeradas en el art. 4.1.\n\nc) No directamente. La ley permite a las Administraciones Públicas excluir reglamentariamente de la obligación a las facturas de hasta 5.000 euros (art. 4.1). La exclusión no es automática: debe estar establecida por la Administración, por lo que sin esa norma la obligación se mantiene.\n\nd) Treinta días desde la fecha de entrega efectiva de las mercancías o la prestación del servicio (art. 3).\n\ne) Debe presentarla a través del punto general de entrada de facturas electrónicas (art. 4.1; Orden HAP/1074/2014, art. 3.1). La presentación produce una entrada automática en un registro electrónico y un acuse de recibo electrónico con acreditación de la fecha y hora de presentación (Ley 25/2013, art. 6.4).",
+      "criteria": [
+        {
+          "description": "Indica que la sociedad de responsabilidad limitada está obligada a facturar electrónicamente",
+          "points": 1
+        },
+        {
+          "description": "Indica que la persona física no está obligada, pero puede facturar electrónicamente",
+          "points": 1
+        },
+        {
+          "description": "Indica que la exclusión de las facturas de hasta 5.000 euros solo opera si la Administración la establece reglamentariamente, por lo que sin norma sigue la obligación",
+          "points": 2
+        },
+        {
+          "description": "Indica el plazo de treinta días desde la entrega o la prestación del servicio",
+          "points": 1
+        },
+        {
+          "description": "Indica que se presenta a través del punto general de entrada (FACe) y que se recibe un acuse de recibo con fecha y hora",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Estructura y contenido de la factura. Describe, sin escribir el XML completo, cómo está estructurada una factura Facturae 3.2.x y qué datos debe incluir el proveedor para que FACe la dirija al Ayuntamiento. Indica los bloques principales, dónde van el emisor y el receptor, los elementos de cada factura y los códigos de unidad exigidos, así como el límite de tamaño con extensiones e información anexa.",
+      "modelAnswer": "1) Bloques principales. El fichero Facturae se compone de la cabecera FileHeader, el bloque Parties y el bloque Invoices (además de un bloque opcional de extensiones). En FileHeader, SchemaVersion indica la versión usada (3.2, 3.2.1 o 3.2.2).\n\n2) Emisor y receptor. En Parties, el emisor se informa en SellerParty y el receptor en BuyerParty.\n\n3) Cada factura (Invoice, dentro de Invoices) contiene, entre otros, InvoiceHeader (número, serie, tipo y clase), InvoiceIssueData (fecha de expedición), TaxesOutputs (impuestos repercutidos), InvoiceTotals (totales) e Items con las líneas de detalle (InvoiceLine).\n\n4) Unidades destinatarias. Para la correcta remisión, la factura debe informar del órgano gestor, la unidad tramitadora y la oficina contable destinatarios, y opcionalmente del órgano proponente (Orden HAP/1074/2014, anexo I). Se codifican en los centros administrativos de la factura con el código de la unidad en el Directorio Común DIR3 (Real Decreto 4/2010, art. 9, citado en el anexo).\n\n5) Roles. Oficina contable: rol Fiscal (01). Órgano gestor: rol Receptor (02). Unidad tramitadora: rol Pagador (03). Órgano proponente, opcional: rol Comprador (04).\n\n6) Versión: Facturae 3.2.x, con firma XAdES (facturae.gob.es).\n\n7) Tamaño. La factura con extensiones e información anexa no debe superar 8 MB (Orden HAP/1074/2014, art. 5.3).",
+      "criteria": [
+        {
+          "description": "Cita los bloques principales FileHeader, Parties e Invoices",
+          "points": 1
+        },
+        {
+          "description": "Indica que el emisor va en SellerParty y el receptor en BuyerParty, dentro de Parties",
+          "points": 1
+        },
+        {
+          "description": "Cita al menos cuatro elementos de cada factura: InvoiceHeader, InvoiceIssueData, TaxesOutputs, InvoiceTotals e Items",
+          "points": 2
+        },
+        {
+          "description": "Indica que la factura debe identificar la oficina contable, el órgano gestor y la unidad tramitadora con sus códigos DIR3",
+          "points": 2
+        },
+        {
+          "description": "Asocia los roles 01 (Fiscal) a la oficina contable, 02 (Receptor) al órgano gestor y 03 (Pagador) a la unidad tramitadora",
+          "points": 1
+        },
+        {
+          "description": "Indica que el formato es Facturae versión 3.2.x, indicada en el campo SchemaVersion",
+          "points": 1
+        },
+        {
+          "description": "Indica que el tamaño máximo con extensiones e información anexa es de 8 MB",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Informe breve (máximo 25 líneas) para el responsable del Servicio sobre la firma y la validación de la factura. Explica cómo debe firmarse la factura, qué comprueba una plataforma de validación como @firma, en qué casos rechaza la factura el punto general de entrada, qué puede hacer el proveedor después de presentarla y qué ocurre cuando la factura es admitida.",
+      "modelAnswer": "Informe.\n\n1) Firma. La factura electrónica debe tener formato estructurado y estar firmada con firma electrónica avanzada basada en un certificado reconocido (Ley 25/2013, art. 5.1); en Facturae, la firma es XAdES (facturae.gob.es). También se admite el sello electrónico avanzado basado en un certificado reconocido (art. 5.2).\n\n2) Sello. El certificado del sello debe identificar a la persona jurídica por su denominación o razón social y su número de identificación fiscal (art. 5.2.a).\n\n3) Certificado. @firma es una plataforma multi-PKI de validación y firma electrónica de las Administraciones, que ofrece un servicio de validación de certificados: comprueba que el certificado es válido y no ha sido revocado (administracionelectronica.gob.es, @firma). El punto de entrada debe aceptar solo certificados de prestadores incluidos en la lista de confianza (Orden HAP/1074/2014, disposición transitoria única).\n\n4) Firma. También valida la firma electrónica: que se corresponde con el documento firmado y que el documento no ha sido alterado desde que se firmó.\n\n5) Rechazo. Si la factura no se ajusta al formato exigido o su firma no cumple lo previsto en la Ley 59/2003, el punto general de entrada la rechaza automáticamente y comunica al interesado el motivo (Orden HAP/1074/2014, art. 3.5).\n\n6) Seguimiento. El proveedor puede consultar el estado de tramitación, que el punto general devuelve tal como se lo notifica la oficina contable, y puede solicitar la retirada de una factura presentada si se cumplen los requisitos de la normativa de facturación (Orden HAP/1074/2014, art. 6; Ley 25/2013, art. 6.3).\n\n7) Admisión. La factura admitida produce una entrada automática en el registro electrónico y un acuse con fecha y hora (Ley 25/2013, art. 6.4), y se remite a la oficina contable, que la anota en el registro contable de facturas y le asigna un código de identificación (art. 9.1 y 9.2). Después se tramita la conformidad con la entrega o el servicio y el reconocimiento de la obligación (art. 9.3).",
+      "criteria": [
+        {
+          "description": "Indica que la factura se firma con firma electrónica avanzada basada en certificado reconocido (XAdES en Facturae) o se admite sello electrónico avanzado",
+          "points": 2
+        },
+        {
+          "description": "Indica que el certificado del sello debe identificar a la persona jurídica por denominación o razón social y NIF",
+          "points": 1
+        },
+        {
+          "description": "Indica que @firma valida el certificado (vigencia y no revocación)",
+          "points": 2
+        },
+        {
+          "description": "Indica que @firma valida la firma y que el documento no ha sido alterado",
+          "points": 1
+        },
+        {
+          "description": "Indica que el punto general de entrada rechaza automáticamente la factura con formato o firma incorrectos y comunica el motivo",
+          "points": 2
+        },
+        {
+          "description": "Indica que el proveedor puede consultar el estado de tramitación y solicitar la retirada de la factura",
+          "points": 1
+        },
+        {
+          "description": "Indica que la factura admitida genera asiento y acuse, y que la oficina contable la anota en el registro contable de facturas con un código de identificación",
+          "points": 1
+        }
+      ]
+    }
+  ]
+}

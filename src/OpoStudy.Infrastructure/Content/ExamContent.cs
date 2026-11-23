@@ -1,3 +1,4 @@
+using OpoStudy.Domain.PracticalCases;
 using OpoStudy.Domain.Questions;
 
 namespace OpoStudy.Infrastructure.Content;
@@ -8,7 +9,8 @@ public sealed record ExamContent(
     string Name,
     string Organization,
     string Group,
-    IReadOnlyList<TopicContent> Topics);
+    IReadOnlyList<TopicContent> Topics,
+    IReadOnlyList<PracticalCaseContent> PracticalCases);
 
 public sealed record TopicContent(
     string Slug,
@@ -35,3 +37,11 @@ public sealed record ContentError(string File, string Path, string Message)
 
 /// <summary>Result of reading the content. <see cref="Exams"/> is empty when there are errors.</summary>
 public sealed record ContentReadResult(IReadOnlyList<ExamContent> Exams, IReadOnlyList<ContentError> Errors);
+
+public sealed record PracticalCaseContent(
+    string Key,
+    string Title,
+    string? Section,
+    string Statement,
+    int EstimatedMinutes,
+    IReadOnlyList<PracticalCasePartData> Parts);

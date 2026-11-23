@@ -162,6 +162,19 @@ public sealed class TopicsViewModelTests
     }
 
     [Fact]
+    public async Task OpenPracticalCasesCommand_Executed_NavigatesWithExamIdAndName()
+    {
+        GivenTopics();
+        var sut = CreateSut();
+
+        await sut.OpenPracticalCasesCommand.ExecuteAsync(null);
+
+        await _navigation.Received(1).GoToAsync(
+            Routes.PracticalCases,
+            Arg.Is<IReadOnlyDictionary<string, object>>(q => (Guid)q[QueryKeys.ExamId] == _examId && (string)q[QueryKeys.ExamName] == "Programador C1"));
+    }
+
+    [Fact]
     public async Task OnAppearingAsync_NoTopics_SetsEmptyState()
     {
         GivenTopics();

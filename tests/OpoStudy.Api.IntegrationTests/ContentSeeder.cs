@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using OpoStudy.Domain.Exams;
+using OpoStudy.Domain.PracticalCases;
 using OpoStudy.Domain.Questions;
 using OpoStudy.Infrastructure.Persistence;
 
@@ -15,6 +16,7 @@ namespace OpoStudy.Api.IntegrationTests;
 /// <param name="InactiveExamTopic">Topic of <paramref name="InactiveExam"/>.</param>
 /// <param name="OtherExam">Active exam, different from <paramref name="Exam"/>, with one topic.</param>
 /// <param name="OtherExamTopic">Topic of <paramref name="OtherExam"/>.</param>
+/// <param name="PracticalCases">Practical cases of <paramref name="Exam"/> (keys ordered: A, B; C is inactive) and one of <paramref name="InactiveExam"/>.</param>
 /// <param name="Questions">Every seeded question by id (with its options, so the correct one is known).</param>
 internal sealed record SeededContent(
     Exam Exam,
@@ -25,7 +27,8 @@ internal sealed record SeededContent(
     Topic InactiveExamTopic,
     Exam OtherExam,
     Topic OtherExamTopic,
-    IReadOnlyDictionary<Guid, Question> Questions)
+    IReadOnlyDictionary<Guid, Question> Questions,
+    SeededPracticalCases PracticalCases)
 {
     public IEnumerable<Question> ActiveQuestionsOf(Topic topic) =>
         Questions.Values.Where(q => q.TopicId == topic.Id && q.IsActive);
@@ -72,10 +75,17 @@ internal static class ContentSeeder
         questions.Add(NewQuestion(inactiveExamTopic, id, "inactive-exam", 0, correctIndex: 0));
         questions.Add(NewQuestion(otherExamTopic, id, "other-exam", 0, correctIndex: 3));
 
+        var caseA = NewCase(exam, id, "a", partCount: 2);
+        var caseB = NewCase(exam, id, "b", partCount: 3);
+        var caseC = NewCase(exam, id, "c", partCount: 1);
+        caseC.Deactivate();
+        var caseOfInactiveExam = NewCase(inactiveExam, id, "inactive-exam", partCount: 1);
+
         using var scope = services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<OpoStudyDbContext>();
         db.AddRange(exam, inactiveExam, otherExam, topic1, topic2, emptyTopic, inactiveExamTopic, otherExamTopic);
         db.AddRange(questions);
+        db.AddRange(caseA, caseB, caseC, caseOfInactiveExam);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         return new SeededContent(
@@ -87,7 +97,8 @@ internal static class ContentSeeder
             inactiveExamTopic,
             otherExam,
             otherExamTopic,
-            questions.ToDictionary(q => q.Id));
+            questions.ToDictionary(q => q.Id),
+            new SeededPracticalCases(caseA, caseB, caseC, caseOfInactiveExam));
     }
 
     private static Question NewQuestion(Topic topic, string id, string prefix, int index, int correctIndex) =>
@@ -98,4 +109,23 @@ internal static class ContentSeeder
             $"Explanation {prefix} {index}",
             $"CE art. {index + 1}",
             [.. Enumerable.Range(0, 4).Select(o => new AnswerOptionData($"Option {o}", o == correctIndex))]);
+
+    private static PracticalCase NewCase(Exam exam, string id, string suffix, int partCount) =>
+        PracticalCase.Create(
+            exam.Id,
+            $"{id}/practical-cases/{suffix}",
+            $"Case {suffix}",
+            suffix == "a" ? "Section a" : null,
+            $"Statement of case {suffix}",
+            30,
+            [.. Enumerable.Range(0, partCount).Select(i => new PracticalCasePartData(
+                $"Part {i} of {suffix}",
+                $"SECRET-MODEL-ANSWER {i}",
+                [new GradingCriterionData($"SECRET-CRITERION {i}", 2), new GradingCriterionData("Another criterion", 3)]))]);
 }
+
+internal sealed record SeededPracticalCases(
+    PracticalCase CaseA,
+    PracticalCase CaseB,
+    PracticalCase InactiveCase,
+    PracticalCase CaseOfInactiveExam);

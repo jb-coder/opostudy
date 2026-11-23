@@ -4,6 +4,7 @@ using OpoStudy.Contracts.Progress;
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Users;
 using OpoStudy.Infrastructure.Persistence;
+using OpoStudy.Infrastructure.Progress;
 
 namespace OpoStudy.Api.Features.Progress;
 
@@ -14,7 +15,7 @@ internal sealed record AnswerProgress(DailyProgressResponse Daily, XpGainRespons
 /// Single place that records the user's progress (daily activity, streak and XP). It only changes tracked entities:
 /// the caller saves, so the progress is stored in the same transaction as the action that caused it.
 /// </summary>
-internal sealed class ProgressRecorder(OpoStudyDbContext db)
+internal sealed class ProgressRecorder(OpoStudyDbContext db, ProgressTracker tracker)
 {
     /// <summary>
     /// Counts one answered question on the day of <paramref name="now"/> (in the user's time zone) and grants its XP.
@@ -26,12 +27,7 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
 
         var today = user.TodayAt(now);
         await SettleStreakAsync(user, today, now, cancellationToken);
-        var activity = await FindActivityAsync(user.Id, today, cancellationToken);
-        if (activity is null)
-        {
-            activity = DailyActivity.Start(user.Id, today, user.DailyGoal);
-            db.DailyActivities.Add(activity);
-        }
+        var activity = await tracker.GetOrStartActivityAsync(user, today, cancellationToken);
 
         var levelBefore = user.Level;
         var goalMetNow = activity.RegisterAnswer(now);
@@ -57,25 +53,8 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
     /// Settles the streak: spends freezes on the closed days that were not met, or loses the streak if there are not enough.
     /// Returns the number of days protected.
     /// </summary>
-    public async Task<int> SettleStreakAsync(User user, DateOnly today, DateTimeOffset now, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(user);
-
-        var days = user.Streak.Settle(today);
-        foreach (var day in days)
-        {
-            var activity = await FindActivityAsync(user.Id, day, cancellationToken);
-            if (activity is null)
-            {
-                activity = DailyActivity.Start(user.Id, day, user.DailyGoal);
-                db.DailyActivities.Add(activity);
-            }
-
-            activity.Protect(now);
-        }
-
-        return days.Count;
-    }
+    public Task<int> SettleStreakAsync(User user, DateOnly today, DateTimeOffset now, CancellationToken cancellationToken) =>
+        tracker.SettleStreakAsync(user, today, now, cancellationToken);
 
     /// <summary>Buys a streak freeze. The streak is settled first, so a lost streak is not recovered. Returns the days protected by the settlement.</summary>
     public async Task<int> BuyStreakFreezeAsync(User user, DateTimeOffset now, CancellationToken cancellationToken)
@@ -95,7 +74,7 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
         var today = user.TodayAt(now);
         var protectedDays = await SettleStreakAsync(user, today, now, cancellationToken);
         user.SetDailyGoal(dailyGoal);
-        var activity = await FindActivityAsync(user.Id, today, cancellationToken);
+        var activity = await tracker.FindActivityAsync(user.Id, today, cancellationToken);
         if (activity is not null && activity.ChangeGoal(dailyGoal, now))
         {
             user.Streak.RegisterGoalMet(today);
@@ -165,9 +144,4 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db)
             XpRules.StreakFreezePrice,
             freezesUsedNow);
     }
-
-    // Activities added by an earlier call and not saved yet (a quiz sync records many answers in one save) are only in the tracker.
-    private async Task<DailyActivity?> FindActivityAsync(Guid userId, DateOnly date, CancellationToken cancellationToken) =>
-        db.DailyActivities.Local.FirstOrDefault(a => a.UserId == userId && a.Date == date)
-        ?? await db.DailyActivities.FirstOrDefaultAsync(a => a.UserId == userId && a.Date == date, cancellationToken);
 }

@@ -15,10 +15,21 @@ var api = builder.AddDotnetProject("api", "../OpoStudy.Api/OpoStudy.Api.csproj")
     .WithEnvironment("Firebase__ProjectId", firebaseProjectId)
     .WithHttpHealthCheck("/health");
 
-builder.AddDotnetProject("worker", "../OpoStudy.Worker/OpoStudy.Worker.csproj")
+// Corrector of the practical cases: "Fake" (default, no key) or "Gemini" (Parameters:grading-provider in the AppHost user-secrets).
+var gradingProvider = builder.Configuration["Parameters:grading-provider"] ?? "Fake";
+
+var worker = builder.AddDotnetProject("worker", "../OpoStudy.Worker/OpoStudy.Worker.csproj")
     .WithReference(db)
     .WaitFor(db)
-    .WaitFor(api);
+    .WaitFor(api)
+    .WithEnvironment("Grading__Provider", gradingProvider);
+
+if (string.Equals(gradingProvider, "Gemini", StringComparison.OrdinalIgnoreCase))
+{
+    // Secret parameter, stored in the AppHost user-secrets (Parameters:gemini-api-key); only requested when Gemini is chosen.
+    var geminiApiKey = builder.AddParameter("gemini-api-key", secret: true);
+    worker.WithEnvironment("Gemini__ApiKey", geminiApiKey);
+}
 
 // Loads content/ into the database on every start; the import is idempotent.
 var contentDirectory = Path.GetFullPath(Path.Combine(builder.AppHostDirectory, "..", "..", "content"));

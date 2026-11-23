@@ -1,0 +1,100 @@
+{
+  "$schema": "../../../schema/practical-case.schema.json",
+  "key": "malaga-programador-c1/practical-cases/0001",
+  "title": "Gestión de solicitudes de subvenciones",
+  "section": "Bloque II-B. Materias específicas",
+  "statement": "La Diputación quiere una aplicación web para gestionar las solicitudes de subvenciones que presentan los ayuntamientos de la provincia.\n\nCada ayuntamiento (código INE, nombre y correo de contacto) puede presentar varias solicitudes. Cada solicitud tiene una convocatoria (código, nombre y año), un importe solicitado en euros, una fecha de presentación y un estado: presentada, en revisión, concedida o denegada. Una solicitud pertenece a un único ayuntamiento y a una única convocatoria. Cuando se resuelve, se guarda el importe concedido (puede ser inferior al solicitado) y la fecha de resolución.\n\nLa aplicación se desarrollará con ASP.NET Core (patrón MVC / API REST), Entity Framework Core y una base de datos relacional PostgreSQL. Puedes nombrar los identificadores en español o en inglés.",
+  "estimatedMinutes": 75,
+  "parts": [
+    {
+      "statement": "Explica cómo aplicarías el patrón Modelo-Vista-Controlador y una arquitectura en capas a esta aplicación, indicando la responsabilidad de cada capa. Después escribe en C# las clases de entidad con sus relaciones y la configuración de EF Core del contexto de datos: claves, relaciones, tipos de los importes, estado y restricciones de integridad.",
+      "modelAnswer": "Arquitectura. El patrón MVC separa la aplicación en Modelo (datos y reglas de negocio), Vista (presentación) y Controlador (recibe la petición, invoca al modelo y elige la respuesta). En una API REST la vista es la respuesta serializada (JSON con DTO); en una web con Razor sería la plantilla. Lo organizo en capas con dependencias en un solo sentido: presentación (endpoints o controladores, solo traducen HTTP a llamadas y devuelven DTO) -> lógica de aplicación y dominio (reglas, p. ej. el método Resolve de la solicitud) -> acceso a datos (DbContext de EF Core). Las entidades de EF Core no se exponen en la API: se devuelven DTO, para no acoplar el contrato público a la base de datos ni filtrar campos internos.\n\nEntidades:\n\npublic enum ApplicationStatus { Submitted, UnderReview, Granted, Rejected }\n\npublic class Municipality\n{\n    public int Id { get; set; }\n    public string IneCode { get; set; } = \"\";\n    public string Name { get; set; } = \"\";\n    public string ContactEmail { get; set; } = \"\";\n    public List<GrantApplication> Applications { get; } = [];\n}\n\npublic class GrantCall\n{\n    public int Id { get; set; }\n    public string Code { get; set; } = \"\";\n    public string Name { get; set; } = \"\";\n    public int Year { get; set; }\n    public List<GrantApplication> Applications { get; } = [];\n}\n\npublic class GrantApplication\n{\n    public int Id { get; set; }\n    public int MunicipalityId { get; set; }\n    public Municipality Municipality { get; set; } = null!;\n    public int GrantCallId { get; set; }\n    public GrantCall GrantCall { get; set; } = null!;\n    public decimal RequestedAmount { get; set; }\n    public DateOnly SubmittedOn { get; set; }\n    public ApplicationStatus Status { get; set; }\n    public decimal? GrantedAmount { get; set; }\n    public DateOnly? ResolvedOn { get; set; }\n}\n\nUn ayuntamiento y una convocatoria tienen muchas solicitudes (1:N); las claves ajenas (MunicipalityId, GrantCallId) están en GrantApplication. El importe concedido y la fecha de resolución son nullable porque solo se rellenan al resolver.\n\nContexto de datos:\n\npublic class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)\n{\n    public DbSet<Municipality> Municipalities => Set<Municipality>();\n    public DbSet<GrantCall> GrantCalls => Set<GrantCall>();\n    public DbSet<GrantApplication> Applications => Set<GrantApplication>();\n\n    protected override void OnModelCreating(ModelBuilder modelBuilder)\n    {\n        modelBuilder.Entity<Municipality>(e =>\n        {\n            e.Property(m => m.IneCode).HasMaxLength(5).IsFixedLength();\n            e.Property(m => m.Name).HasMaxLength(200);\n            e.HasIndex(m => m.IneCode).IsUnique();\n        });\n\n        modelBuilder.Entity<GrantCall>(e =>\n        {\n            e.Property(c => c.Code).HasMaxLength(30);\n            e.HasIndex(c => c.Code).IsUnique();\n        });\n\n        modelBuilder.Entity<GrantApplication>(e =>\n        {\n            e.Property(a => a.RequestedAmount).HasPrecision(12, 2);\n            e.Property(a => a.GrantedAmount).HasPrecision(12, 2);\n            e.Property(a => a.Status).HasConversion<string>().HasMaxLength(20);\n            e.HasOne(a => a.Municipality).WithMany(m => m.Applications).HasForeignKey(a => a.MunicipalityId);\n            e.HasOne(a => a.GrantCall).WithMany(c => c.Applications).HasForeignKey(a => a.GrantCallId);\n            e.ToTable(t => t.HasCheckConstraint(\"ck_applications_granted_amount\",\n                \"\\\"GrantedAmount\\\" IS NULL OR (\\\"GrantedAmount\\\" >= 0 AND \\\"GrantedAmount\\\" <= \\\"RequestedAmount\\\")\"));\n        });\n    }\n}\n\nLos importes llevan precisión decimal (no float), el estado se guarda como texto legible y el código INE es único. Después se genera la migración con dotnet ef migrations add.",
+      "criteria": [
+        {
+          "description": "Explica el patrón MVC (Modelo con datos y reglas, Vista de presentación, Controlador que recibe la petición y coordina) y cómo se aplica a una API (la vista es la respuesta JSON o DTO)",
+          "points": 2
+        },
+        {
+          "description": "Propone capas separadas (presentación, lógica de aplicación o dominio, acceso a datos) con dependencias en un solo sentido y sin exponer las entidades de EF Core directamente, usando DTO",
+          "points": 2
+        },
+        {
+          "description": "Define las tres entidades con clave primaria y la relación 1:N mediante clave ajena y propiedades de navegación en la solicitud",
+          "points": 2
+        },
+        {
+          "description": "Configura el contexto con EF Core (DbSet y Fluent API o anotaciones): precisión decimal de los importes, estado como enumerado convertido a texto, índice único del código INE y campos opcionales como nullable",
+          "points": 2
+        }
+      ]
+    },
+    {
+      "statement": "Escribe con LINQ y EF Core (sin SQL escrito a mano) una consulta que devuelva, para la convocatoria con código 'SUB-2025', el nombre de cada ayuntamiento, el número de solicitudes concedidas y el total concedido, ordenado de mayor a menor total. Solo deben aparecer los ayuntamientos con al menos una solicitud concedida. Explica brevemente cómo se ejecuta.",
+      "modelAnswer": "Consulta (EF Core, sobre IQueryable):\n\npublic sealed record MunicipalityTotal(string Name, int GrantedCount, decimal TotalGranted);\n\nvar result = await db.Applications\n    .AsNoTracking()\n    .Where(a => a.GrantCall.Code == \"SUB-2025\" && a.Status == ApplicationStatus.Granted)\n    .GroupBy(a => new { a.MunicipalityId, a.Municipality.Name })\n    .OrderByDescending(g => g.Sum(a => a.GrantedAmount ?? 0m))\n    .Select(g => new MunicipalityTotal(g.Key.Name, g.Count(), g.Sum(a => a.GrantedAmount ?? 0m)))\n    .ToListAsync(ct);\n\nExplicación. Where filtra por el código de la convocatoria y por el estado Granted antes de agrupar, por lo que solo se agrupan solicitudes concedidas y solo aparecen los ayuntamientos con al menos una. GroupBy agrupa por la clave del ayuntamiento y su nombre; Select proyecta el nombre, el número (Count) y el total (Sum) a un DTO; OrderByDescending ordena de mayor a menor total (se escribe sobre el grupo, antes de proyectar, para que EF Core pueda traducirlo). Mientras la consulta sea IQueryable, EF Core la traduce a un único SQL (INNER JOIN con convocatorias y ayuntamientos, WHERE, GROUP BY y ORDER BY) que se ejecuta en PostgreSQL; ToListAsync la ejecuta de forma asíncrona al final. Si se materializara antes con ToList o AsEnumerable, se traerían todas las solicitudes a memoria. AsNoTracking evita el seguimiento de cambios porque es de solo lectura, y la proyección a un DTO trae solo las columnas necesarias.",
+      "criteria": [
+        {
+          "description": "Filtra con Where por el código de la convocatoria y por el estado Concedida antes de agrupar",
+          "points": 1
+        },
+        {
+          "description": "Agrupa con GroupBy por ayuntamiento (su identificador y su nombre)",
+          "points": 1
+        },
+        {
+          "description": "Proyecta con Select el nombre, el número de solicitudes (Count) y el total concedido (Sum) a un DTO o tipo anónimo",
+          "points": 2
+        },
+        {
+          "description": "Ordena por el total concedido de mayor a menor con OrderByDescending",
+          "points": 1
+        },
+        {
+          "description": "Ejecuta la consulta de forma asíncrona (ToListAsync) sin materializar antes con ToList o AsEnumerable, y explica que EF Core la traduce a SQL que se ejecuta en la base de datos",
+          "points": 1
+        },
+        {
+          "description": "Usa AsNoTracking o justifica la proyección a un DTO por ser una consulta de solo lectura",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Implementa en C# un endpoint POST /api/v1/applications/{id}/resolution (ASP.NET Core Minimal API) que reciba el estado final (Granted o Rejected) y el importe concedido de una solicitud. La solicitud debe existir y estar en revisión; si se concede, el importe debe ser mayor que 0 y no superar el solicitado. Los errores se devuelven como ProblemDetails con el código HTTP adecuado. Indica qué pruebas escribirías.",
+      "modelAnswer": "Registro de ProblemDetails y del endpoint (Program.cs):\n\nbuilder.Services.AddProblemDetails();\nbuilder.Services.AddSingleton(TimeProvider.System);\n// ...\napp.UseExceptionHandler();\napp.UseStatusCodePages();\n\npublic sealed record ResolveApplicationRequest(string Status, decimal? GrantedAmount);\n\napp.MapPost(\"/api/v1/applications/{id:int}/resolution\", async (\n    int id, ResolveApplicationRequest request, AppDbContext db, TimeProvider time, CancellationToken ct) =>\n{\n    var application = await db.Applications.FirstOrDefaultAsync(a => a.Id == id, ct);\n    if (application is null)\n    {\n        return Results.Problem(\n            title: \"Solicitud no encontrada\",\n            detail: $\"No existe la solicitud {id}.\",\n            statusCode: StatusCodes.Status404NotFound);\n    }\n\n    if (application.Status != ApplicationStatus.UnderReview)\n    {\n        return Results.Problem(\n            title: \"Estado no válido\",\n            detail: \"Solo se puede resolver una solicitud que está en revisión.\",\n            statusCode: StatusCodes.Status409Conflict);\n    }\n\n    var errors = new Dictionary<string, string[]>();\n    if (!Enum.TryParse<ApplicationStatus>(request.Status, ignoreCase: true, out var finalStatus)\n        || finalStatus is not (ApplicationStatus.Granted or ApplicationStatus.Rejected))\n    {\n        errors[\"status\"] = [\"El estado final debe ser Granted o Rejected.\"];\n    }\n    else if (finalStatus == ApplicationStatus.Granted\n        && (request.GrantedAmount is null or <= 0 || request.GrantedAmount > application.RequestedAmount))\n    {\n        errors[\"grantedAmount\"] = [\"El importe concedido debe ser mayor que 0 y no superar el solicitado.\"];\n    }\n\n    if (errors.Count > 0)\n    {\n        return Results.ValidationProblem(errors);\n    }\n\n    application.Resolve(finalStatus, request.GrantedAmount, DateOnly.FromDateTime(time.GetUtcNow().UtcDateTime));\n    await db.SaveChangesAsync(ct);\n    return Results.NoContent();\n});\n\nEl cambio de estado lo hace un método de la entidad, no el endpoint, para que la regla viva en el dominio:\n\npublic void Resolve(ApplicationStatus finalStatus, decimal? grantedAmount, DateOnly today)\n{\n    Status = finalStatus;\n    GrantedAmount = finalStatus == ApplicationStatus.Granted ? grantedAmount : null;\n    ResolvedOn = today;\n}\n\nCódigos: 404 si no existe, 409 si no está en revisión, 400 (ValidationProblem, con los errores por campo) si el estado final o el importe no son válidos, 204 si todo va bien. Todos los errores salen como application/problem+json (ProblemDetails, RFC 9457, que sustituye a la RFC 7807); AddProblemDetails, UseExceptionHandler y UseStatusCodePages hacen que también lo sean las excepciones no controladas y los códigos de estado sin cuerpo.\n\nPruebas: unitarias de GrantApplication.Resolve (concedida: guarda importe y fecha; denegada: sin importe) con un TimeProvider falso para fijar la fecha; e integración con WebApplicationFactory y una base de datos de pruebas: resolución correcta como Granted y como Rejected (204), solicitud inexistente (404), solicitud que no está en revisión (409), estado final desconocido (400), importe nulo, cero, negativo o superior al solicitado (400) y una segunda resolución de la misma solicitud (409).",
+      "criteria": [
+        {
+          "description": "Define el endpoint con la ruta, el método POST y un record como cuerpo de la petición, e inyecta el contexto de datos y accede a él de forma asíncrona",
+          "points": 1
+        },
+        {
+          "description": "Devuelve 404 como ProblemDetails cuando la solicitud no existe",
+          "points": 1
+        },
+        {
+          "description": "Devuelve 409 como ProblemDetails cuando la solicitud no está en revisión",
+          "points": 1
+        },
+        {
+          "description": "Valida el estado final permitido y el importe concedido (mayor que 0 y no superior al solicitado) y devuelve 400 con ValidationProblem y los errores por campo",
+          "points": 2
+        },
+        {
+          "description": "Actualiza estado, importe y fecha de resolución (con TimeProvider o equivalente inyectable) y persiste los cambios con SaveChangesAsync",
+          "points": 1
+        },
+        {
+          "description": "Registra ProblemDetails en la aplicación (AddProblemDetails y UseExceptionHandler o UseStatusCodePages) para que también los errores no controlados salgan como problem+json",
+          "points": 1
+        },
+        {
+          "description": "Propone pruebas que cubren la resolución correcta y cada caso de error (404, 409 y 400 por estado y por importe)",
+          "points": 2
+        },
+        {
+          "description": "Delega el cambio de estado en un método de la entidad (por ejemplo Resolve) en lugar de asignar las propiedades sueltas en el endpoint",
+          "points": 1
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using OpoStudy.Contracts.Exams;
+using OpoStudy.Contracts.Gradings;
 using OpoStudy.Contracts.Offline;
+using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Contracts.SystemInfo;
@@ -32,4 +34,10 @@ namespace OpoStudy.Mobile.Core.Api;
 [JsonSerializable(typeof(OfflineContentResponse))]
 [JsonSerializable(typeof(SyncQuizRequest))]
 [JsonSerializable(typeof(SyncQuizResponse))]
+[JsonSerializable(typeof(IReadOnlyList<PracticalCaseSummaryResponse>))]
+[JsonSerializable(typeof(PracticalCaseResponse))]
+[JsonSerializable(typeof(SubmitGradingRequest))]
+[JsonSerializable(typeof(GradingResponse))]
+[JsonSerializable(typeof(IReadOnlyList<GradingSummaryResponse>))]
+[JsonSerializable(typeof(GradingQuotaResponse))]
 public sealed partial class ApiJsonContext : JsonSerializerContext;
