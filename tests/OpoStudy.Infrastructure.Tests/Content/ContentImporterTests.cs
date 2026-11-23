@@ -202,7 +202,7 @@ public sealed class ContentImporterTests(PostgresFixture postgres)
         (await db.Topics.CountAsync(t => t.Slug == "uno" && db.Exams.Any(e => e.Id == t.ExamId && e.Slug == slug), Ct)).ShouldBe(1);
     }
 
-    private static PracticalCaseContent Case(string slug, int number, string title = "Supuesto", int partCount = 2, int points = 3, string criterionA = "Criterio A")
+    private static PracticalCaseContent Case(string slug, int number, string title = "Supuesto", int partCount = 2, int points = 3, string criterionA = "Criterio A", string? section = null)
     {
         var parts = Enumerable.Range(0, partCount)
             .Select(i => new PracticalCasePartData(
@@ -210,7 +210,7 @@ public sealed class ContentImporterTests(PostgresFixture postgres)
                 "Respuesta " + i,
                 [new GradingCriterionData(criterionA, points), new GradingCriterionData("Criterio B", 2)]))
             .ToList();
-        return new PracticalCaseContent($"{slug}/practical-cases/{number:0000}", title, "Enunciado", 30, parts);
+        return new PracticalCaseContent($"{slug}/practical-cases/{number:0000}", title, section, "Enunciado", 30, parts);
     }
 
     private static ExamContent ExamWithCases(string slug, params PracticalCaseContent[] cases) =>
@@ -243,6 +243,31 @@ public sealed class ContentImporterTests(PostgresFixture postgres)
         report.PracticalCases.ShouldBe(new ImportCounts(0, 0, 0, 0));
         await using var db = postgres.CreateContext();
         (await db.PracticalCases.CountAsync(c => c.Key.StartsWith(slug), Ct)).ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task ImportAsync_PracticalCaseOnlySectionChanged_CountsAnUpdate()
+    {
+        var slug = UniqueSlug();
+        await ImportAsync(ExamWithCases(slug, Case(slug, 1)));
+
+        var report = await ImportAsync(ExamWithCases(slug, Case(slug, 1, section: "Bloque II-A. Materias específicas")));
+
+        report.PracticalCases.ShouldBe(new ImportCounts(0, 1, 0, 0));
+        await using var db = postgres.CreateContext();
+        (await db.PracticalCases.SingleAsync(c => c.Key == $"{slug}/practical-cases/0001", Ct)).Section.ShouldBe("Bloque II-A. Materias específicas");
+    }
+
+    [Fact]
+    public async Task ImportAsync_PracticalCaseWithSectionTwice_ChangesNothing()
+    {
+        var slug = UniqueSlug();
+        var exam = ExamWithCases(slug, Case(slug, 1, section: "Bloque II-C. Materias específicas"));
+        await ImportAsync(exam);
+
+        var report = await ImportAsync(exam);
+
+        report.PracticalCases.ShouldBe(new ImportCounts(0, 0, 0, 0));
     }
 
     [Fact]

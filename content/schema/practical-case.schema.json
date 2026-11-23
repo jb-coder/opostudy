@@ -9,6 +9,7 @@
     "$schema": { "type": "string" },
     "key": { "type": "string", "pattern": "^[a-z0-9-]+(/[a-z0-9-]+)*$", "maxLength": 150 },
     "title": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+    "section": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
     "statement": { "type": "string", "minLength": 1, "maxLength": 8000, "pattern": "\\S" },
     "estimatedMinutes": { "type": "integer", "minimum": 5, "maximum": 240 },
     "parts": {

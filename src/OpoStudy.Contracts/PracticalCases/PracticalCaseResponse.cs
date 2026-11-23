@@ -5,6 +5,7 @@ public sealed record PracticalCaseResponse(
     Guid Id,
     Guid ExamId,
     string Title,
+    string? Section,
     string Statement,
     int EstimatedMinutes,
     int MaxPoints,

@@ -44,6 +44,7 @@ internal static class PracticalCasesEndpoints
             .Select(c => new PracticalCaseSummaryResponse(
                 c.Id,
                 c.Title,
+                c.Section,
                 c.Parts.Count,
                 c.Parts.Sum(p => p.MaxPoints),
                 c.EstimatedMinutes))
@@ -64,6 +65,7 @@ internal static class PracticalCasesEndpoints
                 c.Id,
                 c.ExamId,
                 c.Title,
+                c.Section,
                 c.Statement,
                 c.EstimatedMinutes,
             })
@@ -84,6 +86,7 @@ internal static class PracticalCasesEndpoints
             practicalCase.Id,
             practicalCase.ExamId,
             practicalCase.Title,
+            practicalCase.Section,
             practicalCase.Statement,
             practicalCase.EstimatedMinutes,
             parts.Sum(p => p.MaxPoints),

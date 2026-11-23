@@ -22,6 +22,7 @@ public sealed class PracticalCase
     public string Key { get; private set; }
 
     public string Title { get; private set; }
+    public string? Section { get; private set; }
     public string Statement { get; private set; }
     public int EstimatedMinutes { get; private set; }
     public bool IsActive { get; private set; }
@@ -36,6 +37,7 @@ public sealed class PracticalCase
         Guid examId,
         string key,
         string title,
+        string? section,
         string statement,
         int estimatedMinutes,
         IReadOnlyList<PracticalCasePartData> parts)
@@ -50,8 +52,8 @@ public sealed class PracticalCase
             Key = Guard.RequiredText(key, Limits.Key, "practical_case.invalid_key"),
             IsActive = true,
         };
-        (practicalCase.Title, practicalCase.Statement, practicalCase.EstimatedMinutes) =
-            ValidateTexts(title, statement, estimatedMinutes);
+        (practicalCase.Title, practicalCase.Section, practicalCase.Statement, practicalCase.EstimatedMinutes) =
+            ValidateTexts(title, section, statement, estimatedMinutes);
         for (var order = 0; order < parts.Count; order++)
         {
             practicalCase._parts.Add(PracticalCasePart.Create(practicalCase.Id, order, parts[order]));
@@ -67,6 +69,7 @@ public sealed class PracticalCase
     public void Update(
         Guid examId,
         string title,
+        string? section,
         string statement,
         int estimatedMinutes,
         IReadOnlyList<PracticalCasePartData> parts)
@@ -81,11 +84,11 @@ public sealed class PracticalCase
         }
 
         // Validate everything first so a failure leaves the case untouched.
-        var texts = ValidateTexts(title, statement, estimatedMinutes);
+        var texts = ValidateTexts(title, section, statement, estimatedMinutes);
         var validatedParts = parts.Select(PracticalCasePart.Validate).ToArray();
 
         ExamId = examId;
-        (Title, Statement, EstimatedMinutes) = texts;
+        (Title, Section, Statement, EstimatedMinutes) = texts;
         foreach (var part in _parts)
         {
             part.Apply(validatedParts[part.Order]);
@@ -96,9 +99,10 @@ public sealed class PracticalCase
 
     public void Deactivate() => IsActive = false;
 
-    private static (string Title, string Statement, int EstimatedMinutes) ValidateTexts(string title, string statement, int estimatedMinutes)
+    private static (string Title, string? Section, string Statement, int EstimatedMinutes) ValidateTexts(string title, string? section, string statement, int estimatedMinutes)
     {
         var validTitle = Guard.RequiredText(title, Limits.Name, "practical_case.invalid_title");
+        var validSection = Guard.OptionalText(section, Limits.Name, "practical_case.invalid_section");
         var validStatement = Guard.RequiredText(statement, Limits.CaseStatement, "practical_case.invalid_statement");
         if (estimatedMinutes is < Limits.MinEstimatedMinutes or > Limits.MaxEstimatedMinutes)
         {
@@ -107,7 +111,7 @@ public sealed class PracticalCase
                 $"La duración estimada debe estar entre {Limits.MinEstimatedMinutes} y {Limits.MaxEstimatedMinutes} minutos.");
         }
 
-        return (validTitle, validStatement, estimatedMinutes);
+        return (validTitle, validSection, validStatement, estimatedMinutes);
     }
 
     private static void ValidatePartCount(int count)

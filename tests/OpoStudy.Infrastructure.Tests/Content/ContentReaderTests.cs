@@ -285,6 +285,45 @@ public sealed class ContentReaderTests
     }
 
     [Fact]
+    public void Read_PracticalCaseWithSection_ReturnsIt()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001", section: "Bloque II-B. Materias específicas"));
+
+        var result = ContentReader.Read(content.Root);
+
+        result.Errors.ShouldBeEmpty();
+        result.Exams.ShouldHaveSingleItem().PracticalCases.ShouldHaveSingleItem().Section.ShouldBe("Bloque II-B. Materias específicas");
+    }
+
+    [Fact]
+    public void Read_PracticalCaseWithoutSection_ReturnsNullSection()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001"));
+
+        var result = ContentReader.Read(content.Root);
+
+        result.Errors.ShouldBeEmpty();
+        result.Exams.ShouldHaveSingleItem().PracticalCases.ShouldHaveSingleItem().Section.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Read_PracticalCaseWithEmptySection_ReportsSectionPath()
+    {
+        using var content = new TempContent();
+        content.WriteExam(Exam, ("uno", 1));
+        content.WritePracticalCase(Exam, "0001-uno", TempContent.PracticalCaseJson("exam-a/practical-cases/0001", section: ""));
+
+        var error = ContentReader.Read(content.Root).Errors.ShouldHaveSingleItem();
+
+        error.Path.ShouldBe("$.section");
+        error.Message.ShouldContain("practical_case.invalid_section");
+    }
+
+    [Fact]
     public void Read_PracticalCaseWithUnknownProperty_ReportsIt()
     {
         using var content = new TempContent();

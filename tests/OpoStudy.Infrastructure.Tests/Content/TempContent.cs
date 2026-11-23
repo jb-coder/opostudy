@@ -30,7 +30,7 @@ internal sealed class TempContent : IDisposable
         Write($"exams/{exam}/practical-cases/{name}.json", json);
 
     /// <summary>A valid practical case with <paramref name="partCount"/> parts of two criteria each (3 + 2 points).</summary>
-    public static string PracticalCaseJson(string key, int partCount = 2, int points = 3, string title = "Supuesto")
+    public static string PracticalCaseJson(string key, int partCount = 2, int points = 3, string title = "Supuesto", string? section = null)
     {
         var parts = Enumerable.Range(0, partCount).Select(i => (JsonNode)new JsonObject
         {
@@ -40,14 +40,20 @@ internal sealed class TempContent : IDisposable
                 new JsonObject { ["description"] = "Criterio A" + i, ["points"] = points },
                 new JsonObject { ["description"] = "Criterio B" + i, ["points"] = 2 }),
         });
-        return new JsonObject
+        var json = new JsonObject
         {
             ["key"] = key,
             ["title"] = title,
             ["statement"] = "Enunciado del supuesto",
             ["estimatedMinutes"] = 30,
             ["parts"] = new JsonArray([.. parts]),
-        }.ToJsonString();
+        };
+        if (section is not null)
+        {
+            json["section"] = section;
+        }
+
+        return json.ToJsonString();
     }
 
     public void Dispose() => Directory.Delete(Root, recursive: true);

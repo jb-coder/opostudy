@@ -19,15 +19,16 @@ public sealed class PracticalCaseTests
             [.. (criteria.Length == 0 ? [("Criterion A", 2), ("Criterion B", 3)] : criteria).Select(c => new GradingCriterionData(c.Description, c.Points))]);
 
     private static PracticalCase NewCase(int partCount = 2) =>
-        PracticalCase.Create(ExamId, "test/practical-cases/0001", "Title", "Statement", 45, [.. Enumerable.Range(0, partCount).Select(_ => Part())]);
+        PracticalCase.Create(ExamId, "test/practical-cases/0001", "Title", null, "Statement", 45, [.. Enumerable.Range(0, partCount).Select(_ => Part())]);
 
     private static DomainRuleException CreateFails(
         string key = "k",
         string title = "T",
+        string? section = null,
         string statement = "S",
         int minutes = 30,
         params PracticalCasePartData[] parts) =>
-        Should.Throw<DomainRuleException>(() => PracticalCase.Create(ExamId, key, title, statement, minutes, parts.Length == 0 ? [Part()] : parts));
+        Should.Throw<DomainRuleException>(() => PracticalCase.Create(ExamId, key, title, section, statement, minutes, parts.Length == 0 ? [Part()] : parts));
 
     [Fact]
     public void Create_WithValidData_ComputesMaxPointsAndOrdersParts()
@@ -44,10 +45,11 @@ public sealed class PracticalCaseTests
     [Fact]
     public void Create_WithPaddedTexts_TrimsThem()
     {
-        var practicalCase = PracticalCase.Create(ExamId, " k ", "  Title ", " Statement ", 30, [Part("  S  ", " M ", ("  D  ", 1))]);
+        var practicalCase = PracticalCase.Create(ExamId, " k ", "  Title ", "  Section ", " Statement ", 30, [Part("  S  ", " M ", ("  D  ", 1))]);
 
         practicalCase.Key.ShouldBe("k");
         practicalCase.Title.ShouldBe("Title");
+        practicalCase.Section.ShouldBe("Section");
         practicalCase.Parts[0].Statement.ShouldBe("S");
         practicalCase.Parts[0].Criteria[0].Description.ShouldBe("D");
     }
@@ -79,13 +81,13 @@ public sealed class PracticalCaseTests
     [InlineData(5)]
     [InlineData(240)]
     public void Create_WithEstimatedMinutesAtTheLimits_Works(int minutes) =>
-        PracticalCase.Create(ExamId, "k", "T", "S", minutes, [Part()]).EstimatedMinutes.ShouldBe(minutes);
+        PracticalCase.Create(ExamId, "k", "T", null, "S", minutes, [Part()]).EstimatedMinutes.ShouldBe(minutes);
 
     [Theory]
     [InlineData(0)]
     [InlineData(11)]
     public void Create_WithPartCountOutOfRange_ThrowsDomainRule(int count) =>
-        Should.Throw<DomainRuleException>(() => PracticalCase.Create(ExamId, "k", "T", "S", 30, [.. Enumerable.Range(0, count).Select(_ => Part())]))
+        Should.Throw<DomainRuleException>(() => PracticalCase.Create(ExamId, "k", "T", null, "S", 30, [.. Enumerable.Range(0, count).Select(_ => Part())]))
             .Code.ShouldBe("practical_case.invalid_part_count");
 
     [Fact]
@@ -136,12 +138,14 @@ public sealed class PracticalCaseTests
         practicalCase.Update(
             otherExamId,
             "New title",
+            "New section",
             "New statement",
             60,
             [Part("New part 0", "New answer 0", ("Only", 7)), Part("New part 1", "New answer 1", ("One", 1), ("Two", 1))]);
 
         practicalCase.ExamId.ShouldBe(otherExamId);
         practicalCase.Title.ShouldBe("New title");
+        practicalCase.Section.ShouldBe("New section");
         practicalCase.EstimatedMinutes.ShouldBe(60);
         practicalCase.Parts[0].Statement.ShouldBe("New part 0");
         practicalCase.Parts[0].Criteria.ShouldBe([new GradingCriterion("Only", 7)]);
@@ -155,7 +159,7 @@ public sealed class PracticalCaseTests
         var practicalCase = NewCase(partCount: 2);
 
         var ex = Should.Throw<DomainRuleException>(() =>
-            practicalCase.Update(ExamId, "Changed", "S", 30, [Part(), Part(), Part()]));
+            practicalCase.Update(ExamId, "Changed", null, "S", 30, [Part(), Part(), Part()]));
 
         ex.Code.ShouldBe("practical_case.part_count_changed");
         practicalCase.Title.ShouldBe("Title");
@@ -168,11 +172,59 @@ public sealed class PracticalCaseTests
         var practicalCase = NewCase();
 
         Should.Throw<DomainRuleException>(() =>
-            practicalCase.Update(ExamId, "Changed", "S", 30, [Part("Changed 0"), Part(criteria: ("C", 0))]));
+            practicalCase.Update(ExamId, "Changed", null, "S", 30, [Part("Changed 0"), Part(criteria: ("C", 0))]));
 
         practicalCase.Title.ShouldBe("Title");
         practicalCase.Parts[0].Statement.ShouldBe("Part statement");
         practicalCase.MaxPoints.ShouldBe(10);
+    }
+
+    [Fact]
+    public void Create_WithoutSection_LeavesItNull() =>
+        NewCase().Section.ShouldBeNull();
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Create_WithBlankSection_TreatsItAsNoSection(string section) =>
+        PracticalCase.Create(ExamId, "k", "T", section, "S", 30, [Part()]).Section.ShouldBeNull();
+
+    [Fact]
+    public void Create_WithSectionOverLimit_ThrowsDomainRule() =>
+        CreateFails(section: new string('a', Limits.Name + 1)).Code.ShouldBe("practical_case.invalid_section");
+
+    [Fact]
+    public void Update_WithOnlySectionChanged_ChangesIt()
+    {
+        var practicalCase = NewCase();
+
+        practicalCase.Update(ExamId, "Title", "Bloque II-A", "Statement", 45, [Part(), Part()]);
+
+        practicalCase.Section.ShouldBe("Bloque II-A");
+        practicalCase.Title.ShouldBe("Title");
+    }
+
+    [Fact]
+    public void Update_WithSectionNull_ClearsIt()
+    {
+        var practicalCase = PracticalCase.Create(ExamId, "k", "T", "Old", "S", 30, [Part()]);
+
+        practicalCase.Update(ExamId, "T", null, "S", 30, [Part()]);
+
+        practicalCase.Section.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Update_WithSectionOverLimit_ThrowsAndLeavesTheCaseUntouched()
+    {
+        const int length = Limits.Name + 1;
+        var practicalCase = PracticalCase.Create(ExamId, "k", "T", "Old", "S", 30, [Part()]);
+
+        Should.Throw<DomainRuleException>(() => practicalCase.Update(ExamId, "Changed", new string('a', length), "S", 30, [Part()]))
+            .Code.ShouldBe("practical_case.invalid_section");
+
+        practicalCase.Section.ShouldBe("Old");
+        practicalCase.Title.ShouldBe("T");
     }
 
     [Fact]

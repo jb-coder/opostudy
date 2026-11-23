@@ -23,6 +23,33 @@ public sealed class RepositoryContentTests
     }
 
     [Fact]
+    public void Read_RepositoryPracticalCases_HaveTopicSectionAndFullMarks()
+    {
+        const int ExamPracticalCasePoints = 25;
+        var problems = new List<string>();
+
+        foreach (var exam in ContentReader.Read(ContentRoot).Exams)
+        {
+            var sections = exam.Topics.Select(t => t.Section).OfType<string>().ToHashSet(StringComparer.Ordinal);
+            foreach (var practicalCase in exam.PracticalCases)
+            {
+                if (practicalCase.Section is null || !sections.Contains(practicalCase.Section))
+                {
+                    problems.Add($"{practicalCase.Key}: section '{practicalCase.Section}' is not a topic section of {exam.Slug}");
+                }
+
+                var points = practicalCase.Parts.SelectMany(p => p.Criteria).Sum(c => c.Points);
+                if (points != ExamPracticalCasePoints)
+                {
+                    problems.Add($"{practicalCase.Key}: {points} points instead of {ExamPracticalCasePoints}");
+                }
+            }
+        }
+
+        problems.ShouldBeEmpty(string.Join(Environment.NewLine, problems));
+    }
+
+    [Fact]
     public void JsonSchema_RepositoryFiles_AreValid()
     {
         var examSchema = LoadSchema("exam.schema.json");
