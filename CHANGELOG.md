@@ -6,6 +6,26 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-23
+
+Supuestos prácticos: contenido real por bloque, redacción en la app y corrección automática con Gemini, con resultado detallado, historial y XP.
+
+### Añadido
+
+- Supuestos prácticos: entidades, formato JSON con su esquema, importación y endpoints de lectura (#51).
+- Bloque opcional en los supuestos y seis supuestos de 25 puntos, dos por bloque II-A, II-B y II-C (#53).
+- Envío de respuestas y cola de corrección en el Worker (#55).
+- Corrección con Gemini detrás de `ILlmCorrector` (#57).
+- App: lista de supuestos, editor con borrador y envío a corrección (#59).
+- App: resultado detallado e historial de correcciones; XP y objetivo diario al completar una corrección (#61).
+
+### Corregido
+
+- Correcciones atascadas y validaciones del envío (#55).
+- Apartado nulo en la salida de Gemini (#57).
+- Polling de la corrección ante errores 4xx y cuota agotada, y orden del borrador tras la revisión (#59).
+- Reintento ante la creación simultánea de la actividad del día al completar una corrección (#61).
+
 ## [0.2.0] - 2026-11-23
 
 Hábito de estudio: objetivo diario, rachas, XP y niveles, repaso de falladas, recordatorios y modo offline.
@@ -54,6 +74,7 @@ Primera versión: test de la oposición de Programador/a C1 (Diputación de Mál
 - Versionado SemVer sin sufijo `-alpha` (#34).
 - Actualización de dependencias: GitHub Actions (`actions/checkout`, `actions/setup-dotnet`, `actions/setup-java`, `github/codeql-action`) y paquetes de Microsoft y OpenTelemetry (#3, #4, #5, #6, #8, #11).
 
-[Unreleased]: https://github.com/jb-coder/opostudy/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/jb-coder/opostudy/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/jb-coder/opostudy/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/jb-coder/opostudy/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/jb-coder/opostudy/releases/tag/v0.1.0
