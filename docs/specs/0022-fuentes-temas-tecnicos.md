@@ -21,14 +21,14 @@ La spec 0004 solo admite preguntas citando un artículo del BOE consolidado. Uno
 
 ## Diseño
 ### Regla de fuentes (se añade a la spec 0004)
-1. **Prioridad del BOE.** Si el tema o el dato está regulado por una norma (ley, real decreto, orden, reglamento UE publicado en el DOUE, ley autonómica publicada en el BOE), se cita la norma, aunque el tema sea técnico (p. ej., accesibilidad → RD 1112/2018; ENS → RD 311/2022; factura → Ley 25/2013).
+1. **Prioridad del BOE.** Si el tema o el dato está regulado por una norma (ley, real decreto, orden, reglamento UE publicado en el DOUE, ley autonómica publicada en el BOE), se cita la norma, aunque el tema sea técnico (p. ej., accesibilidad → RD 1112/2018; ENS → RD 311/2022; factura → Ley 25/2013; Normas Técnicas de Interoperabilidad → la resolución de cada norma, publicada en el BOE).
 2. **Fuentes técnicas admitidas**, solo cuando no hay norma, en este orden:
    - **Especificaciones y estándares oficiales:** W3C (WCAG, XML, XML Schema, XPath, SOAP, WSDL), WHATWG (HTML, DOM), ECMA-262, OMG BPMN 2.0.2, OASIS (SAML 2.0, WS-Security), RFC del IETF (p. ej. RFC 9110 HTTP), NIST SP 800-145 (cloud).
    - **Documentación oficial del fabricante o proyecto:** Microsoft Learn (.NET, C#, ASP.NET Core), Oracle/OpenJDK (Java SE, JLS), php.net, PostgreSQL, git-scm (Pro Git, referencia), JUnit, Selenium, Jenkins, SonarQube, Ansible, LXC/linuxcontainers.org, páginas man de Linux.
-   - **Administración electrónica:** guías del PAe (Métrica v3, Normas Técnicas de Interoperabilidad, SIA, DIR3, SICRES, Facturae) y guías CCN-STIC.
+   - **Administración electrónica:** guías del PAe (Métrica v3, SIA, DIR3, SICRES, Facturae) y guías CCN-STIC.
 3. **No valen:** blogs, Wikipedia, cursos, apuntes de academias, Stack Overflow, respuestas de una IA ni la memoria. Para conceptos de manual sin especificación (p. ej. PERT/Gantt, modelo E-R), solo si una fuente admitida los define; si no, la pregunta no entra.
-4. **Versión.** Se usa la versión vigente al redactar y se nombra en la referencia cuando la fuente está versionada (WCAG 2.2, Java SE 21, .NET 10, PHP 8.x, BPMN 2.0.2). Se evitan los detalles que cambian entre versiones menores (valores por defecto, nombres de flags recientes, APIs marcadas como preview u obsoletas).
-5. **Mismo rigor que el BOE.** El texto de la fuente se descarga (HTML o PDF) y se convierte a texto plano. Se trabaja sobre ese texto, nunca de memoria. La segunda pasada de verificación comprueba cada pregunta contra él.
+4. **Versión.** Se usa la versión vigente al redactar y se nombra en la referencia cuando la fuente está versionada (WCAG 2.2, Java SE 25, .NET 10, PHP 8.x, BPMN 2.0.2). Se evitan los detalles que cambian entre versiones menores (valores por defecto, nombres de flags recientes, APIs marcadas como preview u obsoletas).
+5. **Mismo rigor que el BOE.** El texto de la fuente se descarga (HTML o PDF) y se convierte a texto plano. Se trabaja sobre ese texto, nunca de memoria. La segunda pasada de verificación comprueba cada pregunta contra él. Las citas literales de una fuente técnica son breves (una o dos frases) y solo cuando aportan; nunca se copian párrafos ni ejemplos enteros.
 
 ### Formato de `legalReference` (fuentes técnicas)
 `<Fuente abreviada con versión>, <sección>`. La sección es la que permite encontrar el dato: número de apartado, criterio, capítulo o título de la página.
@@ -41,7 +41,7 @@ La spec 0004 solo admite preguntas citando un artículo del BOE consolidado. Uno
 | RFC | `RFC 9110, §9.3.1` |
 | NIST | `NIST SP 800-145, §2` |
 | Microsoft Learn | `Microsoft Learn (.NET 10), «Garbage collection fundamentals»` |
-| Java | `JLS (Java SE 21), §8.4.3.1` |
+| Java | `JLS (Java SE 25), §8.4.3.1` |
 | PHP | `Manual de PHP, «Declaración de tipos»` |
 | Git | `Pro Git (2.ª ed.), §3.2` |
 | Métrica v3 | `Métrica v3, Procesos principales, ASI 5` |
