@@ -42,6 +42,12 @@
                         <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
                     </VerticalStackLayout>
 
+                    <Button
+                        Style="{StaticResource TextButton}"
+                        Text="{x:Static texts:PracticalCaseTexts.MyGradings}"
+                        Command="{Binding OpenGradingsCommand}"
+                        HorizontalOptions="Start" />
+
                     <Border IsVisible="{Binding HasQuota}">
                         <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
                             <Label Text="{Binding QuotaText}" SemanticProperties.Description="{Binding QuotaText}">

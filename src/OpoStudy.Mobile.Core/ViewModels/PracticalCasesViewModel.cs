@@ -172,6 +172,9 @@ public sealed partial class PracticalCasesViewModel(
     }
 
     [RelayCommand]
+    private Task OpenGradingsAsync() => navigation.GoToAsync(Routes.Gradings);
+
+    [RelayCommand]
     private Task OpenPendingGradingAsync() =>
         _pendingGradingId is { } id
             ? navigation.GoToAsync(Routes.Grading, new Dictionary<string, object> { [QueryKeys.GradingId] = id })

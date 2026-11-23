@@ -27,7 +27,35 @@ public static class PracticalCaseTexts
 
     public const string StatusCompleted = "¡Corrección lista!";
 
-    public const string CompletedDetailLater = "El detalle por apartado llegará en una próxima versión.";
+    public const string GoalMet = "¡Objetivo del día cumplido!";
+
+    public const string CriterionComplete = "Completo";
+
+    public const string CriterionNone = "Sin puntos";
+
+    public const string CriterionPartial = "Parcial";
+
+    public const string BlankAnswer = "(En blanco)";
+
+    public const string StatementBlock = "Enunciado";
+
+    public const string AnswerBlock = "Tu respuesta";
+
+    public const string ModelAnswerBlock = "Respuesta modelo";
+
+    public const string RepeatCase = "Repetir supuesto";
+
+    public const string MyGradings = "Mis correcciones";
+
+    public const string NoGradings = "Aún no has enviado ningún supuesto";
+
+    public const string LoadingGradings = "Cargando correcciones…";
+
+    public const string LoadMore = "Cargar más";
+
+    public const string HistoryInProgress = "En curso";
+
+    public const string HistoryFailed = "No corregida";
 
     public const string FailedNotCounted = "Esta corrección no cuenta en tu cuota.";
 
@@ -88,7 +116,24 @@ public static class PracticalCaseTexts
 
     public static string Score(decimal? score, int maxPoints) => $"{Points(score ?? 0)} / {maxPoints} puntos";
 
-    public static string ScoreAlert(decimal? score, int maxPoints) => $"Has sacado {Points(score ?? 0)} de {maxPoints} puntos.";
+    public static string ScoreAlert(decimal? score, int maxPoints, int? xpEarned = null)
+    {
+        var text = $"Has sacado {Points(score ?? 0)} de {maxPoints} puntos.";
+        return xpEarned is > 0 ? $"{text} {Xp(xpEarned.Value)}." : text;
+    }
+
+    /// <summary>Points over their maximum, e.g. <c>18,5 / 25</c>.</summary>
+    public static string Ratio(decimal value, int max) => $"{Points(value)} / {max}";
+
+    public static string Xp(int xp) => $"+{xp} XP";
+
+    public static string PartResult(int order, decimal? score, int maxPoints) =>
+        $"Apartado {order + 1} · {Points(score ?? 0)} / {maxPoints} puntos";
+
+    public static string HistoryDate(DateTimeOffset submittedAt) =>
+        submittedAt.ToLocalTime().ToString("d MMM yyyy, HH:mm", Culture);
+
+    public static string HistoryScore(decimal? score, int maxPoints) => $"{Points(score ?? 0)} / {maxPoints} puntos";
 
     public static string Failure(string? failureCode) => failureCode == ProviderUnavailableCode ? ProviderUnavailable : FailedGeneric;
 
