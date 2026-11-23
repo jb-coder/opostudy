@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "personal-entidades-locales",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0001",
+      "statement": "Según el artículo 8.2 del TREBEP, los empleados públicos se clasifican en:",
+      "options": [
+        {
+          "text": "Funcionarios de carrera, funcionarios en prácticas, personal laboral y personal eventual",
+          "isCorrect": false
+        },
+        {
+          "text": "Funcionarios de carrera, funcionarios interinos y personal laboral",
+          "isCorrect": false
+        },
+        {
+          "text": "Funcionarios de carrera, personal laboral, personal eventual y personal directivo profesional",
+          "isCorrect": false
+        },
+        {
+          "text": "Funcionarios de carrera, funcionarios interinos, personal laboral y personal eventual",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 8.2 clasifica a los empleados públicos en cuatro grupos: a) funcionarios de carrera, b) funcionarios interinos, c) personal laboral, «ya sea fijo, por tiempo indefinido o temporal», y d) personal eventual. Las demás opciones omiten alguna de estas clases (el personal eventual) o incluyen categorías que no forman parte de esta clasificación, como los funcionarios en prácticas o el personal directivo profesional.",
+      "legalReference": "TREBEP, art. 8.2"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0002",
+      "statement": "Según el artículo 92 bis.2 de la Ley 7/1985, la escala de funcionarios de administración local con habilitación de carácter nacional se subdivide en las siguientes subescalas:",
+      "options": [
+        {
+          "text": "Secretaría, Intervención y Tesorería",
+          "isCorrect": false
+        },
+        {
+          "text": "Secretaría, Intervención-tesorería y Secretaría-intervención",
+          "isCorrect": true
+        },
+        {
+          "text": "Secretaría, Intervención-tesorería y Administración general",
+          "isCorrect": false
+        },
+        {
+          "text": "Secretaría-intervención y Gestión económico-financiera",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 92 bis.2 distingue tres subescalas: a) Secretaría, b) Intervención-tesorería, que reúne las funciones de control y fiscalización interna, contabilidad, tesorería y recaudación, y c) Secretaría-intervención, a la que corresponden ambos grupos de funciones. Por tanto, Intervención y Tesorería no son subescalas separadas, y ni Administración general ni Gestión económico-financiera figuran entre ellas.",
+      "legalReference": "Ley 7/1985, art. 92 bis.2"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0003",
+      "statement": "Según el artículo 104.2 de la Ley 7/1985, el nombramiento y cese del personal eventual es libre y corresponde:",
+      "options": [
+        {
+          "text": "Al Alcalde o al Presidente de la entidad local correspondiente",
+          "isCorrect": true
+        },
+        {
+          "text": "Al Pleno de la Corporación, por mayoría absoluta",
+          "isCorrect": false
+        },
+        {
+          "text": "A la Junta de Gobierno Local o, en las Diputaciones, a la Junta de Gobierno",
+          "isCorrect": false
+        },
+        {
+          "text": "Al Secretario de la Corporación, previo informe de la Intervención",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 104.2 señala que «el nombramiento y cese de estos funcionarios es libre y corresponde al Alcalde o al Presidente de la entidad local correspondiente», y que cesan automáticamente cuando cese o expire el mandato de la autoridad a la que presten su función de confianza o asesoramiento. Al Pleno le corresponde, según el artículo 104.1, determinar su número, características y retribuciones al comienzo del mandato, pero no su nombramiento ni su cese.",
+      "legalReference": "Ley 7/1985, art. 104.2"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0004",
+      "statement": "Según el artículo 56.1.c) del TREBEP, para poder participar en los procesos selectivos es necesario, en cuanto a la edad, tener cumplidos:",
+      "options": [
+        {
+          "text": "Catorce años",
+          "isCorrect": false
+        },
+        {
+          "text": "Quince años",
+          "isCorrect": false
+        },
+        {
+          "text": "Dieciséis años",
+          "isCorrect": true
+        },
+        {
+          "text": "Dieciocho años",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 56.1.c) exige «tener cumplidos dieciséis años y no exceder, en su caso, de la edad máxima de jubilación forzosa», y añade que solo por ley podrá establecerse otra edad máxima distinta de la de jubilación forzosa. Las edades de catorce, quince y dieciocho años no son las que fija este artículo.",
+      "legalReference": "TREBEP, art. 56.1.c)"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0005",
+      "statement": "Según el artículo 59.1 del TREBEP, en las ofertas de empleo público se reservará para personas con discapacidad un cupo no inferior a:",
+      "options": [
+        {
+          "text": "El cinco por ciento de las vacantes",
+          "isCorrect": false
+        },
+        {
+          "text": "El siete por ciento de las vacantes",
+          "isCorrect": true
+        },
+        {
+          "text": "El diez por ciento de las vacantes",
+          "isCorrect": false
+        },
+        {
+          "text": "El quince por ciento de las vacantes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 59.1 establece que «en las ofertas de empleo público se reservará un cupo no inferior al siete por ciento de las vacantes para ser cubiertas entre personas con discapacidad», de modo que progresivamente se alcance el dos por ciento de los efectivos totales en cada Administración. Del cupo, al menos el dos por ciento de las plazas ofertadas se reserva a personas con discapacidad intelectual.",
+      "legalReference": "TREBEP, art. 59.1"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0006",
+      "statement": "Según el artículo 61.8 del TREBEP, los órganos de selección no podrán proponer el acceso a la condición de funcionario de:",
+      "options": [
+        {
+          "text": "Un número de aprobados superior al de plazas convocadas, excepto cuando así lo prevea la propia convocatoria",
+          "isCorrect": true
+        },
+        {
+          "text": "Un número de aprobados superior al diez por ciento de las plazas convocadas, salvo autorización del órgano convocante",
+          "isCorrect": false
+        },
+        {
+          "text": "Un número de aprobados distinto al de plazas convocadas, ni aun cuando lo prevea la propia convocatoria",
+          "isCorrect": false
+        },
+        {
+          "text": "Un número de aprobados superior al de plazas convocadas, excepto cuando lo autorice el órgano de selección por mayoría",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 61.8 dispone que «los órganos de selección no podrán proponer el acceso a la condición de funcionario de un número superior de aprobados al de plazas convocadas, excepto cuando así lo prevea la propia convocatoria». La excepción la fija la convocatoria, no el órgano de selección ni el órgano convocante a posteriori, y el artículo no establece ningún porcentaje del diez por ciento.",
+      "legalReference": "TREBEP, art. 61.8"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0007",
+      "statement": "Según el artículo 89.2 del TREBEP, los funcionarios de carrera podrán obtener la excedencia voluntaria por interés particular cuando hayan prestado servicios efectivos en cualquiera de las Administraciones Públicas durante un periodo mínimo, con carácter general, de:",
+      "options": [
+        {
+          "text": "Un año inmediatamente anterior",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos años inmediatamente anteriores",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres años inmediatamente anteriores",
+          "isCorrect": false
+        },
+        {
+          "text": "Cinco años inmediatamente anteriores",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 89.2 establece que podrán obtenerla «cuando hayan prestado servicios efectivos en cualquiera de las Administraciones Públicas durante un periodo mínimo de cinco años inmediatamente anteriores», sin perjuicio de que las leyes de Función Pública de desarrollo puedan establecer una duración menor. El plazo de tres años del artículo 89.4 es la duración máxima de la excedencia por cuidado de familiares, no un requisito de servicios previos.",
+      "legalReference": "TREBEP, art. 89.2"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0008",
+      "statement": "Según el artículo 90.1 del TREBEP, la situación de suspensión de funciones determinará la pérdida del puesto de trabajo cuando exceda de:",
+      "options": [
+        {
+          "text": "Un mes",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres meses",
+          "isCorrect": false
+        },
+        {
+          "text": "Seis meses",
+          "isCorrect": true
+        },
+        {
+          "text": "Un año",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 90.1 dispone que el funcionario suspenso queda privado del ejercicio de sus funciones y de todos los derechos inherentes a la condición, y que «la suspensión determinará la pérdida del puesto de trabajo cuando exceda de seis meses». La duración máxima de seis años que menciona el artículo 90.2 se refiere a la suspensión firme por sanción disciplinaria, no a la pérdida del puesto.",
+      "legalReference": "TREBEP, art. 90.1"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0009",
+      "statement": "Según el artículo 15 del TREBEP, entre los derechos individuales de los empleados públicos que se ejercen de forma colectiva se encuentra:",
+      "options": [
+        {
+          "text": "La inamovilidad en la condición de funcionario de carrera",
+          "isCorrect": false
+        },
+        {
+          "text": "La formación continua y la actualización permanente de sus conocimientos",
+          "isCorrect": false
+        },
+        {
+          "text": "El ejercicio de la huelga, con la garantía del mantenimiento de los servicios esenciales de la comunidad",
+          "isCorrect": true
+        },
+        {
+          "text": "Las vacaciones, descansos, permisos y licencias",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 15 recoge como derechos individuales ejercidos colectivamente la libertad sindical, la negociación colectiva, «el ejercicio de la huelga, con la garantía del mantenimiento de los servicios esenciales de la comunidad», el planteamiento de conflictos colectivos y el de reunión. La inamovilidad, la formación continua y las vacaciones, descansos, permisos y licencias son derechos de carácter individual del artículo 14.",
+      "legalReference": "TREBEP, art. 15"
+    },
+    {
+      "key": "malaga-programador-c1/personal-entidades-locales/0010",
+      "statement": "Según el artículo 54.3 del TREBEP, los empleados públicos obedecerán las instrucciones y órdenes profesionales de los superiores, salvo que:",
+      "options": [
+        {
+          "text": "Constituyan una infracción manifiesta del ordenamiento jurídico, en cuyo caso las pondrán inmediatamente en conocimiento de los órganos de inspección procedentes",
+          "isCorrect": true
+        },
+        {
+          "text": "Se hayan transmitido verbalmente, en cuyo caso podrán exigir su confirmación por escrito antes de cumplirlas",
+          "isCorrect": false
+        },
+        {
+          "text": "Excedan de la jornada y el horario establecidos, en cuyo caso podrán negarse a cumplirlas sin más trámite",
+          "isCorrect": false
+        },
+        {
+          "text": "Provengan de un superior de otra unidad, en cuyo caso las remitirán a su superior inmediato para que decida",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 54.3 establece que «obedecerán las instrucciones y órdenes profesionales de los superiores, salvo que constituyan una infracción manifiesta del ordenamiento jurídico, en cuyo caso las pondrán inmediatamente en conocimiento de los órganos de inspección procedentes». El artículo no prevé como excepción a la obediencia ni la forma verbal de la orden, ni su exceso de jornada, ni su procedencia de un superior de otra unidad.",
+      "legalReference": "TREBEP, art. 54.3"
+    }
+  ]
+}
