@@ -177,7 +177,13 @@ public sealed partial class GeminiLlmCorrector(
         for (var i = 0; i < request.Parts.Count; i++)
         {
             var criteria = request.Parts[i].Criteria;
-            var awarded = result.Parts[i].Awarded;
+            var part = result.Parts[i];
+            if (part is null)
+            {
+                throw new GeminiResponseException(null, null, "a part is missing");
+            }
+
+            var awarded = part.Awarded;
             if (awarded is null || awarded.Count != criteria.Count)
             {
                 throw new GeminiResponseException(null, null, "the number of criteria does not match");
@@ -186,7 +192,7 @@ public sealed partial class GeminiLlmCorrector(
             var points = awarded
                 .Select((value, j) => Math.Clamp(Math.Round(value * 2m, MidpointRounding.AwayFromZero) / 2m, 0m, criteria[j].Points))
                 .ToList();
-            parts.Add(new PartOutcome(points, Truncate(result.Parts[i].Feedback, Limits.GradingFeedback)));
+            parts.Add(new PartOutcome(points, Truncate(part.Feedback, Limits.GradingFeedback)));
         }
 
         var usage = response.UsageMetadata;

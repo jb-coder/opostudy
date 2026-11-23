@@ -55,7 +55,7 @@ internal sealed record GeminiError(
 
 internal sealed record GeminiGradingResult(
     [property: JsonPropertyName("feedback")] string? Feedback,
-    [property: JsonPropertyName("parts")] IReadOnlyList<GeminiGradingPart>? Parts);
+    [property: JsonPropertyName("parts")] IReadOnlyList<GeminiGradingPart?>? Parts);
 
 internal sealed record GeminiGradingPart(
     [property: JsonPropertyName("feedback")] string? Feedback,

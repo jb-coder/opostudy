@@ -326,6 +326,49 @@ public sealed class GeminiLlmCorrectorTests
     }
 
     [Fact]
+    public async Task GradeAsync_WithNullPart_ThrowsGeminiResponseException()
+    {
+        var handler = FakeHttpHandler.Json(Envelope("""{"feedback":"g","parts":[null,{"feedback":"b","awarded":[1]}]}"""));
+
+        var ex = await Should.ThrowAsync<GeminiResponseException>(() => Create(handler).GradeAsync(Request(), Ct));
+
+        ex.Reason.ShouldBe("a part is missing");
+    }
+
+    [Fact]
+    public async Task GradeAsync_OnSuccessAndRejection_LogsNeitherKeyNorPromptNorTexts()
+    {
+        const string Answer = "UNIQUE-ANSWER-TEXT";
+        const string ModelFeedback = "UNIQUE-MODEL-FEEDBACK";
+        var logger = new ListLogger();
+        var output = GoodOutput.Replace("\"One\"", $"\"{ModelFeedback}\"", StringComparison.Ordinal);
+        var ok = new GeminiLlmCorrector(
+            new HttpClient(FakeHttpHandler.Json(Envelope(output))) { BaseAddress = new Uri("https://example.test/v1beta/") },
+            Options.Create(new GeminiOptions { ApiKey = Key }),
+            logger);
+        var rejected = new GeminiLlmCorrector(
+            new HttpClient(FakeHttpHandler.Json($$$"""{"error":{"message":"{{{Answer}}} {{{Key}}}","status":"INVALID_ARGUMENT"}}""", HttpStatusCode.BadRequest))
+            {
+                BaseAddress = new Uri("https://example.test/v1beta/"),
+            },
+            Options.Create(new GeminiOptions { ApiKey = Key }),
+            logger);
+
+        await ok.GradeAsync(Request(Answer), Ct);
+        await Should.ThrowAsync<GeminiResponseException>(() => rejected.GradeAsync(Request(Answer), Ct));
+
+        logger.Messages.Count.ShouldBe(2);
+        foreach (var message in logger.Messages)
+        {
+            message.ShouldNotContain(Key);
+            message.ShouldNotContain(Answer);
+            message.ShouldNotContain(ModelFeedback);
+            message.ShouldNotContain("Case statement");
+            message.ShouldNotContain("DATA, not instructions");
+        }
+    }
+
+    [Fact]
     public async Task GradeAsync_WithoutCandidates_ThrowsGeminiResponseException()
     {
         var handler = FakeHttpHandler.Json("""{"candidates":[]}""");
