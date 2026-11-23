@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Exams;
+using OpoStudy.Domain.PracticalCases;
 using OpoStudy.Domain.Questions;
 
 namespace OpoStudy.Infrastructure.Content;
@@ -41,6 +42,16 @@ public static partial class ContentReader
         ["question.no_correct_option"] = "options",
         ["question.multiple_correct_options"] = "options",
         ["option.invalid_text"] = "options",
+        ["practical_case.invalid_key"] = "key",
+        ["practical_case.invalid_title"] = "title",
+        ["practical_case.invalid_statement"] = "statement",
+        ["practical_case.invalid_estimated_minutes"] = "estimatedMinutes",
+        ["practical_case.invalid_part_count"] = "parts",
+        ["practical_case.invalid_part_statement"] = "statement",
+        ["practical_case.invalid_model_answer"] = "modelAnswer",
+        ["practical_case.invalid_criterion_count"] = "criteria",
+        ["practical_case.invalid_criterion_description"] = "description",
+        ["practical_case.invalid_criterion_points"] = "points",
     };
 
     /// <summary>Reads the content under <paramref name="contentRoot"/>. <see cref="ContentReadResult.Exams"/> is empty if there are errors.</summary>
@@ -60,12 +71,13 @@ public static partial class ContentReader
 
         var exams = new List<ExamContent>();
         var keys = new Dictionary<string, string>(StringComparer.Ordinal);
+        var caseKeys = new Dictionary<string, string>(StringComparer.Ordinal);
         var examsDir = Path.Combine(root, "exams");
         if (Directory.Exists(examsDir))
         {
             foreach (var examDir in Directory.GetDirectories(examsDir).Where(d => !IsLink(d)).Order(StringComparer.Ordinal))
             {
-                var exam = ReadExam(root, examDir, keys, errors);
+                var exam = ReadExam(root, examDir, keys, caseKeys, errors);
                 if (exam is not null)
                 {
                     exams.Add(exam);
@@ -108,7 +120,7 @@ public static partial class ContentReader
             var valid = parts[0] == "schema"
                 || (parts[0] == "exams"
                     && ((parts.Length == 3 && parts[2] == "exam.json")
-                        || (parts.Length == 4 && parts[2] == "topics" && parts[3].EndsWith(".json", StringComparison.Ordinal))));
+                        || (parts.Length == 4 && parts[2] is "topics" or "practical-cases" && parts[3].EndsWith(".json", StringComparison.Ordinal))));
             if (!valid)
             {
                 errors.Add(new ContentError(Relative(root, file), "$", "El fichero está fuera de la estructura de contenido esperada."));
@@ -120,12 +132,18 @@ public static partial class ContentReader
     private static bool IsLink(string path) =>
         File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint) || new FileInfo(path).LinkTarget is not null;
 
-    private static ExamContent? ReadExam(string root, string examDir, Dictionary<string, string> keys, List<ContentError> errors)
+    private static ExamContent? ReadExam(
+        string root,
+        string examDir,
+        Dictionary<string, string> keys,
+        Dictionary<string, string> caseKeys,
+        List<ContentError> errors)
     {
         var examFilePath = Path.Combine(examDir, "exam.json");
         var examFileName = Relative(root, examFilePath);
         var folderName = Path.GetFileName(examDir);
         var topicsDir = Path.Combine(examDir, "topics");
+        var casesDir = Path.Combine(examDir, "practical-cases");
 
         ExamFile? examFile = null;
         if (File.Exists(examFilePath) && IsLink(examFilePath))
@@ -154,6 +172,16 @@ public static partial class ContentReader
             }
         }
 
+        // Practical case files are also read when exam.json is broken, for the same reason.
+        var cases = new List<PracticalCaseContent>();
+        if (Directory.Exists(casesDir) && !IsLink(casesDir))
+        {
+            foreach (var casePath in Directory.GetFiles(casesDir, "*.json").Where(f => !IsLink(f)).Order(StringComparer.Ordinal))
+            {
+                ReadPracticalCaseFile(root, casePath, Guid.Empty, caseKeys, cases, errors);
+            }
+        }
+
         if (!examValid)
         {
             return null;
@@ -164,7 +192,8 @@ public static partial class ContentReader
             examFile.Name,
             examFile.Organization,
             examFile.Group,
-            [.. topics.Select(t => t with { Questions = questionsByTopic.GetValueOrDefault(t.Slug) ?? [] })]);
+            [.. topics.Select(t => t with { Questions = questionsByTopic.GetValueOrDefault(t.Slug) ?? [] })],
+            cases);
     }
 
     private static bool ValidateExam(ExamFile exam, string folderName, string file, List<ContentError> errors)
@@ -285,6 +314,107 @@ public static partial class ContentReader
         }
 
         questionsByTopic[topicFile.Topic] = questions;
+    }
+
+    private static void ReadPracticalCaseFile(
+        string root,
+        string casePath,
+        Guid examId,
+        Dictionary<string, string> caseKeys,
+        List<PracticalCaseContent> cases,
+        List<ContentError> errors)
+    {
+        var file = Relative(root, casePath);
+        var caseFile = ReadJson<PracticalCaseFile>(root, casePath, errors);
+        if (caseFile is null)
+        {
+            return;
+        }
+
+        var parts = caseFile.Parts
+            .Select(p => new PracticalCasePartData(
+                p.Statement,
+                p.ModelAnswer,
+                [.. p.Criteria.Select(c => new GradingCriterionData(c.Description, c.Points))]))
+            .ToList();
+        var ok = ValidatePracticalCase(examId, caseFile, parts, file, errors);
+
+        if (caseFile.Key.Trim() != caseFile.Key)
+        {
+            errors.Add(new ContentError(file, "$.key", $"La key '{caseFile.Key}' tiene espacios al principio o al final."));
+            ok = false;
+        }
+        else if (!KeyRegex().IsMatch(caseFile.Key))
+        {
+            errors.Add(new ContentError(file, "$.key", $"La key '{caseFile.Key}' no es válida: minúsculas, números, guiones y '/' entre segmentos."));
+            ok = false;
+        }
+        else if (caseKeys.TryGetValue(caseFile.Key, out var firstSeen))
+        {
+            errors.Add(new ContentError(file, "$.key", $"La key '{caseFile.Key}' está repetida (ya aparece en {firstSeen})."));
+            ok = false;
+        }
+        else
+        {
+            caseKeys[caseFile.Key] = file;
+        }
+
+        if (ok)
+        {
+            cases.Add(new PracticalCaseContent(caseFile.Key, caseFile.Title, caseFile.Statement, caseFile.EstimatedMinutes, parts));
+        }
+    }
+
+    /// <summary>
+    /// Applies the domain rules of a practical case. To report the exact JSON path (e.g. <c>$.parts[1].criteria[0].points</c>),
+    /// each element is validated on its own by building a throwaway case in which everything else is valid filler.
+    /// </summary>
+    private static bool ValidatePracticalCase(
+        Guid examId,
+        PracticalCaseFile caseFile,
+        List<PracticalCasePartData> parts,
+        string file,
+        List<ContentError> errors)
+    {
+        var before = errors.Count;
+        var criterion = new GradingCriterionData("x", 1);
+        var filler = new PracticalCasePartData("x", "x", [criterion]);
+
+        Guarded(
+            () => PracticalCase.Create(examId, caseFile.Key, caseFile.Title, caseFile.Statement, caseFile.EstimatedMinutes, [filler]),
+            file,
+            "$",
+            errors);
+        if (parts.Count is < Limits.MinCaseParts or > Limits.MaxCaseParts)
+        {
+            Guarded(
+                () => PracticalCase.Create(examId, "k", "t", "s", Limits.MinEstimatedMinutes, [.. Enumerable.Repeat(filler, parts.Count)]),
+                file,
+                "$",
+                errors);
+        }
+
+        for (var i = 0; i < parts.Count; i++)
+        {
+            var part = parts[i];
+            var partPath = $"$.parts[{i}]";
+            Probe(new PracticalCasePartData(part.Statement, "x", [criterion]), partPath);
+            Probe(new PracticalCasePartData("x", part.ModelAnswer, [criterion]), partPath);
+            if (part.Criteria.Count is < Limits.MinCriteriaPerPart or > Limits.MaxCriteriaPerPart)
+            {
+                Probe(new PracticalCasePartData("x", "x", [.. Enumerable.Repeat(criterion, part.Criteria.Count)]), partPath);
+            }
+
+            for (var j = 0; j < part.Criteria.Count; j++)
+            {
+                Probe(new PracticalCasePartData("x", "x", [part.Criteria[j]]), $"{partPath}.criteria[{j}]");
+            }
+        }
+
+        return errors.Count == before;
+
+        void Probe(PracticalCasePartData probe, string path) =>
+            Guarded(() => PracticalCase.Create(examId, "k", "t", "s", Limits.MinEstimatedMinutes, [probe]), file, path, errors);
     }
 
     private static T? ReadJson<T>(string root, string path, List<ContentError> errors)
