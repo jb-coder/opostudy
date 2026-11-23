@@ -48,9 +48,17 @@ public sealed class GradingOptionsTests
     [Fact]
     public void Options_WithUnknownProvider_FailOnValidation()
     {
-        var options = Resolve(new() { ["Grading:Provider"] = "Gemini" });
+        var options = Resolve(new() { ["Grading:Provider"] = "OpenAI" });
 
         Should.Throw<OptionsValidationException>(() => options.Value);
+    }
+
+    [Fact]
+    public void Options_WithGeminiProvider_AreValid()
+    {
+        var options = Resolve(new() { ["Grading:Provider"] = "gemini" });
+
+        options.Value.Provider.ShouldBe("gemini");
     }
 
     [Fact]

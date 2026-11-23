@@ -180,3 +180,12 @@ Sin cambios.
   - Probar el mismo envío con `ThinkingLevel = MEDIUM` y elegir el valor por defecto por calidad y coste.
 
 ## Decisiones de implementación
+
+- `RemoveAllResilienceHandlers()` es una API experimental (`EXTEXP0001`): se suprime el diagnóstico solo en esa llamada, con comentario, y el test de registro garantiza que sigue funcionando.
+- `Microsoft.Extensions.Http.Resilience` (ya en `Directory.Packages.props`) se referencia ahora desde `OpoStudy.Infrastructure`; no hace falta añadir `Microsoft.Extensions.Http`, que llega de forma transitiva.
+- `BaseAddress` y `Timeout` se fijan en el callback `AddHttpClient(... (provider, client) => ...)` leyendo `GeminiOptions`, para que `BaseUrl` salga de la configuración validada.
+- Los motivos de bloqueo y de `finishReason` se sanean (solo mayúsculas, dígitos y `_`, máximo 40 caracteres) antes de ir a la excepción y a los logs; el `status` de Google, igual.
+- El log de rechazo (`LogRejected`) se emite en un único punto, al capturar `GeminiResponseException` en `GradeAsync`; los transitorios no se registran en el corrector (ya lo hace `GradingProcessor`).
+- El test en vivo usa un supuesto de SQL mínimo escrito en el propio test, en lugar de leer el supuesto 0001 del contenido, para no acoplarlo a `content/`.
+- El test de `GradingOptions` con proveedor desconocido pasó a usar `OpenAI`, porque `Gemini` ya es válido.
+- Sin verificar: el criterio de aceptación con una key real y la comprobación manual del AppHost (no hay key disponible).
