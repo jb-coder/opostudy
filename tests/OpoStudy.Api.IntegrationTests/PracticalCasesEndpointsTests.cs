@@ -45,8 +45,8 @@ public sealed class PracticalCasesEndpointsTests(ApiFactory factory)
 
         cases.ShouldNotBeNull();
         cases.Select(c => c.Id).ShouldBe([content.PracticalCases.CaseA.Id, content.PracticalCases.CaseB.Id]);
-        cases[0].ShouldBe(new PracticalCaseSummaryResponse(content.PracticalCases.CaseA.Id, "Case a", 2, 10, 30));
-        cases[1].ShouldBe(new PracticalCaseSummaryResponse(content.PracticalCases.CaseB.Id, "Case b", 3, 15, 30));
+        cases[0].ShouldBe(new PracticalCaseSummaryResponse(content.PracticalCases.CaseA.Id, "Case a", "Section a", 2, 10, 30));
+        cases[1].ShouldBe(new PracticalCaseSummaryResponse(content.PracticalCases.CaseB.Id, "Case b", null, 3, 15, 30));
     }
 
     [Fact]
@@ -71,6 +71,20 @@ public sealed class PracticalCasesEndpointsTests(ApiFactory factory)
     }
 
     [Fact]
+    public async Task GetPracticalCase_WithSection_ReturnsIt()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+
+        var practicalCase = await client.GetFromJsonAsync<PracticalCaseResponse>(
+            DetailUri(content.PracticalCases.CaseA.Id),
+            TestContext.Current.CancellationToken);
+
+        practicalCase.ShouldNotBeNull();
+        practicalCase.Section.ShouldBe("Section a");
+    }
+
+    [Fact]
     public async Task GetPracticalCase_WithActiveCase_ReturnsPartsInOrder()
     {
         var content = await ContentSeeder.SeedAsync(factory.Services);
@@ -83,6 +97,7 @@ public sealed class PracticalCasesEndpointsTests(ApiFactory factory)
         practicalCase.ShouldNotBeNull();
         practicalCase.ExamId.ShouldBe(content.Exam.Id);
         practicalCase.Title.ShouldBe("Case b");
+        practicalCase.Section.ShouldBeNull();
         practicalCase.Statement.ShouldBe("Statement of case b");
         practicalCase.EstimatedMinutes.ShouldBe(30);
         practicalCase.MaxPoints.ShouldBe(15);

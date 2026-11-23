@@ -115,6 +115,7 @@ internal static class ContentSeeder
             exam.Id,
             $"{id}/practical-cases/{suffix}",
             $"Case {suffix}",
+            suffix == "a" ? "Section a" : null,
             $"Statement of case {suffix}",
             30,
             [.. Enumerable.Range(0, partCount).Select(i => new PracticalCasePartData(

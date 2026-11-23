@@ -55,6 +55,7 @@ internal sealed class PracticalCaseFile
 
     public required string Key { get; init; }
     public required string Title { get; init; }
+    public string? Section { get; init; }
     public required string Statement { get; init; }
     public required int EstimatedMinutes { get; init; }
     public required IReadOnlyList<PracticalCaseFilePart> Parts { get; init; }

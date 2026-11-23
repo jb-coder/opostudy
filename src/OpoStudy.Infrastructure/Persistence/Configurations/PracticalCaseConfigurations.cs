@@ -16,6 +16,7 @@ internal sealed class PracticalCaseConfiguration : IEntityTypeConfiguration<Prac
         builder.Property(c => c.Id).ValueGeneratedNever();
         builder.Property(c => c.Key).HasMaxLength(Limits.Key);
         builder.Property(c => c.Title).HasMaxLength(Limits.Name);
+        builder.Property(c => c.Section).HasMaxLength(Limits.Name);
         builder.Property(c => c.Statement).HasMaxLength(Limits.CaseStatement);
         builder.Ignore(c => c.MaxPoints);
 

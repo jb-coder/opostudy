@@ -41,6 +41,7 @@ public sealed record ContentReadResult(IReadOnlyList<ExamContent> Exams, IReadOn
 public sealed record PracticalCaseContent(
     string Key,
     string Title,
+    string? Section,
     string Statement,
     int EstimatedMinutes,
     IReadOnlyList<PracticalCasePartData> Parts);

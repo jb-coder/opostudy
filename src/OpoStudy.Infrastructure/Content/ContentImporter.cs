@@ -232,6 +232,7 @@ public sealed class ContentImporter(OpoStudyDbContext db)
     {
         if (practicalCase.ExamId != examId
             || practicalCase.Title != content.Title.Trim()
+            || practicalCase.Section != (string.IsNullOrWhiteSpace(content.Section) ? null : content.Section.Trim())
             || practicalCase.Statement != content.Statement.Trim()
             || practicalCase.EstimatedMinutes != content.EstimatedMinutes
             || practicalCase.Parts.Count != content.Parts.Count)
@@ -251,7 +252,7 @@ public sealed class ContentImporter(OpoStudyDbContext db)
     {
         if (!dbCases.TryGetValue(content.Key, out var practicalCase))
         {
-            practicalCase = PracticalCase.Create(examId, content.Key, content.Title, content.Statement, content.EstimatedMinutes, content.Parts);
+            practicalCase = PracticalCase.Create(examId, content.Key, content.Title, content.Section, content.Statement, content.EstimatedMinutes, content.Parts);
             db.PracticalCases.Add(practicalCase);
             dbCases[content.Key] = practicalCase;
             counts.Created++;
@@ -262,7 +263,7 @@ public sealed class ContentImporter(OpoStudyDbContext db)
         {
             try
             {
-                practicalCase.Update(examId, content.Title, content.Statement, content.EstimatedMinutes, content.Parts);
+                practicalCase.Update(examId, content.Title, content.Section, content.Statement, content.EstimatedMinutes, content.Parts);
             }
             catch (DomainRuleException ex)
             {

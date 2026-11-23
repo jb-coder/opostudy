@@ -44,6 +44,7 @@ public static partial class ContentReader
         ["option.invalid_text"] = "options",
         ["practical_case.invalid_key"] = "key",
         ["practical_case.invalid_title"] = "title",
+        ["practical_case.invalid_section"] = "section",
         ["practical_case.invalid_statement"] = "statement",
         ["practical_case.invalid_estimated_minutes"] = "estimatedMinutes",
         ["practical_case.invalid_part_count"] = "parts",
@@ -339,6 +340,13 @@ public static partial class ContentReader
             .ToList();
         var ok = ValidatePracticalCase(examId, caseFile, parts, file, errors);
 
+        // The domain treats a blank section as "no section", but in a file it is a mistake (the JSON Schema forbids it too).
+        if (caseFile.Section is not null && string.IsNullOrWhiteSpace(caseFile.Section))
+        {
+            errors.Add(new ContentError(file, "$.section", "La section está vacía: omítela o indica el bloque (practical_case.invalid_section)."));
+            ok = false;
+        }
+
         if (caseFile.Key.Trim() != caseFile.Key)
         {
             errors.Add(new ContentError(file, "$.key", $"La key '{caseFile.Key}' tiene espacios al principio o al final."));
@@ -361,7 +369,7 @@ public static partial class ContentReader
 
         if (ok)
         {
-            cases.Add(new PracticalCaseContent(caseFile.Key, caseFile.Title, caseFile.Statement, caseFile.EstimatedMinutes, parts));
+            cases.Add(new PracticalCaseContent(caseFile.Key, caseFile.Title, caseFile.Section, caseFile.Statement, caseFile.EstimatedMinutes, parts));
         }
     }
 
@@ -381,14 +389,14 @@ public static partial class ContentReader
         var filler = new PracticalCasePartData("x", "x", [criterion]);
 
         Guarded(
-            () => PracticalCase.Create(examId, caseFile.Key, caseFile.Title, caseFile.Statement, caseFile.EstimatedMinutes, [filler]),
+            () => PracticalCase.Create(examId, caseFile.Key, caseFile.Title, caseFile.Section, caseFile.Statement, caseFile.EstimatedMinutes, [filler]),
             file,
             "$",
             errors);
         if (parts.Count is < Limits.MinCaseParts or > Limits.MaxCaseParts)
         {
             Guarded(
-                () => PracticalCase.Create(examId, "k", "t", "s", Limits.MinEstimatedMinutes, [.. Enumerable.Repeat(filler, parts.Count)]),
+                () => PracticalCase.Create(examId, "k", "t", null, "s", Limits.MinEstimatedMinutes, [.. Enumerable.Repeat(filler, parts.Count)]),
                 file,
                 "$",
                 errors);
@@ -414,7 +422,7 @@ public static partial class ContentReader
         return errors.Count == before;
 
         void Probe(PracticalCasePartData probe, string path) =>
-            Guarded(() => PracticalCase.Create(examId, "k", "t", "s", Limits.MinEstimatedMinutes, [probe]), file, path, errors);
+            Guarded(() => PracticalCase.Create(examId, "k", "t", null, "s", Limits.MinEstimatedMinutes, [probe]), file, path, errors);
     }
 
     private static T? ReadJson<T>(string root, string path, List<ContentError> errors)

@@ -136,6 +136,11 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(150)")
                         .HasColumnName("key");
 
+                    b.Property<string>("Section")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("section");
+
                     b.Property<string>("Statement")
                         .IsRequired()
                         .HasMaxLength(8000)
