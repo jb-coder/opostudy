@@ -620,6 +620,33 @@ public sealed class GradingProcessorTests(PostgresFixture postgres)
         activity.XpEarned.ShouldBe(100);
     }
 
+    [Fact]
+    public async Task ProcessNextAsync_WhenTheSubmitDayIsAlreadyClosedByTheStreak_GivesTheBonusOfAStreakOfOne()
+    {
+        await ClearQueueAsync();
+        var time = new FakeTimeProvider(Start);
+        var seeded = await SeedGradingAsync(Start);
+        await using (var setup = postgres.CreateContext())
+        {
+            var user = await setup.Users.SingleAsync(u => u.Id == seeded.UserId, Ct);
+            for (var d = 8; d <= 12; d++)
+            {
+                user.Streak.RegisterGoalMet(new DateOnly(2026, 3, d));
+            }
+
+            await setup.SaveChangesAsync(Ct);
+        }
+
+        await ProcessWithAsync(time);
+
+        var (user2, _) = await LoadProgressAsync(seeded.UserId, Day);
+        // Score 56 + the bonus of a streak of 1 (55), not the one of the current streak of 5.
+        user2.Xp.ShouldBe(111);
+        user2.Streak.LastLength.ShouldBe(5);
+        user2.Streak.LastMetOn.ShouldBe(new DateOnly(2026, 3, 12));
+        (await ReloadAsync(seeded.Id)).MetDailyGoal.ShouldBeTrue();
+    }
+
     /// <summary>Changes the user from another connection right before the completed grading is saved for the first time.</summary>
     private sealed class ConcurrentUserChange(PostgresFixture postgres, Guid userId, bool insertActivity = false) : SaveChangesInterceptor
     {

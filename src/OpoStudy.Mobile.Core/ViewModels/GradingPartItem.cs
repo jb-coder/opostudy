@@ -44,9 +44,13 @@ public sealed partial class GradingBlock(string title, string content) : Observa
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Indicator))]
+    [NotifyPropertyChangedFor(nameof(StateText))]
     public partial bool IsExpanded { get; set; }
 
     public string Indicator => IsExpanded ? "▾" : "▸";
+
+    /// <summary>What a screen reader announces: the title and whether the block is open.</summary>
+    public string StateText => $"{Title}, {(IsExpanded ? "desplegado" : "plegado")}";
 
     [RelayCommand]
     private void Toggle() => IsExpanded = !IsExpanded;

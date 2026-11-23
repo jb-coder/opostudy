@@ -90,11 +90,13 @@ public sealed class GradingResultTests
 
         block.ToggleCommand.Execute(null);
         block.IsExpanded.ShouldBeTrue();
+        block.StateText.ShouldBe("Respuesta modelo, desplegado");
         block.Indicator.ShouldBe("▾");
         sut.Parts[0].Statement.IsExpanded.ShouldBeFalse();
 
         block.ToggleCommand.Execute(null);
         block.IsExpanded.ShouldBeFalse();
+        block.StateText.ShouldBe("Respuesta modelo, plegado");
     }
 
     [Fact]

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using OpoStudy.Domain.Users;
 using OpoStudy.Infrastructure.Persistence;
@@ -70,9 +71,12 @@ public sealed class ProgressTracker(OpoStudyDbContext db)
         var bonus = 0;
         if (metNow)
         {
+            var lastMetBefore = user.Streak.LastMetOn;
             user.Streak.RegisterGoalMet(day);
-            // A late grading for an already settled day: RegisterGoalMet ignores it and CurrentAt can be 0.
-            bonus = XpRules.ForGoalMet(Math.Max(1, user.Streak.CurrentAt(day)));
+            // A day the streak already kept or closed is ignored by RegisterGoalMet: the streak length then belongs to
+            // later days, so the bonus is the one of a streak of 1 instead of an inflated one.
+            var extended = user.Streak.LastMetOn == day && lastMetBefore != day;
+            bonus = XpRules.ForGoalMet(extended ? Math.Max(1, user.Streak.CurrentAt(day)) : 1);
         }
 
         var xp = XpRules.ForPracticalCase(score, maxPoints) + bonus;
@@ -92,7 +96,7 @@ public static class ProgressServiceCollectionExtensions
     public static IServiceCollection AddProgressTracking(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
-        services.AddScoped<ProgressTracker>();
+        services.TryAddScoped<ProgressTracker>();
         return services;
     }
 }

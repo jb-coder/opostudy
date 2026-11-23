@@ -121,7 +121,8 @@
                                                 <HorizontalStackLayout
                                                     Spacing="{StaticResource SpaceS}"
                                                     MinimumHeightRequest="{StaticResource MinTouchTarget}"
-                                                    SemanticProperties.Description="{Binding Title}">
+                                                    SemanticProperties.Description="{Binding StateText}"
+                                                    SemanticProperties.Hint="Toca dos veces para desplegar o plegar">
                                                     <HorizontalStackLayout.GestureRecognizers>
                                                         <TapGestureRecognizer Command="{Binding ToggleCommand}" />
                                                     </HorizontalStackLayout.GestureRecognizers>

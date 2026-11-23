@@ -139,7 +139,11 @@ public sealed partial class GradingsViewModel(
         try
         {
             var page = await api.GetGradingsAsync(Items.Count, PageSize, cancellationToken);
-            Append(page);
+
+            // A grading submitted between pages shifts the offset: ids already shown are skipped.
+            var known = Items.Select(i => i.Id).ToHashSet();
+            Append([.. page.Where(g => !known.Contains(g.Id))]);
+            CanLoadMore = page.Count >= PageSize;
         }
         catch (OperationCanceledException)
         {

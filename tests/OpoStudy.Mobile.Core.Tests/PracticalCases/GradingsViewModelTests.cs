@@ -88,6 +88,23 @@ public sealed class GradingsViewModelTests
     }
 
     [Fact]
+    public async Task LoadMoreCommand_WithIdsAlreadyShown_SkipsTheDuplicates()
+    {
+        var first = Page(20);
+        _api.GetGradingsAsync(0, 20, Arg.Any<CancellationToken>()).Returns(first);
+        // A new grading shifted the offset: the last one of the first page comes again.
+        _api.GetGradingsAsync(20, 20, Arg.Any<CancellationToken>()).Returns([first[19], Summary("Completed", "Otro", score: 1m)]);
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await sut.LoadMoreCommand.ExecuteAsync(null);
+
+        sut.Items.Count.ShouldBe(21);
+        sut.Items.Select(i => i.Id).Distinct().Count().ShouldBe(21);
+        sut.CanLoadMore.ShouldBeFalse();
+    }
+
+    [Fact]
     public async Task LoadMoreCommand_WhenItFails_KeepsWhatWasLoadedAndShowsTheError()
     {
         _api.GetGradingsAsync(0, 20, Arg.Any<CancellationToken>()).Returns(Page(20));
