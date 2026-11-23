@@ -25,9 +25,11 @@ public sealed class ExamsViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
-    private ExamsViewModel CreateSut() => new(_api, _navigation, NullLogger<ExamsViewModel>.Instance);
+    private ExamsViewModel CreateSut() => new(_api, _navigation, _offline.Content, _offline.State, NullLogger<ExamsViewModel>.Instance);
 
     [Fact]
     public async Task OnAppearingAsync_ApiReturnsExams_LoadsList()
@@ -58,7 +60,7 @@ public sealed class ExamsViewModelTests
     [Fact]
     public async Task OnAppearingAsync_ApiFails_SetsErrorMessage()
     {
-        _api.GetExamsAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        _api.GetExamsAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
 
         await sut.OnAppearingAsync();
@@ -116,13 +118,15 @@ public sealed class TopicsViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
     private readonly Guid _examId = Guid.NewGuid();
 
     private TopicsViewModel CreateSut()
     {
-        var sut = new TopicsViewModel(_api, _navigation, NullLogger<TopicsViewModel>.Instance);
+        var sut = new TopicsViewModel(_api, _navigation, _offline.Content, _offline.Quizzes, _offline.State, NullLogger<TopicsViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.ExamId] = _examId, [QueryKeys.ExamName] = "Programador C1" });
         return sut;
     }
@@ -149,7 +153,7 @@ public sealed class TopicsViewModelTests
     [Fact]
     public async Task OnAppearingAsync_ApiFails_SetsErrorMessage()
     {
-        _api.GetTopicsAsync(_examId, Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        _api.GetTopicsAsync(_examId, Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
 
         await sut.OnAppearingAsync();
@@ -248,7 +252,7 @@ public sealed class TopicsViewModelTests
     public async Task StartRandomQuizCommand_ApiFails_SetsErrorAndDoesNotNavigate()
     {
         GivenTopics(Topic(1, 3));
-        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
         await sut.OnAppearingAsync();
 
@@ -261,7 +265,7 @@ public sealed class TopicsViewModelTests
     [Fact]
     public async Task OnAppearingAsync_MissingExamId_SetsErrorWithoutCallingApi()
     {
-        var sut = new TopicsViewModel(_api, _navigation, NullLogger<TopicsViewModel>.Instance);
+        var sut = new TopicsViewModel(_api, _navigation, _offline.Content, _offline.Quizzes, _offline.State, NullLogger<TopicsViewModel>.Instance);
 
         await sut.OnAppearingAsync();
 
@@ -277,6 +281,8 @@ public sealed class QuizViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
 
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
@@ -287,7 +293,7 @@ public sealed class QuizViewModelTests
 
     private QuizViewModel CreateSut()
     {
-        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(_reminderStore), NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(_reminderStore), _offline.Quizzes, _offline.Synchronizer, _offline.State, NullLogger<QuizViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.QuizId] = _quizId, [QueryKeys.QuizTitle] = "Test aleatorio" });
         return sut;
     }
@@ -615,7 +621,7 @@ public sealed class QuizViewModelTests
     {
         GivenQuiz(Quiz(0, 0, Question(1)));
         _api.SubmitAnswerAsync(_quizId, Arg.Any<SubmitAnswerRequest>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HttpRequestException());
+            .ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
         await sut.OnAppearingAsync();
 
@@ -665,7 +671,7 @@ public sealed class QuizViewModelTests
     [Fact]
     public async Task OnAppearingAsync_MissingQuizId_SetsErrorWithoutCallingApi()
     {
-        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(), NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(), _offline.Quizzes, _offline.Synchronizer, _offline.State, NullLogger<QuizViewModel>.Instance);
 
         await sut.OnAppearingAsync();
 

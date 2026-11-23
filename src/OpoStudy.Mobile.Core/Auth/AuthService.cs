@@ -50,6 +50,8 @@ public sealed partial class AuthService(
 
     public string? Provider => _session?.Provider;
 
+    public string? UserId => _session is { } session ? IdTokenClaims.ReadUserId(session.IdToken) : null;
+
     public async Task RestoreSessionAsync(CancellationToken cancellationToken = default)
     {
         try

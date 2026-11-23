@@ -29,6 +29,8 @@ public sealed class TopicsMistakesViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
     private readonly Guid _examId = Guid.NewGuid();
@@ -40,7 +42,7 @@ public sealed class TopicsMistakesViewModelTests
     private TopicsViewModel CreateSut()
     {
         _api.GetTopicsAsync(_examId, Arg.Any<CancellationToken>()).Returns([_topic1, _topic2]);
-        var sut = new TopicsViewModel(_api, _navigation, NullLogger<TopicsViewModel>.Instance);
+        var sut = new TopicsViewModel(_api, _navigation, _offline.Content, _offline.Quizzes, _offline.State, NullLogger<TopicsViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.ExamId] = _examId, [QueryKeys.ExamName] = "Programador C1" });
         return sut;
     }
@@ -73,7 +75,7 @@ public sealed class TopicsMistakesViewModelTests
     [Fact]
     public async Task OnAppearingAsync_MistakesLoadFails_DisablesSwitchButKeepsTopics()
     {
-        _api.GetMistakesAsync(_examId, Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        _api.GetMistakesAsync(_examId, Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException("bad gateway", null, HttpStatusCode.BadGateway));
         var sut = CreateSut();
 
         await sut.OnAppearingAsync();
@@ -210,6 +212,8 @@ public sealed class QuizBackAndReviewViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
@@ -220,7 +224,7 @@ public sealed class QuizBackAndReviewViewModelTests
 
     private QuizViewModel CreateSut()
     {
-        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(), NullLogger<QuizViewModel>.Instance);
+        var sut = new QuizViewModel(_api, _navigation, _dialogs, ReminderTestSupport.CreateService(), _offline.Quizzes, _offline.Synchronizer, _offline.State, NullLogger<QuizViewModel>.Instance);
         sut.ApplyQuery(new Dictionary<string, object> { [QueryKeys.QuizId] = _quizId, [QueryKeys.QuizTitle] = "Repaso de falladas" });
         return sut;
     }
@@ -417,6 +421,8 @@ public sealed class HomeUnfinishedQuizViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
     private readonly IAuthService _auth = Substitute.For<IAuthService>();
@@ -435,7 +441,7 @@ public sealed class HomeUnfinishedQuizViewModelTests
     }
 
     private HomeViewModel CreateSut() =>
-        new(_api, _navigation, new AppEnvironment(false), _auth, _dialogs, _time, ReminderTestSupport.CreateService(), NullLogger<HomeViewModel>.Instance);
+        new(_api, _navigation, new AppEnvironment(false), _auth, _dialogs, _time, ReminderTestSupport.CreateService(), _offline.Quizzes, _offline.Synchronizer, _offline.State, NullLogger<HomeViewModel>.Instance);
 
     private static QuizSummaryResponse Summary(string mode, string? topicTitle, DateTimeOffset? finishedAt, int correct, int incorrect, int total = 10) =>
         new(Guid.NewGuid(), Guid.NewGuid(), topicTitle is null ? null : Guid.NewGuid(), topicTitle, mode, DateTimeOffset.UtcNow, finishedAt, total, correct, incorrect);

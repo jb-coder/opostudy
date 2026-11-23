@@ -32,6 +32,26 @@ public sealed class QuizAttemptTests
     }
 
     [Fact]
+    public void Create_WithGivenId_UsesThatId()
+    {
+        var id = Guid.CreateVersion7();
+
+        var attempt = QuizAttempt.Create(id, UserId, ExamId, null, QuizMode.Random, [_q1.Id, _q2.Id], Now);
+
+        attempt.Id.ShouldBe(id);
+        attempt.Answers.Select(a => a.QuizAttemptId).ShouldAllBe(x => x == id);
+    }
+
+    [Fact]
+    public void Create_WithEmptyId_ThrowsDomainRule()
+    {
+        var ex = Should.Throw<DomainRuleException>(() =>
+            QuizAttempt.Create(Guid.Empty, UserId, ExamId, null, QuizMode.Random, [_q1.Id], Now));
+
+        ex.Code.ShouldBe("quiz.invalid_id");
+    }
+
+    [Fact]
     public void Create_ByTopicWithoutTopic_ThrowsDomainRule()
     {
         var ex = Should.Throw<DomainRuleException>(() =>

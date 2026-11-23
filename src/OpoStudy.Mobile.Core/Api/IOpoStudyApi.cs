@@ -1,4 +1,5 @@
 using OpoStudy.Contracts.Exams;
+using OpoStudy.Contracts.Offline;
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Contracts.SystemInfo;
@@ -26,6 +27,12 @@ public interface IOpoStudyApi
     [Get("/api/v1/exams/{examId}/topics")]
     Task<IReadOnlyList<TopicResponse>> GetTopicsAsync(Guid examId, CancellationToken cancellationToken = default);
 
+    [Get("/api/v1/exams/{examId}/offline-content")]
+    Task<IApiResponse<OfflineContentResponse>> GetOfflineContentAsync(
+        Guid examId,
+        [Header("If-None-Match")] string? ifNoneMatch,
+        CancellationToken cancellationToken = default);
+
     [Get("/api/v1/exams/{examId}/mistakes")]
     Task<MistakeSummaryResponse> GetMistakesAsync(Guid examId, CancellationToken cancellationToken = default);
 
@@ -40,6 +47,9 @@ public interface IOpoStudyApi
 
     [Post("/api/v1/quizzes/{quizId}/answers")]
     Task<AnswerFeedbackResponse> SubmitAnswerAsync(Guid quizId, [Body] SubmitAnswerRequest request, CancellationToken cancellationToken = default);
+
+    [Post("/api/v1/quizzes/sync")]
+    Task<SyncQuizResponse> SyncQuizAsync([Body] SyncQuizRequest request, CancellationToken cancellationToken = default);
 
     [Get("/api/v1/me/streak")]
     Task<StreakResponse> GetStreakAsync(CancellationToken cancellationToken = default);

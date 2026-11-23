@@ -10,6 +10,7 @@ using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
+using OpoStudy.Mobile.Core.Offline;
 using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 
@@ -24,7 +25,10 @@ public sealed partial class HomeViewModel(
     IDialogService dialogs,
     TimeProvider time,
     ReminderService reminders,
-    ILogger<HomeViewModel> logger) : ViewModelBase
+    IOfflineQuizService offlineQuizzes,
+    IOfflineSynchronizer synchronizer,
+    OfflineState offlineState,
+    ILogger<HomeViewModel> logger) : OfflineAwareViewModel(offlineState)
 {
     private const string ReminderDeniedNotice = "Activa las notificaciones de OpoStudy en los ajustes de Android para recibir el recordatorio.";
 
@@ -134,6 +138,13 @@ public sealed partial class HomeViewModel(
     [ObservableProperty]
     public partial string? AccountEmail { get; set; }
 
+    /// <summary>Non-blocking notice shown when a quiz made offline was discarded by the server; it goes away on the next refresh.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasDiscardedNotice))]
+    public partial string? DiscardedNotice { get; set; }
+
+    public bool HasDiscardedNotice => DiscardedNotice is not null;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MemberSinceText))]
     [NotifyPropertyChangedFor(nameof(HasMemberSince))]
@@ -233,12 +244,18 @@ public sealed partial class HomeViewModel(
     public override async Task OnAppearingAsync()
     {
         LoadReminder();
+        ListenToOfflineState();
+        synchronizer.ReconnectSynced -= OnReconnectSynced;
+        synchronizer.ReconnectSynced += OnReconnectSynced;
 
         if (ApiVersion is not null)
         {
             // Already loaded: only the daily goal card can change while away (e.g. after a quiz).
             if (!IsBusy)
             {
+                // Answers given offline must reach the server before the streak and the level are read.
+                await synchronizer.SyncAsync(CancellationToken.None);
+                ShowDiscardedNotice();
                 await LoadStreakAsync(CancellationToken.None);
                 await LoadLevelAsync(CancellationToken.None);
                 await LoadUnfinishedQuizAsync(CancellationToken.None);
@@ -252,6 +269,37 @@ public sealed partial class HomeViewModel(
             await RefreshCommand.ExecuteAsync(null);
         }
     }
+
+    public override void OnDisappearing()
+    {
+        synchronizer.ReconnectSynced -= OnReconnectSynced;
+        base.OnDisappearing();
+    }
+
+    /// <summary>The connection came back and the queue was flushed: reload the goal, streak and level the server recomputed.</summary>
+    private void OnReconnectSynced(object? sender, EventArgs e)
+    {
+        _ = ReloadAfterReconnectAsync();
+    }
+
+    /// <summary>Fire-and-forget from an event: it must never throw, or the exception would go unobserved.</summary>
+    private async Task ReloadAfterReconnectAsync()
+    {
+        try
+        {
+            if (RefreshCommand.CanExecute(null))
+            {
+                await RefreshCommand.ExecuteAsync(null);
+            }
+        }
+        catch (Exception ex)
+        {
+            LogLoadFailed(ex, ex.GetType().FullName);
+        }
+    }
+
+    /// <summary>Shows the quizzes discarded since the last refresh (none clears the notice).</summary>
+    private void ShowDiscardedNotice() => DiscardedNotice = OfflineState.DiscardedNotice(OfflineState.TakeDiscardedQuizzes());
 
     /// <summary>Drops the SemVer build metadata (everything from '+'), e.g. "1.0.0+abc123" becomes "1.0.0".</summary>
     private static string StripBuildMetadata(string version)
@@ -281,11 +329,14 @@ public sealed partial class HomeViewModel(
             var response = await api.GetVersionAsync(cancellationToken);
             ApiVersion = response.Version;
             IsConnected = true;
+            OfflineState.ReportSuccess();
 
             var me = await api.GetMeAsync(cancellationToken);
             MemberSince = TimeZoneInfo.ConvertTime(me.CreatedAt, time.LocalTimeZone).ToString("d 'de' MMMM 'de' yyyy", SpanishCulture);
 
             await SyncTimeZoneAsync(me.TimeZone, cancellationToken);
+            await synchronizer.SyncAsync(cancellationToken);
+            ShowDiscardedNotice();
             await LoadStreakAsync(cancellationToken);
             await LoadLevelAsync(cancellationToken);
             await LoadUnfinishedQuizAsync(cancellationToken);
@@ -295,6 +346,13 @@ public sealed partial class HomeViewModel(
             LogLoadFailed(ex, ex.GetType().FullName);
             IsConnected = false;
             ErrorMessage = ApiErrorMessages.From(ex);
+            if (ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
+            {
+                OfflineState.ReportConnectivityFailure();
+
+                // The "unfinished quiz" card can still come from the local database.
+                await LoadUnfinishedQuizAsync(cancellationToken);
+            }
         }
         finally
         {
@@ -331,6 +389,7 @@ public sealed partial class HomeViewModel(
         try
         {
             var streak = await api.GetStreakAsync(cancellationToken);
+            OfflineState.ReportSuccess();
 
             // A newer load or a goal change finished first: this response is stale.
             if (version == _streakVersion)
@@ -342,6 +401,7 @@ public sealed partial class HomeViewModel(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             LogStreakFailed(ex, ex.GetType().FullName);
+            ReportIfConnectivity(ex, cancellationToken);
         }
     }
 
@@ -355,6 +415,7 @@ public sealed partial class HomeViewModel(
         try
         {
             var level = await api.GetLevelAsync(cancellationToken);
+            OfflineState.ReportSuccess();
             if (version == _levelVersion)
             {
                 Level = level;
@@ -370,6 +431,7 @@ public sealed partial class HomeViewModel(
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             LogLevelFailed(ex, ex.GetType().FullName);
+            ReportIfConnectivity(ex, cancellationToken);
             if (version == _levelVersion)
             {
                 LevelErrorMessage = ApiErrorMessages.From(ex);
@@ -392,43 +454,88 @@ public sealed partial class HomeViewModel(
     [ObservableProperty]
     public partial string UnfinishedQuizProgressText { get; set; } = string.Empty;
 
-    /// <summary>Loads the most recent quiz and shows it only if it is started and not finished. Failures hide the card.</summary>
+    /// <summary>
+    /// Loads the most recent quiz and shows it only if it is started and not finished. The local quiz is used when the
+    /// server cannot be reached or when it is more recent. Failures hide the card.
+    /// </summary>
     private async Task LoadUnfinishedQuizAsync(CancellationToken cancellationToken)
     {
         var version = ++_quizVersion;
-        QuizSummaryResponse? unfinished = null;
+        QuizSummaryResponse? latest = null;
+        var serverUnreachable = false;
         try
         {
             var quizzes = await api.GetQuizzesAsync(0, 1, cancellationToken);
-            var latest = quizzes.Count > 0 ? quizzes[0] : null;
-            if (latest is { FinishedAt: null } && latest.CorrectCount + latest.IncorrectCount > 0)
-            {
-                unfinished = latest;
-            }
+            latest = quizzes.Count > 0 ? quizzes[0] : null;
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             LogQuizzesFailed(ex, ex.GetType().FullName);
+            serverUnreachable = ConnectivityErrors.IsConnectivityError(ex, cancellationToken);
+            ReportIfConnectivity(ex, cancellationToken);
         }
 
+        var local = await FindLocalUnfinishedQuizAsync(cancellationToken);
         if (version != _quizVersion)
         {
             return;
         }
 
-        if (unfinished is null)
+        if (local is { } found && (serverUnreachable || latest is null || found.Quiz.StartedAt > latest.StartedAt))
+        {
+            _unfinishedQuizId = found.Quiz.Id;
+            UnfinishedQuizTitle = found.Quiz.Title;
+            UnfinishedQuizProgressText = AnsweredText(found.Answered, found.Quiz.QuestionIds.Count);
+            HasUnfinishedQuiz = true;
+            return;
+        }
+
+        if (latest is not { FinishedAt: null } || latest.CorrectCount + latest.IncorrectCount == 0)
         {
             HasUnfinishedQuiz = false;
             return;
         }
 
-        _unfinishedQuizId = unfinished.Id;
-        UnfinishedQuizTitle = QuizTitles.For(unfinished);
-        UnfinishedQuizProgressText = string.Create(
-            CultureInfo.InvariantCulture,
-            $"{unfinished.CorrectCount + unfinished.IncorrectCount} de {unfinished.QuestionCount} respondidas");
+        _unfinishedQuizId = latest.Id;
+        UnfinishedQuizTitle = QuizTitles.For(latest);
+        UnfinishedQuizProgressText = AnsweredText(latest.CorrectCount + latest.IncorrectCount, latest.QuestionCount);
         HasUnfinishedQuiz = true;
     }
+
+    private static string AnsweredText(int answered, int total) =>
+        string.Create(CultureInfo.InvariantCulture, $"{answered} de {total} respondidas");
+
+    /// <summary>The latest unfinished local quiz, only if it already has answers. Failures give null.</summary>
+    private async Task<(LocalQuiz Quiz, int Answered)?> FindLocalUnfinishedQuizAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (await offlineQuizzes.GetLatestUnfinishedAsync(cancellationToken) is not { } quiz
+                || await offlineQuizzes.GetAsync(quiz.Id, cancellationToken) is not { } full)
+            {
+                return null;
+            }
+
+            var answered = full.CorrectCount + full.IncorrectCount;
+            return answered > 0 ? (quiz, answered) : null;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogLocalQuizFailed(ex, ex.GetType().FullName);
+            return null;
+        }
+    }
+
+    private void ReportIfConnectivity(Exception exception, CancellationToken cancellationToken)
+    {
+        if (ConnectivityErrors.IsConnectivityError(exception, cancellationToken))
+        {
+            OfflineState.ReportConnectivityFailure();
+        }
+    }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not read the local quiz ({ExceptionType})")]
+    private partial void LogLocalQuizFailed(Exception exception, string? exceptionType);
 
     [RelayCommand]
     private Task ContinueQuizAsync() =>
@@ -577,6 +684,8 @@ public sealed partial class HomeViewModel(
             return;
         }
 
+        // The uid is read now: after deleting the Firebase account there is no session to read it from.
+        var userId = auth.UserId;
         IsBusy = true;
         ErrorMessage = null;
         try
@@ -584,11 +693,13 @@ public sealed partial class HomeViewModel(
             // API data first, while the ID token is still valid; then the Firebase account.
             await api.DeleteMeAsync(cancellationToken);
             await auth.DeleteFirebaseAccountAsync(cancellationToken);
+            await DeleteLocalDataAsync(userId);
             reminders.OnSignedOut();
             await navigation.GoToAsync(Routes.Root(Routes.Login));
         }
         catch (FirebaseAuthException ex) when (ex.Code == "CREDENTIAL_TOO_OLD_LOGIN_AGAIN")
         {
+            await DeleteLocalDataAsync(userId);
             reminders.OnSignedOut();
             // The API data is already gone and the session was closed: go back to login and explain.
             await navigation.GoToAsync(Routes.Root(Routes.Login));
@@ -602,6 +713,24 @@ public sealed partial class HomeViewModel(
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    /// <summary>Deletes the offline queue of the deleted account. A failure is only logged: the account is already gone.</summary>
+    private async Task DeleteLocalDataAsync(string? userId)
+    {
+        if (userId is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await offlineQuizzes.DeleteUserDataAsync(userId);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogLocalQuizFailed(ex, ex.GetType().FullName);
         }
     }
 

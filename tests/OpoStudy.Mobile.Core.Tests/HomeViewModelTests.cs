@@ -22,6 +22,8 @@ public sealed class HomeViewModelTests
 {
     private readonly IOpoStudyApi _api = Substitute.For<IOpoStudyApi>();
 
+    private readonly OfflineDoubles _offline = new();
+
     private readonly INavigationService _navigation = Substitute.For<INavigationService>();
 
     private readonly IAuthService _auth = Substitute.For<IAuthService>();
@@ -361,7 +363,7 @@ public sealed class HomeViewModelTests
     private readonly IReminderScheduler _scheduler = ReminderTestSupport.SupportedScheduler();
 
     private HomeViewModel CreateSut(bool isDebug = false) =>
-        new(_api, _navigation, new AppEnvironment(isDebug), _auth, _dialogs, _time, new ReminderService(_reminderStore, _scheduler, _time), NullLogger<HomeViewModel>.Instance);
+        new(_api, _navigation, new AppEnvironment(isDebug), _auth, _dialogs, _time, new ReminderService(_reminderStore, _scheduler, _time), _offline.Quizzes, _offline.Synchronizer, _offline.State, NullLogger<HomeViewModel>.Instance);
 
     [Fact]
     public async Task OnAppearingAsync_ReminderSaved_ShowsSettings()
