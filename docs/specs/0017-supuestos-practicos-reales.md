@@ -114,3 +114,6 @@ Sin cambios respecto a la 0016: rutas autenticadas, contenido sin datos personal
 - **`RepositoryContentTests`:** los 6 ficheros validan con `ContentReader` y con el JSON Schema. Test nuevo: todo supuesto del repo tiene `section` igual a la `section` de algún tema de su oposición y `MaxPoints` = 25.
 - **Integración API (`PracticalCasesEndpointsTests`):** `section` presente en el listado y en el detalle; ampliar `ContentSeeder` si hace falta.
 - **Manual:** arrancar el AppHost, comprobar los 6 supuestos en `practical_cases` (con `section`) y abrir un detalle en Scalar.
+
+## Decisiones de implementación
+- `section` en blanco: el dominio la normaliza a `null` igual que `Topic.Section` (`Guard.OptionalText`), así que `practical_case.invalid_section` solo salta con más de 300 caracteres. En el contenido, un `section` vacío sigue siendo un error: lo rechazan el JSON Schema y `ContentReader` en `$.section`.
