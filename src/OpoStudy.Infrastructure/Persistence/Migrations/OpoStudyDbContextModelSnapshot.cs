@@ -149,6 +149,12 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("max_points");
 
+                    b.Property<bool>("MetDailyGoal")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("met_daily_goal");
+
                     b.Property<DateTimeOffset>("NextAttemptAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("next_attempt_at");
@@ -189,6 +195,10 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
                         .HasColumnName("xmin");
+
+                    b.Property<int?>("XpEarned")
+                        .HasColumnType("integer")
+                        .HasColumnName("xp_earned");
 
                     b.HasKey("Id")
                         .HasName("pk_gradings");

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using OpoStudy.Infrastructure.Persistence;
 
@@ -22,9 +23,10 @@ public sealed class PostgresFixture : IAsyncLifetime
 
     public async ValueTask DisposeAsync() => await _postgres.DisposeAsync();
 
-    public OpoStudyDbContext CreateContext()
+    public OpoStudyDbContext CreateContext(params IInterceptor[] interceptors)
     {
         var builder = new DbContextOptionsBuilder<OpoStudyDbContext>().UseNpgsql(_postgres.GetConnectionString());
+        builder.AddInterceptors(interceptors);
         OpoStudyDbContext.ApplyConventions(builder);
         return new OpoStudyDbContext(builder.Options);
     }

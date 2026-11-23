@@ -3,6 +3,7 @@ namespace OpoStudy.Contracts.Gradings;
 /// <summary>
 /// A grading. <c>Status</c> is <c>Pending</c>, <c>Processing</c>, <c>Completed</c> or <c>Failed</c>.
 /// The rubric and the model answers are only included when it is <c>Completed</c>.
+/// <c>XpEarned</c> (goal bonus included) is <c>null</c> unless it is <c>Completed</c> with its progress recorded.
 /// </summary>
 public sealed record GradingResponse(
     Guid Id,
@@ -16,7 +17,9 @@ public sealed record GradingResponse(
     decimal? Score,
     string? Feedback,
     string? FailureCode,
-    IReadOnlyList<GradingAnswerResponse> Answers);
+    IReadOnlyList<GradingAnswerResponse> Answers,
+    int? XpEarned,
+    bool MetDailyGoal);
 
 /// <summary>The answer to a part. <c>Score</c>, <c>Feedback</c>, <c>ModelAnswer</c> and <c>Criteria</c> are <c>null</c> until the grading is completed.</summary>
 public sealed record GradingAnswerResponse(

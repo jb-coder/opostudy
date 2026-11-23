@@ -327,6 +327,41 @@ public sealed class GradingsEndpointsTests(ApiFactory factory)
     }
 
     [Fact]
+    public async Task GetGrading_WhenCompletedWithProgress_ReturnsXpAndGoal()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+        var submitted = await SubmitOkAsync(client, content.PracticalCases.CaseA.Id);
+        await MutateAsync(factory.Services, submitted.Id, g =>
+        {
+            g.Start(DateTimeOffset.UtcNow);
+            g.Complete(FullMarks(g), DateTimeOffset.UtcNow);
+            g.RecordProgress(155, true);
+        });
+
+        var grading = await client.GetFromJsonAsync<GradingResponse>(DetailUri(submitted.Id), Ct);
+
+        grading.ShouldNotBeNull();
+        grading.XpEarned.ShouldBe(155);
+        grading.MetDailyGoal.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task GetGrading_WhenCompletedWithoutRecordedProgress_ReturnsNullXp()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+        var submitted = await SubmitOkAsync(client, content.PracticalCases.CaseA.Id);
+        await CompleteAsync(factory.Services, submitted.Id);
+
+        var grading = await client.GetFromJsonAsync<GradingResponse>(DetailUri(submitted.Id), Ct);
+
+        grading.ShouldNotBeNull();
+        grading.XpEarned.ShouldBeNull();
+        grading.MetDailyGoal.ShouldBeFalse();
+    }
+
+    [Fact]
     public async Task GetGrading_WhenCompleted_ReturnsScoresCriteriaAndModelAnswer()
     {
         var content = await ContentSeeder.SeedAsync(factory.Services);
