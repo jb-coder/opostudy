@@ -1,0 +1,108 @@
+{
+  "$schema": "../../../schema/practical-case.schema.json",
+  "key": "malaga-programador-c1/practical-cases/0002",
+  "title": "Seguimiento del Plan provincial de obras y servicios",
+  "section": "Bloque II-A. Materias específicas",
+  "statement": "El Servicio de Asistencia a Municipios de la Diputación quiere sustituir la hoja de cálculo con la que controla las actuaciones del Plan provincial de obras y servicios por una base de datos relacional (PostgreSQL).\n\nRequisitos recogidos:\n- Cada municipio de la provincia tiene un código INE único (5 dígitos), un nombre y un número de habitantes.\n- Cada actuación (obra o servicio) tiene un código único (p. ej. PPOS-2026-001), una denominación y un estado: PLANIFICADA, EN_EJECUCION o FINALIZADA. Pertenece a un único municipio, y un municipio puede tener varias actuaciones.\n- Las actuaciones se adjudican a una empresa (CIF único y razón social) por un importe adjudicado. Una actuación puede estar todavía sin adjudicar; en ese caso no tiene empresa ni importe. Una empresa puede tener adjudicadas varias actuaciones.\n- Cada actuación tiene certificaciones de obra numeradas correlativamente (1, 2, 3...) dentro de su actuación, con fecha e importe. Una certificación no existe sin su actuación.\n- Los técnicos de la Diputación (nombre y correo único) se asignan a las actuaciones como DIRECTOR o SUPERVISOR con unas horas previstas. Un técnico puede estar asignado a varias actuaciones y una actuación puede tener varios técnicos.\n\nDatos de ejemplo para razonar: Archidona tiene dos actuaciones (red de abastecimiento y pavimentación), Genalguacil tiene dos actuaciones aún sin adjudicar y Ronda tiene dos adjudicadas; todas tienen certificaciones salvo las de Genalguacil. Los nombres, códigos y datos son ficticios.",
+  "estimatedMinutes": 75,
+  "parts": [
+    {
+      "statement": "Diseña el modelo entidad-relación del caso (entidades, atributos, claves y cardinalidades; vale un diagrama en texto) y pásalo a tablas relacionales de PostgreSQL con las sentencias CREATE TABLE. Justifica cómo resuelves la relación entre técnicos y actuaciones, la actuación sin adjudicar y las certificaciones.",
+      "modelAnswer": "Diagrama E-R (cardinalidades en texto):\nMUNICIPIO (1,1) --- tiene --- (0,N) ACTUACION\nEMPRESA (0,1) --- se adjudica --- (0,N) ACTUACION  [la actuación puede estar sin adjudicar]\nTECNICO (0,N) --- se asigna (rol, horas_previstas) --- (0,N) ACTUACION  [relación N:M con atributos]\nACTUACION (1,1) --- tiene --- (0,N) CERTIFICACION  [CERTIFICACION es entidad débil: se identifica por ACTUACION + número]\n\nEntidades y claves: MUNICIPIO(codigo_ine, nombre, habitantes), EMPRESA(cif, razon_social), TECNICO(nombre, email), ACTUACION(codigo, denominacion, estado, importe_adjudicado) y CERTIFICACION(numero, fecha, importe), cuya clave parcial es numero. En las tablas se usa una clave sustituta (id) y los identificadores naturales se mantienen como UNIQUE.\n\nPaso a tablas:\n\nCREATE TABLE municipios (\n  id SERIAL PRIMARY KEY,\n  codigo_ine CHAR(5) NOT NULL UNIQUE,\n  nombre VARCHAR(200) NOT NULL,\n  habitantes INT NOT NULL CHECK (habitantes >= 0)\n);\nCREATE TABLE empresas (\n  id SERIAL PRIMARY KEY,\n  cif CHAR(9) NOT NULL UNIQUE,\n  razon_social VARCHAR(200) NOT NULL\n);\nCREATE TABLE tecnicos (\n  id SERIAL PRIMARY KEY,\n  nombre VARCHAR(150) NOT NULL,\n  email VARCHAR(200) NOT NULL UNIQUE\n);\nCREATE TABLE actuaciones (\n  id SERIAL PRIMARY KEY,\n  codigo VARCHAR(20) NOT NULL UNIQUE,\n  denominacion VARCHAR(300) NOT NULL,\n  estado VARCHAR(20) NOT NULL CHECK (estado IN ('PLANIFICADA','EN_EJECUCION','FINALIZADA')),\n  municipio_id INT NOT NULL REFERENCES municipios(id),\n  empresa_id INT NULL REFERENCES empresas(id),\n  importe_adjudicado NUMERIC(12,2) NULL CHECK (importe_adjudicado > 0),\n  CHECK ((empresa_id IS NULL) = (importe_adjudicado IS NULL))\n);\nCREATE TABLE asignaciones (\n  tecnico_id INT NOT NULL REFERENCES tecnicos(id),\n  actuacion_id INT NOT NULL REFERENCES actuaciones(id),\n  rol VARCHAR(20) NOT NULL CHECK (rol IN ('DIRECTOR','SUPERVISOR')),\n  horas_previstas INT NOT NULL CHECK (horas_previstas > 0),\n  PRIMARY KEY (tecnico_id, actuacion_id)\n);\nCREATE TABLE certificaciones (\n  actuacion_id INT NOT NULL REFERENCES actuaciones(id),\n  numero INT NOT NULL CHECK (numero > 0),\n  fecha DATE NOT NULL,\n  importe NUMERIC(12,2) NOT NULL CHECK (importe > 0),\n  PRIMARY KEY (actuacion_id, numero)\n);\n\nJustificación: la relación municipio-actuación es 1:N, así que la clave ajena municipio_id va en actuaciones (NOT NULL: toda actuación tiene municipio). La relación empresa-actuación también es 1:N, pero la participación de la actuación es opcional: empresa_id e importe_adjudicado son nulos hasta la adjudicación y el CHECK obliga a que estén los dos o ninguno. La relación técnico-actuación es N:M, por lo que se convierte en la tabla asignaciones, con clave primaria compuesta (tecnico_id, actuacion_id) y los atributos rol y horas_previstas, que pertenecen a la relación y no a una de las entidades. La certificación es una entidad débil: su clave primaria es compuesta (actuacion_id, numero) y la clave ajena a actuaciones forma parte de la clave. Los importes se guardan como NUMERIC y no como FLOAT para evitar errores de redondeo; el estado se acota con CHECK; el código INE, el CIF, el código de actuación y el correo son UNIQUE.",
+      "criteria": [
+        {
+          "description": "Presenta el diagrama E-R con las entidades, las relaciones y sus cardinalidades indicadas (aunque sea en texto)",
+          "points": 1
+        },
+        {
+          "description": "Identifica las entidades municipio, empresa, técnico y actuación con sus atributos y su clave primaria",
+          "points": 2
+        },
+        {
+          "description": "Modela la certificación como entidad débil, con clave primaria compuesta por la clave de la actuación y el número de certificación",
+          "points": 2
+        },
+        {
+          "description": "Pasa a tablas la relación 1:N municipio-actuación con la clave ajena municipio_id en la tabla de actuaciones",
+          "points": 1
+        },
+        {
+          "description": "Resuelve la actuación sin adjudicar con empresa_id e importe adjudicado opcionales (nulos hasta la adjudicación)",
+          "points": 1
+        },
+        {
+          "description": "Resuelve la relación N:M técnico-actuación con una tabla propia de clave primaria compuesta que contiene rol y horas previstas",
+          "points": 2
+        },
+        {
+          "description": "Elige tipos y restricciones adecuados (importes NUMERIC, estado acotado con CHECK, UNIQUE en código INE, CIF y correo)",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Escribe en SQL: a) una consulta que devuelva, para los municipios con al menos dos actuaciones, su nombre, el número de actuaciones y el total certificado (0 si no hay certificaciones), ordenada por total certificado de mayor a menor; b) una consulta que devuelva la razón social de las empresas con alguna actuación adjudicada por un importe superior a la media de los importes adjudicados, sin repetir empresas.",
+      "modelAnswer": "a) Municipios con al menos dos actuaciones, con el número de actuaciones y el total certificado:\n\nSELECT m.nombre,\n       COUNT(DISTINCT a.id) AS actuaciones,\n       COALESCE(SUM(c.importe), 0) AS total_certificado\nFROM municipios m\nJOIN actuaciones a ON a.municipio_id = m.id\nLEFT JOIN certificaciones c ON c.actuacion_id = a.id\nGROUP BY m.id, m.nombre\nHAVING COUNT(DISTINCT a.id) >= 2\nORDER BY total_certificado DESC;\n\nSe une municipios con actuaciones y actuaciones con certificaciones mediante LEFT JOIN, para no perder las actuaciones sin certificar. Como cada certificación repite su actuación en el resultado del JOIN, hay que contar con COUNT(DISTINCT a.id); con COUNT(*) Archidona saldría con 3 actuaciones en lugar de 2. COALESCE convierte en 0 el total de los municipios sin certificaciones (Genalguacil). El filtro sobre el número de actuaciones va en HAVING porque depende de una función de agregado y no puede ir en WHERE. Con los datos de ejemplo devuelve Ronda (2 actuaciones, 140.000,00), Archidona (2, 130.000,00) y Genalguacil (2, 0).\n\nb) Empresas que tienen alguna actuación adjudicada por encima del importe medio adjudicado:\n\nSELECT DISTINCT e.razon_social\nFROM empresas e\nJOIN actuaciones a ON a.empresa_id = e.id\nWHERE a.importe_adjudicado > (SELECT AVG(importe_adjudicado) FROM actuaciones)\nORDER BY e.razon_social;\n\nLa subconsulta escalar calcula la media de los importes adjudicados; AVG ignora los nulos, es decir, las actuaciones sin adjudicar. DISTINCT evita repetir la empresa si tiene varias actuaciones por encima de la media. Con los datos de ejemplo (media 140.000,00) devuelve Construcciones Axarquía S.L. y Servicios Hidráulicos Sur S.L.",
+      "criteria": [
+        {
+          "description": "Consulta a): une municipios con actuaciones y actuaciones con certificaciones mediante un LEFT JOIN, para no perder las actuaciones sin certificar",
+          "points": 1
+        },
+        {
+          "description": "Consulta a): cuenta las actuaciones con COUNT(DISTINCT a.id) para no duplicarlas por las certificaciones",
+          "points": 1
+        },
+        {
+          "description": "Consulta a): suma los importes certificados con SUM y convierte el nulo en 0 con COALESCE",
+          "points": 1
+        },
+        {
+          "description": "Consulta a): agrupa por municipio con GROUP BY",
+          "points": 1
+        },
+        {
+          "description": "Consulta a): filtra por número de actuaciones mayor o igual que 2 en HAVING (no en WHERE)",
+          "points": 1
+        },
+        {
+          "description": "Consulta a): ordena por el total certificado de mayor a menor",
+          "points": 1
+        },
+        {
+          "description": "Consulta b): calcula la media de importes adjudicados con una subconsulta escalar que usa AVG",
+          "points": 2
+        },
+        {
+          "description": "Consulta b): compara el importe adjudicado de cada actuación con esa media usando >",
+          "points": 1
+        },
+        {
+          "description": "Consulta b): devuelve cada empresa una sola vez (DISTINCT o equivalente) tras unir empresas con actuaciones",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Al registrar una nueva certificación, el importe total certificado de una actuación no puede superar su importe adjudicado, y dos técnicos pueden certificar a la vez sobre la misma actuación. Explica cómo usarías una transacción para garantizarlo y escribe las sentencias. Propón además un índice que mejore las consultas del apartado anterior y justifícalo.",
+      "modelAnswer": "Para registrar una certificación hay que comprobar que la suma de las certificaciones de la actuación no supera el importe adjudicado y, solo entonces, insertarla. Esas operaciones forman una unidad: se agrupan en una única transacción (BEGIN ... COMMIT) para que se ejecuten completas o ninguna (atomicidad).\n\nSi dos técnicos certifican a la vez sobre la misma actuación, con el aislamiento por defecto de PostgreSQL (READ COMMITTED) ambos podrían leer la misma suma y superar el importe entre los dos. Se evita bloqueando la fila de la actuación al principio de la transacción, de modo que la segunda transacción espera a la primera:\n\nBEGIN;\nSELECT importe_adjudicado FROM actuaciones WHERE id = :id FOR UPDATE;\nSELECT COALESCE(SUM(importe), 0) FROM certificaciones WHERE actuacion_id = :id;\n-- la aplicación compara: suma + importe_nuevo > importe_adjudicado ? Si es así: ROLLBACK;\nINSERT INTO certificaciones (actuacion_id, numero, fecha, importe)\nVALUES (:id, (SELECT COALESCE(MAX(numero), 0) + 1 FROM certificaciones WHERE actuacion_id = :id), CURRENT_DATE, :importe);\nCOMMIT;\n\nSi la suma más el importe nuevo supera el importe adjudicado, se hace ROLLBACK y se informa del error sin insertar nada. Calcular el número dentro de la misma transacción, con la fila bloqueada, evita además números duplicados.\n\nÍndice razonado: en PostgreSQL la clave primaria y las restricciones UNIQUE crean índice, pero las claves ajenas no. La consulta del apartado 2a y los listados de actuaciones de un municipio filtran y unen por actuaciones.municipio_id, así que conviene CREATE INDEX ix_actuaciones_municipio ON actuaciones (municipio_id); sin él, cada consulta recorrería toda la tabla. (El de certificaciones por actuacion_id ya existe: es el primer campo de su clave primaria compuesta.)",
+      "criteria": [
+        {
+          "description": "Agrupa la comprobación de la suma y la inserción de la certificación en una única transacción (BEGIN y COMMIT) y la justifica por atomicidad",
+          "points": 1
+        },
+        {
+          "description": "Evita la condición de carrera bloqueando la fila de la actuación con SELECT ... FOR UPDATE (o con aislamiento SERIALIZABLE) y explica por qué",
+          "points": 2
+        },
+        {
+          "description": "Rechaza la operación con ROLLBACK cuando la suma certificada más el importe nuevo supera el importe adjudicado",
+          "points": 1
+        },
+        {
+          "description": "Propone un índice sobre actuaciones(municipio_id) y razona que PostgreSQL no indexa automáticamente las claves ajenas",
+          "points": 1
+        }
+      ]
+    }
+  ]
+}

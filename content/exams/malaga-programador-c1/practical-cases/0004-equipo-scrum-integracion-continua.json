@@ -1,0 +1,118 @@
+{
+  "$schema": "../../../schema/practical-case.schema.json",
+  "key": "malaga-programador-c1/practical-cases/0004",
+  "title": "Un equipo de desarrollo adopta Scrum e integración continua",
+  "section": "Bloque II-B. Materias específicas",
+  "statement": "El Servicio de Informática de la Diputación tiene un equipo de seis programadores que mantiene el Portal de Ayuntamientos, una aplicación Java 21 con Spring Boot y Maven. Hasta ahora todo el equipo trabaja en una única rama, las pruebas son manuales y el artefacto se compila en el equipo de cada persona y se copia a mano al servidor.\n\nEl equipo va a adoptar Scrum con Sprints de dos semanas y quiere automatizar la integración y la entrega: control de versiones con Git, pruebas automáticas con JUnit y un servidor de integración continua Jenkins que use SonarQube para el análisis de calidad del código y Nexus Repository como repositorio de artefactos.\n\nRespondes como programador/a responsable de definir el proceso. Resuelve los cuatro apartados.",
+  "estimatedMinutes": 90,
+  "parts": [
+    {
+      "statement": "Responde con brevedad (de 2 a 4 líneas cada una), según la Guía Scrum, a estas cuestiones: 1) Cita los tres artefactos de Scrum y el compromiso de cada uno. 2) ¿Quién es responsable de la gestión del Product Backlog? 3) ¿Qué duración puede tener un Sprint? ¿Es válido el de dos semanas? 4) ¿Qué es la Definition of Done? Pon un ejemplo para este equipo. 5) ¿En qué se diferencian la Sprint Review y la Sprint Retrospective?",
+      "modelAnswer": "1) Los tres artefactos y su compromiso: el Product Backlog (compromiso: el Product Goal), el Sprint Backlog (compromiso: el Sprint Goal) y el Incremento (compromiso: la Definition of Done).\n\n2) El Product Owner, que es una sola persona y no un comité, es el responsable de la gestión efectiva del Product Backlog: crear y comunicar sus elementos, ordenarlos y asegurar que es transparente. Puede delegar el trabajo, pero sigue siendo el responsable.\n\n3) La duración del Sprint es fija y de un mes o menos, y el siguiente empieza justo al terminar el anterior. Un Sprint de dos semanas es válido.\n\n4) La Definition of Done es la descripción formal del estado del Incremento cuando cumple las medidas de calidad exigidas al producto. Un trabajo que no la cumple no forma parte del Incremento (vuelve al Product Backlog). Ejemplo para este equipo: código revisado y fusionado en la rama de integración, pruebas automáticas superadas y quality gate de SonarQube en verde.\n\n5) En la Sprint Review el equipo y los interesados inspeccionan el resultado del Sprint (el Incremento) y se adapta el Product Backlog según lo que se ha visto. En la Sprint Retrospective el equipo inspecciona cómo ha ido el Sprint en cuanto a personas, interacciones, procesos, herramientas y Definition of Done, e identifica mejoras para el siguiente.",
+      "criteria": [
+        {
+          "description": "Nombra los tres artefactos (Product Backlog, Sprint Backlog e Incremento) y el compromiso de cada uno (Product Goal, Sprint Goal y Definition of Done)",
+          "points": 2
+        },
+        {
+          "description": "Indica que el Product Owner, una sola persona, es el responsable de gestionar el Product Backlog, incluido su orden",
+          "points": 1
+        },
+        {
+          "description": "Indica que la duración del Sprint es fija y de un mes como máximo, y que un Sprint de dos semanas es válido",
+          "points": 1
+        },
+        {
+          "description": "Define la Definition of Done como el estado de calidad que debe cumplir el trabajo para formar parte del Incremento y da un ejemplo concreto para este equipo",
+          "points": 1
+        },
+        {
+          "description": "Distingue la Sprint Review (se inspecciona el Incremento con los interesados y se adapta el Product Backlog) de la Sprint Retrospective (se inspecciona cómo ha trabajado el equipo y se planifican mejoras)",
+          "points": 2
+        }
+      ]
+    },
+    {
+      "statement": "Redacta un informe breve (unas 15 líneas) con la estrategia de ramas Git que propones para el equipo y su justificación. Indica las ramas de larga duración y las de corta duración, cómo se integra el trabajo y qué reglas de protección aplicarías, cómo se prepara y se etiqueta una versión y cómo se corrige un fallo urgente en producción. Incluye los comandos Git del ciclo de una funcionalidad y de una versión.",
+      "modelAnswer": "Informe. Propongo Gitflow simplificado, adecuado a un equipo de 6 personas con Sprints de dos semanas y versiones planificadas.\n\nRamas. main contiene siempre lo que está en producción y cada versión lleva una etiqueta. develop integra el trabajo terminado del Sprint. De develop salen ramas de corta duración por elemento del Product Backlog (feature/<n.º>-<descripcion>, p. ej. feature/123-calculo-plazos). Para preparar una versión se crea release/<versión> desde develop y, para un fallo urgente en producción, hotfix/<versión> desde main.\n\nIntegración y protección. Las ramas feature vuelven a develop mediante Pull Request con al menos una revisión de otro miembro y el pipeline de integración continua en verde. main y develop están protegidas en el servidor: sin push directo, con revisión obligatoria y comprobaciones superadas. Así solo entra en develop trabajo que cumple la Definition of Done.\n\nVersiones. La release se estabiliza (solo correcciones), se fusiona en main con --no-ff, se etiqueta con una etiqueta anotada y se devuelve a develop. El hotfix sigue el mismo camino desde main y se fusiona también en develop para no perder la corrección.\n\nComandos:\n\ngit switch develop && git pull --ff-only\ngit switch -c feature/123-calculo-plazos\ngit add . && git commit -m \"feat: calcula los plazos de pago\"\ngit push -u origin feature/123-calculo-plazos\n# Pull Request hacia develop; al fusionarse: git branch -d feature/123-calculo-plazos\n\ngit switch -c release/1.4.0 develop\ngit switch main && git merge --no-ff release/1.4.0\ngit tag -a v1.4.0 -m \"Versión 1.4.0\"\ngit switch develop && git merge --no-ff release/1.4.0\ngit push origin main develop v1.4.0\n\ngit switch -c hotfix/1.4.1 main\n# corrección y commit; después se fusiona en main, se etiqueta v1.4.1 y se fusiona en develop como en la release\n\nAlternativa válida: desarrollo basado en troncal (trunk-based), con ramas muy cortas y main siempre desplegable, si el equipo prefiere liberar de forma continua.",
+      "criteria": [
+        {
+          "description": "Nombra las ramas de larga duración y su finalidad (por ejemplo main para producción y develop para integración, o solo main en desarrollo basado en troncal)",
+          "points": 1
+        },
+        {
+          "description": "Propone ramas de corta duración por elemento del Product Backlog, con una convención de nombres, que se integran mediante Pull Request con revisión",
+          "points": 1
+        },
+        {
+          "description": "Define reglas de protección de las ramas principales (sin push directo, revisión obligatoria y comprobaciones de integración continua superadas)",
+          "points": 1
+        },
+        {
+          "description": "Explica cómo se prepara y se etiqueta una versión y cómo se corrige un fallo urgente en producción (ramas release y hotfix o equivalente, etiqueta anotada con git tag -a y devolución del cambio a la rama de integración)",
+          "points": 2
+        },
+        {
+          "description": "Escribe comandos Git correctos para el ciclo de una funcionalidad (crear la rama, confirmar y subirla con git push -u)",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "La clase InstalmentSplitter divide el importe de una subvención en plazos: split(BigDecimal total, int instalments) devuelve una lista de importes con dos decimales. Cada plazo, salvo el último, es total / instalments redondeado hacia abajo a dos decimales y el último recoge el resto (1000,00 en 3 plazos da 333,33, 333,33 y 333,34). El total debe ser mayor que 0 y los plazos deben estar entre 1 y 12; en otro caso lanza IllegalArgumentException. Escribe la clase de pruebas con JUnit 5 que cubra su comportamiento.",
+      "modelAnswer": "Pruebas con JUnit 5:\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertThrows;\n\nimport java.math.BigDecimal;\nimport java.util.List;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.params.ParameterizedTest;\nimport org.junit.jupiter.params.provider.CsvSource;\nimport org.junit.jupiter.params.provider.ValueSource;\n\nclass InstalmentSplitterTest {\n\n    private final InstalmentSplitter splitter = new InstalmentSplitter();\n\n    @Test\n    void split_exactDivision_returnsEqualInstalments() {\n        List<BigDecimal> result = splitter.split(new BigDecimal(\"1000.00\"), 4);\n\n        assertEquals(List.of(new BigDecimal(\"250.00\"), new BigDecimal(\"250.00\"),\n                new BigDecimal(\"250.00\"), new BigDecimal(\"250.00\")), result);\n    }\n\n    @Test\n    void split_divisionWithRemainder_putsRemainderInLastInstalment() {\n        List<BigDecimal> result = splitter.split(new BigDecimal(\"1000.00\"), 3);\n\n        assertEquals(List.of(new BigDecimal(\"333.33\"), new BigDecimal(\"333.33\"),\n                new BigDecimal(\"333.34\")), result);\n    }\n\n    @Test\n    void split_singleInstalment_returnsTotal() {\n        List<BigDecimal> result = splitter.split(new BigDecimal(\"500.00\"), 1);\n\n        assertEquals(List.of(new BigDecimal(\"500.00\")), result);\n    }\n\n    @ParameterizedTest\n    @CsvSource({\"1000.00,3\", \"0.05,12\", \"999.99,7\", \"12345.67,12\"})\n    void split_validInput_instalmentsAddUpToTotal(String total, int instalments) {\n        BigDecimal expected = new BigDecimal(total);\n\n        BigDecimal sum = splitter.split(expected, instalments).stream()\n                .reduce(BigDecimal.ZERO, BigDecimal::add);\n\n        assertEquals(0, expected.compareTo(sum));\n    }\n\n    @ParameterizedTest\n    @ValueSource(ints = {0, -1, 13})\n    void split_instalmentsOutOfRange_throwsIllegalArgumentException(int instalments) {\n        assertThrows(IllegalArgumentException.class,\n                () -> splitter.split(new BigDecimal(\"100.00\"), instalments));\n    }\n\n    @ParameterizedTest\n    @ValueSource(strings = {\"0.00\", \"-10.00\"})\n    void split_totalNotPositive_throwsIllegalArgumentException(String total) {\n        assertThrows(IllegalArgumentException.class,\n                () -> splitter.split(new BigDecimal(total), 2));\n    }\n}\n\nCada prueba comprueba un solo comportamiento con la estructura preparar-actuar-comprobar, es independiente de las demás (el único estado compartido es el objeto bajo prueba, sin estado interno) y su nombre indica método, escenario y resultado esperado. Los casos de los límites (1 y 12 plazos, 0 y 13) y el invariante de que la suma de las cuotas es el total detectan los errores de redondeo típicos.",
+      "criteria": [
+        {
+          "description": "Usa JUnit 5 correctamente (importaciones de org.junit.jupiter, anotación @Test y aserciones assertEquals y assertThrows)",
+          "points": 1
+        },
+        {
+          "description": "Prueba el reparto con resto comprobando los importes (el último plazo recoge el resto) y al menos otro caso normal",
+          "points": 1
+        },
+        {
+          "description": "Comprueba que la suma de los plazos es igual al total, por ejemplo con una prueba parametrizada (@ParameterizedTest)",
+          "points": 1
+        },
+        {
+          "description": "Prueba con assertThrows los casos de error: total no positivo y número de plazos fuera de rango",
+          "points": 1
+        },
+        {
+          "description": "Nombra cada prueba según el escenario y comprueba un solo comportamiento por prueba, sin depender del orden de ejecución",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Escribe el Jenkinsfile (pipeline declarativo) del proyecto con estas etapas: compilar y ejecutar las pruebas publicando sus informes, análisis con SonarQube que detenga el pipeline si no se supera el quality gate y publicación del artefacto en Nexus solo desde main y las ramas de versión. Explica cómo gestionarías las credenciales.",
+      "modelAnswer": "Jenkinsfile (pipeline declarativo, en la raíz del repositorio):\n\npipeline {\n    agent { label 'maven-jdk21' }\n    options {\n        timeout(time: 30, unit: 'MINUTES')\n        disableConcurrentBuilds()\n    }\n    stages {\n        stage('Compilar y probar') {\n            steps {\n                sh 'mvn -B clean verify'\n            }\n            post {\n                always {\n                    junit 'target/surefire-reports/*.xml'\n                }\n            }\n        }\n        stage('Análisis SonarQube') {\n            steps {\n                withSonarQubeEnv('sonarqube-diputacion') {\n                    sh 'mvn -B sonar:sonar'\n                }\n            }\n        }\n        stage('Quality Gate') {\n            steps {\n                timeout(time: 10, unit: 'MINUTES') {\n                    waitForQualityGate abortPipeline: true\n                }\n            }\n        }\n        stage('Publicar en Nexus') {\n            when {\n                anyOf {\n                    branch 'main'\n                    branch pattern: 'release/.*', comparator: 'REGEXP'\n                }\n            }\n            steps {\n                withCredentials([usernamePassword(credentialsId: 'nexus-deploy',\n                        usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {\n                    sh 'mvn -B -s ci/settings.xml deploy -DskipTests'\n                }\n            }\n        }\n    }\n}\n\nExplicación. El Jenkinsfile está versionado con el código; se usa un job multibranch para que cada rama y Pull Request tenga su pipeline. La etapa de pruebas ejecuta mvn verify (compila y lanza las pruebas JUnit); si una falla, el build falla, y el paso junit publica los informes en Jenkins aunque haya fallos. withSonarQubeEnv toma la URL y el token del servidor SonarQube configurado en Jenkins con el nombre indicado (el token no está en el repositorio) y ejecuta el análisis con el plugin de Maven. waitForQualityGate espera el resultado del quality gate, que SonarQube comunica a Jenkins por un webhook configurado en SonarQube hacia la URL de Jenkins; con abortPipeline: true, si el quality gate no se supera el pipeline se aborta y no se publica nada, y el timeout evita esperar indefinidamente. La publicación en Nexus Repository solo ocurre en main y en las ramas release: mvn deploy sube el artefacto al repositorio definido en distributionManagement del pom (de versiones o de snapshots según la versión), y el usuario y la contraseña de Nexus salen de las credenciales de Jenkins (withCredentials) y llegan a Maven mediante el fichero ci/settings.xml, que solo referencia variables de entorno. Nunca se escriben contraseñas en el Jenkinsfile ni en el repositorio.",
+      "criteria": [
+        {
+          "description": "Escribe un pipeline declarativo (Jenkinsfile versionado en el repositorio) con agent y etapas ordenadas: compilar y probar, análisis, quality gate y publicación",
+          "points": 1
+        },
+        {
+          "description": "Ejecuta la compilación y las pruebas unitarias en el pipeline y publica los informes JUnit (paso junit)",
+          "points": 1
+        },
+        {
+          "description": "Lanza el análisis de SonarQube con withSonarQubeEnv usando un servidor configurado en Jenkins",
+          "points": 1
+        },
+        {
+          "description": "Detiene el pipeline si no se supera el quality gate (waitForQualityGate con abortPipeline y límite de tiempo) y explica que SonarQube avisa a Jenkins mediante un webhook",
+          "points": 2
+        },
+        {
+          "description": "Publica el artefacto en Nexus solo para main y las ramas de versión (condición when) y lo hace con Maven (deploy)",
+          "points": 1
+        },
+        {
+          "description": "Gestiona usuario y contraseña con las credenciales de Jenkins (withCredentials) y no los escribe en el Jenkinsfile ni en el repositorio",
+          "points": 1
+        }
+      ]
+    }
+  ]
+}

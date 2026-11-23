@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../schema/practical-case.schema.json",
+  "key": "malaga-programador-c1/practical-cases/0003",
+  "title": "Seguridad y protección de datos de un servicio de teleasistencia",
+  "section": "Bloque II-A. Materias específicas",
+  "statement": "La Diputación presta, en colaboración con los ayuntamientos de menos de 20.000 habitantes de la provincia, un servicio de teleasistencia domiciliaria para personas mayores y en situación de dependencia. Unas 6.000 personas usuarias llevan en casa un terminal con un botón de alarma. Al pulsarlo, la alarma llega a una plataforma informática alojada en el centro de datos de la Diputación, donde operadores del centro de atención, que funciona las 24 horas, atienden la llamada y avisan a los servicios de emergencia o a los contactos de la persona.\n\nLa plataforma guarda por cada persona usuaria una ficha con nombre, DNI, dirección, teléfono, personas de contacto y los datos de salud necesarios para el protocolo de emergencia (patologías y medicación relevantes). También registra cada alarma, la llamada y el operador que la atendió. La plataforma se encuentra en el ámbito de aplicación del Esquema Nacional de Seguridad y aún no se ha categorizado. El responsable de la seguridad de la Diputación ha reunido estas valoraciones:\n\n- Disponibilidad: una interrupción prolongada de la plataforma impediría atender una emergencia sanitaria con riesgo para la vida o la integridad de la persona, un perjuicio grave y de difícil o imposible reparación.\n- Confidencialidad: la filtración de las fichas (quién vive sola, dónde, con qué patologías) causaría un perjuicio significativo y de difícil reparación a las personas afectadas, sin llegar a poner en riesgo su vida, y un incumplimiento material de la normativa de protección de datos.\n- Integridad: un error puntual en los datos lo detecta el operador, que verifica la ficha con la persona en cada llamada, por lo que el perjuicio sería limitado y fácilmente reparable.\n- Trazabilidad: si no pudiera determinarse quién accedió a una ficha o qué operador atendió una alarma, se produciría un incumplimiento material de la normativa y se dificultaría reparar los perjuicios a las personas afectadas.\n- Autenticidad: la suplantación aislada de un operador quedaría registrada y se detectaría, y causaría un perjuicio limitado a la organización y a las personas.\n\nToda la información del enunciado es ficticia. La Diputación va a elaborar un informe para su comité de seguridad de la información y su delegado de protección de datos.",
+  "estimatedMinutes": 75,
+  "parts": [
+    {
+      "statement": "Con las valoraciones del enunciado, determina el nivel de seguridad de cada dimensión (C, I, T, A y D) y la categoría de seguridad del sistema según el Esquema Nacional de Seguridad. Justifica cada nivel con la definición del Real Decreto 311/2022 y explica la regla que permite obtener la categoría.",
+      "modelAnswer": "Las dimensiones de seguridad son confidencialidad [C], integridad [I], trazabilidad [T], autenticidad [A] y disponibilidad [D], y cada una afectada se adscribe al nivel BAJO, MEDIO o ALTO según el perjuicio de un incidente (RD 311/2022, art. 40.2 y anexo I, apdos. 2 y 3).\n\n- Disponibilidad: ALTO. Una interrupción puede causar un perjuicio grave a las personas, de difícil o imposible reparación, que es la definición del nivel ALTO (anexo I, apdo. 3.c).4.º).\n- Confidencialidad: MEDIO. Un perjuicio significativo a individuos, de difícil reparación, y un incumplimiento material de la normativa son perjuicios graves, propios del nivel MEDIO (anexo I, apdo. 3.b).3.º y 4.º).\n- Trazabilidad: MEDIO. La imposibilidad de determinar accesos y operadores supondría un incumplimiento material de la normativa, perjuicio grave del nivel MEDIO (anexo I, apdo. 3.b).3.º).\n- Integridad: BAJO. El error puntual causa un perjuicio menor a un individuo, fácilmente reparable, perjuicio limitado propio del nivel BAJO (anexo I, apdo. 3.a).4.º).\n- Autenticidad: BAJO. La suplantación aislada, detectada y registrada, supone un perjuicio limitado (anexo I, apdo. 3.a).\n\nCategoría: cuando un sistema trata diferentes informaciones y presta diferentes servicios, el nivel en cada dimensión es el mayor de los establecidos para cada información y servicio (anexo I, apdo. 3, último párrafo). Un sistema es de categoría ALTA si alguna de sus dimensiones alcanza el nivel ALTO (anexo I, apdo. 4.1.a). Como la disponibilidad es ALTO, el sistema es de categoría ALTA, aunque la integridad y la autenticidad sean BAJO: ese resultado no altera el nivel de las demás dimensiones (anexo I, apdo. 4.2). La categoría debe reevaluarse al menos una vez al año o ante modificaciones significativas (anexo I, apdo. 1).",
+      "criteria": [
+        {
+          "description": "Asigna a la disponibilidad el nivel ALTO y lo justifica por el perjuicio grave de difícil o imposible reparación a las personas",
+          "points": 2
+        },
+        {
+          "description": "Asigna a la confidencialidad el nivel MEDIO y lo justifica por el perjuicio significativo de difícil reparación y el incumplimiento material de la norma",
+          "points": 2
+        },
+        {
+          "description": "Asigna a la trazabilidad el nivel MEDIO y lo justifica por el incumplimiento material de la norma",
+          "points": 1
+        },
+        {
+          "description": "Asigna a la integridad el nivel BAJO y lo justifica por el perjuicio limitado y fácilmente reparable",
+          "points": 1
+        },
+        {
+          "description": "Asigna a la autenticidad el nivel BAJO y lo justifica por el perjuicio limitado",
+          "points": 1
+        },
+        {
+          "description": "Determina la categoría ALTA y cita la regla: basta una dimensión en nivel ALTO (anexo I, apdo. 4)",
+          "points": 2
+        }
+      ]
+    },
+    {
+      "statement": "Responde de forma breve: a) ¿cómo se seleccionan las medidas de seguridad del anexo II y en qué documento se formaliza la selección?; b) indica, con su código, cinco medidas del anexo II que serían exigibles a este sistema, y por qué dimensión o categoría lo son; c) ¿cada cuánto tiempo debe auditarse el sistema?",
+      "modelAnswer": "Selección: las medidas del anexo II se eligen identificando los activos, las dimensiones relevantes y su nivel, la categoría del sistema y, a partir de ahí, las medidas y refuerzos que corresponden según las dimensiones y sus niveles y, en algunas medidas, según la categoría (RD 311/2022, anexo II, apdo. 2.1.e)). La relación de medidas seleccionadas se formaliza en la Declaración de Aplicabilidad, firmada por el responsable de la seguridad (art. 28.2).\n\nMedidas exigibles en este caso:\n- op.cont.2, Plan de continuidad: se exige por disponibilidad en nivel ALTO (anexo II, op.cont.2).\n- op.cont.4, Medios alternativos: se exige por disponibilidad en nivel ALTO (anexo II, op.cont.4); incluye instalaciones, personal, equipamiento y comunicaciones alternativos.\n- op.exp.8, Registro de la actividad: por trazabilidad en nivel MEDIO se exige op.exp.8 más los refuerzos R1 a R4 (anexo II, op.exp.8).\n- op.mon.1, Detección de intrusión: se exige por categoría, y en categoría ALTA es op.mon.1 más R1 y R2 (anexo II, op.mon.1).\n- mp.info.1, Datos personales: se aplica en las tres categorías cuando el sistema trata datos personales; el responsable de la seguridad recoge los requisitos de protección de datos fijados por el responsable del tratamiento, con el asesoramiento del DPD (anexo II, mp.info.1).\n\nAuditoría: el sistema se audita de forma regular ordinaria al menos cada dos años, y extraordinariamente si hay modificaciones sustanciales (art. 31.1).",
+      "criteria": [
+        {
+          "description": "Explica que las medidas se seleccionan según el nivel de las dimensiones y la categoría del sistema (anexo II, apdo. 2)",
+          "points": 1
+        },
+        {
+          "description": "Indica que la selección se formaliza en la Declaración de Aplicabilidad, firmada por el responsable de la seguridad (art. 28.2)",
+          "points": 1
+        },
+        {
+          "description": "Cita el plan de continuidad (op.cont.2) como medida exigida por la disponibilidad en nivel ALTO",
+          "points": 1
+        },
+        {
+          "description": "Cita los medios alternativos (op.cont.4) como medida exigida por la disponibilidad en nivel ALTO",
+          "points": 1
+        },
+        {
+          "description": "Cita el registro de la actividad (op.exp.8) como medida exigida por la trazabilidad, con los refuerzos R1 a R4 en nivel MEDIO",
+          "points": 1
+        },
+        {
+          "description": "Cita la detección de intrusión (op.mon.1) como medida exigida por la categoría ALTA, con los refuerzos R1 y R2",
+          "points": 1
+        },
+        {
+          "description": "Cita la medida de datos personales (mp.info.1) como exigible porque el sistema trata datos personales",
+          "points": 1
+        },
+        {
+          "description": "Indica que la auditoría ordinaria es al menos cada dos años (art. 31.1)",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Redacta el informe jurídico, para el delegado de protección de datos, sobre el tratamiento de las fichas de las personas usuarias: base de licitud del tratamiento y su exigencia de rango normativo, el tratamiento de los datos de salud, los derechos que pueden ejercer las personas usuarias y el plazo para atenderlos, y las dos obligaciones previas al inicio del tratamiento que se derivan del RGPD (con la cita de los artículos del RGPD y de la LOPDGDD).",
+      "modelAnswer": "INFORME. Asunto: base jurídica y derechos de las personas usuarias en la plataforma de teleasistencia.\n\n1. Licitud (RGPD, art. 6.1.e): el tratamiento es necesario para una misión realizada en interés público o en el ejercicio de poderes públicos conferidos a la Diputación. No cabe invocar el interés legítimo del art. 6.1.f), que no se aplica a las autoridades públicas en el ejercicio de sus funciones (art. 6.1, último párrafo).\n\n2. Rango de la base: esa base debe estar establecida por el Derecho de la Unión o de los Estados miembros (RGPD, art. 6.3), y en España el tratamiento por interés público solo es lícito cuando deriva de una competencia atribuida por una norma con rango de ley (LOPDGDD, art. 8.2). La competencia de la Diputación sale de las leyes que se la atribuyan, entre otras la Ley 7/1985, art. 36.1, y de la legislación sectorial de servicios sociales aplicable, que debe citarse en el expediente.\n\n3. Datos de salud: son una categoría especial y su tratamiento está prohibido salvo excepción (RGPD, art. 9.1). Aquí se aplica el art. 9.2.h): tratamiento necesario para la prestación de asistencia o tratamiento de tipo social o la gestión de sistemas y servicios de asistencia social, sobre la base del Derecho de los Estados miembros. En España ese supuesto debe estar amparado en una norma con rango de ley (LOPDGDD, art. 9.2).\n\n4. Derechos que pueden ejercer las personas usuarias: acceso (RGPD, art. 15), rectificación (art. 16), supresión (art. 17, con la excepción del art. 17.3.b) cuando el tratamiento sea necesario para una misión de interés público), limitación (art. 18) y oposición, que procede porque la base es el art. 6.1.e) (art. 21.1). En la LOPDGDD se ejercen según sus arts. 13 a 16 y 18. Además, deben ser informadas conforme al art. 13 del RGPD.\n\n5. Portabilidad: no se aplica, porque el art. 20.1.a) la limita a los tratamientos basados en consentimiento o contrato y el art. 20.3 la excluye cuando el tratamiento es necesario para una misión de interés público o el ejercicio de poderes públicos (RGPD, art. 20).\n\n6. Plazo: el responsable informa de las actuaciones sobre la solicitud en el plazo de un mes desde su recepción, prorrogable otros dos meses si es necesario por la complejidad o el número de solicitudes, y debe comunicar la prórroga y sus motivos dentro del primer mes (RGPD, art. 12.3).\n\n7. Evaluación de impacto: es necesaria antes de iniciar el tratamiento porque se trata, a gran escala, de categorías especiales de datos (RGPD, art. 35.3.b), con el asesoramiento del DPD (art. 35.2).\n\n8. Delegado de protección de datos: es obligatorio designarlo porque el tratamiento lo lleva a cabo una autoridad u organismo público (RGPD, art. 37.1.a)).\n\nLas medidas de seguridad se corresponderán con las del Esquema Nacional de Seguridad (LOPDGDD, disp. adic. 1.ª, apdo. 2).",
+      "criteria": [
+        {
+          "description": "Identifica como base de licitud la misión de interés público o el ejercicio de poderes públicos (RGPD, art. 6.1.e)",
+          "points": 1
+        },
+        {
+          "description": "Indica que esa base debe derivar de una competencia atribuida por una norma con rango de ley (LOPDGDD, art. 8.2)",
+          "points": 1
+        },
+        {
+          "description": "Identifica los datos de salud como categoría especial y justifica su tratamiento con el art. 9.2.h) del RGPD (asistencia o gestión de servicios de tipo social)",
+          "points": 1
+        },
+        {
+          "description": "Enumera los derechos de acceso, rectificación, supresión, limitación y oposición con sus artículos del RGPD",
+          "points": 1
+        },
+        {
+          "description": "Explica que el derecho a la portabilidad no se aplica a este tratamiento (RGPD, art. 20.3)",
+          "points": 1
+        },
+        {
+          "description": "Indica el plazo de un mes para responder, prorrogable otros dos meses (RGPD, art. 12.3)",
+          "points": 1
+        },
+        {
+          "description": "Indica que procede una evaluación de impacto por el tratamiento a gran escala de categorías especiales de datos (RGPD, art. 35.3.b)",
+          "points": 1
+        },
+        {
+          "description": "Indica que es obligatorio designar un delegado de protección de datos por ser una autoridad u organismo público (RGPD, art. 37.1.a)",
+          "points": 1
+        }
+      ]
+    }
+  ]
+}

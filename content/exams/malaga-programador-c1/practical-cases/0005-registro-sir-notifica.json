@@ -1,0 +1,110 @@
+{
+  "$schema": "../../../schema/practical-case.schema.json",
+  "key": "malaga-programador-c1/practical-cases/0005",
+  "title": "Integración del registro municipal con SIR y Notifica",
+  "section": "Bloque II-C. Materias específicas",
+  "statement": "El Servicio de Administración Electrónica de la Diputación de Málaga coordina la modernización de la aplicación de registro del Ayuntamiento de Villasierra, municipio de la provincia con 12.000 habitantes. Esta aplicación gestiona la oficina de asistencia en materia de registros y el Registro Electrónico General del Ayuntamiento, y custodia los expedientes electrónicos de sus procedimientos.\n\nEl Ayuntamiento quiere integrarla con el Sistema de Interconexión de Registros (SIR), para enviar asientos a otras Administraciones como la propia Diputación, y con Notifica, para practicar las notificaciones electrónicas de sus resoluciones. Eres el programador responsable de la integración y debes resolver las dudas jurídico-técnicas del equipo.\n\nSe te pide resolver los apartados siguientes. Cita la norma y el artículo cuando proceda.",
+  "estimatedMinutes": 75,
+  "parts": [
+    {
+      "statement": "Flujo de un asiento de registro. Un vecino presenta en la oficina de asistencia en materia de registros del Ayuntamiento un escrito en papel (12 hojas) dirigido a la Diputación. Además, una empresa presenta por el Registro Electrónico General, el domingo 15 de marzo de 2026 a las 23:50, otro escrito dirigido al Ayuntamiento. Describe qué debe hacer la oficina con el escrito en papel, qué recibo debe obtener el vecino, cómo llega el escrito a la Diputación y qué fecha de presentación se considera para el escrito electrónico a efectos del cómputo de plazos.",
+      "modelAnswer": "1) Escrito en papel. La oficina de asistencia en materia de registros debe digitalizarlo para incorporarlo al expediente administrativo electrónico y devolver los originales al interesado (Ley 39/2015, art. 16.5). Los originales se devuelven inmediatamente tras la digitalización (Real Decreto 203/2021, art. 39.5).\n\n2) Recibo. Se emite automáticamente un recibo consistente en una copia autenticada del documento, que incluye la fecha y hora de presentación y el número de entrada de registro, además de un recibo acreditativo de los documentos que lo acompañen, de modo que se garantice la integridad y el no repudio (Ley 39/2015, art. 16.3). El asiento debe dejar constancia, además, del número, el epígrafe que expresa su naturaleza, la identificación del interesado y el órgano al que se envía (art. 16.3).\n\n3) Orden de los asientos. Los asientos se anotan respetando el orden temporal de recepción o salida de los documentos e indican la fecha en que se producen (art. 16.2). Concluido el trámite de registro, los documentos se cursan sin dilación a sus destinatarios.\n\n4) Llegada a la Diputación. Como el destinatario es otra Administración, la interconexión entre registros se realiza a través del Sistema de Interconexión de Registros (SIR), conforme al Esquema Nacional de Interoperabilidad y su norma técnica (Real Decreto 203/2021, art. 60.2). Los registros electrónicos de todas las Administraciones deben ser interoperables, con transmisión telemática de los asientos y de los documentos (Ley 39/2015, art. 16.4).\n\n5) Tamaño. Si los documentos superan la capacidad fijada para el SIR, su remisión puede sustituirse por la puesta a disposición de los documentos, previamente depositados en un repositorio de intercambio de ficheros (Real Decreto 203/2021, art. 39.4).\n\n6) Fecha del escrito electrónico. El 15 de marzo de 2026 es domingo, día inhábil. A efectos del cómputo de plazos fijados en días hábiles y del cumplimiento de plazos por el interesado, la presentación en día inhábil se entiende realizada en la primera hora del primer día hábil siguiente (Ley 39/2015, art. 31.2.b), es decir, a primera hora del lunes 16 de marzo de 2026. El registro electrónico permite presentar documentos todos los días del año durante las veinticuatro horas (art. 31.2.a).",
+      "criteria": [
+        {
+          "description": "Indica que el escrito en papel se digitaliza y que se devuelve el original al interesado",
+          "points": 1
+        },
+        {
+          "description": "Indica que se emite un recibo con copia autenticada que incluye fecha y hora de presentación y número de entrada de registro",
+          "points": 2
+        },
+        {
+          "description": "Indica que los asientos se anotan por orden temporal de recepción",
+          "points": 1
+        },
+        {
+          "description": "Indica que el escrito dirigido a la Diputación se envía a través del Sistema de Interconexión de Registros (SIR)",
+          "points": 2
+        },
+        {
+          "description": "Indica que, si el tamaño supera la capacidad del SIR, los documentos se ponen a disposición en un repositorio de intercambio de ficheros",
+          "points": 1
+        },
+        {
+          "description": "Indica que el escrito presentado en domingo se entiende presentado en la primera hora del primer día hábil siguiente (lunes 16 de marzo de 2026)",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Informe breve (máximo 20 líneas) dirigido al responsable del Archivo municipal sobre el documento electrónico y el expediente electrónico que genera la aplicación. Explica qué requisitos debe cumplir un documento administrativo electrónico para ser válido, de qué componentes consta el documento y el expediente según las Normas Técnicas de Interoperabilidad, y cómo se garantiza la integridad del expediente.",
+      "modelAnswer": "Informe.\n\n1) Validez del documento electrónico. Para ser válido, el documento administrativo electrónico debe: contener información archivada en un soporte electrónico según un formato determinado susceptible de identificación y tratamiento diferenciado; disponer de datos de identificación que permitan su individualización; incorporar una referencia temporal del momento de su emisión; incorporar los metadatos mínimos exigidos; e incorporar las firmas electrónicas que correspondan (Ley 39/2015, art. 26.2).\n\n2) Componentes del documento según la NTI de Documento electrónico (Resolución de 19 de julio de 2011, apartado III): el contenido, en su caso la firma electrónica y los metadatos del documento electrónico.\n\n3) Componentes del expediente según la NTI de Expediente electrónico (Resolución de 19 de julio de 2011, apartado III.1): los documentos electrónicos, el índice electrónico, la firma del índice electrónico por la Administración, órgano o entidad actuante, y los metadatos del expediente electrónico.\n\n4) Integridad. El foliado se lleva a cabo mediante un índice electrónico autenticado, que garantiza la integridad del expediente y permite su recuperación. Ese índice lo firma el titular del órgano que forma el expediente, o se sella electrónicamente si el expediente se forma de manera automática (Real Decreto 203/2021, art. 51.1 y 51.3; Ley 39/2015, art. 70.3).",
+      "criteria": [
+        {
+          "description": "Enumera al menos cuatro de los cinco requisitos de validez del documento electrónico: formato identificable, datos de identificación, referencia temporal, metadatos mínimos y firmas electrónicas",
+          "points": 2
+        },
+        {
+          "description": "Indica que el documento electrónico se compone de contenido, firma electrónica (en su caso) y metadatos",
+          "points": 1
+        },
+        {
+          "description": "Indica que el expediente electrónico se compone de documentos electrónicos, índice electrónico, firma del índice y metadatos",
+          "points": 2
+        },
+        {
+          "description": "Indica que el índice electrónico autenticado, firmado por el titular del órgano o sellado electrónicamente, garantiza la integridad del expediente",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Responde de forma breve y razonada. El Ayuntamiento dicta una resolución que debe notificar a dos interesados: Informática del Sur, S.L. (obligada a relacionarse electrónicamente con la Administración) y un vecino, persona física, que presentó su solicitud en papel y señaló su domicilio para notificaciones. a) ¿En qué plazo debe cursarse la notificación desde que se dicta la resolución? b) La notificación a la sociedad se pone a disposición en la sede electrónica y la sociedad no accede a ella: ¿cuándo se entiende rechazada y qué efecto tiene? c) ¿Se aplica ese mismo mecanismo al vecino? d) El sistema no pudo enviar el aviso por correo electrónico a la sociedad: ¿afecta a la validez de la notificación? e) ¿Qué basta para entender cumplida la obligación de notificar dentro del plazo máximo del procedimiento?",
+      "modelAnswer": "a) Plazo: toda notificación debe cursarse dentro del plazo de diez días a partir de la fecha en que el acto haya sido dictado (Ley 39/2015, art. 40.2).\n\nb) Rechazo: cuando la notificación electrónica es obligatoria o ha sido elegida expresamente por el interesado, se entiende rechazada cuando han transcurrido diez días naturales desde la puesta a disposición sin que se acceda a su contenido (Ley 39/2015, art. 43.2). Efecto: cuando se rechaza la notificación, se hace constar en el expediente, se da por efectuado el trámite y se sigue el procedimiento (art. 41.5).\n\nc) No. El rechazo por transcurso de diez días solo opera si la notificación electrónica es obligatoria o fue elegida por el interesado (art. 43.2). El vecino no está obligado y presentó su solicitud en papel: en un procedimiento iniciado a solicitud, la notificación se practica por el medio que él señaló (art. 41.3), que puede ser papel (art. 14.1 sobre la libertad de elección de las personas físicas).\n\nd) No. La falta de práctica del aviso no impide que la notificación sea considerada plenamente válida (art. 41.6; Real Decreto 203/2021, art. 43.1).\n\ne) Basta con la puesta a disposición de la notificación en la sede electrónica o en la dirección electrónica habilitada única (art. 43.3, en relación con el art. 40.4).",
+      "criteria": [
+        {
+          "description": "Indica que la notificación debe cursarse en el plazo de diez días desde que se dicta el acto",
+          "points": 1
+        },
+        {
+          "description": "Indica que la notificación electrónica obligatoria se entiende rechazada a los diez días naturales de la puesta a disposición sin acceso",
+          "points": 2
+        },
+        {
+          "description": "Indica que el rechazo se hace constar en el expediente, se da por efectuado el trámite y el procedimiento continúa",
+          "points": 1
+        },
+        {
+          "description": "Indica que el vecino no está sujeto a ese rechazo porque su notificación se practica por el medio que señaló, no siendo obligatoria la electrónica",
+          "points": 2
+        },
+        {
+          "description": "Indica que la falta del aviso no impide la validez de la notificación",
+          "points": 1
+        },
+        {
+          "description": "Indica que basta la puesta a disposición en la sede electrónica o en la dirección electrónica habilitada única para cumplir el plazo máximo del procedimiento",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "statement": "Explica en un máximo de 8 líneas cómo integrarías la aplicación municipal con Notifica y qué información de cada notificación debe conservar la aplicación en el expediente.",
+      "modelAnswer": "Notifica es un servicio compartido de gestión de notificaciones de la Administración electrónica, que puede entregar la notificación por comparecencia electrónica en la Dirección Electrónica Habilitada única (DEHú) y también publicarla en la sede electrónica del emisor (fuente: administracionelectronica.gob.es, Notifica). La aplicación municipal se integra con él mediante sus servicios web: envía la notificación y consulta y monitoriza el estado de entrega, sin implementar por su cuenta los plazos de comparecencia.\n\nLa acreditación de la notificación efectuada se incorpora al expediente (Ley 39/2015, art. 41.1). Debe quedar constancia, con fecha y hora, del acceso al contenido, del rechazo expreso o del vencimiento del plazo de diez días naturales (Real Decreto 203/2021, art. 45.2), y la aplicación debe sincronizar el estado entre la DEHú y la sede si la notificación se puso a disposición en ambas (art. 42.1).",
+      "criteria": [
+        {
+          "description": "Describe Notifica como servicio compartido de gestión de notificaciones que entrega mediante la DEHú y, si se requiere, en la sede electrónica",
+          "points": 1
+        },
+        {
+          "description": "Indica que la aplicación se integra mediante servicios web para enviar notificaciones y consultar el estado de entrega",
+          "points": 1
+        },
+        {
+          "description": "Indica que la acreditación (fecha y hora de acceso, rechazo o vencimiento del plazo) se incorpora al expediente",
+          "points": 1
+        }
+      ]
+    }
+  ]
+}
