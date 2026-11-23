@@ -122,3 +122,13 @@ El implementador redacta **un** supuesto plausible para Programador Informático
 - **`RepositoryContentTests`:** el nuevo fichero valida con `ContentReader` y con su JSON Schema.
 - **Integración API (`PracticalCasesEndpointsTests`, con `ContentSeeder` ampliado):** listado ordenado y sin inactivos; detalle sin `criteria`/`modelAnswer` en el JSON crudo; 404 de oposición y de supuesto (inexistente e inactivo); 401 anónimo.
 - **Manual:** arrancar el AppHost, ver el supuesto en `practical_cases` y probar los dos endpoints en Scalar.
+
+## Decisiones de implementación
+- **Criterios en jsonb:** `OwnsMany(...).ToJson("criteria")` sobre un campo privado (`UsePropertyAccessMode(Field)`). `ComplexCollection` de EF Core 10 exige que la propiedad sea `IList<T>`, y el dominio expone `IReadOnlyList<GradingCriterion>`. La longitud de `Description` la valida el dominio (una columna JSON no tiene tamaño por propiedad). La columna queda `nullable` en la migración, pero el dominio siempre guarda al menos un criterio.
+- **Rutas JSON de los errores del lector:** `PracticalCase.Create` no sabe en qué apartado falla, así que el lector valida cada elemento por separado con un supuesto auxiliar (el resto, valores válidos de relleno) y así informa de `$.parts[i].statement`, `$.parts[i].criteria[j].points`, etc. Los errores de nivel superior salen en `$.key`, `$.title`, `$.statement`, `$.estimatedMinutes` y `$.parts` (número de apartados).
+- **Keys de supuestos:** se comprueban repetidas en un diccionario propio, distinto del de las preguntas (son tablas y claves únicas distintas).
+- **`ExamContent`** gana el parámetro posicional `PracticalCases` (sin valor por defecto); `ImportReport` gana `PracticalCases` antes de `Warnings`.
+- **Desactivación en el importador:** se desactivan los supuestos activos de las oposiciones importadas cuya `key` no está en ningún fichero del contenido (así un supuesto movido de carpeta cambia de `ExamId` y no se desactiva).
+- **Supuesto del repo:** `0001-gestion-subvenciones.json`, 3 apartados (modelo relacional, consulta SQL y endpoint en C#), 20 puntos (8 + 6 + 6).
+- **Dominio:** `PracticalCasePart.Criteria` y `MaxPoints` se rellenan en la propia entidad; `PracticalCasePartData`, `GradingCriterionData` y `GradingCriterion` están juntos en `GradingCriterion.cs`.
+- **Endpoint de detalle:** `MaxPoints` se calcula en la API como suma de los apartados devueltos; el listado suma `max_points` en SQL.
