@@ -7,6 +7,7 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
 using OpoStudy.Contracts.Gradings;
+using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
 using OpoStudy.Mobile.Core.PracticalCases;
@@ -306,6 +307,54 @@ public sealed class PracticalCaseViewModelTests
         sut.ErrorMessage.ShouldBe("Sin cuota");
         sut.SubmitCommand.CanExecute(null).ShouldBeFalse();
         _drafts.Drafts.ShouldContainKey(PracticalCaseTestData.CaseId);
+    }
+
+    [Fact]
+    public async Task SubmitCommand_QuotaExceededAndReloadFails_KeepsQuotaExhausted()
+    {
+        _api.SubmitGradingAsync(default, default!, Arg.Any<CancellationToken>()).ReturnsForAnyArgs(
+            Task.FromException<GradingResponse>(await PracticalCaseTestData.ApiExceptionAsync(HttpStatusCode.UnprocessableEntity, "grading.quota_exceeded", "Sin cuota")));
+        var sut = await LoadedAsync();
+        sut.Parts[0].Answer = "algo";
+        _api.GetGradingQuotaAsync(Arg.Any<CancellationToken>()).Returns(Task.FromException<GradingQuotaResponse>(new HttpRequestException()));
+
+        await sut.SubmitCommand.ExecuteAsync(null);
+
+        sut.SubmitCommand.CanExecute(null).ShouldBeFalse();
+        sut.QuotaMessage.ShouldBe("Has agotado tus 5 correcciones de este mes");
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_CaseFailsAndQuotaCancelled_ClassifiesTheCaseError()
+    {
+        _api.GetPracticalCaseAsync(PracticalCaseTestData.CaseId, Arg.Any<CancellationToken>())
+            .Returns(Task.FromException<PracticalCaseResponse>(new HttpRequestException()));
+        _api.GetGradingQuotaAsync(Arg.Any<CancellationToken>())
+            .Returns(Task.FromException<GradingQuotaResponse>(new OperationCanceledException()));
+        var sut = CreateSut();
+
+        await sut.OnAppearingAsync();
+
+        sut.NeedsConnection.ShouldBeTrue();
+        sut.ErrorMessage.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task SubmitCommand_NavigationFails_KeepsDraftAndKeepsSavingEdits()
+    {
+        _api.SubmitGradingAsync(PracticalCaseTestData.CaseId, Arg.Any<SubmitGradingRequest>(), Arg.Any<CancellationToken>())
+            .Returns(PracticalCaseTestData.Grading("Pending"));
+        _navigation.GoToAsync(Arg.Any<string>(), Arg.Any<IReadOnlyDictionary<string, object>?>())
+            .Returns(Task.FromException(new InvalidOperationException("nav")));
+        var sut = await LoadedAsync();
+        sut.Parts[0].Answer = "uno";
+
+        await sut.SubmitCommand.ExecuteAsync(null);
+
+        _drafts.Drafts.ShouldContainKey(PracticalCaseTestData.CaseId);
+        sut.Parts[0].Answer = "dos";
+        sut.OnDisappearing();
+        _drafts.Drafts[PracticalCaseTestData.CaseId].Answers[0].ShouldBe("dos");
     }
 
     [Fact]

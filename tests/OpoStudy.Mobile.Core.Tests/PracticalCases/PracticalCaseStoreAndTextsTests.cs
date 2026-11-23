@@ -128,6 +128,40 @@ public sealed class PracticalCaseStoreAndTextsTests
     }
 
     [Fact]
+    public void ApiJsonContext_PracticalCaseSummaryList_RoundTrips()
+    {
+        IReadOnlyList<PracticalCaseSummaryResponse> list = [PracticalCaseTestData.Summary("A", "Bloque"), PracticalCaseTestData.Summary("B", null)];
+
+        var json = JsonSerializer.Serialize(list, ApiJsonContext.Default.IReadOnlyListPracticalCaseSummaryResponse);
+        var back = JsonSerializer.Deserialize(json, ApiJsonContext.Default.IReadOnlyListPracticalCaseSummaryResponse);
+
+        back.ShouldBe(list);
+    }
+
+    [Fact]
+    public void ApiJsonContext_GradingSummaryList_RoundTrips()
+    {
+        IReadOnlyList<GradingSummaryResponse> list = [PracticalCaseTestData.SummaryGrading("Pending")];
+
+        var json = JsonSerializer.Serialize(list, ApiJsonContext.Default.IReadOnlyListGradingSummaryResponse);
+        var back = JsonSerializer.Deserialize(json, ApiJsonContext.Default.IReadOnlyListGradingSummaryResponse);
+
+        back.ShouldBe(list);
+    }
+
+    [Fact]
+    public void ApiJsonContext_SubmitGradingRequest_RoundTrips()
+    {
+        var request = new SubmitGradingRequest(["uno", string.Empty]);
+
+        var json = JsonSerializer.Serialize(request, ApiJsonContext.Default.SubmitGradingRequest);
+        var back = JsonSerializer.Deserialize(json, ApiJsonContext.Default.SubmitGradingRequest);
+
+        back.ShouldNotBeNull();
+        back.Answers.ShouldBe(["uno", string.Empty]);
+    }
+
+    [Fact]
     public void Quota_NormalAndExhausted_FormatsTexts()
     {
         PracticalCaseTexts.Quota(PracticalCaseTestData.Quota(3, 5)).ShouldBe("Te quedan 3 de 5 correcciones este mes");

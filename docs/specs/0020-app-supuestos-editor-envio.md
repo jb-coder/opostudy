@@ -64,7 +64,7 @@ Task<GradingQuotaResponse> GetGradingQuotaAsync(CancellationToken cancellationTo
 ### Datos (solo en el dispositivo)
 **Borrador** (`PracticalCaseDraft`), en `Mobile.Core/PracticalCases/`:
 - `sealed record PracticalCaseDraft(IReadOnlyList<string> Answers, DateTimeOffset SavedAt)`.
-- `IPracticalCaseDraftStore`: `PracticalCaseDraft? Get(Guid practicalCaseId)`, `void Save(Guid practicalCaseId, PracticalCaseDraft draft)`, `void Delete(Guid practicalCaseId)`.
+- `IPracticalCaseDraftStore`: `PracticalCaseDraft? Find(Guid practicalCaseId)`, `void Save(Guid practicalCaseId, PracticalCaseDraft draft)`, `void Delete(Guid practicalCaseId)`.
 - Implementación `PreferencesPracticalCaseDraftStore` sobre `IPreferencesStore` (ya existe; en la app es `Preferences`, privado de la app). Se serializa con un `PracticalCaseDraftJsonContext` (source generator, como `ReminderJsonContext`).
 - Clave: `practical-case-draft:{uid}:{practicalCaseId}`, con el uid de `IAuthService` (sin sesión → no se guarda ni se lee). Así un segundo usuario del dispositivo no ve borradores ajenos.
 - JSON corrupto o con un número de respuestas distinto del número de apartados actual (el contenido cambió) → se descarta el borrador y se borra la clave. Sin excepción hacia arriba.
@@ -83,7 +83,7 @@ Mismo patrón que `TopicsPage` + `TopicsViewModel` (skill `maui-ui`). ViewModels
 #### 2. `PracticalCasesViewModel` : `OfflineAwareViewModel`, `IQueryReceiver`
 - Recibe `ExamId` y `ExamName`. En `OnAppearingAsync` (y con `RefreshCommand`) lanza **en paralelo**: `GetPracticalCasesAsync`, `GetGradingQuotaAsync` y `GetGradingsAsync(0, 1)`.
 - **Lista agrupada**: `ObservableCollection<PracticalCaseGroup>`, donde `PracticalCaseGroup : List<PracticalCaseItem>` con `Title`. Agrupa por `Section`, conservando el orden de la API (primera aparición de cada bloque). `Section` nulo → grupo «Otros supuestos», al final. `CollectionView` con `IsGrouped="True"` y `GroupHeaderTemplate`.
-- **Elemento**: título, «{PartCount} apartados · {MaxPoints} puntos · ~{EstimatedMinutes} min» y una marca «Borrador» si existe borrador local (`IPracticalCaseDraftStore.Get` no nulo). Tocar → `Routes.PracticalCase` con `PracticalCaseId`.
+- **Elemento**: título, «{PartCount} apartados · {MaxPoints} puntos · ~{EstimatedMinutes} min» y una marca «Borrador» si existe borrador local (`IPracticalCaseDraftStore.Find` no nulo). Tocar → `Routes.PracticalCase` con `PracticalCaseId`.
 - **Cuota** (cabecera): «Te quedan {Remaining} de {Limit} correcciones este mes» y, debajo, «Se renuevan el {ResetsAt en hora local, "d 'de' MMMM"}». Con `Remaining == 0`: «Has agotado tus {Limit} correcciones de este mes» con estilo de aviso (texto, no solo color). Si la cuota falla y la lista no, se oculta la cuota (no bloquea).
 - **Corrección en curso**: si la más reciente de `GetGradingsAsync(0, 1)` está `Pending` o `Processing`, tarjeta «Corrección en curso: {CaseTitle}» que navega a `Routes.Grading` con `GradingId`. Si esa llamada falla, se omite la tarjeta.
 - **Estados**: carga (`IsBusy`), vacío («Aún no hay supuestos para esta oposición»), error con «Reintentar».
@@ -91,7 +91,7 @@ Mismo patrón que `TopicsPage` + `TopicsViewModel` (skill `maui-ui`). ViewModels
 
 #### 3. `PracticalCaseViewModel` : `OfflineAwareViewModel`, `IQueryReceiver`
 - Recibe `PracticalCaseId`. En `OnAppearingAsync` carga en paralelo `GetPracticalCaseAsync` y `GetGradingQuotaAsync` (solo la primera vez; volver a la pantalla no recarga ni pisa lo escrito). Un fallo de cuota no bloquea la pantalla.
-- Muestra título, «~{EstimatedMinutes} min · {MaxPoints} puntos», el enunciado (`Statement`, texto largo seleccionable) y un `PracticalCasePartItem` por apartado en orden de `Order`.
+- Muestra título, «~{EstimatedMinutes} min · {MaxPoints} puntos», el enunciado (`Statement`, texto largo en un `Label`) y un `PracticalCasePartItem` por apartado en orden de `Order`.
 - **`PracticalCasePartItem`** (`ObservableObject`): `Order`, `Title` («Apartado {Order + 1} · {MaxPoints} puntos»), `Statement`, `[ObservableProperty] Answer` y derivados:
   - `CharacterCountText`: «{Answer.Length} / 8000».
   - `IsNearLimit`: `Length >= 7200` (90 %) → el contador cambia a estilo de aviso y añade « · Te quedan {8000 − Length}».
@@ -127,8 +127,8 @@ Mismo patrón que `TopicsPage` + `TopicsViewModel` (skill `maui-ui`). ViewModels
   - Estado desconocido → se trata como en curso (sigue consultando).
 - **Polling** mientras la página está visible:
   - Primera consulta al aparecer; después espera **3 s** y luego cada **5 s** durante los primeros 3 minutos; a partir de ahí cada **15 s**. Sin límite total: mientras la pantalla esté abierta.
-  - Para con `Completed`, `Failed`, `404` (mensaje «La corrección no existe.» del servidor) o al desaparecer la página (`OnDisappearing` cancela el `CancellationTokenSource`). Al volver a aparecer, reanuda si no había terminado.
-  - Errores transitorios (sin conexión, timeout, 5xx): no paran el bucle; muestran «Sin conexión. Seguimos intentándolo…» y la siguiente espera es de 15 s. Al recuperar, se limpia el aviso.
+  - Para con `Completed`, `Failed`, `404`/`403` (mensaje del servidor, p. ej. «La corrección no existe.»), `401` (sin mensaje: la sesión caducada la gestiona el resto de la app) o al desaparecer la página (`OnDisappearing` cancela el `CancellationTokenSource`). Al volver a aparecer, reanuda si no había terminado.
+  - Errores transitorios (sin conexión, timeout, 5xx y cualquier otro 4xx como 408 o 429): no paran el bucle; muestran «Sin conexión. Seguimos intentándolo…» y la siguiente espera es de 15 s. Al recuperar, se limpia el aviso.
   - Las esperas usan `Task.Delay(TimeSpan, TimeProvider, CancellationToken)` con el `TimeProvider` inyectado (en los tests, `FakeTimeProvider`).
   - Un único bucle activo: si `OnAppearingAsync` se llama dos veces, no se lanzan dos.
 - **Aviso al terminar**: cuando la transición a `Completed`/`Failed` ocurre con la pantalla abierta, además del cambio visual se llama a `IDialogService.AlertAsync` («Corrección lista» / «Has sacado {Score} de {MaxPoints} puntos.»; o «No se ha podido corregir» con el texto del fallo). Si la primera consulta ya viene terminada, no hay alerta, solo el estado.
@@ -171,7 +171,7 @@ Mismo patrón que `TopicsPage` + `TopicsViewModel` (skill `maui-ui`). ViewModels
   - `PreferencesPracticalCaseDraftStore`: guarda y lee; clave por uid (otro uid no lo ve); sin sesión no guarda; JSON corrupto → `null` y borra la clave.
   - `PracticalCasesViewModel`: agrupación y orden de grupos (nulo al final); cuota normal y agotada; fallo solo de cuota no bloquea; tarjeta de corrección en curso sí/no; offline al entrar sin llamar a la API; error de conectividad → estado «necesitan conexión»; marca de borrador; navegación con `ExamId`.
   - `PracticalCaseViewModel`: borrador recuperado, descartado si no cuadra el nº de apartados; debounce (avanzar 1,5 s guarda una vez, cambios seguidos solo guardan el último); guarda en `OnDisappearing`; `CanExecute` (todo en blanco, cuota 0, `IsBusy`); confirmación cancelada no envía; request con vacías en orden; 202 borra borrador y navega a `../grading`; 409 con y sin corrección en curso; 422 quota recarga cuota; otro 422 muestra `detail`; error de conectividad conserva borrador; contador y `IsNearLimit`.
-  - `GradingViewModel`: `Pending` → `Processing` → `Completed` con los intervalos 3 s / 5 s / 15 s; alerta solo en la transición; ya terminado al entrar sin alerta; `Failed` con cada `FailureCode`; error transitorio no para y espera 15 s; 404 para; `OnDisappearing` cancela y `OnAppearingAsync` reanuda sin duplicar el bucle; «Recuperar mis respuestas» guarda el borrador ordenado y navega.
+  - `GradingViewModel`: `Pending` → `Processing` → `Completed` con los intervalos 3 s / 5 s / 15 s; alerta solo en la transición; ya terminado al entrar sin alerta; `Failed` con cada `FailureCode`; error transitorio (incluidos 4xx como 429) no para y espera 15 s; 404/403/401 paran; `OnDisappearing` cancela y `OnAppearingAsync` reanuda sin duplicar el bucle; «Recuperar mis respuestas» guarda el borrador ordenado y navega.
   - `PracticalCaseTexts`: formatos de cuota, fechas y nota en `es-ES` (`18,5`).
 - **Integración**: no aplica (no hay cambios en la API).
 - **Manual** (AppHost + emulador, `Grading:Provider = Fake`):

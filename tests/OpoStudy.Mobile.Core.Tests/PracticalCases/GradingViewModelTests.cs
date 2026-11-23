@@ -198,6 +198,63 @@ public sealed class GradingViewModelTests
     }
 
     [Fact]
+    public async Task Polling_TooManyRequests_KeepsPollingWithFifteenSecondWaitUntilCompleted()
+    {
+        var tooMany = await PracticalCaseTestData.ApiExceptionAsync(HttpStatusCode.TooManyRequests);
+        _api.GetGradingAsync(PracticalCaseTestData.GradingId, Arg.Any<CancellationToken>()).Returns(
+            _ => Task.FromResult(PracticalCaseTestData.Grading("Pending")),
+            _ => Task.FromException<GradingResponse>(tooMany),
+            _ => Task.FromResult(PracticalCaseTestData.Grading("Completed", score: 10m)));
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+
+        await AdvanceAndWaitForPollAsync(TimeSpan.FromSeconds(3));
+        sut.ConnectionNotice.ShouldBe("Sin conexión. Seguimos intentándolo…");
+        sut.ErrorMessage.ShouldBeNull();
+
+        _time.Advance(TimeSpan.FromSeconds(14.9));
+        Calls().ShouldBe(2);
+        await AdvanceAndWaitForPollAsync(TimeSpan.FromSeconds(0.1));
+
+        await PracticalCaseTestData.EventuallyAsync(() => sut.IsCompleted);
+    }
+
+    [Theory]
+    [InlineData(HttpStatusCode.Forbidden, "No permitido")]
+    [InlineData(HttpStatusCode.Unauthorized, null)]
+    public async Task Polling_ForbiddenOrUnauthorized_Stops(HttpStatusCode status, string? message)
+    {
+        _api.GetGradingAsync(PracticalCaseTestData.GradingId, Arg.Any<CancellationToken>())
+            .ThrowsAsync(await PracticalCaseTestData.ApiExceptionAsync(status, "x.code", "No permitido"));
+        var sut = CreateSut();
+
+        await sut.OnAppearingAsync();
+
+        sut.ErrorMessage.ShouldBe(message);
+        _time.Advance(TimeSpan.FromMinutes(1));
+        Calls().ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task OnAppearingAsync_CalledTwiceWhileFirstQueryPending_StartsOneLoop()
+    {
+        var pending = new TaskCompletionSource<GradingResponse>();
+        _api.GetGradingAsync(PracticalCaseTestData.GradingId, Arg.Any<CancellationToken>())
+            .Returns(_ => pending.Task, _ => Task.FromResult(PracticalCaseTestData.Grading("Processing")));
+        var sut = CreateSut();
+
+        var first = sut.OnAppearingAsync();
+        var second = sut.OnAppearingAsync();
+        Calls().ShouldBe(1);
+        pending.SetResult(PracticalCaseTestData.Grading("Processing"));
+        await first;
+        await second;
+
+        Calls().ShouldBe(1);
+        sut.OnDisappearing();
+    }
+
+    [Fact]
     public async Task OnDisappearing_StopsPollingAndAppearingResumesWithoutDuplicates()
     {
         GivenResponses(PracticalCaseTestData.Grading("Processing"));

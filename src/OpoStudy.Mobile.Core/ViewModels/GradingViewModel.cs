@@ -42,7 +42,8 @@ public sealed partial class GradingViewModel(
     /// <summary>The grading ended (or does not exist): nothing left to poll.</summary>
     private bool _finished;
 
-    private Task? _loop;
+    /// <summary>A polling session is starting or running; set synchronously so a second appearing cannot start another one.</summary>
+    private bool _loopActive;
 
     private CancellationToken _loopToken;
 
@@ -97,21 +98,42 @@ public sealed partial class GradingViewModel(
         }
 
         // A single loop at a time: a second appearing without disappearing in between does nothing.
-        if (_loop is { IsCompleted: false } && !_loopToken.IsCancellationRequested)
+        if (_loopActive && !_loopToken.IsCancellationRequested)
         {
             return;
         }
 
         var token = PageToken;
         _loopToken = token;
-        var started = timeProvider.GetTimestamp();
-        var first = await PollOnceAsync(alertOnFinish: false, token);
-        if (first == PollResult.Stop || token.IsCancellationRequested)
+        _loopActive = true;
+        var handedOver = false;
+        try
         {
-            return;
-        }
+            var started = timeProvider.GetTimestamp();
+            var first = await PollOnceAsync(alertOnFinish: false, token);
+            if (first == PollResult.Stop || token.IsCancellationRequested)
+            {
+                return;
+            }
 
-        _loop = RunLoopAsync(first, started, token);
+            _ = RunLoopAsync(first, started, token);
+            handedOver = true;
+        }
+        finally
+        {
+            if (!handedOver)
+            {
+                EndLoop(token);
+            }
+        }
+    }
+
+    private void EndLoop(CancellationToken token)
+    {
+        if (_loopToken == token)
+        {
+            _loopActive = false;
+        }
     }
 
     private async Task RunLoopAsync(PollResult previous, long started, CancellationToken token)
@@ -142,6 +164,10 @@ public sealed partial class GradingViewModel(
             // The loop runs unobserved: it must never fail silently.
             LogPollingFailed(ex, ex.GetType().FullName);
         }
+        finally
+        {
+            EndLoop(token);
+        }
     }
 
     private async Task<PollResult> PollOnceAsync(bool alertOnFinish, CancellationToken token)
@@ -155,18 +181,26 @@ public sealed partial class GradingViewModel(
         {
             return PollResult.Stop;
         }
-        catch (ApiException ex) when (ex.StatusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError)
+        catch (ApiException ex) when (ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden)
         {
-            // Not found (or any other definitive answer): there is nothing to wait for.
+            // Not found or not allowed: there is nothing to wait for.
             LogPollFailed(ex, ex.GetType().FullName);
             _finished = true;
             ConnectionNotice = null;
             ErrorMessage = ApiErrorMessages.From(ex);
             return PollResult.Stop;
         }
+        catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            // The expired session is handled elsewhere (sign-in again); just stop asking.
+            LogPollFailed(ex, ex.GetType().FullName);
+            _finished = true;
+            ConnectionNotice = null;
+            return PollResult.Stop;
+        }
         catch (Exception ex) when (ex is not OperationCanceledException || !token.IsCancellationRequested)
         {
-            // No connection, timeout, 5xx: keep trying, but slowly.
+            // No connection, timeout, 5xx or other transient 4xx (408, 429...): keep trying, but slowly.
             LogPollFailed(ex, ex.GetType().FullName);
             ConnectionNotice = PracticalCaseTexts.PollOffline;
             return PollResult.Transient;

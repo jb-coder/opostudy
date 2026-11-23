@@ -79,6 +79,9 @@ public sealed partial class PracticalCaseViewModel(
 
     private GradingQuotaResponse? _quota;
 
+    /// <summary>The server said the quota is used up; it stays so even if the quota cannot be reloaded.</summary>
+    private bool _quotaExhausted;
+
     public ObservableCollection<PracticalCasePartItem> Parts { get; } = [];
 
     [ObservableProperty]
@@ -196,7 +199,8 @@ public sealed partial class PracticalCaseViewModel(
             }
             finally
             {
-                await quota;
+                // Observed without throwing so it can never mask the error of the case.
+                await ObserveAsync(quota);
             }
 
             ShowCase(practicalCase);
@@ -223,6 +227,18 @@ public sealed partial class PracticalCaseViewModel(
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    private static async Task ObserveAsync(Task task)
+    {
+        try
+        {
+            await task;
+        }
+        catch (Exception)
+        {
+            // Only observed here; its outcome is read (or ignored) by the caller.
         }
     }
 
@@ -290,6 +306,7 @@ public sealed partial class PracticalCaseViewModel(
     private void ShowQuota(GradingQuotaResponse? quota)
     {
         _quota = quota;
+        _quotaExhausted = quota is { Remaining: <= 0 };
         HasQuota = quota is not null;
         QuotaSummary = quota is null ? string.Empty : PracticalCaseTexts.QuotaShort(quota);
         QuotaMessage = quota is { Remaining: <= 0 } ? PracticalCaseTexts.Quota(quota) : null;
@@ -370,7 +387,7 @@ public sealed partial class PracticalCaseViewModel(
     }
 
     private bool CanSubmit() =>
-        IsNotBusy && !_submitBlocked && Parts.Any(p => p.HasContent) && _quota is not { Remaining: <= 0 };
+        IsNotBusy && !_submitBlocked && Parts.Any(p => p.HasContent) && !_quotaExhausted;
 
     [RelayCommand(CanExecute = nameof(CanSubmit))]
     private async Task SubmitAsync(CancellationToken cancellationToken)
@@ -398,14 +415,15 @@ public sealed partial class PracticalCaseViewModel(
             var grading = await api.SubmitGradingAsync(_practicalCaseId, request, cancellationToken);
             OfflineState.ReportSuccess();
 
-            _draftClosed = true;
-            CancelPendingSave();
-            drafts.Delete(_practicalCaseId);
-
             // Replaces this page in the stack so "Back" from the status goes to the list.
             await navigation.GoToAsync(
                 "../" + Routes.Grading,
                 new Dictionary<string, object> { [QueryKeys.GradingId] = grading.Id });
+
+            // Only once navigation worked: if it failed the user is still here and keeps the draft.
+            _draftClosed = true;
+            CancelPendingSave();
+            drafts.Delete(_practicalCaseId);
         }
         catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.Conflict && ApiErrorMessages.ProblemCode(ex) == AlreadyPendingCode)
         {
@@ -416,7 +434,11 @@ public sealed partial class PracticalCaseViewModel(
         {
             LogSubmitFailed(ex, ex.GetType().FullName);
             ErrorMessage = ApiErrorMessages.From(ex);
-            ShowQuota(await TryLoadQuotaAsync(cancellationToken));
+            var reloaded = await TryLoadQuotaAsync(cancellationToken);
+            ShowQuota(reloaded ?? (_quota is null ? null : _quota with { Remaining = 0 }));
+
+            // The server is the authority: keep it exhausted even if the quota is unknown or came back stale.
+            _quotaExhausted = true;
         }
         catch (Exception ex) when (ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
         {
