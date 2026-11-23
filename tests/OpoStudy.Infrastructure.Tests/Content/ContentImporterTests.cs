@@ -202,13 +202,13 @@ public sealed class ContentImporterTests(PostgresFixture postgres)
         (await db.Topics.CountAsync(t => t.Slug == "uno" && db.Exams.Any(e => e.Id == t.ExamId && e.Slug == slug), Ct)).ShouldBe(1);
     }
 
-    private static PracticalCaseContent Case(string slug, int number, string title = "Supuesto", int partCount = 2, int points = 3)
+    private static PracticalCaseContent Case(string slug, int number, string title = "Supuesto", int partCount = 2, int points = 3, string criterionA = "Criterio A")
     {
         var parts = Enumerable.Range(0, partCount)
             .Select(i => new PracticalCasePartData(
                 "Apartado " + i,
                 "Respuesta " + i,
-                [new GradingCriterionData("Criterio A", points), new GradingCriterionData("Criterio B", 2)]))
+                [new GradingCriterionData(criterionA, points), new GradingCriterionData("Criterio B", 2)]))
             .ToList();
         return new PracticalCaseContent($"{slug}/practical-cases/{number:0000}", title, "Enunciado", 30, parts);
     }
@@ -304,5 +304,55 @@ public sealed class ContentImporterTests(PostgresFixture postgres)
         report.PracticalCases.Created.ShouldBe(1);
         await using var db = postgres.CreateContext();
         (await db.PracticalCases.CountAsync(c => c.Key.StartsWith(slug), Ct)).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ImportAsync_OnlyCriterionDescriptionChanged_PersistsTheNewDescription()
+    {
+        var slug = UniqueSlug();
+        await ImportAsync(ExamWithCases(slug, Case(slug, 1)));
+
+        var report = await ImportAsync(ExamWithCases(slug, Case(slug, 1, criterionA: "Criterio reescrito")));
+
+        report.PracticalCases.ShouldBe(new ImportCounts(0, 1, 0, 0));
+        await using var db = postgres.CreateContext();
+        var practicalCase = await db.PracticalCases.SingleAsync(c => c.Key == $"{slug}/practical-cases/0001", Ct);
+        practicalCase.Parts.ShouldAllBe(p => p.Criteria[0].Description == "Criterio reescrito" && p.Criteria[0].Points == 3);
+        practicalCase.MaxPoints.ShouldBe(10);
+    }
+
+    [Fact]
+    public async Task ImportAsync_OnlyCriterionPointsChanged_PersistsPointsAndMaxPoints()
+    {
+        var slug = UniqueSlug();
+        await ImportAsync(ExamWithCases(slug, Case(slug, 1)));
+
+        var report = await ImportAsync(ExamWithCases(slug, Case(slug, 1, points: 7)));
+
+        report.PracticalCases.ShouldBe(new ImportCounts(0, 1, 0, 0));
+        await using var db = postgres.CreateContext();
+        var practicalCase = await db.PracticalCases.SingleAsync(c => c.Key == $"{slug}/practical-cases/0001", Ct);
+        practicalCase.Parts.ShouldAllBe(p => p.Criteria[0].Points == 7 && p.MaxPoints == 9);
+        practicalCase.MaxPoints.ShouldBe(18);
+    }
+
+    [Fact]
+    public async Task ImportAsync_PracticalCaseMovedToAnotherExam_ChangesExamIdAndIsNotDeactivated()
+    {
+        var slugA = UniqueSlug();
+        var slugB = UniqueSlug();
+        var movedKey = $"{slugA}/practical-cases/0001";
+        var moved = Case(slugA, 1);
+        await ImportAsync(ExamWithCases(slugA, moved));
+        await ImportAsync(ExamWithCases(slugB));
+
+        await using var importDb = postgres.CreateContext();
+        var report = await new ContentImporter(importDb).ImportAsync([ExamWithCases(slugA), ExamWithCases(slugB, moved)], false, Ct);
+
+        report.PracticalCases.ShouldBe(new ImportCounts(0, 1, 0, 0));
+        await using var db = postgres.CreateContext();
+        var practicalCase = await db.PracticalCases.SingleAsync(c => c.Key == movedKey, Ct);
+        practicalCase.ExamId.ShouldBe((await db.Exams.SingleAsync(e => e.Slug == slugB, Ct)).Id);
+        practicalCase.IsActive.ShouldBeTrue();
     }
 }

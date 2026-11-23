@@ -44,8 +44,8 @@ internal static class PracticalCasesEndpoints
             .Select(c => new PracticalCaseSummaryResponse(
                 c.Id,
                 c.Title,
-                db.Set<PracticalCasePart>().Count(p => p.PracticalCaseId == c.Id),
-                db.Set<PracticalCasePart>().Where(p => p.PracticalCaseId == c.Id).Sum(p => p.MaxPoints),
+                c.Parts.Count,
+                c.Parts.Sum(p => p.MaxPoints),
                 c.EstimatedMinutes))
             .ToListAsync(cancellationToken);
         return TypedResults.Ok(cases);
