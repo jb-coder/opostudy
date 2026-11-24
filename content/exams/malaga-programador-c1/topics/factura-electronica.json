@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "factura-electronica",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/factura-electronica/0001",
+      "statement": "Según el artículo 6.7 de la Ley 25/2013, cuando una Administración Pública no disponga de Punto general de entrada de facturas electrónicas ni se haya adherido al de otra Administración, el proveedor tendrá derecho a presentar su factura en el Punto general de entrada de facturas electrónicas de:",
+      "options": [
+        {
+          "text": "La Comunidad Autónoma en cuyo territorio tenga su domicilio fiscal el proveedor, que la trasladará a la Administración competente",
+          "isCorrect": false
+        },
+        {
+          "text": "La Administración General del Estado, que la depositará en un repositorio a cargo de la Administración competente",
+          "isCorrect": true
+        },
+        {
+          "text": "La Diputación provincial del territorio de la Administración competente, que la remitirá a su registro contable de facturas",
+          "isCorrect": false
+        },
+        {
+          "text": "La Administración que designe el proveedor, que la remitirá a la oficina contable competente para su registro",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 6.7 dispone que, en ese caso, «el proveedor tendrá derecho a presentar su factura en el Punto general de entrada de facturas electrónicas de la Administración General del Estado, quien depositará automáticamente la factura en un repositorio donde la Administración competente será responsable de su acceso, y de la gestión y tramitación de la factura». La adhesión al punto de la Diputación, de la Comunidad Autónoma o del Estado es la posibilidad que prevé el artículo 6.1 para las Entidades Locales y precisamente no se da en este supuesto. El precepto no atribuye al proveedor la elección de la Administración ni lo remite a su domicilio fiscal.",
+      "legalReference": "Ley 25/2013, art. 6.7"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0002",
+      "statement": "Según el artículo 7.1 de la Ley 25/2013, la responsabilidad del archivo y custodia de las facturas electrónicas corresponde:",
+      "options": [
+        {
+          "text": "Al proveedor que expidió la factura, sin que la Administración destinataria pueda custodiarla en ningún caso",
+          "isCorrect": false
+        },
+        {
+          "text": "Al órgano de control interno, que tiene acceso al registro contable de facturas en cualquier momento",
+          "isCorrect": false
+        },
+        {
+          "text": "Al punto general de entrada de facturas electrónicas por el que se presentó, en todo caso",
+          "isCorrect": false
+        },
+        {
+          "text": "Al órgano administrativo destinatario, sin perjuicio de que pueda optar por el punto general de entrada",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 7.1 establece que «La responsabilidad del archivo y custodia de las facturas electrónicas corresponde al órgano administrativo destinatario de la misma, sin perjuicio de que pueda optar por la utilización del correspondiente punto general de entrada de facturas electrónicas como medio de archivo y custodia de dichas facturas si se adhiere al mismo». Por tanto no recae en el proveedor ni en el punto general de entrada en todo caso, que solo es una opción del órgano destinatario si se adhiere. El acceso a la información del registro contable de facturas es una facultad del órgano de control interno (art. 12.1), no una responsabilidad de archivo y custodia.",
+      "legalReference": "Ley 25/2013, art. 7.1"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0003",
+      "statement": "Según el artículo 9.2 de la Ley 25/2013, en el caso de las facturas electrónicas, la factura puede rechazarse en la fase de anotación en el registro contable de facturas:",
+      "options": [
+        {
+          "text": "Solamente cuando no se cumplan los requisitos previstos en esa Ley y en su normativa básica de desarrollo",
+          "isCorrect": true
+        },
+        {
+          "text": "Por cualquier causa que estime el órgano competente para tramitar el procedimiento de conformidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando el órgano competente aún no haya iniciado la conformidad con la entrega del bien o la prestación del servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando el órgano de control interno lo disponga tras la auditoría de sistemas anual de los registros contables",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 9.2 dispone que, anotada la factura, el código de identificación se asigna y comunica automáticamente a los puntos generales de entrada, «pudiendo rechazarse la factura en esta fase solamente cuando no se cumplan los requisitos previstos en esta Ley y su normativa básica de desarrollo». La conformidad con la entrega del bien o la prestación del servicio es una actuación posterior, que corresponde al órgano competente para tramitarla (art. 9.3), y la auditoría anual del artículo 12.3 sirve para verificar el funcionamiento de los registros, no para rechazar facturas.",
+      "legalReference": "Ley 25/2013, art. 9.2"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0004",
+      "statement": "Según el artículo 10.2 de la Ley 25/2013, el informe trimestral que elaboran los órganos o unidades con la función de contabilidad contiene la relación de las facturas:",
+      "options": [
+        {
+          "text": "Rechazadas durante el trimestre en la fase de anotación en el registro contable de facturas",
+          "isCorrect": false
+        },
+        {
+          "text": "Presentadas hace más de seis meses cuyo pago todavía no se ha efectuado",
+          "isCorrect": false
+        },
+        {
+          "text": "Anotadas hace más de tres meses cuya obligación no ha sido reconocida",
+          "isCorrect": true
+        },
+        {
+          "text": "Con una solicitud de anulación del proveedor aún no resuelta por el órgano competente",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 10.2 impone elaborar «un informe trimestral con la relación de las facturas con respecto a los cuales hayan transcurrido más de tres meses desde que fueron anotadas y no se haya efectuado el reconocimiento de la obligación por los órganos competentes», que se remite «dentro de los quince días siguientes a cada trimestre natural del año al órgano de control interno». Ni las facturas rechazadas, ni las pendientes de pago, ni las de anulación pendiente son el criterio del informe: este atiende al tiempo transcurrido desde la anotación sin reconocimiento de la obligación.",
+      "legalReference": "Ley 25/2013, art. 10.2"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0005",
+      "statement": "Según el artículo 8.4 de la Orden HAP/1074/2014, toda factura presentada a través de los puntos generales de entrada de facturas autonómicos o locales producirá:",
+      "options": [
+        {
+          "text": "Una entrada automática en el registro electrónico común, con acuse de recibo electrónico y acreditación de la fecha y hora",
+          "isCorrect": false
+        },
+        {
+          "text": "Una entrada automática en el registro electrónico de la Administración autonómica o de la Entidad local de que se trate, con acuse de recibo electrónico",
+          "isCorrect": true
+        },
+        {
+          "text": "Una anotación inmediata en el registro contable de facturas de la Administración autonómica o local, con asignación de su código de identificación",
+          "isCorrect": false
+        },
+        {
+          "text": "Una entrada en el registro contable de facturas de la oficina contable destinataria, previa comprobación de sus requisitos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 8.4 establece que toda factura presentada por esa vía «producirá una entrada automática en el correspondiente registro electrónico de la Administración Autonómica o de la Entidad local de que se trate, proporcionando un acuse de recibo electrónico con acreditación de la fecha y hora de presentación». La entrada en el registro electrónico común corresponde a las facturas presentadas en el punto de la Administración General del Estado (disposición adicional primera, apartado 1.c)), y la anotación en el registro contable es una fase posterior, que corresponde a la oficina contable competente (art. 4.1).",
+      "legalReference": "Orden HAP/1074/2014, art. 8.4"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0006",
+      "statement": "Según la disposición adicional primera, apartado 1, de la Orden HAP/1074/2014, el servicio FACe no admitirá facturas electrónicas:",
+      "options": [
+        {
+          "text": "Que hayan sido presentadas por un representante del proveedor en nombre de este",
+          "isCorrect": false
+        },
+        {
+          "text": "Que se envíen mediante servicios web desde el sistema de gestión de facturas del proveedor",
+          "isCorrect": false
+        },
+        {
+          "text": "Que correspondan a entidades que, sin ser de la Administración General del Estado, se hayan adherido voluntariamente a FACe",
+          "isCorrect": false
+        },
+        {
+          "text": "Que correspondan a unidades administrativas que no estén reflejadas en el catálogo de unidades de FACe",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "La disposición adicional primera, apartado 1, establece que «El servicio FACe no admitirá facturas electrónicas que no correspondan a unidades administrativas que no estén convenientemente reflejadas en los catálogos anteriores». Los demás supuestos son admitidos por la propia Orden: la presentación mediante representante (art. 3.2), el envío por interfaz de servicios web desde el sistema del proveedor (art. 3.3.b)) y la recepción de facturas de entidades ajenas a la Administración General del Estado que se adhieran voluntariamente (disposición adicional primera, apartado 1.b)).",
+      "legalReference": "Orden HAP/1074/2014, disposición adicional primera, apartado 1"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0007",
+      "statement": "Según el artículo 12.4 de la Orden HAP/492/2014, los usuarios de los órganos competentes para la tramitación de las facturas solo podrán acceder en el registro contable de facturas a:",
+      "options": [
+        {
+          "text": "Aquellas facturas que tuvieran asignadas para su tramitación",
+          "isCorrect": true
+        },
+        {
+          "text": "Las facturas anotadas en el ejercicio presupuestario en curso",
+          "isCorrect": false
+        },
+        {
+          "text": "Las facturas de su Administración pendientes de reconocimiento de la obligación",
+          "isCorrect": false
+        },
+        {
+          "text": "Las facturas devueltas por el órgano que tenga atribuida la función de contabilidad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 12.4 dispone que «Los usuarios de los órganos competentes para la tramitación de las facturas sólo podrán acceder a aquéllas que tuvieran asignadas», y que la acreditación de los usuarios se hace según los procedimientos que establezca el órgano o unidad con la función de contabilidad. El precepto no limita el acceso por ejercicio presupuestario, por situación de la factura ni por su devolución.",
+      "legalReference": "Orden HAP/492/2014, art. 12.4"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0008",
+      "statement": "Según el anexo de la Resolución de 10-10-2014 sobre las condiciones técnicas del punto general de entrada de facturas electrónicas, apartado I.a), el estado de tramitación «Registrada» indica que la factura electrónica:",
+      "options": [
+        {
+          "text": "Ha sido recibida y registrada en el registro contable de facturas de la oficina contable destinataria",
+          "isCorrect": false
+        },
+        {
+          "text": "Ha sido aceptada por la unidad tramitadora, que inicia el procedimiento de conformidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Ha sido recibida en el punto general de entrada y registrada administrativamente, con número de asiento registral",
+          "isCorrect": true
+        },
+        {
+          "text": "Tiene reconocida la obligación de pago derivada de la factura por el órgano competente",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El anexo define el estado así: «Registrada: La factura electrónica ha sido recibida en el punto general de entrada de facturas y ha sido registrada administrativamente, proporcionando un número de asiento registral al proveedor.» La anotación en el registro contable de facturas es otro estado («Registrada en RCF»), como lo es el reconocimiento de la obligación («Contabilizada la obligación reconocida»). La lista no define ningún estado por la aceptación de la unidad tramitadora.",
+      "legalReference": "Resolución de 10-10-2014 (condiciones técnicas del PGEFe), anexo I.a)"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0009",
+      "statement": "Según el «Manual de API de Organismos» de FACe (v2.0.0), los recursos ubicados bajo la ruta /administrative-centres están relacionados con:",
+      "options": [
+        {
+          "text": "La gestión de unidades DIR que participan en FACe como receptoras de facturas electrónicas",
+          "isCorrect": true
+        },
+        {
+          "text": "Las solicitudes de auditoría de datos contables de los Registros Contables de Facturas",
+          "isCorrect": false
+        },
+        {
+          "text": "La evolución de las facturas de los proveedores de las administraciones públicas",
+          "isCorrect": false
+        },
+        {
+          "text": "La gestión de las notificaciones del sistema a sus usuarios y de las noticias de interés de estos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El manual indica que «Los recursos ubicados bajo la ruta /administrative-centres están relacionados con la gestión de unidades DIR que participan en FACe como receptoras de facturas electrónicas». Los otros grupos del mismo manual tienen su propia ruta: /audit (solicitudes de auditoría de datos contables de los Registros Contables de Facturas), /invoices (evolución de las facturas de los proveedores) y /notifications y /news (notificaciones y noticias).",
+      "legalReference": "PAe, FACe, «Manual de API de Organismos» v2.0.0, §3.1"
+    },
+    {
+      "key": "malaga-programador-c1/factura-electronica/0010",
+      "statement": "Según el «Manual de API de Proveedores» de FACe (v2.0.0), la operación «Obtener facturas con cesión de crédito» [GET] obtiene un listado de las facturas:",
+      "options": [
+        {
+          "text": "En las que el usuario figura como órgano gestor destinatario",
+          "isCorrect": false
+        },
+        {
+          "text": "En las que el usuario es el cedente de la cesión de crédito",
+          "isCorrect": false
+        },
+        {
+          "text": "Para las que el usuario ha solicitado la anulación por considerar erróneo algún dato",
+          "isCorrect": false
+        },
+        {
+          "text": "En las que el usuario es cesionario de la cesión de crédito",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El manual describe la operación así: «Obtiene un listado de facturas en las que el usuario es cesionario de la cesión de crédito.» No devuelve las facturas de las que el usuario es cedente, ni aquellas cuya anulación ha pedido, que tienen su propia operación («Solicitud de anulación de una factura»), ni se define por el órgano gestor destinatario.",
+      "legalReference": "PAe, FACe, «Manual de API de Proveedores» v2.0.0, §3.1.2.1"
+    }
+  ]
+}
