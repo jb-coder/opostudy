@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "firma-electronica",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/firma-electronica/0001",
+      "statement": "Según el artículo 3 del Reglamento (UE) 910/2014 (eIDAS), el creador de un sello es:",
+      "options": [
+        {
+          "text": "Una persona física que crea un sello electrónico",
+          "isCorrect": false
+        },
+        {
+          "text": "Una persona jurídica que crea un sello electrónico",
+          "isCorrect": true
+        },
+        {
+          "text": "Una persona física que crea una firma electrónica",
+          "isCorrect": false
+        },
+        {
+          "text": "Una persona jurídica que presta servicios de confianza cualificados",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El punto 24 del artículo 3 define al creador de un sello como «una persona jurídica que crea un sello electrónico». La persona que crea una firma electrónica es el firmante, que según el punto 9 es «una persona física». Quien presta servicios de confianza es el prestador de servicios de confianza (punto 19), que puede ser una persona física o jurídica, y el prestador cualificado (punto 20) es el que presta servicios cualificados y ha obtenido la cualificación del organismo de supervisión; ninguno de los dos es el creador de un sello.",
+      "legalReference": "Reglamento (UE) 910/2014 (eIDAS), art. 3, punto 24"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0002",
+      "statement": "Según el artículo 25.2 del Reglamento (UE) 910/2014 (eIDAS), una firma electrónica cualificada tendrá:",
+      "options": [
+        {
+          "text": "Un efecto jurídico equivalente al de un documento público notarial",
+          "isCorrect": false
+        },
+        {
+          "text": "Admisibilidad como prueba en procedimientos judiciales, pero no un efecto equivalente al de la firma manuscrita",
+          "isCorrect": false
+        },
+        {
+          "text": "Un efecto jurídico equivalente al de la firma manuscrita solo ante los organismos del sector público",
+          "isCorrect": false
+        },
+        {
+          "text": "Un efecto jurídico equivalente al de una firma manuscrita",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 25.2 dispone que «Una firma electrónica cualificada tendrá un efecto jurídico equivalente al de una firma manuscrita.», sin limitarlo a un tipo de destinatario ni equipararla a un documento público. La admisibilidad como prueba en procedimientos judiciales no es lo que distingue a la cualificada: el artículo 25.1 la reconoce a toda firma electrónica, al disponer que «No se denegarán efectos jurídicos ni admisibilidad como prueba en procedimientos judiciales a una firma electrónica por el mero hecho de ser una firma electrónica o porque no cumpla los requisitos de la firma electrónica cualificada».",
+      "legalReference": "Reglamento (UE) 910/2014 (eIDAS), art. 25.2"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0003",
+      "statement": "Según el artículo 41.2 del Reglamento (UE) 910/2014 (eIDAS), los sellos cualificados de tiempo electrónicos disfrutarán de una presunción de:",
+      "options": [
+        {
+          "text": "Exactitud de la fecha y hora que indican y de la integridad de los datos a los que estén vinculados",
+          "isCorrect": true
+        },
+        {
+          "text": "Autenticidad de la identidad del firmante y del contenido del documento sellado",
+          "isCorrect": false
+        },
+        {
+          "text": "Validez del certificado del prestador durante todo el período de conservación de los datos",
+          "isCorrect": false
+        },
+        {
+          "text": "Equivalencia con las declaraciones lícitamente expedidas en papel",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 41.2 establece que «Los sellos cualificados de tiempo electrónicos disfrutarán de una presunción de exactitud de la fecha y hora que indican y de la integridad de los datos a los que la fecha y hora estén vinculadas.» No prevé una presunción sobre la identidad del firmante ni sobre la validez del certificado del prestador. La equivalencia con las declaraciones lícitamente expedidas en papel es el efecto que el artículo 45 ter.2 atribuye a las declaraciones electrónicas cualificadas de atributos, no a los sellos de tiempo.",
+      "legalReference": "Reglamento (UE) 910/2014 (eIDAS), art. 41.2"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0004",
+      "statement": "Según el artículo 45 duodecies.2 del Reglamento (UE) 910/2014 (eIDAS), introducido por el Reglamento (UE) 2024/1183, los registros de datos contenidos en un libro mayor electrónico cualificado gozarán de la presunción de:",
+      "options": [
+        {
+          "text": "Integridad de los datos y corrección de su origen, mientras dure su conservación",
+          "isCorrect": false
+        },
+        {
+          "text": "Integridad de los datos, de su envío por el remitente y de su recepción por el destinatario",
+          "isCorrect": false
+        },
+        {
+          "text": "Unicidad y exactitud de su orden cronológico secuencial y de su integridad",
+          "isCorrect": true
+        },
+        {
+          "text": "Equivalencia con los asientos que constan inscritos en un registro público",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 45 duodecies.2 dispone que «Los registros de datos contenidos en un libro mayor electrónico cualificado gozarán de la presunción de unicidad y exactitud de su orden cronológico secuencial y de su integridad.» El apartado 1 solo impide denegar efectos jurídicos y admisibilidad como prueba al libro mayor electrónico por estar en formato electrónico o por no ser cualificado. Las presunciones sobre el origen de los datos son de otros servicios (sello electrónico, art. 35.2, y archivo electrónico, art. 45 decies.2), y la del envío y la recepción, de la entrega electrónica certificada (art. 43.2). El precepto no equipara el libro mayor a un registro público.",
+      "legalReference": "Reglamento (UE) 910/2014 (eIDAS), art. 45 duodecies, apartado 2"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0005",
+      "statement": "Según el artículo 12 de la Ley 6/2020, los prestadores de servicios de confianza no cualificados no necesitan verificación administrativa previa para iniciar su actividad, pero deben comunicarla al Ministerio competente en el plazo de:",
+      "options": [
+        {
+          "text": "Tres meses desde que la inicien",
+          "isCorrect": true
+        },
+        {
+          "text": "Seis meses desde que la inicien",
+          "isCorrect": false
+        },
+        {
+          "text": "Quince días hábiles desde que la inicien",
+          "isCorrect": false
+        },
+        {
+          "text": "Un mes antes de iniciarla",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 12 establece que estos prestadores «deberán comunicar su actividad al Ministerio de Asuntos Económicos y Transformación Digital en el plazo de tres meses desde que la inicien», y que en el mismo plazo deben comunicar la modificación de los datos transmitidos y el cese. No es una comunicación previa, y los seis meses son el plazo máximo para resolver el procedimiento de verificación previa de cumplimiento de los requisitos que se aplica a los prestadores cualificados (art. 16.2), no el plazo de comunicación de los no cualificados.",
+      "legalReference": "Ley 6/2020, art. 12"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0006",
+      "statement": "Según el artículo 10 de la Ley 6/2020, cuando un prestador de servicios electrónicos de confianza delega en otra persona u otro prestador la comprobación de la identidad previa a la expedición de un certificado cualificado, el prestador delegante:",
+      "options": [
+        {
+          "text": "Queda exento de responsabilidad frente a terceros si el delegado es otro prestador cualificado",
+          "isCorrect": false
+        },
+        {
+          "text": "Responde solo de las actuaciones que realice directamente, y el delegado responde de las suyas",
+          "isCorrect": false
+        },
+        {
+          "text": "Asume toda la responsabilidad frente a terceros por la actuación del delegado",
+          "isCorrect": true
+        },
+        {
+          "text": "Responde frente a terceros solo de forma subsidiaria, tras agotar la vía contra el delegado",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 10 dispone que los prestadores «asumirán toda la responsabilidad frente a terceros por la actuación de las personas u otros prestadores en los que deleguen la ejecución de alguna o algunas de las funciones necesarias para la prestación de servicios electrónicos de confianza, incluyendo las actuaciones de comprobación de identidad previas a la expedición de un certificado cualificado». La responsabilidad no se reparte ni es subsidiaria, y las limitaciones de responsabilidad del artículo 11 (conductas del titular o del destinatario, o datos acreditados en documento público) no incluyen la delegación en otro prestador.",
+      "legalReference": "Ley 6/2020, art. 10"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0007",
+      "statement": "Según el artículo 10.5 de la Ley 39/2015, cuando los interesados utilicen un sistema de firma de los previstos en ese artículo, su identidad se entenderá:",
+      "options": [
+        {
+          "text": "Sujeta a una comprobación presencial posterior",
+          "isCorrect": false
+        },
+        {
+          "text": "Acreditada solo si el sistema de firma utilizado es una firma electrónica cualificada",
+          "isCorrect": false
+        },
+        {
+          "text": "Acreditada con carácter provisional hasta que el órgano instructor la confirme",
+          "isCorrect": false
+        },
+        {
+          "text": "Ya acreditada mediante el propio acto de la firma",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 10.5 señala que, cuando los interesados utilicen un sistema de firma de los previstos en el artículo, «su identidad se entenderá ya acreditada mediante el propio acto de la firma». No exige una comprobación posterior, presencial o del órgano instructor, y no se limita a la firma cualificada: el apartado 2 admite también la firma avanzada, los sellos y otros sistemas que las Administraciones consideren válidos con registro previo como usuario.",
+      "legalReference": "Ley 39/2015, art. 10.5"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0008",
+      "statement": "Según el artículo 20.3 del Real Decreto 4/2010 (ENI), las plataformas de validación de certificados electrónicos y de firma electrónica potenciarán:",
+      "options": [
+        {
+          "text": "La sustitución de los formatos de firma de cada Administración por un formato único propio de la plataforma",
+          "isCorrect": false
+        },
+        {
+          "text": "La armonización técnica y la utilización común de formatos, estándares y políticas de firma electrónica y de certificados",
+          "isCorrect": true
+        },
+        {
+          "text": "La expedición centralizada de certificados electrónicos a los empleados públicos de todas las Administraciones",
+          "isCorrect": false
+        },
+        {
+          "text": "La conservación a largo plazo de los documentos firmados en un archivo electrónico único",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 20.3 dispone que las plataformas «Potenciarán la armonización técnica y la utilización común de formatos, estándares y políticas de firma electrónica y de certificados para las firmas electrónicas entre las aplicaciones usuarias». El artículo 20 les atribuye servicios de validación de los certificados y firmas (apartado 1), proporcionar en un único punto de llamada los elementos de confianza e interoperabilidad (apartado 2) e incorporar listas de confianza (apartado 4); no les atribuye imponer un formato propio, expedir certificados ni archivar documentos.",
+      "legalReference": "RD 4/2010 (ENI), art. 20.3"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0009",
+      "statement": "Según la «Descripción» de la ficha de @firma en el CTT del Portal de Administración Electrónica (PAe), además de ofrecerse como servicio, @firma está disponible:",
+      "options": [
+        {
+          "text": "Como software para instalar por las Administraciones Públicas, en un modelo federado",
+          "isCorrect": true
+        },
+        {
+          "text": "Como aplicación nativa para los dispositivos móviles de los ciudadanos",
+          "isCorrect": false
+        },
+        {
+          "text": "Como broker de firma electrónica para conectar con prestadores privados",
+          "isCorrect": false
+        },
+        {
+          "text": "Como autoridad de certificación que expide certificados a los empleados públicos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La «Descripción» dice: «Además de ofrecerse como servicio, está disponible como software para instalar por las administraciones públicas (modelo federado)». Las aplicaciones nativas para dispositivos móviles («Firma Móvil») y el broker de firma electrónica («FIRe») son otros elementos de la suite que enumera la misma ficha, y en ella no consta que @firma expida certificados.",
+      "legalReference": "PAe, @firma (ficha del CTT), «Descripción»"
+    },
+    {
+      "key": "malaga-programador-c1/firma-electronica/0010",
+      "statement": "Según la «Descripción» de la ficha de TS@ en el CTT del Portal de Administración Electrónica (PAe), a través de la interfaz de validación podrán validarse los sellos de tiempo emitidos previamente; esa validación se hace respecto a:",
+      "options": [
+        {
+          "text": "La fecha de emisión",
+          "isCorrect": false
+        },
+        {
+          "text": "La fecha de la firma",
+          "isCorrect": false
+        },
+        {
+          "text": "La fecha actual",
+          "isCorrect": true
+        },
+        {
+          "text": "La fecha de caducidad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La «Descripción» indica que «A través de la interfaz de validación podrán validarse sellos de tiempo emitidos previamente para saber si el sello de tiempo es válido; se validará respecto a la fecha actual.» La ficha no toma como referencia la fecha de emisión del sello, ni la de la firma, ni la de caducidad.",
+      "legalReference": "PAe, TS@ (ficha del CTT), «Descripción»"
+    }
+  ]
+}
