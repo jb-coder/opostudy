@@ -15,11 +15,11 @@
           "isCorrect": true
         },
         {
-          "text": "La actividad que permite establecer la conformidad de una empresa, producto, proceso o servicio con los requisitos definidos en normas",
+          "text": "La actividad que permite establecer la conformidad de una empresa, producto, proceso o servicio con los requisitos definidos en las normas",
           "isCorrect": false
         },
         {
-          "text": "El examen sistemático e independiente de la eficacia del sistema de calidad de una empresa, o bien de alguna de las partes de ese sistema",
+          "text": "El examen sistemático e independiente de la eficacia del sistema de calidad de una empresa, o bien de alguna de las partes que lo componen",
           "isCorrect": false
         }
       ],
@@ -55,23 +55,23 @@
       "statement": "Según el anexo I del Reglamento (UE) 1025/2012, ¿cuál de las siguientes es una organización europea de normalización?",
       "options": [
         {
-          "text": "Instituto Europeo de Normas de Telecomunicaciones (ETSI)",
+          "text": "CEN",
           "isCorrect": true
         },
         {
-          "text": "Organización Internacional de Normalización (ISO)",
+          "text": "ISO",
           "isCorrect": false
         },
         {
-          "text": "Comisión Electrotécnica Internacional (IEC)",
+          "text": "IEC",
           "isCorrect": false
         },
         {
-          "text": "Unión Internacional de Telecomunicaciones (UIT)",
+          "text": "UIT",
           "isCorrect": false
         }
       ],
-      "explanation": "El anexo I enumera como organizaciones europeas de normalización el CEN, el Cenelec y el ETSI. La ISO, la IEC y la UIT son, según el artículo 2.9, los organismos internacionales de normalización, no europeos.",
+      "explanation": "El anexo I enumera como organizaciones europeas de normalización el CEN (Comité Europeo de Normalización), el Cenelec y el ETSI. La ISO, la IEC y la UIT son, según el artículo 2.9, los organismos internacionales de normalización, no europeos.",
       "legalReference": "Reglamento (UE) 1025/2012, anexo I"
     },
     {
@@ -103,7 +103,7 @@
       "statement": "Según el artículo 8 del Reglamento de la Infraestructura para la Calidad y la Seguridad Industrial (RD 2200/1995), los Organismos de normalización son:",
       "options": [
         {
-          "text": "Entidades privadas sin ánimo de lucro, que desarrollan en el ámbito estatal las actividades de elaboración de normas",
+          "text": "Entidades privadas sin ánimo de lucro, que desarrollan en el ámbito estatal la elaboración de normas",
           "isCorrect": true
         },
         {
@@ -111,7 +111,7 @@
           "isCorrect": false
         },
         {
-          "text": "Entidades privadas con ánimo de lucro, que financian la elaboración de normas con la venta de sus ediciones",
+          "text": "Entidades privadas con ánimo de lucro, que financian la elaboración de normas con las cuotas de sus socios",
           "isCorrect": false
         },
         {
@@ -119,7 +119,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "El artículo 8 dispone que los Organismos de normalización «son entidades privadas sin ánimo de lucro, cuya finalidad es desarrollar en el ámbito estatal las actividades relacionadas con la elaboración de normas». Por tanto no son organismos públicos ni entidades con ánimo de lucro, aunque el artículo 11.i) les atribuya la edición y venta de normas, ni órganos de ese Consejo.",
+      "explanation": "El artículo 8 dispone que los Organismos de normalización «son entidades privadas sin ánimo de lucro, cuya finalidad es desarrollar en el ámbito estatal las actividades relacionadas con la elaboración de normas». Por tanto no son organismos públicos ni entidades con ánimo de lucro, ni órganos de ese Consejo.",
       "legalReference": "RD 2200/1995, art. 8"
     },
     {
@@ -207,7 +207,7 @@
           "isCorrect": false
         },
         {
-          "text": "Es obligatoria para los productos, servicios y procesos de TIC que presenten un riesgo elevado",
+          "text": "Es obligatoria, salvo que la autoridad nacional de certificación conceda una exención expresa",
           "isCorrect": false
         },
         {
@@ -215,7 +215,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "El artículo 56.2 establece que «La certificación de la ciberseguridad será voluntaria, salvo que se disponga otra cosa en el Derecho de la Unión o de los Estados miembros». No es obligatoria con carácter general ni por el riesgo del producto, y tampoco es voluntaria en todo caso, porque el Derecho de la Unión o el de un Estado miembro pueden imponerla.",
+      "explanation": "El artículo 56.2 establece que «La certificación de la ciberseguridad será voluntaria, salvo que se disponga otra cosa en el Derecho de la Unión o de los Estados miembros». No es obligatoria con carácter general, ni con la salvedad de la autoevaluación o de una exención, y tampoco es voluntaria en todo caso, porque el Derecho de la Unión o el de un Estado miembro pueden imponerla.",
       "legalReference": "Reglamento (UE) 2019/881, art. 56.2"
     },
     {

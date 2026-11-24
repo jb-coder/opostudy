@@ -15,15 +15,15 @@
           "isCorrect": true
         },
         {
-          "text": "Solo cuando el intercambio de información afecte a servicios de la Unión Europea",
+          "text": "Subsidiariamente, cuando no dispongan de otra red de comunicaciones en común",
           "isCorrect": false
         },
         {
-          "text": "Solo cuando la Administración receptora lo solicite de forma expresa",
+          "text": "Transitoriamente, mientras no desplieguen una red propia de comunicaciones entre sí",
           "isCorrect": false
         }
       ],
-      "explanation": "El artículo 13.1 dispone que las Administraciones públicas «utilizarán preferentemente la Red de comunicaciones de las Administraciones públicas españolas para comunicarse entre sí, para lo cual conectarán a la misma, bien sus respectivas redes, bien sus nodos de interoperabilidad». Por tanto, el uso no es exclusivo ni obligatorio en todo caso, y no depende de que el intercambio afecte a la Unión Europea ni de la petición de la Administración receptora.",
+      "explanation": "El artículo 13.1 dispone que las Administraciones públicas «utilizarán preferentemente la Red de comunicaciones de las Administraciones públicas españolas para comunicarse entre sí, para lo cual conectarán a la misma, bien sus respectivas redes, bien sus nodos de interoperabilidad». Por tanto, el uso no es exclusivo ni obligatorio en todo caso, y tampoco es subsidiario de otras redes ni transitorio.",
       "legalReference": "RD 4/2010 (ENI), art. 13.1"
     },
     {
@@ -111,15 +111,15 @@
           "isCorrect": false
         },
         {
-          "text": "Se cifrarán solo si llevan datos personales",
+          "text": "Se cifrarán o no, a elección de cada sede",
           "isCorrect": false
         },
         {
-          "text": "Se cifrarán solo en el tramo de la zona desmilitarizada",
+          "text": "Se cifrarán en destino, una vez recibidas",
           "isCorrect": false
         }
       ],
-      "explanation": "El apartado III.1.4 dispone que el subsistema de seguridad externo «será el encargado de establecer una red privada virtual (VPN) hacia el resto de sedes de la Red SARA, con lo que todas las comunicaciones, a través del operador de servicios de telecomunicaciones, estarán cifradas mediante túneles». El cifrado alcanza a todas las comunicaciones, sin depender del contenido, del tramo ni de la confianza en el operador.",
+      "explanation": "El apartado III.1.4 dispone que el subsistema de seguridad externo «será el encargado de establecer una red privada virtual (VPN) hacia el resto de sedes de la Red SARA, con lo que todas las comunicaciones, a través del operador de servicios de telecomunicaciones, estarán cifradas mediante túneles». El cifrado alcanza a todas las comunicaciones, sin depender de la confianza en el operador ni de la elección de cada sede, y no se aplica una vez recibidas.",
       "legalReference": "NTI de Requisitos de conexión (Resolución de 19-07-2011), apartado III.1.4"
     },
     {
@@ -211,11 +211,11 @@
           "isCorrect": false
         },
         {
-          "text": "Una red de uso exclusivo de la Junta de Andalucía, cerrada a otras Administraciones",
+          "text": "Una red de centros de datos que alojan las sedes electrónicas locales",
           "isCorrect": false
         }
       ],
-      "explanation": "La página la define como «una red privada de telecomunicaciones aislada de las redes públicas que garantiza la seguridad en las comunicaciones» y que permite que todas las administraciones de la Comunidad Autónoma de Andalucía estén interconectadas telemáticamente. No es una red pública abierta, ni una plataforma de firma, ni una red exclusiva de la Junta.",
+      "explanation": "La página la define como «una red privada de telecomunicaciones aislada de las redes públicas que garantiza la seguridad en las comunicaciones». No es una red pública abierta, ni una plataforma de firma, ni una red de centros de datos.",
       "legalReference": "Junta de Andalucía (Agencia Digital de Andalucía), «La red NEREA»"
     },
     {
@@ -223,7 +223,7 @@
       "statement": "Según la página «La red NEREA» de la Junta de Andalucía, ¿qué permite la Red NEREA respecto de las entidades locales?",
       "options": [
         {
-          "text": "Conectarlas a Internet de forma directa, sin pasar por ninguna otra red de la Administración",
+          "text": "Conectarlas de forma directa con la Red SARA, sin pasar antes por la RCJA",
           "isCorrect": false
         },
         {

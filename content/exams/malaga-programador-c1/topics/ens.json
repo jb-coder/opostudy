@@ -28,27 +28,27 @@
     },
     {
       "key": "malaga-programador-c1/ens/0002",
-      "statement": "Según el artículo 5 del Real Decreto 311/2022, ¿cuál de las siguientes opciones es un principio básico del Esquema Nacional de Seguridad?",
+      "statement": "Según el artículo 9.2 del Real Decreto 311/2022, las líneas de defensa del sistema de información han de estar constituidas por medidas de naturaleza:",
       "options": [
         {
-          "text": "Gestión de personal",
+          "text": "Preventiva, reactiva y correctiva",
           "isCorrect": false
         },
         {
-          "text": "Protección de las instalaciones",
+          "text": "Jurídica, económica y técnica",
           "isCorrect": false
         },
         {
-          "text": "Continuidad de la actividad",
+          "text": "Pública, privada y mixta",
           "isCorrect": false
         },
         {
-          "text": "Existencia de líneas de defensa",
+          "text": "Organizativa, física y lógica",
           "isCorrect": true
         }
       ],
-      "explanation": "El artículo 5 enumera como principio básico la «Existencia de líneas de defensa», que el artículo 9 concreta en una estrategia de protección con múltiples capas de seguridad. Las otras tres opciones son requisitos mínimos de seguridad del artículo 12.6, con los que se desarrolla la política, y no figuran entre los principios básicos.",
-      "legalReference": "RD 311/2022 (ENS), art. 5"
+      "explanation": "El artículo 9.2 dispone que «Las líneas de defensa han de estar constituidas por medidas de naturaleza organizativa, física y lógica». Las demás clasificaciones no figuran en el precepto.",
+      "legalReference": "RD 311/2022 (ENS), art. 9.2"
     },
     {
       "key": "malaga-programador-c1/ens/0003",
@@ -167,7 +167,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "El artículo 28.2 dispone que «La relación de medidas de seguridad seleccionadas se formalizará en un documento denominado Declaración de Aplicabilidad, firmado por el responsable de la seguridad». La declaración de conformidad manifiesta el cumplimiento del ENS (artículo 38), la política de seguridad recoge las directrices con las que la organización gestiona y protege la información (artículo 12.1) y los perfiles de cumplimiento específicos son conjuntos de medidas idóneos para determinadas entidades o sectores (artículo 30.1).",
+      "explanation": "El artículo 28.2 dispone que «La relación de medidas de seguridad seleccionadas se formalizará en un documento denominado Declaración de Aplicabilidad, firmado por el responsable de la seguridad». La declaración de conformidad manifiesta el cumplimiento del ENS (artículo 38), la política de seguridad recoge las directrices con las que la organización gestiona y protege la información (artículo 12.1) y los perfiles de cumplimiento específicos comprenden el conjunto de medidas que, a partir del análisis de riesgos, «resulten idóneas para una concreta categoría de seguridad» (artículo 30.1).",
       "legalReference": "RD 311/2022 (ENS), art. 28.2"
     },
     {
@@ -223,7 +223,7 @@
       "statement": "Según el artículo 33.2 del Real Decreto 311/2022, las entidades del sector público notificarán al CCN los incidentes de seguridad que:",
       "options": [
         {
-          "text": "Tengan un impacto significativo en la seguridad de los sistemas de información concernidos",
+          "text": "Tengan un impacto significativo en la seguridad de los sistemas",
           "isCorrect": true
         },
         {

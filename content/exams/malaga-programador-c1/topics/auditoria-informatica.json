@@ -52,22 +52,22 @@
     },
     {
       "key": "malaga-programador-c1/auditoria-informatica/0003",
-      "statement": "Según el artículo 31.1 del Real Decreto 311/2022, los sistemas de información comprendidos en su ámbito de aplicación serán objeto de una auditoría regular ordinaria, al menos:",
+      "statement": "Según el artículo 31.1 del Real Decreto 311/2022, ¿cuál es la periodicidad mínima con la que los sistemas de información comprendidos en su ámbito de aplicación serán objeto de una auditoría regular ordinaria?",
       "options": [
         {
-          "text": "cada dos años",
+          "text": "Cada dos años",
           "isCorrect": true
         },
         {
-          "text": "cada año",
+          "text": "Cada año",
           "isCorrect": false
         },
         {
-          "text": "cada tres años",
+          "text": "Cada tres años",
           "isCorrect": false
         },
         {
-          "text": "cada cuatro años",
+          "text": "Cada cuatro años",
           "isCorrect": false
         }
       ],
@@ -124,7 +124,7 @@
     },
     {
       "key": "malaga-programador-c1/auditoria-informatica/0006",
-      "statement": "Según la ITS de Auditoría de la Seguridad, ante un dictamen «DESFAVORABLE», la entidad titular del sistema auditado deberá someterse a una auditoría extraordinaria en un plazo, contado desde la fecha de emisión del Informe de Auditoría, no superior a:",
+      "statement": "Según la ITS de Auditoría de la Seguridad, ante un dictamen «DESFAVORABLE», ¿cuál es el plazo máximo, contado desde la fecha de emisión del Informe de Auditoría, para que la entidad titular del sistema auditado se someta a una auditoría extraordinaria?",
       "options": [
         {
           "text": "Seis meses",
