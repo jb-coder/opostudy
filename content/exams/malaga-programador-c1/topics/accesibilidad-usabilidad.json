@@ -28,26 +28,26 @@
     },
     {
       "key": "malaga-programador-c1/accesibilidad-usabilidad/0002",
-      "statement": "Según el artículo 15.1 del Real Decreto 1112/2018, ¿cuál es la periodicidad mínima con la que debe actualizarse la declaración de accesibilidad de un sitio web, aunque no se realice una revisión de accesibilidad?",
+      "statement": "Según el artículo 15.1 del Real Decreto 1112/2018, ¿cada cuánto tiempo, como máximo, debe actualizarse la declaración de accesibilidad de un sitio web, aunque no se realice una revisión de accesibilidad?",
       "options": [
         {
-          "text": "Una vez al año",
+          "text": "Cada año",
           "isCorrect": true
         },
         {
-          "text": "Una vez cada dos años",
+          "text": "Cada dos años",
           "isCorrect": false
         },
         {
-          "text": "Dos veces al año",
+          "text": "Cada seis meses",
           "isCorrect": false
         },
         {
-          "text": "Una vez al mes",
+          "text": "Cada mes",
           "isCorrect": false
         }
       ],
-      "explanation": "El artículo 15.1 dispone que la declaración «será actualizada periódicamente, como mínimo una vez al año, o cada vez que se realice una revisión de accesibilidad conforme a lo especificado en el artículo 17». Las demás frecuencias no figuran en el precepto.",
+      "explanation": "El artículo 15.1 dispone que la declaración «será actualizada periódicamente, como mínimo una vez al año, o cada vez que se realice una revisión de accesibilidad conforme a lo especificado en el artículo 17». Los demás intervalos no figuran en el precepto.",
       "legalReference": "RD 1112/2018, art. 15.1"
     },
     {
@@ -67,7 +67,7 @@
           "isCorrect": false
         },
         {
-          "text": "Aspectos de revisión automática y de revisión manual experta, recogiendo el resultado en un informe",
+          "text": "La revisión automática y la manual experta, recogiendo el resultado en un informe",
           "isCorrect": true
         }
       ],

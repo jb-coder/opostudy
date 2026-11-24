@@ -52,22 +52,22 @@
     },
     {
       "key": "malaga-programador-c1/auditoria-informatica/0003",
-      "statement": "Según el artículo 31.1 del Real Decreto 311/2022, ¿cuál es la periodicidad mínima con la que los sistemas de información comprendidos en su ámbito de aplicación serán objeto de una auditoría regular ordinaria?",
+      "statement": "Según el artículo 31.1 del Real Decreto 311/2022, ¿cuál es el intervalo máximo entre dos auditorías regulares ordinarias de los sistemas de información comprendidos en su ámbito de aplicación?",
       "options": [
         {
-          "text": "Cada dos años",
+          "text": "Dos años",
           "isCorrect": true
         },
         {
-          "text": "Cada año",
+          "text": "Un año",
           "isCorrect": false
         },
         {
-          "text": "Cada tres años",
+          "text": "Tres años",
           "isCorrect": false
         },
         {
-          "text": "Cada cuatro años",
+          "text": "Cuatro años",
           "isCorrect": false
         }
       ],

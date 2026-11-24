@@ -223,7 +223,7 @@
       "statement": "Según la página «La red NEREA» de la Junta de Andalucía, ¿qué permite la Red NEREA respecto de las entidades locales?",
       "options": [
         {
-          "text": "Conectarlas de forma directa con la Red SARA, sin pasar antes por la RCJA",
+          "text": "Conectarlas con la RCJA, sin llegar a interconectarlas con la Red SARA",
           "isCorrect": false
         },
         {
