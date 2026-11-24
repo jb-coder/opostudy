@@ -83,10 +83,17 @@ Escala de 4 (`Spacing.xaml`):
 | `MinTouchTarget` | 48 |
 | `DimmedOpacity` | 0,6 (elementos atenuados o no disponibles; nunca como único indicador de estado) |
 | `AnswerEditorMinHeight` | 160 (alto mínimo del editor de respuestas de los supuestos) |
+| `ListHeaderPadding`, `ListFooterPadding` (`Thickness`) | 0,0,0,12 y 0,12,0,0 (separación de la cabecera y del pie de una lista con `CollectionView`) |
+| `CalendarCornerRadius` (`CornerRadius`) | 8 (esquinas de cada día del calendario) |
+| `CalendarCellGap` (`Thickness`) | 2 (margen de cada día del calendario; 4 dp entre celdas) |
+| `CalendarTodayStroke` | 2 (grosor del borde del día de hoy en el calendario) |
+| `ChartBarAreaHeight` | 96 (alto de las barras de la gráfica de notas de supuestos) |
+| `ChartBarWidth` | 32 (ancho de una barra de la gráfica) |
+| `ChartBarSlotWidth` | 56 (ancho de la columna de una barra: porcentaje, barra y fecha) |
 
 ## Estilos
 
-Implícitos (se aplican solos): `ContentPage` (fondo), `Shell`, `Label` (Body + `OnSurface`), `Button` (principal), `Border` (tarjeta), `Entry` (campo de texto: fondo `Surface`, texto `OnSurface`, marcador `OnSurfaceVariant`, alto mínimo 48), `Picker` (selector: mismos colores y alto que `Entry`, título `OnSurfaceVariant`), `ActivityIndicator`, `RefreshView`, `CollectionView`.
+Implícitos (se aplican solos): `ContentPage` (fondo), `Shell`, `Label` (Body + `OnSurface`), `Button` (principal), `Border` (tarjeta), `Entry` (campo de texto: fondo `Surface`, texto `OnSurface`, marcador `OnSurfaceVariant`, alto mínimo 48), `ProgressBar` (progreso en `Primary`; la pista `Outline` se aplica en Android con `Platforms/Android/ProgressBarTrack.cs`, porque MAUI no tiene propiedad para ella), `Picker` (selector: mismos colores y alto que `Entry`, título `OnSurfaceVariant`), `ActivityIndicator`, `RefreshView`, `CollectionView`.
 
 Con clave:
 
@@ -94,9 +101,11 @@ Con clave:
 |---|---|
 | `PrimaryButton` | Botón principal (base del `Button` implícito) |
 | `SecondaryButton` | Botón de contorno (borde `Primary`) |
-| `TextButton` | Botón de texto, sin fondo |
+| `TextButton` | Botón de texto, sin fondo; deshabilitado: sin fondo, texto `OnSurfaceVariant` y `DimmedOpacity` |
 | `CardBorder` | Tarjeta (`Surface` + trazo `Outline`, base del `Border` implícito) |
 | `DayDotBorder` | Punto de día (círculo de 32 dp): contorno si no se cumplió, relleno con `Success` si sí |
+| `CalendarCell`, `CalendarWeekdayCell` | `Grid` de una celda del calendario mensual (`FlexLayout.Basis` de un séptimo del ancho; 48 dp de alto en `CalendarCell`) |
+| `CalendarDayBorder` | Día del calendario: borde redondeado de 8 dp, sin relleno; los triggers pintan el estado (objetivo cumplido, actividad, hoy), siempre junto a una marca de texto (✓, •, 🛡️) |
 | `ErrorLabel`, `SuccessLabel`, `WarningLabel` | Mensajes de estado (`WarningLabel` también para avisos de límite, borrador o conexión: siempre acompañado de texto) |
 | `AnswerEditorStyle` | `Editor` multilínea de respuesta (supuestos): fondo `Surface`, texto `OnSurface`, alto mínimo `AnswerEditorMinHeight` (160 dp, ~6 líneas); se envuelve en un `Border` y crece con `AutoSize="TextChanges"` |
 | `DisplayLabel`, `TitleLabel`, `SubtitleLabel`, `BodyLabel`, `CaptionLabel` | Tipografía |

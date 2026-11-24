@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.StatsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:controls="clr-namespace:OpoStudy.Mobile.Views.Controls"
+    xmlns:stats="clr-namespace:OpoStudy.Mobile.Core.Stats;assembly=OpoStudy.Mobile.Core"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:StatsViewModel"
+    Title="Estadísticas">
+
+    <RefreshView
+        Command="{Binding RefreshCommand}"
+        IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+        <CollectionView
+            ItemsSource="{Binding VisibleTopics}"
+            SelectionMode="None"
+            Margin="{StaticResource PagePadding}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SpaceM}" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="{StaticResource SpaceL}" Padding="{StaticResource ListHeaderPadding}">
+                    <controls:OfflineBanner IsVisible="{Binding ShowOfflineBanner}" Text="{Binding OfflineBannerText}" />
+
+                    <Picker
+                        Title="{x:Static stats:StatsTexts.ExamLabel}"
+                        ItemsSource="{Binding Exams}"
+                        ItemDisplayBinding="{Binding Name, x:DataType=vm:ExamItem}"
+                        SelectedItem="{Binding SelectedExam}"
+                        IsVisible="{Binding ShowExamPicker}"
+                        SemanticProperties.Description="{x:Static stats:StatsTexts.ExamLabel}" />
+
+                    <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding ShowInitialLoading}">
+                        <ActivityIndicator IsRunning="{Binding ShowInitialLoading}" />
+                        <Label Text="{x:Static stats:StatsTexts.Loading}" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasError}">
+                        <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                        <Button Text="{x:Static stats:StatsTexts.Retry}" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding NeedsConnection}">
+                        <Label Style="{StaticResource WarningLabel}" Text="{x:Static stats:StatsTexts.NeedsConnection}" />
+                        <Button Text="{x:Static stats:StatsTexts.Retry}" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <Label Text="{x:Static stats:StatsTexts.NoExams}" IsVisible="{Binding NoExams}" />
+
+                    <!-- Nothing answered and no gradings: the calendar below is still shown. -->
+                    <Border IsVisible="{Binding IsEmptyStats}">
+                        <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                            <Label Text="{x:Static stats:StatsTexts.NoData}" />
+                            <Button Text="{x:Static stats:StatsTexts.TakeQuiz}" Command="{Binding StartQuizCommand}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        RowDefinitions="Auto,Auto"
+                        ColumnSpacing="{StaticResource SpaceM}"
+                        RowSpacing="{StaticResource SpaceM}"
+                        IsVisible="{Binding ShowStatsBlocks}">
+                        <Border SemanticProperties.Description="{Binding AnsweredText, StringFormat='Respondidas: {0}'}">
+                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                <Label Style="{StaticResource TitleLabel}" Text="{Binding AnsweredText}" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="{x:Static stats:StatsTexts.AnsweredLabel}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1" SemanticProperties.Description="{Binding AccuracyText, StringFormat='Aciertos: {0}'}">
+                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                <Label Style="{StaticResource TitleLabel}" Text="{Binding AccuracyText}" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="{x:Static stats:StatsTexts.AccuracyLabel}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" SemanticProperties.Description="{Binding QuizzesText, StringFormat='Tests completados: {0}'}">
+                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                <Label Style="{StaticResource TitleLabel}" Text="{Binding QuizzesText}" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="{x:Static stats:StatsTexts.QuizzesLabel}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="1" SemanticProperties.Description="{Binding TopicsText, StringFormat='Temas practicados: {0}'}">
+                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                <Label Style="{StaticResource TitleLabel}" Text="{Binding TopicsText}" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="{x:Static stats:StatsTexts.TopicsLabel}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding ShowStatsBlocks}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="{x:Static stats:StatsTexts.TopicsSection}"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <Label Text="{x:Static stats:StatsTexts.NoAnswers}" IsVisible="{Binding ShowNoAnswers}" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </CollectionView.Header>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:TopicStatItem">
+                    <Border>
+                        <VerticalStackLayout Spacing="{StaticResource SpaceS}">
+                            <!-- The description is on the text only: the button stays a separate element for TalkBack. -->
+                            <VerticalStackLayout Spacing="{StaticResource SpaceS}" SemanticProperties.Description="{Binding AccessibilityText}">
+                                <Label Style="{StaticResource SubtitleLabel}" Text="{Binding Title}" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="{Binding Section}" IsVisible="{Binding HasSection}" />
+                                <ProgressBar Progress="{Binding Progress}" />
+                                <Label Text="{Binding ScoreText}" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="{Binding LastPracticeText}" />
+                            </VerticalStackLayout>
+                            <Label
+                                Style="{StaticResource WarningLabel}"
+                                Text="{Binding Message}"
+                                IsVisible="{Binding HasMessage}" />
+                            <Button
+                                Style="{StaticResource SecondaryButton}"
+                                Text="{x:Static stats:StatsTexts.PracticeTopic}"
+                                SemanticProperties.Description="{Binding PracticeDescription}"
+                                Command="{Binding PracticeTopicCommand, Source={RelativeSource AncestorType={x:Type vm:StatsViewModel}}}"
+                                CommandParameter="{Binding .}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.Footer>
+                <VerticalStackLayout Spacing="{StaticResource SpaceL}" Padding="{StaticResource ListFooterPadding}">
+                    <Button
+                        Style="{StaticResource TextButton}"
+                        Text="{Binding ToggleTopicsText}"
+                        Command="{Binding ToggleTopicsCommand}"
+                        IsVisible="{Binding CanToggleTopics}" />
+
+                    <!-- Activity: month calendar. Each state has a colour and a mark. -->
+                    <Border IsVisible="{Binding ShowActivity}">
+                        <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                            <Label
+                                Style="{StaticResource SubtitleLabel}"
+                                Text="{x:Static stats:StatsTexts.ActivitySection}"
+                                SemanticProperties.HeadingLevel="Level2" />
+
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Button
+                                    Style="{StaticResource TextButton}"
+                                    Text="{x:Static stats:StatsTexts.PreviousGlyph}"
+                                    FontSize="{StaticResource FontSizeTitle}"
+                                    Command="{Binding PreviousMonthCommand}"
+                                    SemanticProperties.Description="{x:Static stats:StatsTexts.PreviousMonth}" />
+                                <Label
+                                    Grid.Column="1"
+                                    Style="{StaticResource SubtitleLabel}"
+                                    Text="{Binding MonthTitle}"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+                                <Button
+                                    Grid.Column="2"
+                                    Style="{StaticResource TextButton}"
+                                    Text="{x:Static stats:StatsTexts.NextGlyph}"
+                                    FontSize="{StaticResource FontSizeTitle}"
+                                    Command="{Binding NextMonthCommand}"
+                                    SemanticProperties.Description="{x:Static stats:StatsTexts.NextMonth}" />
+                            </Grid>
+
+                            <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{x:Static stats:ActivityCalendar.WeekdayInitials}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <Grid Style="{StaticResource CalendarWeekdayCell}">
+                                            <Label
+                                                Style="{StaticResource CaptionLabel}"
+                                                Text="{Binding .}"
+                                                HorizontalOptions="Center"
+                                                SemanticProperties.Description="{Binding .}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </FlexLayout>
+
+                            <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding Cells}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="stats:CalendarCell">
+                                        <Grid Style="{StaticResource CalendarCell}">
+                                            <Border
+                                                Style="{StaticResource CalendarDayBorder}"
+                                                IsVisible="{Binding HasDate}"
+                                                InputTransparent="{Binding IsFuture}"
+                                                SemanticProperties.Description="{Binding Description}">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Command="{Binding SelectDayCommand, Source={RelativeSource AncestorType={x:Type vm:StatsViewModel}}}"
+                                                        CommandParameter="{Binding .}" />
+                                                </Border.GestureRecognizers>
+                                                <Border.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding IsFuture}" Value="True">
+                                                        <Setter Property="Opacity" Value="{StaticResource DimmedOpacity}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding IsActivityOnly}" Value="True">
+                                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding IsGoalMet}" Value="True">
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding IsToday}" Value="True">
+                                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
+                                                        <Setter Property="StrokeThickness" Value="{StaticResource CalendarTodayStroke}" />
+                                                    </DataTrigger>
+                                                </Border.Triggers>
+                                                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                                    <Label Text="{Binding DayText}" HorizontalOptions="Center">
+                                                        <Label.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding IsToday}" Value="True">
+                                                                <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                                                            </DataTrigger>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding IsGoalMet}" Value="True">
+                                                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OnPrimaryLight}, Dark={StaticResource OnPrimaryDark}}" />
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+                                                    <Label
+                                                        Style="{StaticResource CaptionLabel}"
+                                                        Text="{Binding MarkLine}"
+                                                        HorizontalOptions="Center">
+                                                        <Label.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding IsGoalMet}" Value="True">
+                                                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OnPrimaryLight}, Dark={StaticResource OnPrimaryDark}}" />
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </FlexLayout>
+
+                            <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsActivityLoading}">
+                                <ActivityIndicator IsRunning="{Binding IsActivityLoading}" />
+                                <Label Text="{x:Static stats:StatsTexts.LoadingActivity}" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+
+                            <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasActivityError}">
+                                <Label Style="{StaticResource ErrorLabel}" Text="{Binding ActivityError}" />
+                                <Button Text="{x:Static stats:StatsTexts.Retry}" Command="{Binding RetryActivityCommand}" />
+                            </VerticalStackLayout>
+
+                            <Label Text="{Binding ActivitySummaryText}" IsVisible="{Binding HasActivitySummary}" />
+                            <Label Style="{StaticResource CaptionLabel}" Text="{x:Static stats:StatsTexts.Legend}" />
+                            <Label
+                                Style="{StaticResource SubtitleLabel}"
+                                Text="{Binding SelectedDayText}"
+                                IsVisible="{Binding HasSelectedDay}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Practical cases: average, bar chart of the last gradings and the best score of each case. -->
+                    <Border IsVisible="{Binding ShowStatsBlocks}">
+                        <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                            <Label
+                                Style="{StaticResource SubtitleLabel}"
+                                Text="{x:Static stats:StatsTexts.GradingsSection}"
+                                SemanticProperties.HeadingLevel="Level2" />
+                            <Label Text="{x:Static stats:StatsTexts.NoGradings}" IsVisible="{Binding ShowNoGradings}" />
+
+                            <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasScores}">
+                                <Label Text="{Binding GradingsSummaryText}" />
+
+                                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                                    <HorizontalStackLayout BindableLayout.ItemsSource="{Binding ScoreBars}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:ScoreBarItem">
+                                                <VerticalStackLayout
+                                                    WidthRequest="{StaticResource ChartBarSlotWidth}"
+                                                    Spacing="{StaticResource SpaceXs}"
+                                                    SemanticProperties.Description="{Binding AccessibilityText}">
+                                                    <Label
+                                                        Style="{StaticResource CaptionLabel}"
+                                                        Text="{Binding PercentText}"
+                                                        LineBreakMode="NoWrap"
+                                                        HorizontalOptions="Center" />
+                                                    <Grid HeightRequest="{StaticResource ChartBarAreaHeight}" WidthRequest="{StaticResource ChartBarWidth}">
+                                                        <BoxView Color="{AppThemeBinding Light={StaticResource OutlineLight}, Dark={StaticResource OutlineDark}}" />
+                                                        <BoxView
+                                                            Color="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}"
+                                                            AnchorY="1"
+                                                            ScaleY="{Binding Fraction}" />
+                                                    </Grid>
+                                                    <Label
+                                                        Style="{StaticResource CaptionLabel}"
+                                                        Text="{Binding DateText}"
+                                                        LineBreakMode="NoWrap"
+                                                        HorizontalOptions="Center" />
+                                                </VerticalStackLayout>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </HorizontalStackLayout>
+                                </ScrollView>
+
+                                <Label
+                                    Style="{StaticResource SubtitleLabel}"
+                                    Text="{x:Static stats:StatsTexts.BestScores}"
+                                    SemanticProperties.HeadingLevel="Level2" />
+                                <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding BestScores}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:BestScoreItem">
+                                            <Border
+                                                MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                                                SemanticProperties.Description="{Binding AccessibilityText}">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Command="{Binding OpenGradingCommand, Source={RelativeSource AncestorType={x:Type vm:StatsViewModel}}}"
+                                                        CommandParameter="{Binding .}" />
+                                                </Border.GestureRecognizers>
+                                                <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                                    <Label Style="{StaticResource SubtitleLabel}" Text="{Binding Title}" />
+                                                    <Label Style="{StaticResource CaptionLabel}" Text="{Binding Section}" IsVisible="{Binding HasSection}" />
+                                                    <Label Text="{Binding ScoreText}" />
+                                                    <Label Style="{StaticResource CaptionLabel}" Text="{Binding AttemptsText}" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </CollectionView.Footer>
+        </CollectionView>
+    </RefreshView>
+</views:ViewModelPage>

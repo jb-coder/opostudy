@@ -4,6 +4,7 @@ using OpoStudy.Contracts.Offline;
 using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
+using OpoStudy.Contracts.Stats;
 using OpoStudy.Contracts.SystemInfo;
 using OpoStudy.Contracts.Users;
 
@@ -85,4 +86,14 @@ public interface IOpoStudyApi
 
     [Get("/api/v1/me/grading-quota")]
     Task<GradingQuotaResponse> GetGradingQuotaAsync(CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/me/stats")]
+    Task<StatsResponse> GetStatsAsync(Guid examId, CancellationToken cancellationToken = default);
+
+    /// <summary>Days with activity from <paramref name="startDate"/> to <paramref name="endDate"/>, both inclusive. Dates go as ISO (<c>yyyy-MM-dd</c>): the Refit default is not ISO.</summary>
+    [Get("/api/v1/me/activity")]
+    Task<ActivityResponse> GetActivityAsync(
+        [Query(Format = "yyyy-MM-dd"), AliasAs("from")] DateOnly startDate,
+        [Query(Format = "yyyy-MM-dd"), AliasAs("to")] DateOnly endDate,
+        CancellationToken cancellationToken = default);
 }

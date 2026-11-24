@@ -18,4 +18,14 @@
     <x:Double x:Key="MinTouchTarget">48</x:Double>
     <x:Double x:Key="DimmedOpacity">0.6</x:Double>
     <x:Double x:Key="AnswerEditorMinHeight">160</x:Double>
+
+    <!-- Statistics: month calendar cells and the practical case bar chart -->
+    <Thickness x:Key="ListHeaderPadding">0,0,0,12</Thickness>
+    <Thickness x:Key="ListFooterPadding">0,12,0,0</Thickness>
+    <Thickness x:Key="CalendarCellGap">2</Thickness>
+    <CornerRadius x:Key="CalendarCornerRadius">8</CornerRadius>
+    <x:Double x:Key="CalendarTodayStroke">2</x:Double>
+    <x:Double x:Key="ChartBarAreaHeight">96</x:Double>
+    <x:Double x:Key="ChartBarWidth">32</x:Double>
+    <x:Double x:Key="ChartBarSlotWidth">56</x:Double>
 </ResourceDictionary>

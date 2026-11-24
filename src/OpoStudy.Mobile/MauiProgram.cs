@@ -36,6 +36,10 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+#if ANDROID
+        ProgressBarTrack.Register();
+#endif
+
 #if DEBUG
         builder.Logging.AddDebug();
         const bool isDebug = true;
@@ -126,6 +130,8 @@ public static class MauiProgram
         services.AddTransient<GradingPage>();
         services.AddTransient<GradingsViewModel>();
         services.AddTransient<GradingsPage>();
+        services.AddTransient<StatsViewModel>();
+        services.AddTransient<StatsPage>();
 #if DEBUG
         services.AddTransient<StyleGuidePage>();
 #endif
