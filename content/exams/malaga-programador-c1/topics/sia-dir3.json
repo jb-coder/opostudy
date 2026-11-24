@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "sia-dir3",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/sia-dir3/0001",
+      "statement": "Según el artículo 9.2 del ENI, cada Administración Pública regulará la creación y mantenimiento de sus inventarios de información administrativa, en las condiciones que se determinen, con carácter general, por:",
+      "options": [
+        {
+          "text": "La Comisión Sectorial de Administración Electrónica, mediante sus acuerdos",
+          "isCorrect": false
+        },
+        {
+          "text": "Las normas técnicas de interoperabilidad correspondientes",
+          "isCorrect": true
+        },
+        {
+          "text": "El Esquema Nacional de Seguridad, mediante las medidas de su anexo II",
+          "isCorrect": false
+        },
+        {
+          "text": "El Centro Criptológico Nacional, como órgano competente en interoperabilidad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 9.2 dispone que cada Administración Pública regulará la creación y mantenimiento de estos dos inventarios «en las condiciones que se determinen, con carácter general, por las normas técnicas de interoperabilidad correspondientes». La Comisión Sectorial de Administración Electrónica propone las normas técnicas para su aprobación (disposición adicional primera, apartado 2), y el Centro Criptológico Nacional es el órgano competente para garantizar la interoperabilidad en materia de ciberseguridad y criptografía (apartado 3). El artículo 9.2 no remite al Esquema Nacional de Seguridad para fijar esas condiciones.",
+      "legalReference": "RD 4/2010 (ENI), art. 9.2"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0002",
+      "statement": "Según la disposición adicional primera, apartado 4, del ENI, ¿cómo se denomina el instrumento para la interoperabilidad que es un «Inventario de procedimientos administrativos, servicios prestados y otras actuaciones administrativas que generen documentación pública», con información clasificada por funciones y con indicación de su nivel de informatización?",
+      "options": [
+        {
+          "text": "Directorio Común de Unidades Orgánicas y Oficinas",
+          "isCorrect": false
+        },
+        {
+          "text": "Centro de Transferencia de Tecnología",
+          "isCorrect": false
+        },
+        {
+          "text": "Sistema de Información Administrativa",
+          "isCorrect": true
+        },
+        {
+          "text": "Centro de interoperabilidad semántica de la Administración",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La letra a) del apartado 4 define el Sistema de Información Administrativa como «Inventario de procedimientos administrativos, servicios prestados y otras actuaciones administrativas que generen documentación pública», con información «clasificada por funciones y con indicación de su nivel de informatización». Las otras tres opciones son los instrumentos de las letras b), c) y d) del mismo apartado, que tienen un objeto distinto.",
+      "legalReference": "RD 4/2010 (ENI), disposición adicional primera, apartado 4.a)"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0003",
+      "statement": "Según la disposición adicional primera, apartado 4.d), del ENI, las diferentes modalidades de integración del Directorio Común de Unidades Orgánicas y Oficinas tienen como fin garantizar la flexibilidad tanto en:",
+      "options": [
+        {
+          "text": "El consumo como en la provisión de información",
+          "isCorrect": true
+        },
+        {
+          "text": "La creación como en la supresión de las unidades orgánicas",
+          "isCorrect": false
+        },
+        {
+          "text": "La descripción como en la modelización de los procedimientos administrativos",
+          "isCorrect": false
+        },
+        {
+          "text": "La interacción como en la integración de los procesos administrativos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La letra d) del apartado 4 lo define como un instrumento que permitirá la sincronización de los sistemas que traten esa información «en diferentes modalidades de integración para garantizar la flexibilidad tanto en el consumo como en la provisión de información relacionada». La «descripción y modelización de los procedimientos administrativos» se menciona en el artículo 9.2, sobre los estándares aplicables, y «favorecer la interacción o en su caso la integración de los procesos» es el objeto de la información sobre interfaces de la letra a). La creación y supresión de unidades orgánicas no figura en la definición.",
+      "legalReference": "RD 4/2010 (ENI), disposición adicional primera, apartado 4.d)"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0004",
+      "statement": "Según el diccionario de términos de la Guía de contenidos del SIA (diciembre de 2020), un servicio es:",
+      "options": [
+        {
+          "text": "Un conjunto ordenado de trámites y actuaciones formalmente realizadas, según el cauce legalmente previsto, para dictar un acto administrativo",
+          "isCorrect": false
+        },
+        {
+          "text": "Una actuación administrativa específica, ejercida en cumplimiento de las competencias del órgano en su ámbito sectorial",
+          "isCorrect": false
+        },
+        {
+          "text": "Un conjunto de contenidos o documentos que forman un expediente tramitado por imperativo normativo y que deben archivarse",
+          "isCorrect": false
+        },
+        {
+          "text": "Una actuación administrativa que se agota en sí misma, constituida por esa única actuación",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El diccionario de la Guía define el servicio como «actuación administrativa que se agota en sí misma, constituida por esa única actuación» (por ejemplo, el pago de una tasa, la consulta de datos o la cita previa). El conjunto ordenado de trámites para dictar un acto administrativo es la definición de procedimiento, la actividad específica por razón de las competencias sectoriales del órgano es la «función específica», y los contenidos o documentos de un expediente que debe archivarse son «otra documentación pública seriada».",
+      "legalReference": "PAe, SIA, «Guía de contenidos» (diciembre de 2020), §3"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0005",
+      "statement": "Según el documento «Servicios web de inserción 3.1 - Trámites» de SIA (v5.0), apartado 2.1, cuando el acceso al servicio web se autentica mediante certificado digital, la comprobación del certificado se realiza:",
+      "options": [
+        {
+          "text": "Contra la base de datos de SIA, donde el certificado está almacenado de forma cifrada",
+          "isCorrect": false
+        },
+        {
+          "text": "Mediante una llamada al servicio web ValidarCertificado del servidor de @firma",
+          "isCorrect": true
+        },
+        {
+          "text": "Contra el Directorio Común, que mantiene los certificados de los gestores de cada organismo",
+          "isCorrect": false
+        },
+        {
+          "text": "Contra la lista de confianza de los prestadores de servicios de confianza",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 2.1 distingue dos formas de autenticación. Con certificado digital, la comprobación se hace contra el servidor de @firma: «una llamada al webservice “ValidarCertificado” de @FIRMA». La base de datos de SIA se usa en la otra forma, la de usuario y contraseña, y ahí es donde la contraseña está almacenada de forma cifrada. El documento no prevé que esa comprobación se haga contra el Directorio Común ni contra una lista de confianza.",
+      "legalReference": "PAe, SIA, «Servicios web de inserción 3.1 - Trámites» v5.0, §2.1"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0006",
+      "statement": "Según el documento «Servicios web de consulta - Catálogos» de SIA (v3.0), apartado 1.1, este servicio web sirve para:",
+      "options": [
+        {
+          "text": "Obtener los códigos de las tablas maestras y su descripción, utilizables en el resto de servicios web de SIA",
+          "isCorrect": true
+        },
+        {
+          "text": "Dar de alta, editar, dar de baja y activar los trámites del catálogo de procedimientos y servicios",
+          "isCorrect": false
+        },
+        {
+          "text": "Consultar las fichas de los trámites, con su información básica o completa y con paginación de los resultados",
+          "isCorrect": false
+        },
+        {
+          "text": "Sindicar las actuaciones ordenadas por operación: altas, bajas, activaciones y modificaciones",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 1.1 explica que la consulta de datos de tablas maestras «permite obtener los diferentes códigos y su descripción asociada de tablas maestras que se pueden usar en el resto de servicios web de SIA». Dar de alta, editar, dar de baja y activar trámites son las operaciones del servicio web de inserción, y la consulta de las fichas de los trámites con paginación es la del servicio de consulta de trámites. La sindicación ordenada por operación es una regla del servicio de inserción.",
+      "legalReference": "PAe, SIA, «Servicios web de consulta - Catálogos» v3.0, §1.1"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0007",
+      "statement": "Según el «Modelo de Codificación y Manual de Atributos de Información» del DIR3 (v3.16), apartado 3.7, el código de una oficina es un literal alfanumérico de 9 posiciones formado por la letra O y 8 dígitos que:",
+      "options": [
+        {
+          "text": "Indican el tipo de oficina: de registro, de información o de tramitación",
+          "isCorrect": false
+        },
+        {
+          "text": "Indican el nivel de Administración y el tipo de órgano del que procede",
+          "isCorrect": false
+        },
+        {
+          "text": "Identifican la comunidad autónoma y la provincia en que se ubica la oficina",
+          "isCorrect": false
+        },
+        {
+          "text": "Identifican unívocamente la oficina, sin relación con su tipificación o clasificación",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El apartado 3.7 indica que «el código se compone de la letra “O” y los 8 restantes corresponden con dígitos que identifican unívocamente la oficina», y precisa que «Estos dígitos no están relacionados con ninguna tipificación o clasificación de oficinas». Por eso no codifican el tipo de oficina, ni el nivel de Administración, ni la ubicación geográfica.",
+      "legalReference": "PAe, DIR3, «Modelo de Codificación y Manual de Atributos de Información» v3.16, §3.7"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0008",
+      "statement": "Según el «Modelo de Codificación y Manual de Atributos de Información» del DIR3 (v3.16), apartado 2.2, la dependencia orgánica de una oficina respecto a las unidades orgánicas es:",
+      "options": [
+        {
+          "text": "De una o varias unidades, según a cuántas preste servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "De la Administración a la que pertenece, sin vincularse a ninguna unidad concreta",
+          "isCorrect": false
+        },
+        {
+          "text": "De una única unidad orgánica, que es la que pone la infraestructura y el personal",
+          "isCorrect": true
+        },
+        {
+          "text": "Del órgano gestor del Directorio Común, que le asigna la infraestructura y el personal",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 2.2 afirma: «Una oficina siempre depende de un órgano concreto (es el que pone la infraestructura y el personal)», de modo que su dependencia orgánica es de una única unidad orgánica. Lo que puede ser de varias unidades es la dependencia funcional, que es una relación n:m: una oficina puede prestar servicio a diferentes unidades, aunque solo depende orgánicamente de una de ellas.",
+      "legalReference": "PAe, DIR3, «Modelo de Codificación y Manual de Atributos de Información» v3.16, §2.2"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0009",
+      "statement": "Según el «Manual de Integración con Directorio Común» (v4.27), apartado 2.2.1, al proveer información a través de la aplicación de administración, ¿qué diferencia hay entre los usuarios con perfil administrador y con perfil proveedor?",
+      "options": [
+        {
+          "text": "El administrador tiene control total sobre los datos de unidades orgánicas y oficinas; el proveedor solo administra la información de su organismo y de los inferiores jerárquicamente",
+          "isCorrect": true
+        },
+        {
+          "text": "El proveedor tiene control total sobre los datos de unidades orgánicas y oficinas; el administrador solo administra la información de su organismo y de los inferiores jerárquicamente",
+          "isCorrect": false
+        },
+        {
+          "text": "Solo el administrador puede proveer información; el proveedor únicamente puede consultarla y exportarla",
+          "isCorrect": false
+        },
+        {
+          "text": "El administrador provee mediante la importación de ficheros XML o CSV; el proveedor, mediante las pantallas de la aplicación",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 2.2.1 dice que «el usuario administrador tendrá control total sobre los datos de unidades orgánicas y oficinas mientras que los usuarios con perfil proveedor podrán administrar información asociada únicamente al organismo dependiente y los organismos inferiores jerárquicamente». La segunda opción invierte los perfiles. La aplicación permite proveer información a los usuarios con perfil administrador o proveedor, no solo al primero, y la importación desde XML o CSV está disponible en la aplicación sin reservarse a un perfil.",
+      "legalReference": "PAe, DIR3, «Manual de Integración con Directorio Común» v4.27, §2.2.1"
+    },
+    {
+      "key": "malaga-programador-c1/sia-dir3/0010",
+      "statement": "Según el «Manual de Integración con Directorio Común» (v4.27), apartado 2.1.2, el servicio web de descarga de catálogos permite a los organismos descargar:",
+      "options": [
+        {
+          "text": "Los datos completos del Directorio o, mediante filtros, solo una parte de ellos",
+          "isCorrect": false
+        },
+        {
+          "text": "Los registros de unidades y oficinas modificados entre una fecha de inicio y otra de fin",
+          "isCorrect": false
+        },
+        {
+          "text": "Los datos de las unidades no orgánicas vinculadas a la gestión económico-presupuestaria",
+          "isCorrect": false
+        },
+        {
+          "text": "Los catálogos necesarios para interpretar correctamente la información de unidades orgánicas y oficinas",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El apartado 2.1.2 describe la descarga de catálogos como la que «Permite a los organismos la descarga de los catálogos necesarios para interpretar correctamente la información de unidades orgánicas y oficinas». La descarga de los datos del Directorio, completa o con filtros, es el otro subconjunto de los servicios de consumo, y la devolución de los registros modificados entre dos fechas corresponde a los servicios de consumo de cambios e históricos (apartado 2.3). Los datos de unidades no orgánicas no son catálogos: se descargan con su propio servicio de datos.",
+      "legalReference": "PAe, DIR3, «Manual de Integración con Directorio Común» v4.27, §2.1.2"
+    }
+  ]
+}
