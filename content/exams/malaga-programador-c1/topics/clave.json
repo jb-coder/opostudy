@@ -127,19 +127,19 @@
       "statement": "Según el apartado cuarto.2 del Acuerdo publicado como anexo de la Orden PRE/1838/2014, otras Administraciones Públicas pueden incorporarse al sistema Cl@ve:",
       "options": [
         {
-          "text": "Adhiriéndose mediante convenio, en las condiciones técnicas, económicas y organizativas que se determinen",
+          "text": "Adhiriéndose mediante convenio, en las condiciones técnicas, económicas y organizativas fijadas",
           "isCorrect": true
         },
         {
-          "text": "Mediante simple comunicación a la plataforma, sin convenio y sin condiciones económicas",
+          "text": "Mediante simple comunicación a la plataforma, sin convenio y sin sujeción a condiciones económicas",
           "isCorrect": false
         },
         {
-          "text": "Por acuerdo del Consejo de Ministros, que aprueba cada incorporación",
+          "text": "Por acuerdo del Consejo de Ministros, que aprueba individualmente cada incorporación al sistema",
           "isCorrect": false
         },
         {
-          "text": "A través de una ley autonómica o de una ordenanza local que declare su adhesión",
+          "text": "A través de una ley autonómica o de una ordenanza local que declare expresamente su adhesión",
           "isCorrect": false
         }
       ],
@@ -199,19 +199,19 @@
       "statement": "Según el apartado 6.3 del «Manual de Integración para Proveedores de Servicios» de Cl@ve (r14), la Pasarela Cl@ve es:",
       "options": [
         {
-          "text": "El elemento central que encamina al usuario hacia el IdP adecuado, según los requisitos del proveedor de servicio",
+          "text": "El elemento que encamina al usuario al IdP adecuado según los requisitos del proveedor de servicio",
           "isCorrect": true
         },
         {
-          "text": "El componente que almacena las identidades y autentica al usuario lanzándole un desafío",
+          "text": "El componente que almacena las identidades de los usuarios y los autentica lanzándoles un desafío",
           "isCorrect": false
         },
         {
-          "text": "La aplicación que aporta la funcionalidad al usuario, a excepción del proceso de autenticación",
+          "text": "La aplicación que aporta la funcionalidad al usuario, a excepción del proceso de autenticación del mismo",
           "isCorrect": false
         },
         {
-          "text": "El nodo eIDAS español, que actúa como conector con los nodos de los demás países de la UE",
+          "text": "El nodo eIDAS español, que actúa como conector con los nodos de los demás países de la Unión Europea",
           "isCorrect": false
         }
       ],

@@ -124,27 +124,27 @@
     },
     {
       "key": "malaga-programador-c1/factura-electronica/0006",
-      "statement": "Según la disposición adicional primera, apartado 1, de la Orden HAP/1074/2014, el servicio FACe no admitirá facturas electrónicas:",
+      "statement": "Según el artículo 8.3 de la Orden HAP/1074/2014, la Comunidad Autónoma o Entidad Local que cree su propio punto general de entrada de facturas electrónicas debe justificar, previamente a cualquier inversión para establecerlo:",
       "options": [
         {
-          "text": "Que hayan sido presentadas por un representante del proveedor en nombre de este",
+          "text": "Que el volumen de facturas electrónicas que recibe supera la capacidad del punto de entrada estatal",
           "isCorrect": false
         },
         {
-          "text": "Que se envíen mediante servicios web desde el sistema de gestión de facturas del proveedor",
+          "text": "La imposibilidad técnica de conectar su registro contable con el punto de entrada estatal",
           "isCorrect": false
         },
         {
-          "text": "Que correspondan a entidades que, sin ser de la Administración General del Estado, se hayan adherido voluntariamente a FACe",
+          "text": "La aprobación previa de su propio punto de entrada por su órgano de control interno",
           "isCorrect": false
         },
         {
-          "text": "Que correspondan a unidades administrativas que no estén reflejadas en el catálogo de unidades de FACe",
+          "text": "Su no adhesión al punto general de entrada estatal, en términos de eficiencia",
           "isCorrect": true
         }
       ],
-      "explanation": "La disposición adicional primera, apartado 1, establece que «El servicio FACe no admitirá facturas electrónicas que no correspondan a unidades administrativas que no estén convenientemente reflejadas en los catálogos anteriores». Los demás supuestos son admitidos por la propia Orden: la presentación mediante representante (art. 3.2), el envío por interfaz de servicios web desde el sistema del proveedor (art. 3.3.b)) y la recepción de facturas de entidades ajenas a la Administración General del Estado que se adhieran voluntariamente (disposición adicional primera, apartado 1.b)).",
-      "legalReference": "Orden HAP/1074/2014, disposición adicional primera, apartado 1"
+      "explanation": "El artículo 8.3 dispone que quienes creen su propio punto deberán «justificar ante […], previamente a la realización de cualquier inversión dirigida al establecimiento de su propio punto de entrada, su no adhesión al Punto General de Entrada de Facturas Electrónicas de la Administración General del Estado, en términos de eficiencia conforme al artículo 7 de la Ley Orgánica 2/2012, de 27 de abril, de Estabilidad Presupuestaria y Sostenibilidad Financiera». La adhesión al punto estatal es una posibilidad (art. 8.2), y la justificación que exige el apartado 3 es de eficiencia: no impone acreditar un volumen de facturas superior a la capacidad del punto estatal, una imposibilidad técnica de conexión ni una aprobación previa por el órgano de control interno.",
+      "legalReference": "Orden HAP/1074/2014, art. 8.3"
     },
     {
       "key": "malaga-programador-c1/factura-electronica/0007",
@@ -191,7 +191,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "El anexo define el estado así: «Registrada: La factura electrónica ha sido recibida en el punto general de entrada de facturas y ha sido registrada administrativamente, proporcionando un número de asiento registral al proveedor.» La anotación en el registro contable de facturas es otro estado («Registrada en RCF»), como lo es el reconocimiento de la obligación («Contabilizada la obligación reconocida»). La lista no define ningún estado por la aceptación de la unidad tramitadora.",
+      "explanation": "El anexo define el estado así: «Registrada: La factura electrónica ha sido recibida en el punto general de entrada de facturas y ha sido registrada administrativamente, proporcionando un número de asiento registral al proveedor.» La anotación en el registro contable de facturas es otro estado («Registrada en RCF»), como lo es el reconocimiento de la obligación («Contabilizada la obligación reconocida»). La lista del apartado I.a) no define ningún estado por la aceptación de la factura por la unidad tramitadora: esa unidad solo figura en «Rechazada» y «Anulada», y la aceptación de la solicitud de anulación («Aceptada anulación») es un estado del apartado I.b).",
       "legalReference": "Resolución de 10-10-2014 (condiciones técnicas del PGEFe), anexo I.a)"
     },
     {

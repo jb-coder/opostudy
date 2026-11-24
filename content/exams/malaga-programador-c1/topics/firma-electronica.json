@@ -100,7 +100,7 @@
     },
     {
       "key": "malaga-programador-c1/firma-electronica/0005",
-      "statement": "Según el artículo 12 de la Ley 6/2020, los prestadores de servicios de confianza no cualificados no necesitan verificación administrativa previa para iniciar su actividad, pero deben comunicarla al Ministerio competente en el plazo de:",
+      "statement": "Según el artículo 12 de la Ley 6/2020, los prestadores de servicios de confianza no cualificados no necesitan verificación administrativa previa para iniciar su actividad, pero deben comunicarla al órgano de supervisión en el plazo de:",
       "options": [
         {
           "text": "Tres meses desde que la inicien",
@@ -119,7 +119,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "El artículo 12 establece que estos prestadores «deberán comunicar su actividad al Ministerio de Asuntos Económicos y Transformación Digital en el plazo de tres meses desde que la inicien», y que en el mismo plazo deben comunicar la modificación de los datos transmitidos y el cese. No es una comunicación previa, y los seis meses son el plazo máximo para resolver el procedimiento de verificación previa de cumplimiento de los requisitos que se aplica a los prestadores cualificados (art. 16.2), no el plazo de comunicación de los no cualificados.",
+      "explanation": "El artículo 12 establece que estos prestadores «deberán comunicar su actividad al […] en el plazo de tres meses desde que la inicien», y que en el mismo plazo deben comunicar la modificación de los datos transmitidos y el cese. El destinatario es el que el artículo 14.1 designa «como órgano de supervisión». No es una comunicación previa, y los seis meses son el plazo máximo para resolver el procedimiento de verificación previa de cumplimiento de los requisitos que se aplica a los prestadores cualificados (art. 16.2), no el plazo de comunicación de los no cualificados.",
       "legalReference": "Ley 6/2020, art. 12"
     },
     {
@@ -203,11 +203,11 @@
           "isCorrect": true
         },
         {
-          "text": "Como aplicación nativa para los dispositivos móviles de los ciudadanos",
+          "text": "Como dispositivo físico de firma que las Administraciones Públicas adquieren a un proveedor",
           "isCorrect": false
         },
         {
-          "text": "Como broker de firma electrónica para conectar con prestadores privados",
+          "text": "Como producto comercial de licencia propietaria, sin acceso a su código fuente",
           "isCorrect": false
         },
         {
@@ -215,7 +215,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "La «Descripción» dice: «Además de ofrecerse como servicio, está disponible como software para instalar por las administraciones públicas (modelo federado)». Las aplicaciones nativas para dispositivos móviles («Firma Móvil») y el broker de firma electrónica («FIRe») son otros elementos de la suite que enumera la misma ficha, y en ella no consta que @firma expida certificados.",
+      "explanation": "La «Descripción» dice: «Además de ofrecerse como servicio, está disponible como software para instalar por las administraciones públicas (modelo federado)». La misma ficha no describe @firma como dispositivo físico ni como producto propietario: la solución «ha sido liberada bajo licencia EUPL», con su código fuente disponible en Descargas. Tampoco consta que expida certificados: la presenta como «un servicio de validación de certificados y firmas electrónicas».",
       "legalReference": "PAe, @firma (ficha del CTT), «Descripción»"
     },
     {
