@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "redes-sara-nerea",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0001",
+      "statement": "Según el artículo 13.1 del Real Decreto 4/2010, las Administraciones públicas utilizarán la Red de comunicaciones de las Administraciones públicas españolas para comunicarse entre sí:",
+      "options": [
+        {
+          "text": "Obligatoriamente, y quedan excluidas las demás redes de comunicaciones",
+          "isCorrect": false
+        },
+        {
+          "text": "Preferentemente, conectando a ella sus redes o sus nodos de interoperabilidad",
+          "isCorrect": true
+        },
+        {
+          "text": "Solo cuando el intercambio de información afecte a servicios de la Unión Europea",
+          "isCorrect": false
+        },
+        {
+          "text": "Solo cuando la Administración receptora lo solicite de forma expresa",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 13.1 dispone que las Administraciones públicas «utilizarán preferentemente la Red de comunicaciones de las Administraciones públicas españolas para comunicarse entre sí, para lo cual conectarán a la misma, bien sus respectivas redes, bien sus nodos de interoperabilidad». Por tanto, el uso no es exclusivo ni obligatorio en todo caso, y no depende de que el intercambio afecte a la Unión Europea ni de la petición de la Administración receptora.",
+      "legalReference": "RD 4/2010 (ENI), art. 13.1"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0002",
+      "statement": "Según el artículo 8.3 del Real Decreto 4/2010, los nodos de interoperabilidad que las Administraciones públicas podrán utilizar son entidades a las cuales se les encomienda:",
+      "options": [
+        {
+          "text": "La emisión y la revocación de los certificados electrónicos de las demás Administraciones",
+          "isCorrect": false
+        },
+        {
+          "text": "La conservación de los expedientes electrónicos de las Administraciones que lo soliciten",
+          "isCorrect": false
+        },
+        {
+          "text": "La gestión de apartados de la interoperabilidad organizativa, semántica o técnica",
+          "isCorrect": true
+        },
+        {
+          "text": "La sincronización de los sistemas de cada Administración con la hora oficial",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 8.3 establece que las Administraciones públicas «podrán utilizar nodos de interoperabilidad, entendidos como entidades a las cuales se les encomienda la gestión de apartados globales o parciales de la interoperabilidad organizativa, semántica o técnica». Ni la emisión de certificados, ni la conservación de expedientes ni la sincronización horaria son la función que define el precepto.",
+      "legalReference": "RD 4/2010 (ENI), art. 8.3"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0003",
+      "statement": "Según el artículo 15.1 del Real Decreto 4/2010, los sistemas o aplicaciones implicados en la provisión de un servicio público por vía electrónica se sincronizarán con la hora oficial, con una precisión y desfase que garanticen:",
+      "options": [
+        {
+          "text": "La certidumbre de los plazos establecidos en el trámite administrativo que satisfacen",
+          "isCorrect": true
+        },
+        {
+          "text": "La validez de la firma electrónica de los documentos que generen",
+          "isCorrect": false
+        },
+        {
+          "text": "La conservación de los documentos electrónicos durante todo su ciclo de vida",
+          "isCorrect": false
+        },
+        {
+          "text": "La trazabilidad de los accesos de los ciudadanos a la sede electrónica",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 15.1 exige sincronizarse con la hora oficial «con una precisión y desfase que garanticen la certidumbre de los plazos establecidos en el trámite administrativo que satisfacen». La finalidad es la seguridad de los plazos, no la validez de la firma, la conservación de documentos ni la trazabilidad de los accesos, que el precepto no menciona.",
+      "legalReference": "RD 4/2010 (ENI), art. 15.1"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0004",
+      "statement": "Según la Norma Técnica de Interoperabilidad de Requisitos de conexión a la Red de comunicaciones de las Administraciones públicas españolas, el Punto de Presencia (PdP) de la Red SARA es:",
+      "options": [
+        {
+          "text": "Cualquier sede que accede a la Red SARA por medio de una organización intermedia",
+          "isCorrect": false
+        },
+        {
+          "text": "El servicio de soporte que atiende las incidencias de los órganos usuarios finales",
+          "isCorrect": false
+        },
+        {
+          "text": "Cualquier sede con conexión directa a la Red SARA, sin organizaciones intermedias",
+          "isCorrect": true
+        },
+        {
+          "text": "El portal web que publica el catálogo de servicios disponibles en la Red SARA",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado II.1.1 establece que el acceso a la Red SARA se realiza a través del Punto de Presencia, «entendido como cualquier sede en la que existe una conexión directa a la Red SARA, sin presencia de ninguna organización intermedia». Por eso no es una sede que accede mediante un intermediario, ni un servicio de soporte, ni el portal con el catálogo de servicios.",
+      "legalReference": "NTI de Requisitos de conexión (Resolución de 19-07-2011), apartado II.1.1"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0005",
+      "statement": "Según la Norma Técnica de Interoperabilidad de Requisitos de conexión a la Red de comunicaciones de las Administraciones públicas españolas, en la VPN que establece el subsistema de seguridad externo del Área de Conexión hacia el resto de sedes de la Red SARA, las comunicaciones a través del operador de servicios de telecomunicaciones:",
+      "options": [
+        {
+          "text": "Estarán todas cifradas mediante túneles",
+          "isCorrect": true
+        },
+        {
+          "text": "Viajarán sin cifrar por ser el operador de confianza",
+          "isCorrect": false
+        },
+        {
+          "text": "Se cifrarán solo si llevan datos personales",
+          "isCorrect": false
+        },
+        {
+          "text": "Se cifrarán solo en el tramo de la zona desmilitarizada",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado III.1.4 dispone que el subsistema de seguridad externo «será el encargado de establecer una red privada virtual (VPN) hacia el resto de sedes de la Red SARA, con lo que todas las comunicaciones, a través del operador de servicios de telecomunicaciones, estarán cifradas mediante túneles». El cifrado alcanza a todas las comunicaciones, sin depender del contenido, del tramo ni de la confianza en el operador.",
+      "legalReference": "NTI de Requisitos de conexión (Resolución de 19-07-2011), apartado III.1.4"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0006",
+      "statement": "Según la Norma Técnica de Interoperabilidad de Requisitos de conexión a la Red de comunicaciones de las Administraciones públicas españolas, una de las condiciones de utilización de los servicios verticales o de negocio de la Red SARA es el:",
+      "options": [
+        {
+          "text": "Pago de una cuota anual a la Administración que presta el servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Informe previo favorable del órgano responsable de la seguridad de la Administración beneficiaria",
+          "isCorrect": false
+        },
+        {
+          "text": "Alta previa de la organización beneficiaria en el registro de entidades colaboradoras",
+          "isCorrect": false
+        },
+        {
+          "text": "Acuerdo previo entre la Administración pública que presta el servicio y la beneficiaria",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El apartado IV.3.1 fija, para los servicios verticales o de negocio y los servicios comunes de administración electrónica, como primera condición de utilización el «acuerdo previo entre la Administración pública que presta el servicio y la beneficiaria». La norma no prevé cuotas, informes de seguridad ni un registro de entidades colaboradoras.",
+      "legalReference": "NTI de Requisitos de conexión (Resolución de 19-07-2011), apartado IV.3.1"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0007",
+      "statement": "Según la medida de protección del perímetro seguro (mp.com.1) del anexo II del Real Decreto 311/2022, los flujos de información a través del perímetro deben:",
+      "options": [
+        {
+          "text": "Auditarse cada año por un tercero",
+          "isCorrect": false
+        },
+        {
+          "text": "Estar autorizados previamente",
+          "isCorrect": true
+        },
+        {
+          "text": "Comunicarse antes al CCN-CERT",
+          "isCorrect": false
+        },
+        {
+          "text": "Registrarse uno a uno por el responsable",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La medida mp.com.1 establece que «todos los flujos de información a través del perímetro deben estar autorizados previamente», además de disponer un sistema de protección perimetral que separe la red interna del exterior. No exige revisión anual por auditores externos, comunicación previa al CCN-CERT ni registro individual por el responsable de la seguridad.",
+      "legalReference": "RD 311/2022 (ENS), anexo II, mp.com.1"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0008",
+      "statement": "Según la RFC 1918, ¿cuál de los siguientes bloques de direcciones IP está reservado por la IANA para redes privadas?",
+      "options": [
+        {
+          "text": "11.0.0.0 - 11.255.255.255 (11/8)",
+          "isCorrect": false
+        },
+        {
+          "text": "172.32.0.0 - 172.47.255.255 (172.32/12)",
+          "isCorrect": false
+        },
+        {
+          "text": "172.16.0.0 - 172.31.255.255 (172.16/12)",
+          "isCorrect": true
+        },
+        {
+          "text": "192.0.0.0 - 192.0.255.255 (192.0/16)",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 3 de la RFC 1918 reserva tres bloques para redes privadas: 10.0.0.0 - 10.255.255.255 (10/8), 172.16.0.0 - 172.31.255.255 (172.16/12) y 192.168.0.0 - 192.168.255.255 (192.168/16). Los otros tres rangos propuestos quedan fuera de esos bloques.",
+      "legalReference": "RFC 1918, §3"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0009",
+      "statement": "Según la página «La red NEREA» de la Junta de Andalucía, la Red NEREA es:",
+      "options": [
+        {
+          "text": "Una red privada de telecomunicaciones aislada de las redes públicas",
+          "isCorrect": true
+        },
+        {
+          "text": "Una red pública abierta a través de Internet, gestionada por cada ayuntamiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Una plataforma de firma electrónica que las entidades locales usan para firmar sus actos",
+          "isCorrect": false
+        },
+        {
+          "text": "Una red de uso exclusivo de la Junta de Andalucía, cerrada a otras Administraciones",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La página la define como «una red privada de telecomunicaciones aislada de las redes públicas que garantiza la seguridad en las comunicaciones» y que permite que todas las administraciones de la Comunidad Autónoma de Andalucía estén interconectadas telemáticamente. No es una red pública abierta, ni una plataforma de firma, ni una red exclusiva de la Junta.",
+      "legalReference": "Junta de Andalucía (Agencia Digital de Andalucía), «La red NEREA»"
+    },
+    {
+      "key": "malaga-programador-c1/redes-sara-nerea/0010",
+      "statement": "Según la página «La red NEREA» de la Junta de Andalucía, ¿qué permite la Red NEREA respecto de las entidades locales?",
+      "options": [
+        {
+          "text": "Conectarlas a Internet de forma directa, sin pasar por ninguna otra red de la Administración",
+          "isCorrect": false
+        },
+        {
+          "text": "Sustituir a la Red SARA para que cada entidad local gestione su propia interconexión",
+          "isCorrect": false
+        },
+        {
+          "text": "Limitar su acceso a los servicios publicados por la Junta de Andalucía, sin llegar a los del Estado",
+          "isCorrect": false
+        },
+        {
+          "text": "Interconectarlas de forma jerárquica con la RCJA y, a su vez, con la Red SARA",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "La página explica que la Red NEREA surge del mismo modelo de interconexión que la Red SARA y «permite interconectar de forma jerárquica las distintas entidades locales con la RCJA, y a su vez, interconectarlas con la Red SARA». Además, cualquier Administración local puede acceder a servicios de la Junta, de la Administración General del Estado o de la Unión Europea, de modo que las demás opciones contradicen la página.",
+      "legalReference": "Junta de Andalucía (Agencia Digital de Andalucía), «La red NEREA»"
+    }
+  ]
+}

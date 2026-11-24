@@ -119,7 +119,7 @@ Se puede mover 1 pregunta entre apartados, sin salirse del ámbito del tema.
 
 | Tema | Apartado | Fuente | Nº |
 |---|---|---|---|
-| 11 | Red de comunicaciones de las Administraciones, infraestructuras comunes, hora oficial y nodo de interoperabilidad | ENI, arts. 8.2, 12-15 y anexo | 3 |
+| 11 | Red de comunicaciones de las Administraciones, infraestructuras comunes, hora oficial y nodo de interoperabilidad | ENI, arts. 8.2, 8.3, 12-15 y anexo | 3 |
 | 11 | Conexión a la Red SARA: puntos de presencia, proveedores de acceso, área de conexión, roles | NTI de Requisitos de conexión, apartados II-V | 3 |
 | 11 | Redes corporativas: perímetro, red privada virtual, segmentación | RD 311/2022, anexo II, mp.com | 1 |
 | 11 | Redes corporativas: direccionamiento privado | RFC 1918 | 1 |
