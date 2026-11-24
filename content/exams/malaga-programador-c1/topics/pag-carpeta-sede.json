@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "pag-carpeta-sede",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0001",
+      "statement": "Según el artículo 7.3 del RD 203/2021, el Punto de Acceso General electrónico (PAGe) dispondrá de una sede electrónica, a través de la cual se podrá acceder a:",
+      "options": [
+        {
+          "text": "Las sedes electrónicas asociadas de la Administración correspondiente, pero no a sus sedes electrónicas",
+          "isCorrect": false
+        },
+        {
+          "text": "Las sedes electrónicas de todas las Administraciones Públicas, con independencia de su titularidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Todas las sedes electrónicas y sedes asociadas de la Administración Pública correspondiente",
+          "isCorrect": true
+        },
+        {
+          "text": "Las sedes electrónicas de la Administración General del Estado, sea cual sea la Administración titular del PAGe",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 7.3 dispone que «El PAGe dispondrá de una sede electrónica, a través de la cual se podrá acceder a todas las sedes electrónicas y sedes asociadas de la Administración Pública correspondiente.» El acceso no se limita a las sedes asociadas ni a las de la Administración General del Estado, ni se extiende a las de todas las Administraciones: el art. 7.2 refiere el PAGe de cada Administración a los servicios, trámites e información de los órganos, organismos públicos y entidades vinculados o dependientes de la Administración Pública correspondiente.",
+      "legalReference": "RD 203/2021, art. 7.3"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0002",
+      "statement": "Según las definiciones del anexo del RD 203/2021, el Punto de Acceso General es:",
+      "options": [
+        {
+          "text": "Un portal de internet que facilita el acceso a los servicios, trámites e información de los órganos y organismos de la Administración correspondiente",
+          "isCorrect": true
+        },
+        {
+          "text": "Una dirección electrónica, disponible para la ciudadanía a través de redes de telecomunicaciones, cuya titularidad corresponde a una Administración Pública",
+          "isCorrect": false
+        },
+        {
+          "text": "Una infraestructura básica que permite el intercambio de asientos electrónicos de registro entre las Administraciones Públicas",
+          "isCorrect": false
+        },
+        {
+          "text": "Un conjunto de sistemas y servicios que sustenta la gestión, custodia y recuperación de los documentos y expedientes electrónicos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El anexo define el Punto de Acceso General como «Portal de internet que facilita el acceso a los servicios, trámites e información de los órganos, organismos públicos y entidades vinculados o dependientes de la Administración Pública correspondiente». Las otras opciones corresponden a otras definiciones del mismo anexo: la sede electrónica («Dirección electrónica, disponible para la ciudadanía a través de redes de telecomunicaciones, cuya titularidad corresponde a una Administración Pública»), el Sistema de Interconexión de Registros («Infraestructura básica que permite el intercambio de asientos electrónicos de registro entre las Administraciones Públicas») y el archivo electrónico único.",
+      "legalReference": "RD 203/2021, anexo (definición de «Punto de Acceso General»)"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0003",
+      "statement": "Según el artículo 8.1 del RD 203/2021, la Carpeta Ciudadana del sector público estatal es:",
+      "options": [
+        {
+          "text": "El registro electrónico en el que las personas interesadas presentan sus solicitudes ante el sector público estatal",
+          "isCorrect": false
+        },
+        {
+          "text": "La sede electrónica en la que se publican los procedimientos y servicios del sector público estatal",
+          "isCorrect": false
+        },
+        {
+          "text": "El archivo electrónico donde se custodian los expedientes ya finalizados del sector público estatal",
+          "isCorrect": false
+        },
+        {
+          "text": "El área personalizada de las personas interesadas en su relación con el sector público estatal",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 8.1 establece que «La Carpeta Ciudadana es el área personalizada de las personas interesadas a que se refiere el artículo 7.3 en su relación con el sector público estatal.» No es un registro electrónico (arts. 37 y 38), ni una sede electrónica (art. 9.1), ni el archivo electrónico único de los expedientes finalizados (anexo y art. 55).",
+      "legalReference": "RD 203/2021, art. 8.1"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0004",
+      "statement": "Según el artículo 59 del RD 203/2021, las Administraciones Públicas podrán integrar sus áreas personalizadas o carpetas ciudadanas con la Carpeta Ciudadana del sector público estatal, de forma que el interesado pueda acceder a sus contenidos o funcionalidades:",
+      "options": [
+        {
+          "text": "Únicamente desde el Punto de Acceso General electrónico de la Administración General del Estado",
+          "isCorrect": false
+        },
+        {
+          "text": "Mediante procedimientos seguros, independientemente de cuál haya sido su punto de acceso",
+          "isCorrect": true
+        },
+        {
+          "text": "Solo desde la sede electrónica de la Administración titular de cada área personalizada",
+          "isCorrect": false
+        },
+        {
+          "text": "A través de un acceso distinto para cada Administración, con identificación independiente",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 59 prevé la integración «de forma que el interesado pueda acceder a sus contenidos o funcionalidades mediante procedimientos seguros que garanticen la integridad y confidencialidad de sus datos de carácter personal, independientemente de cuál haya sido su punto de acceso.» Por tanto, el acceso no queda ligado a un único punto: el artículo no lo limita al PAGe de la Administración General del Estado ni a la sede de la Administración titular, ni prevé un acceso distinto por Administración.",
+      "legalReference": "RD 203/2021, art. 59"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0005",
+      "statement": "Según la Descripción de la ficha del CTT de la Carpeta Ciudadana del Punto de Acceso General, la opción «Mis registros» permite consultar:",
+      "options": [
+        {
+          "text": "Un resumen con el número de expedientes abiertos o en tramitación en el momento de la consulta, agrupados por ministerio u organismo adheridos",
+          "isCorrect": false
+        },
+        {
+          "text": "Las transmisiones de sus datos efectuadas a petición de una administración para realizar un trámite o consulta, con su consentimiento previo",
+          "isCorrect": false
+        },
+        {
+          "text": "Los escritos o solicitudes (asientos registrales) presentados en una oficina con destino a otra administración, si se digitalizan y se remiten de forma electrónica",
+          "isCorrect": true
+        },
+        {
+          "text": "Los apoderamientos incluidos en el Registro Electrónico de Apoderamientos, que también permite gestionar",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La Descripción de la ficha indica, en «Mis registros»: «Permite consultar los escritos o solicitudes (asientos registrales) presentados en una oficina de un organismo o administración pública con destino a otra administración u organismo siempre que se digitalicen y se remitan de forma electrónica.» Las otras opciones describen otros apartados de la misma ficha: «Mis expedientes» («Muestra un resumen con el número de los expedientes que están abiertos o en tramitación en el momento de realizar la consulta»), «Mis intercambios entre administraciones» y «Mis apoderamientos».",
+      "legalReference": "PAe, Carpeta Ciudadana (ficha del CTT), «Descripción»"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0006",
+      "statement": "Según el artículo 38.2 de la Ley 40/2015, el establecimiento de una sede electrónica conlleva la responsabilidad del titular respecto de:",
+      "options": [
+        {
+          "text": "La identificación de las personas interesadas que acceden a los servicios y trámites disponibles a través de la sede",
+          "isCorrect": false
+        },
+        {
+          "text": "La integridad, veracidad y actualización de la información y los servicios accesibles a través de la misma",
+          "isCorrect": true
+        },
+        {
+          "text": "La seguridad de los equipos y sistemas de información desde los que los interesados se conectan a la sede electrónica",
+          "isCorrect": false
+        },
+        {
+          "text": "La resolución de los procedimientos tramitados a través de ella, aunque su competencia corresponda a otro órgano",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 38.2 establece que «El establecimiento de una sede electrónica conlleva la responsabilidad del titular respecto de la integridad, veracidad y actualización de la información y los servicios a los que pueda accederse a través de la misma.» Si la sede contiene procedimientos o servicios cuya competencia corresponde a otro órgano, es «el titular de la competencia» quien responde de la integridad, veracidad y actualización de lo relativo a ellos (RD 203/2021, art. 12.3). Las otras opciones no figuran en el art. 38.2.",
+      "legalReference": "Ley 40/2015, art. 38.2"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0007",
+      "statement": "Según el artículo 39 de la Ley 40/2015, se entiende por portal de internet:",
+      "options": [
+        {
+          "text": "La dirección electrónica, disponible para los ciudadanos a través de redes de telecomunicaciones, cuya titularidad corresponde a una Administración",
+          "isCorrect": false
+        },
+        {
+          "text": "El portal que facilita el acceso a los servicios, trámites e información de todas las Administraciones Públicas",
+          "isCorrect": false
+        },
+        {
+          "text": "La sede electrónica que se crea por razones organizativas o técnicas, vinculada a la sede de una Administración",
+          "isCorrect": false
+        },
+        {
+          "text": "El punto de acceso electrónico de una Administración que permite acceder a la información publicada y, en su caso, a su sede",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 39 dispone que «Se entiende por portal de internet el punto de acceso electrónico cuya titularidad corresponda a una Administración Pública, organismo público o entidad de Derecho Público que permite el acceso a través de internet a la información publicada y, en su caso, a la sede electrónica correspondiente.» La primera opción es la definición de sede electrónica (art. 38.1) y la tercera, la de sede electrónica asociada (RD 203/2021, anexo); el Punto de Acceso General facilita el acceso a los servicios, trámites e información de los órganos y organismos de la Administración Pública correspondiente, no de todas ellas (RD 203/2021, anexo).",
+      "legalReference": "Ley 40/2015, art. 39"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0008",
+      "statement": "Según el artículo 10.2 del RD 203/2021, el acto o resolución de creación de la sede electrónica de una entidad local se publica, además de en el directorio del Punto de Acceso General electrónico que corresponda:",
+      "options": [
+        {
+          "text": "En el boletín oficial de la provincia a la que pertenezca la entidad",
+          "isCorrect": true
+        },
+        {
+          "text": "En el «Boletín Oficial del Estado»",
+          "isCorrect": false
+        },
+        {
+          "text": "En el boletín oficial de la Comunidad Autónoma a la que pertenezca la entidad",
+          "isCorrect": false
+        },
+        {
+          "text": "En el tablón de edictos de la propia entidad local",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 10.2 establece que el acto de creación o supresión «será publicado en el boletín oficial que corresponda en función de cuál sea la Administración Pública titular de la sede o sede asociada y también en el directorio del Punto de Acceso General Electrónico que corresponda», y precisa: «En el caso de las entidades locales, el boletín oficial será el de la provincia al que pertenezca la entidad.» No se prevé para ellas ni el «Boletín Oficial del Estado», ni el de la Comunidad Autónoma, ni el tablón de edictos.",
+      "legalReference": "RD 203/2021, art. 10.2"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0009",
+      "statement": "Según el artículo 12.2 del RD 203/2021, si una sede electrónica contiene un enlace a otra sede, ¿quién es responsable de la integridad, veracidad y actualización de la información que figure en esta última?",
+      "options": [
+        {
+          "text": "El titular de la sede que contiene el enlace, que responde de todo lo accesible desde ella",
+          "isCorrect": false
+        },
+        {
+          "text": "El órgano encargado de la gestión del Punto de Acceso General electrónico",
+          "isCorrect": false
+        },
+        {
+          "text": "El titular de la sede enlazada, sin perjuicio de la debida diligencia del titular de la primera",
+          "isCorrect": true
+        },
+        {
+          "text": "Los titulares de ambas sedes, de forma solidaria y sin distinción",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 12.2 dispone que, si una sede contiene un enlace a otra, «será el titular de esta última el responsable de la integridad, veracidad y actualización de la información o procedimientos que figuren en la misma, sin perjuicio de la debida diligencia del titular de la primera respecto de la incorporación de los contenidos en la misma.» Por tanto, la responsabilidad no recae en el titular de la sede que enlaza (que solo debe la debida diligencia al incorporar los contenidos), ni en el gestor del PAGe, y el artículo no prevé una responsabilidad solidaria de ambos titulares.",
+      "legalReference": "RD 203/2021, art. 12.2"
+    },
+    {
+      "key": "malaga-programador-c1/pag-carpeta-sede/0010",
+      "statement": "Según el artículo 58 del RD 203/2021, la adhesión de una Administración Pública u organismo a una sede electrónica disponible de titularidad de la misma u otra Administración, formalizada mediante el correspondiente instrumento de adhesión:",
+      "options": [
+        {
+          "text": "Lo constituye en titular de una sede electrónica asociada de la sede a la que se adhiere",
+          "isCorrect": false
+        },
+        {
+          "text": "Exige el informe previo favorable de los ministerios competentes en administración digital y en función pública",
+          "isCorrect": false
+        },
+        {
+          "text": "Requiere la publicación del acto de adhesión en el boletín oficial correspondiente y en el directorio del PAGe",
+          "isCorrect": false
+        },
+        {
+          "text": "Se produce sin constituirse como sede electrónica asociada",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 58 prevé que las Administraciones Públicas y sus organismos y entidades «podrán adherirse voluntariamente, mediante la formalización del correspondiente instrumento de adhesión, a las sedes electrónicas o sedes asociadas disponibles de titularidad de la misma Administración u otra Administración Pública, sin que se constituya como sede electrónica asociada.» El informe previo favorable y la publicación en el boletín oficial y en el directorio del PAGe son exigencias de la creación o supresión de sedes (art. 10.2 y, en el ámbito estatal, art. 10.3), no de la adhesión.",
+      "legalReference": "RD 203/2021, art. 58"
+    }
+  ]
+}

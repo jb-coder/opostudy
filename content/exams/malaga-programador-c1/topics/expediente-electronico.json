@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "expediente-electronico",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0001",
+      "statement": "Según el artículo 55.2 del RD 203/2021, en el archivo electrónico único de la Administración General del Estado serán accesibles todos los documentos y expedientes electrónicos del sector público estatal una vez finalizados los procedimientos y en los plazos determinados por:",
+      "options": [
+        {
+          "text": "La Agencia Española de Protección de Datos",
+          "isCorrect": false
+        },
+        {
+          "text": "El Comité Sectorial de Administración Electrónica",
+          "isCorrect": false
+        },
+        {
+          "text": "La Comisión Superior Calificadora de Documentos Administrativos",
+          "isCorrect": true
+        },
+        {
+          "text": "El Consejo de Transparencia y Buen Gobierno",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 55.2 dispone que serán accesibles «en los plazos determinados por la Comisión Superior Calificadora de Documentos Administrativos de acuerdo con lo que se desarrolle reglamentariamente». Ni la Agencia Española de Protección de Datos ni el Consejo de Transparencia y Buen Gobierno aparecen en ese precepto, y el Comité Sectorial de Administración Electrónica es el órgano que menciona el artículo 8.1 del RD 4/2010 al tratar de los servicios de interoperabilidad, no para fijar plazos de acceso al archivo.",
+      "legalReference": "RD 203/2021, art. 55.2"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0002",
+      "statement": "Según el artículo 26.1 de la Ley 39/2015, las Administraciones Públicas emitirán los documentos administrativos:",
+      "options": [
+        {
+          "text": "Por escrito, a través de medios electrónicos, salvo que su naturaleza exija otra forma más adecuada de expresión y constancia",
+          "isCorrect": true
+        },
+        {
+          "text": "Por escrito, en soporte papel, a menos que el interesado solicite expresamente su emisión por medios electrónicos",
+          "isCorrect": false
+        },
+        {
+          "text": "Por escrito, en el formato que determine cada Administración, con emisión electrónica meramente facultativa",
+          "isCorrect": false
+        },
+        {
+          "text": "A través de medios electrónicos, salvo que el interesado sea una persona física y solicite su emisión en papel",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 26.1 establece que «Las Administraciones Públicas emitirán los documentos administrativos por escrito, a través de medios electrónicos, a menos que su naturaleza exija otra forma más adecuada de expresión y constancia». La regla general es la emisión electrónica y la única excepción que recoge es la naturaleza del documento, no la elección del interesado ni el criterio de cada Administración.",
+      "legalReference": "Ley 39/2015, art. 26.1"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0003",
+      "statement": "Según el artículo 70.4 de la Ley 39/2015, NO forma parte del expediente administrativo, por tener carácter auxiliar o de apoyo:",
+      "options": [
+        {
+          "text": "Una prueba practicada durante la instrucción del procedimiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Un informe preceptivo solicitado antes de la resolución que pone fin al procedimiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Una notificación practicada a los interesados durante la tramitación",
+          "isCorrect": false
+        },
+        {
+          "text": "Un borrador elaborado por la unidad tramitadora",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 70.4 excluye del expediente la información auxiliar o de apoyo, «como la contenida en aplicaciones, ficheros y bases de datos informáticas, notas, borradores, opiniones, resúmenes, comunicaciones e informes internos o entre órganos o entidades administrativas», salvo «informes, preceptivos y facultativos, solicitados antes de la resolución administrativa que ponga fin al procedimiento». Las pruebas y las notificaciones se integran en el expediente según el artículo 70.2, y los informes solicitados antes de la resolución también forman parte de él.",
+      "legalReference": "Ley 39/2015, art. 70.4"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0004",
+      "statement": "Según el artículo 10.3 del RD 4/2010 (ENI), los modelos de datos de intercambio comunes y los que establezcan los órganos titulares de competencias se publicarán, junto con las definiciones y codificaciones asociadas, a través del:",
+      "options": [
+        {
+          "text": "Centro de Transferencia de Tecnología de la Administración",
+          "isCorrect": false
+        },
+        {
+          "text": "Centro de Interoperabilidad Semántica de la Administración",
+          "isCorrect": true
+        },
+        {
+          "text": "Catálogo de estándares de interoperabilidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Directorio general de aplicaciones para su libre reutilización",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 10.3 dispone que los modelos de datos «se publicarán, junto con las definiciones y codificaciones asociadas, a través del Centro de Interoperabilidad Semántica de la Administración». El Directorio general de aplicaciones para su libre reutilización se mantiene a través del Centro de Transferencia de Tecnología (art. 17.1) y el catálogo de estándares contiene «una relación de estándares abiertos y en su caso complementarios aplicables» (art. 11.5): ninguno de ellos es el medio de publicación de los modelos de datos.",
+      "legalReference": "RD 4/2010 (ENI), art. 10.3"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0005",
+      "statement": "Según el artículo 21.2 del RD 4/2010 (ENI), para garantizar la interoperabilidad en la recuperación y conservación de los documentos electrónicos, las Administraciones públicas crearán repositorios electrónicos que serán, respecto de los archivos convencionales:",
+      "options": [
+        {
+          "text": "Complementarios y equivalentes en cuanto a su función",
+          "isCorrect": true
+        },
+        {
+          "text": "Sustitutivos de ellos una vez finalizado el procedimiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Subsidiarios de ellos y limitados a la gestión viva del expediente",
+          "isCorrect": false
+        },
+        {
+          "text": "Independientes de ellos y con un régimen de conservación propio",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 21.2 establece que las Administraciones públicas «crearán repositorios electrónicos, complementarios y equivalentes en cuanto a su función a los archivos convencionales, destinados a cubrir el conjunto del ciclo de vida de los documentos electrónicos». Los repositorios cubren todo el ciclo de vida y no solo la gestión viva, ni sustituyen ni son independientes de los archivos convencionales.",
+      "legalReference": "RD 4/2010 (ENI), art. 21.2"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0006",
+      "statement": "Según el apartado V.1 de la NTI de Documento Electrónico, los metadatos mínimos obligatorios del documento electrónico, una vez asignados:",
+      "options": [
+        {
+          "text": "Podrán modificarse en cualquier fase posterior del procedimiento administrativo por el órgano que lo tramite",
+          "isCorrect": false
+        },
+        {
+          "text": "Solo podrán modificarse con el dictamen favorable de la autoridad calificadora correspondiente",
+          "isCorrect": false
+        },
+        {
+          "text": "Se actualizarán en cada fase del procedimiento para reflejar el estado de elaboración del documento",
+          "isCorrect": false
+        },
+        {
+          "text": "Permanecerán inalterados, salvo para corregir errores u omisiones en el valor asignado",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El apartado V.1.c) dispone que los metadatos mínimos obligatorios «No serán modificados en ninguna fase posterior del procedimiento administrativo, a excepción de modificaciones necesarias para la corrección de errores u omisiones en el valor inicialmente asignado». La norma no prevé su modificación libre por el órgano tramitador, ni condicionada al dictamen de la autoridad calificadora, ni su actualización en cada fase.",
+      "legalReference": "NTI de Documento Electrónico (Resolución de 19-07-2011), apartado V.1.c)"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0007",
+      "statement": "Según el apartado V.4 de la NTI de Expediente Electrónico, ¿qué datos de cada documento electrónico reflejará, al menos y sin carácter opcional, el índice electrónico de los expedientes objeto de intercambio?",
+      "options": [
+        {
+          "text": "Su identificador, la fecha de incorporación al expediente y su orden dentro del expediente",
+          "isCorrect": false
+        },
+        {
+          "text": "Su identificador, su huella digital y la función resumen utilizada para su obtención",
+          "isCorrect": true
+        },
+        {
+          "text": "Su identificador, su tipo documental y su estado de elaboración",
+          "isCorrect": false
+        },
+        {
+          "text": "Su huella digital, su formato y la fecha de su última modificación",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado V.4.b) exige reflejar, para cada documento electrónico, «su identificador, su huella digital, la función resumen utilizada para su obtención [...] y, opcionalmente, la fecha de incorporación al expediente y el orden del documento dentro del expediente». La fecha de incorporación y el orden son, por tanto, opcionales. El tipo documental y el estado de elaboración son metadatos mínimos obligatorios del documento (NTI de Documento Electrónico, anexo I), y ni ellos, ni el formato, ni la fecha de modificación figuran en el apartado V.4.b).",
+      "legalReference": "NTI de Expediente Electrónico (Resolución de 19-07-2011), apartado V.4.b)"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0008",
+      "statement": "Según el apartado IV de la NTI de Política de Gestión de Documentos Electrónicos, entre los actores involucrados en la definición, aprobación e implantación de la política, quien aprobará e impulsará la política es:",
+      "options": [
+        {
+          "text": "El personal responsable de la planificación, implantación y administración del programa de tratamiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Los responsables de procesos de gestión",
+          "isCorrect": false
+        },
+        {
+          "text": "La alta dirección de la organización",
+          "isCorrect": true
+        },
+        {
+          "text": "El personal implicado en tareas de gestión de documentos electrónicos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado IV señala como primer actor a «La alta dirección que aprobará e impulsará la política». Los responsables de procesos de gestión «aplicarán la política en el marco de los procesos de gestión a su cargo», el personal responsable del programa de tratamiento «participará en el diseño, implementación y actualización de los sistemas de gestión y conservación documental» y el personal implicado en tareas de gestión «aplicará lo establecido en la política».",
+      "legalReference": "NTI de Política de Gestión de Documentos (Resolución de 28-06-2012), apartado IV"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0009",
+      "statement": "Según el apartado «Descripción» de la ficha de INSIDE en el Centro de Transferencia de Tecnología del PAe, el modo G-Inside (Generador de Inside):",
+      "options": [
+        {
+          "text": "Almacena y modifica documentos y expedientes electrónicos en cualquier gestor documental compatible con el estándar CMIS, junto con sus metadatos obligatorios",
+          "isCorrect": false
+        },
+        {
+          "text": "Gestiona el archivo definitivo de expedientes y documentos electrónicos siguiendo el modelo OAIS",
+          "isCorrect": false
+        },
+        {
+          "text": "Ofrece servicios web en la nube SARA para validar y generar documentos y expedientes según el ENI, para su almacenamiento en otro sistema",
+          "isCorrect": true
+        },
+        {
+          "text": "Permite asociar documentos a expedientes y gestionar el índice mediante carpetas y vinculaciones de expedientes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La Descripción de INSIDE define G-Inside como «la puesta a disposición de una batería de servicios Web en la nube SARA para validar y generar documentos y expedientes en base al ENI» y añade que «no almacena nada, sólo se puede usar como modo de conversión a documentos y expedientes electrónicos para su almacenamiento en otro sistema». El almacenamiento en gestores compatibles con CMIS y la gestión del índice mediante carpetas son del modo InSide, y el modelo OAIS figura en la ficha de Archive.",
+      "legalReference": "PAe, INSIDE (ficha del CTT), «Descripción»"
+    },
+    {
+      "key": "malaga-programador-c1/expediente-electronico/0010",
+      "statement": "Según el apartado «Descripción» de la ficha de Archive en el Centro de Transferencia de Tecnología del PAe, ¿qué paquetes permite generar Archive en el proceso de intercambio entre Archivos, para el traspaso entre centros de archivo compatibles?",
+      "options": [
+        {
+          "text": "DIP (Dissemination Information Package)",
+          "isCorrect": true
+        },
+        {
+          "text": "SIP (Submission Information Package)",
+          "isCorrect": false
+        },
+        {
+          "text": "AIP (Archival Information Package)",
+          "isCorrect": false
+        },
+        {
+          "text": "SIP y AIP, de forma conjunta",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La Descripción de la ficha indica que, «en el proceso de intercambio entre Archivos, permite la generación de DIPs (Dissemination Information Package) de manera semiautomática, para el traspaso entre centros de archivo compatibles con estos protocolos». Archive también trabaja con los otros paquetes, pero con otra finalidad: incluye herramientas para la generación de los SIP, que se envían a Archive mediante servicios web («enviar SIP») y se validan con reglas, y permite visualizar los AIP que «se generan internamente en el software de Archivo».",
+      "legalReference": "PAe, Archive (ficha del CTT), «Descripción»"
+    }
+  ]
+}
