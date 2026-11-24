@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "prevencion-igualdad",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0001",
+      "statement": "Según el artículo 4 de la Ley 31/1995, se entenderá como «riesgo laboral grave e inminente»:",
+      "options": [
+        {
+          "text": "La posibilidad de que un trabajador sufra un determinado daño derivado del trabajo, valorada según su probabilidad y su severidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Aquel que resulte probable racionalmente que se materialice en un futuro inmediato y pueda suponer un daño grave para la salud de los trabajadores",
+          "isCorrect": true
+        },
+        {
+          "text": "Las enfermedades, patologías o lesiones sufridas con motivo u ocasión del trabajo",
+          "isCorrect": false
+        },
+        {
+          "text": "Cualquier característica del trabajo que pueda tener una influencia significativa en la generación de riesgos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 4.4.º define el riesgo laboral grave e inminente como «aquel que resulte probable racionalmente que se materialice en un futuro inmediato y pueda suponer un daño grave para la salud de los trabajadores». La primera opción corresponde al «riesgo laboral» (4.2.º), la tercera a los «daños derivados del trabajo» (4.3.º) y la cuarta a la «condición de trabajo» (4.7.º).",
+      "legalReference": "Ley 31/1995, art. 4.4.º"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0002",
+      "statement": "Según el artículo 14.1 de la Ley 31/1995, el deber del empresario de proteger a los trabajadores frente a los riesgos laborales constituye, igualmente, un deber:",
+      "options": [
+        {
+          "text": "De los servicios de prevención ajenos respecto de las empresas con las que concierten su actividad",
+          "isCorrect": false
+        },
+        {
+          "text": "De los Delegados de Prevención respecto de los trabajadores a quienes representan",
+          "isCorrect": false
+        },
+        {
+          "text": "De la autoridad laboral respecto de las empresas de su ámbito territorial",
+          "isCorrect": false
+        },
+        {
+          "text": "De las Administraciones públicas respecto del personal a su servicio",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 14.1 señala que el derecho de los trabajadores a una protección eficaz supone un correlativo deber del empresario y que «este deber de protección constituye, igualmente, un deber de las Administraciones públicas respecto del personal a su servicio». El deber alcanza, por tanto, a toda Administración pública, incluidas las locales, respecto de su personal. Las demás opciones atribuyen ese deber a sujetos que el precepto no menciona.",
+      "legalReference": "Ley 31/1995, art. 14.1"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0003",
+      "statement": "Según el artículo 21.3 de la Ley 31/1995, cuando el empresario no adopte las medidas necesarias ante un riesgo grave e inminente, los representantes legales de los trabajadores podrán acordar por mayoría de sus miembros la paralización de la actividad de los trabajadores afectados. La autoridad laboral anulará o ratificará esa paralización en el plazo de:",
+      "options": [
+        {
+          "text": "Veinticuatro horas",
+          "isCorrect": true
+        },
+        {
+          "text": "Cuarenta y ocho horas",
+          "isCorrect": false
+        },
+        {
+          "text": "Setenta y dos horas",
+          "isCorrect": false
+        },
+        {
+          "text": "Diez días",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 21.3 establece que el acuerdo se comunicará de inmediato a la empresa y a la autoridad laboral, «la cual, en el plazo de veinticuatro horas, anulará o ratificará la paralización acordada». Si no es posible reunir con urgencia al órgano de representación del personal, el acuerdo puede adoptarlo por mayoría los Delegados de Prevención. Los demás plazos no figuran en el precepto.",
+      "legalReference": "Ley 31/1995, art. 21.3"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0004",
+      "statement": "Según el artículo 38.2 de la Ley 31/1995, se constituirá un Comité de Seguridad y Salud en todas las empresas o centros de trabajo que cuenten con:",
+      "options": [
+        {
+          "text": "30 o más trabajadores",
+          "isCorrect": false
+        },
+        {
+          "text": "100 o más trabajadores",
+          "isCorrect": false
+        },
+        {
+          "text": "50 o más trabajadores",
+          "isCorrect": true
+        },
+        {
+          "text": "250 o más trabajadores",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 38.2 dispone que «se constituirá un Comité de Seguridad y Salud en todas las empresas o centros de trabajo que cuenten con 50 o más trabajadores». Está formado por los Delegados de Prevención y por el empresario o sus representantes, en igual número, y se reúne trimestralmente (art. 38.3). Los demás umbrales no son los de la ley.",
+      "legalReference": "Ley 31/1995, art. 38.2"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0005",
+      "statement": "Según el artículo 7.1 de la Ley Orgánica 3/2007, a los efectos de esta Ley constituye «acoso sexual»:",
+      "options": [
+        {
+          "text": "La situación en que una persona es tratada, en atención a su sexo, de manera menos favorable que otra en situación comparable",
+          "isCorrect": false
+        },
+        {
+          "text": "Cualquier comportamiento realizado en función del sexo de una persona, con el propósito o el efecto de atentar contra su dignidad y de crear un entorno intimidatorio, degradante u ofensivo",
+          "isCorrect": false
+        },
+        {
+          "text": "Cualquier comportamiento, verbal o físico, de naturaleza sexual que tenga el propósito o produzca el efecto de atentar contra la dignidad de una persona, en particular cuando se crea un entorno intimidatorio, degradante u ofensivo",
+          "isCorrect": true
+        },
+        {
+          "text": "La situación en que una disposición, criterio o práctica aparentemente neutros pone a personas de un sexo en desventaja particular con respecto a las del otro",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 7.1 define el acoso sexual como «cualquier comportamiento, verbal o físico, de naturaleza sexual que tenga el propósito o produzca el efecto de atentar contra la dignidad de una persona, en particular cuando se crea un entorno intimidatorio, degradante u ofensivo». La segunda opción es el acoso por razón de sexo (art. 7.2), la primera la discriminación directa (art. 6.1) y la cuarta la discriminación indirecta (art. 6.2). Ambos acosos se consideran en todo caso discriminatorios (art. 7.3).",
+      "legalReference": "LO 3/2007, art. 7.1"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0006",
+      "statement": "Según el artículo 11.1 de la Ley Orgánica 3/2007, las medidas específicas en favor de las mujeres que adopten los Poderes Públicos para corregir situaciones patentes de desigualdad de hecho respecto de los hombres habrán de ser:",
+      "options": [
+        {
+          "text": "Razonables y proporcionadas en relación con el objetivo perseguido en cada caso",
+          "isCorrect": true
+        },
+        {
+          "text": "Generales y de carácter permanente, aunque desaparezca la situación de desigualdad",
+          "isCorrect": false
+        },
+        {
+          "text": "Autorizadas previamente por la autoridad laboral competente",
+          "isCorrect": false
+        },
+        {
+          "text": "Aprobadas mediante ley orgánica y negociadas con los representantes de los trabajadores",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 11.1 establece que estas acciones positivas «habrán de ser razonables y proporcionadas en relación con el objetivo perseguido en cada caso» y que serán aplicables «en tanto subsistan dichas situaciones»; por tanto, no son permanentes por sí mismas. El precepto no exige autorización de la autoridad laboral ni una ley orgánica.",
+      "legalReference": "LO 3/2007, art. 11.1"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0007",
+      "statement": "Según el artículo 46.1 de la Ley Orgánica 3/2007, los planes de igualdad de las empresas son un conjunto ordenado de medidas, adoptadas:",
+      "options": [
+        {
+          "text": "Una vez inscrito el plan en el Registro de Planes de Igualdad de las Empresas",
+          "isCorrect": false
+        },
+        {
+          "text": "Tras la aprobación del plan por la autoridad laboral competente",
+          "isCorrect": false
+        },
+        {
+          "text": "Con la entrada en vigor del convenio colectivo que resulte aplicable a la empresa",
+          "isCorrect": false
+        },
+        {
+          "text": "Después de realizar un diagnóstico de situación",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 46.1 define los planes de igualdad como «un conjunto ordenado de medidas, adoptadas después de realizar un diagnóstico de situación, tendentes a alcanzar en la empresa la igualdad de trato y de oportunidades entre mujeres y hombres y a eliminar la discriminación por razón de sexo». La inscripción en el Registro es una obligación posterior de las empresas (art. 46.5) y el precepto no condiciona las medidas a la aprobación de la autoridad laboral ni a un convenio.",
+      "legalReference": "LO 3/2007, art. 46.1"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0008",
+      "statement": "Según el artículo 3.3 de la Ley 12/2007 de Andalucía, se entiende por representación equilibrada aquella situación que garantice la presencia de mujeres y hombres de forma que, en el conjunto de personas a que se refiera, cada sexo:",
+      "options": [
+        {
+          "text": "Ni supere el setenta por ciento ni sea menos del treinta por ciento",
+          "isCorrect": false
+        },
+        {
+          "text": "Ni supere el sesenta por ciento ni sea menos del cuarenta por ciento",
+          "isCorrect": true
+        },
+        {
+          "text": "Ni supere el cincuenta y cinco por ciento ni sea menos del cuarenta y cinco por ciento",
+          "isCorrect": false
+        },
+        {
+          "text": "Ni supere el sesenta y cinco por ciento ni sea menos del treinta y cinco por ciento",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 3.3 entiende por representación equilibrada la situación que garantice la presencia de mujeres y hombres de forma que, en el conjunto de personas a que se refiera, cada sexo «ni supere el sesenta por ciento ni sea menos del cuarenta por ciento». Los otros porcentajes no son los de la ley.",
+      "legalReference": "Ley 12/2007 de Andalucía, art. 3.3"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0009",
+      "statement": "Según el artículo 7.3 de la Ley 12/2007 de Andalucía, las entidades locales de Andalucía:",
+      "options": [
+        {
+          "text": "Aprobarán sus propios planes de igualdad, en el marco definido por el Plan Estratégico para la Igualdad de Mujeres y Hombres de Andalucía",
+          "isCorrect": true
+        },
+        {
+          "text": "Se regirán exclusivamente por los planes de igualdad de las Consejerías de la Junta de Andalucía, sin plan propio",
+          "isCorrect": false
+        },
+        {
+          "text": "Remitirán sus planes de igualdad al Instituto Andaluz de la Mujer para su aprobación",
+          "isCorrect": false
+        },
+        {
+          "text": "Elaborarán planes de igualdad únicamente cuando se lo solicite el Instituto Andaluz de la Mujer",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 7.3 dispone que «las entidades locales de Andalucía aprobarán sus propios planes de igualdad, en el marco definido por el Plan Estratégico para la Igualdad de Mujeres y Hombres de Andalucía, y adoptarán las medidas y el presupuesto necesario para garantizar su cumplimiento». El Instituto Andaluz de la Mujer solo las asesora si lo solicitan (art. 7.4) y recibe los planes «para su conocimiento, con carácter previo a su aprobación» (art. 7.5), no para aprobarlos. Redacción dada por la Ley 9/2018.",
+      "legalReference": "Ley 12/2007 de Andalucía, art. 7.3"
+    },
+    {
+      "key": "malaga-programador-c1/prevencion-igualdad/0010",
+      "statement": "Según el artículo 60.1 de la Ley 12/2007 de Andalucía, se crean Unidades de Igualdad de Género:",
+      "options": [
+        {
+          "text": "En todos los ayuntamientos de Andalucía",
+          "isCorrect": false
+        },
+        {
+          "text": "En todas las Consejerías de la Junta de Andalucía",
+          "isCorrect": true
+        },
+        {
+          "text": "En todas las Diputaciones Provinciales de Andalucía",
+          "isCorrect": false
+        },
+        {
+          "text": "En todas las entidades instrumentales de la Junta de Andalucía",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 60.1 dispone: «Se crean Unidades de Igualdad de Género en todas las Consejerías de la Junta de Andalucía, con el fin de impulsar, coordinar e implementar la perspectiva de género en la planificación, gestión y evaluación en sus respectivas políticas». Cada Consejería encomienda sus funciones a uno de sus órganos directivos (art. 60.2). La ley no las crea en ayuntamientos, diputaciones ni entidades instrumentales.",
+      "legalReference": "Ley 12/2007 de Andalucía, art. 60.1"
+    }
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "proteccion-software",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/proteccion-software/0001",
+      "statement": "Según el artículo 96.2 del TRLPI, el programa de ordenador será protegido únicamente si:",
+      "options": [
+        {
+          "text": "Ha sido inscrito previamente en el Registro de la Propiedad Intelectual",
+          "isCorrect": false
+        },
+        {
+          "text": "Fuese original, en el sentido de ser una creación intelectual propia de su autor",
+          "isCorrect": true
+        },
+        {
+          "text": "Ha sido divulgado lícitamente en el territorio de la Unión Europea",
+          "isCorrect": false
+        },
+        {
+          "text": "Incorpora un procedimiento técnico susceptible de protección mediante patente",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 96.2 dispone que «el programa de ordenador será protegido únicamente si fuese original, en el sentido de ser una creación intelectual propia de su autor». La inscripción registral es solo una posibilidad («podrán ser objeto de inscripción», art. 101), no un requisito de la protección. Tampoco se exige divulgación ni patentabilidad: el artículo 96.3 solo prevé que los programas que formen parte de una patente puedan gozar, además, de la protección de la propiedad industrial.",
+      "legalReference": "TRLPI, art. 96.2"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0002",
+      "statement": "Según el artículo 96.4 del TRLPI, NO están protegidos mediante los derechos de autor sobre programas de ordenador:",
+      "options": [
+        {
+          "text": "La documentación técnica y los manuales de uso del programa",
+          "isCorrect": false
+        },
+        {
+          "text": "Cualquier forma de expresión del programa de ordenador",
+          "isCorrect": false
+        },
+        {
+          "text": "El programa de ordenador que sea una creación intelectual propia de su autor",
+          "isCorrect": false
+        },
+        {
+          "text": "Las ideas y principios en los que se basan los elementos del programa, incluidos los de sus interfaces",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 96.4 excluye de la protección mediante derechos de autor «las ideas y principios en los que se basan cualquiera de los elementos de un programa de ordenador incluidos los que sirven de fundamento a sus interfaces». Sí están protegidos la documentación técnica y los manuales de uso (art. 96.1), cualquier forma de expresión del programa (art. 96.3) y el programa original, es decir, la creación intelectual propia de su autor (art. 96.2).",
+      "legalReference": "TRLPI, art. 96.4"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0003",
+      "statement": "Según el artículo 97.4 del TRLPI, cuando un trabajador asalariado cree un programa de ordenador en el ejercicio de las funciones que le han sido confiadas o siguiendo las instrucciones de su empresario, la titularidad de los derechos de explotación corresponde, salvo pacto en contrario:",
+      "options": [
+        {
+          "text": "Exclusivamente al empresario, tanto en el programa fuente como en el programa objeto",
+          "isCorrect": true
+        },
+        {
+          "text": "Exclusivamente al trabajador, que podrá ceder su uso al empresario",
+          "isCorrect": false
+        },
+        {
+          "text": "Al trabajador en el programa fuente y al empresario en el programa objeto",
+          "isCorrect": false
+        },
+        {
+          "text": "En copropiedad al trabajador y al empresario, a partes iguales",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 97.4 establece que la titularidad de los derechos de explotación «tanto el programa fuente como el programa objeto, corresponderán, exclusivamente, al empresario, salvo pacto en contrario». No hay reparto entre fuente y objeto ni copropiedad: el empresario es el único titular salvo que se haya pactado otra cosa.",
+      "legalReference": "TRLPI, art. 97.4"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0004",
+      "statement": "Según el artículo 98.2 del TRLPI, cuando el autor de un programa de ordenador sea una persona jurídica, la duración de los derechos de explotación será de:",
+      "options": [
+        {
+          "text": "Cincuenta años, computados desde el 1 de enero del año siguiente al de la divulgación lícita del programa o al de su creación si no se hubiera divulgado",
+          "isCorrect": false
+        },
+        {
+          "text": "Setenta años, computados desde el día de la inscripción del programa en el Registro de la Propiedad Intelectual",
+          "isCorrect": false
+        },
+        {
+          "text": "Setenta años, computados desde el 1 de enero del año siguiente al de la divulgación lícita del programa o al de su creación si no se hubiera divulgado",
+          "isCorrect": true
+        },
+        {
+          "text": "Sesenta años, computados desde el 1 de enero del año siguiente al de la divulgación lícita del programa o al de su creación si no se hubiera divulgado",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 98.2 fija una duración de «setenta años, computados desde el día 1 de enero del año siguiente al de la divulgación lícita del programa o al de su creación si no se hubiera divulgado». El cómputo no depende de la inscripción registral. Cuando el autor es una persona natural, la duración es la prevista en el Título III del Libro I (art. 98.1).",
+      "legalReference": "TRLPI, art. 98.2"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0005",
+      "statement": "Según el artículo 99 del TRLPI, cuando se produzca la cesión del derecho de uso de un programa de ordenador, se entenderá, salvo prueba en contrario, que dicha cesión tiene carácter:",
+      "options": [
+        {
+          "text": "Exclusivo e intransferible",
+          "isCorrect": false
+        },
+        {
+          "text": "No exclusivo e intransferible",
+          "isCorrect": true
+        },
+        {
+          "text": "No exclusivo y transferible",
+          "isCorrect": false
+        },
+        {
+          "text": "Exclusivo y transferible",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 99 señala que, ante la cesión del derecho de uso, «se entenderá, salvo prueba en contrario, que dicha cesión tiene carácter no exclusivo e intransferible, presumiéndose, asimismo, que lo es para satisfacer únicamente las necesidades del usuario». Las otras combinaciones de exclusividad y transferibilidad no son la presunción legal.",
+      "legalReference": "TRLPI, art. 99"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0006",
+      "statement": "Según el artículo 100.2 del TRLPI, la realización de una copia de seguridad por parte de quien tiene derecho a utilizar el programa de ordenador:",
+      "options": [
+        {
+          "text": "No podrá impedirse por contrato en cuanto resulte necesaria para dicha utilización",
+          "isCorrect": true
+        },
+        {
+          "text": "Requerirá siempre la autorización expresa del titular de los derechos de explotación",
+          "isCorrect": false
+        },
+        {
+          "text": "Podrá prohibirse por contrato cuando el programa se haya adquirido con licencia de uso",
+          "isCorrect": false
+        },
+        {
+          "text": "Solo podrá realizarla el titular de los derechos de explotación del programa",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 100.2 dispone que «la realización de una copia de seguridad por parte de quien tiene derecho a utilizar el programa no podrá impedirse por contrato en cuanto resulte necesaria para dicha utilización». Es un límite a los derechos de explotación, por lo que no exige autorización del titular, no puede prohibirse contractualmente en esos términos y no está reservada al titular de los derechos.",
+      "legalReference": "TRLPI, art. 100.2"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0007",
+      "statement": "Según el artículo 100.5 del TRLPI, la reproducción del código y la traducción de su forma no requieren autorización del titular cuando sean indispensables para obtener la información necesaria para la interoperabilidad de un programa creado de forma independiente, siempre que, entre otros requisitos:",
+      "options": [
+        {
+          "text": "Los actos se extiendan a la totalidad del programa original",
+          "isCorrect": false
+        },
+        {
+          "text": "La información necesaria haya sido puesta previamente y de manera fácil y rápida a disposición del usuario",
+          "isCorrect": false
+        },
+        {
+          "text": "Los actos se limiten a las partes del programa original necesarias para conseguir la interoperabilidad",
+          "isCorrect": true
+        },
+        {
+          "text": "Los actos los realice un tercero sin facultad para utilizar una copia del programa",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 100.5.c) exige «que dichos actos se limiten a aquellas partes del programa original que resulten necesarias para conseguir la interoperabilidad». Fallan las demás opciones: los actos los realiza el usuario legítimo u otra persona facultada para utilizar una copia, o alguien en su nombre (letra a), y la excepción solo opera si la información necesaria no ha sido puesta previamente y de manera fácil y rápida a su disposición (letra b), es decir, justo lo contrario de lo que dice la segunda opción.",
+      "legalReference": "TRLPI, art. 100.5"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0008",
+      "statement": "Según el artículo 101 del TRLPI, los derechos sobre los programas de ordenador, así como sobre sus sucesivas versiones y los programas derivados:",
+      "options": [
+        {
+          "text": "Deberán inscribirse en el Registro de la Propiedad Intelectual para gozar de protección",
+          "isCorrect": false
+        },
+        {
+          "text": "Solo podrán inscribirse en el Registro Mercantil, no en el de la Propiedad Intelectual",
+          "isCorrect": false
+        },
+        {
+          "text": "No podrán ser objeto de inscripción registral hasta que el programa haya sido divulgado",
+          "isCorrect": false
+        },
+        {
+          "text": "Podrán ser objeto de inscripción en el Registro de la Propiedad Intelectual",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 101 señala que los derechos sobre los programas, sus sucesivas versiones y los programas derivados «podrán ser objeto de inscripción en el Registro de la Propiedad Intelectual», y que reglamentariamente se determinarán los elementos de los programas registrados que serán susceptibles de consulta pública. La inscripción es, por tanto, facultativa y se hace en el Registro de la Propiedad Intelectual, sin que se condicione a la divulgación del programa.",
+      "legalReference": "TRLPI, art. 101"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0009",
+      "statement": "Según el artículo 102 del TRLPI, y sin perjuicio de lo establecido en su artículo 100, tienen la consideración de infractores de los derechos de autor sobre un programa de ordenador, en particular, quienes:",
+      "options": [
+        {
+          "text": "Realicen una copia de seguridad necesaria para la utilización del programa por quien tiene derecho a usarlo",
+          "isCorrect": false
+        },
+        {
+          "text": "Pongan en circulación o tengan con fines comerciales cualquier instrumento cuyo único uso sea facilitar la supresión o neutralización no autorizadas de un dispositivo técnico de protección del programa",
+          "isCorrect": true
+        },
+        {
+          "text": "Observen, estudien o verifiquen el funcionamiento del programa durante las operaciones de carga o ejecución que tienen derecho a realizar",
+          "isCorrect": false
+        },
+        {
+          "text": "Corrijan errores del programa cuando ello sea necesario para su utilización por el usuario legítimo",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 102.c) considera infractores a «quienes pongan en circulación o tengan con fines comerciales cualquier instrumento cuyo único uso sea facilitar la supresión o neutralización no autorizadas de cualquier dispositivo técnico utilizado para proteger un programa de ordenador». Las otras tres conductas están amparadas por los límites del artículo 100: copia de seguridad (apartado 2), observación y estudio del funcionamiento (apartado 3) y corrección de errores por el usuario legítimo (apartado 1).",
+      "legalReference": "TRLPI, art. 102.c)"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-software/0010",
+      "statement": "Según el artículo 103 del TRLPI, el titular de los derechos sobre un programa de ordenador podrá instar, además de las acciones y procedimientos generales del Título I del Libro III de la Ley, las medidas cautelares procedentes conforme a lo dispuesto en:",
+      "options": [
+        {
+          "text": "La Ley de Enjuiciamiento Criminal",
+          "isCorrect": false
+        },
+        {
+          "text": "La Ley de Patentes",
+          "isCorrect": false
+        },
+        {
+          "text": "El Código Civil",
+          "isCorrect": false
+        },
+        {
+          "text": "La Ley de Enjuiciamiento Civil",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 103 permite al titular «instar las acciones y procedimientos que, con carácter general, se disponen en el Título I, Libro III de la presente Ley y las medidas cautelares procedentes, conforme a lo dispuesto en la Ley de Enjuiciamiento Civil». Las demás normas no son la remisión que hace el precepto para las medidas cautelares.",
+      "legalReference": "TRLPI, art. 103"
+    }
+  ]
+}
