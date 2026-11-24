@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "registro-electronico",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/registro-electronico/0001",
+      "statement": "Según el artículo 16.3 de la Ley 39/2015, el registro electrónico de cada Administración u Organismo emite automáticamente, como recibo del documento presentado:",
+      "options": [
+        {
+          "text": "Un extracto del documento con el número de asiento, la identificación del interesado y del órgano",
+          "isCorrect": false
+        },
+        {
+          "text": "Una copia autenticada del documento, con fecha y hora de presentación y número de entrada",
+          "isCorrect": true
+        },
+        {
+          "text": "Un justificante firmado por el titular de la oficina de registro, con la fecha del día de la anotación",
+          "isCorrect": false
+        },
+        {
+          "text": "Una copia simple del documento, con el epígrafe expresivo de su naturaleza y el órgano destinatario",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 16.3 establece que «se emitirá automáticamente un recibo consistente en una copia autenticada del documento de que se trate, incluyendo la fecha y hora de presentación y el número de entrada de registro». El extracto, el justificante firmado por el titular de la oficina y la copia simple no son el recibo que prevé el precepto. El número, el epígrafe expresivo de la naturaleza y el órgano al que se envía son datos que debe recoger cada asiento, no el contenido del recibo.",
+      "legalReference": "Ley 39/2015, art. 16.3"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0002",
+      "statement": "Según el artículo 31.2.b) de la Ley 39/2015, a efectos del cómputo de plazos fijados en días hábiles y del cumplimiento de plazos por los interesados, la presentación en el registro electrónico en un día inhábil se entenderá realizada, salvo que una norma permita expresamente la recepción en día inhábil:",
+      "options": [
+        {
+          "text": "En el mismo día inhábil, a la hora efectiva de su presentación",
+          "isCorrect": false
+        },
+        {
+          "text": "En la última hora del último día hábil anterior",
+          "isCorrect": false
+        },
+        {
+          "text": "En la última hora del primer día hábil siguiente",
+          "isCorrect": false
+        },
+        {
+          "text": "En la primera hora del primer día hábil siguiente",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 31.2.b) dispone que «la presentación en un día inhábil se entenderá realizada en la primera hora del primer día hábil siguiente salvo que una norma permita expresamente la recepción en día inhábil». La hora efectiva solo sirve para ordenar los documentos presentados en el día inhábil, que se reputan anteriores a los presentados el primer día hábil posterior. Ni el último día hábil anterior ni la última hora del día hábil siguiente son el momento al que la ley refiere la presentación.",
+      "legalReference": "Ley 39/2015, art. 31.2.b)"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0003",
+      "statement": "Según el artículo 39.4 del RD 203/2021, cuando el tamaño de los documentos registrados exceda la capacidad que se determine para el Sistema de Interconexión de Registros (SIR), su remisión a la Administración y órgano al que van dirigidos podrá sustituirse por:",
+      "options": [
+        {
+          "text": "La puesta a disposición de los documentos en un repositorio de intercambio de ficheros",
+          "isCorrect": true
+        },
+        {
+          "text": "La remisión de los documentos mediante el asiento de salida anotado en el Registro Electrónico General",
+          "isCorrect": false
+        },
+        {
+          "text": "La devolución de los documentos al interesado para que los presente directamente en el órgano destinatario",
+          "isCorrect": false
+        },
+        {
+          "text": "La subsanación del asiento por el interesado, que aportará de nuevo los documentos por otro medio",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 39.4 prevé que, en ese caso, la remisión «podrá sustituirse por la puesta a disposición de los documentos, previamente depositados en un repositorio de intercambio de ficheros». Las otras opciones no figuran como alternativa en ese apartado: la devolución al interesado del artículo 39.5 se produce tras la digitalización de los documentos presentados en las oficinas, y la subsanación del artículo 39.2 se refiere a documentos con código malicioso ya registrados.",
+      "legalReference": "RD 203/2021, art. 39.4"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0004",
+      "statement": "Según el artículo 40.1 del RD 203/2021, las Oficinas de asistencia en materia de registros en el ámbito de la Administración General del Estado tienen naturaleza de:",
+      "options": [
+        {
+          "text": "Organismo público",
+          "isCorrect": false
+        },
+        {
+          "text": "Órgano consultivo",
+          "isCorrect": false
+        },
+        {
+          "text": "Órgano administrativo",
+          "isCorrect": true
+        },
+        {
+          "text": "Entidad de derecho público",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 40.1 dispone que «Las Oficinas de asistencia en materia de registros tienen naturaleza de órgano administrativo de acuerdo con lo dispuesto en el artículo 5 de la Ley 40/2015, de 1 de octubre». El artículo no les atribuye naturaleza de organismo público, de entidad de derecho público ni de órgano consultivo.",
+      "legalReference": "RD 203/2021, art. 40.1"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0005",
+      "statement": "Según el artículo 1.3 de la Orden PCM/1382/2021, el ámbito del Registro Electrónico General de la Administración General del Estado (REG-AGE) es:",
+      "options": [
+        {
+          "text": "La Administración General del Estado y las demás Administraciones Públicas que se adhieran voluntariamente al REG-AGE",
+          "isCorrect": false
+        },
+        {
+          "text": "La Administración General del Estado y sus organismos públicos y entidades vinculados o dependientes que carezcan de registro propio",
+          "isCorrect": true
+        },
+        {
+          "text": "Únicamente los órganos de la Administración General del Estado, con exclusión de sus organismos públicos y entidades vinculados o dependientes",
+          "isCorrect": false
+        },
+        {
+          "text": "Todas las Administraciones Públicas y los organismos públicos y entidades de derecho público vinculados o dependientes de cada una de ellas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 1.3 establece que «El ámbito del REG-AGE es la Administración General del Estado y sus Organismos públicos y Entidades de derecho público vinculados o dependientes que no dispongan de su propio registro». Por eso el REG-AGE no alcanza a las demás Administraciones Públicas, ni deja fuera a los organismos públicos y entidades vinculados o dependientes de la Administración General del Estado que carecen de registro propio.",
+      "legalReference": "Orden PCM/1382/2021, art. 1.3"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0006",
+      "statement": "Según el apartado IV.1 de la NTI SICRES 4.0, una de las principales características de SICRES 4.0 que la diferencian de sus versiones anteriores es:",
+      "options": [
+        {
+          "text": "La incorporación de ficheros adjuntos a los intercambios de asientos registrales",
+          "isCorrect": false
+        },
+        {
+          "text": "La orientación a una arquitectura de intermediación",
+          "isCorrect": false
+        },
+        {
+          "text": "La sustitución del intercambio de ficheros de documentos por el intercambio de referencias a ellos",
+          "isCorrect": true
+        },
+        {
+          "text": "La mejora en los mecanismos de control del intercambio",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado IV.1 recoge, entre las características de SICRES 4.0, la «Referenciación de documentos electrónicos»: «Se sustituye el intercambio de los ficheros de los documentos electrónicos objeto de registro e intercambio, por el intercambio de referencias a tales documentos electrónicos». La orientación a arquitectura de intermediación, la incorporación de ficheros adjuntos y la mejora de los mecanismos de control son, según el apartado I, las principales diferencias que presentaba SICRES 3.0 respecto de sus predecesoras.",
+      "legalReference": "NTI SICRES 4.0 (Resolución de 22-07-2021), apartado IV.1"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0007",
+      "statement": "Según el apartado V.3 de la NTI SICRES 4.0, el mensaje de control de tipo ACK (aceptación) notifica:",
+      "options": [
+        {
+          "text": "La recepción correcta del mensaje de datos de intercambio desde un punto de vista exclusivamente técnico",
+          "isCorrect": true
+        },
+        {
+          "text": "La confirmación de que el proceso de intercambio se ha completado con éxito en la Entidad Registral de destino",
+          "isCorrect": false
+        },
+        {
+          "text": "La recepción errónea o incompleta del mensaje de datos de intercambio desde un punto de vista técnico",
+          "isCorrect": false
+        },
+        {
+          "text": "El rechazo del mensaje de datos de intercambio por parte de la Entidad Registral de destino",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado V.3 señala que el ACK-aceptación «Notifica la recepción correcta del mensaje de datos de intercambio desde un punto de vista exclusivamente técnico, por lo que no constituye la confirmación de finalización correcta de todo el proceso de intercambio». La confirmación corresponde al mensaje de tipo Confirmación, la recepción errónea o incompleta al de tipo Error y el rechazo al de tipo Rechazo.",
+      "legalReference": "NTI SICRES 4.0 (Resolución de 22-07-2021), apartado V.3"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0008",
+      "statement": "Según el apartado VI.2.e) de la NTI SICRES 4.0, cuando los pre-asientos registrales intercambiados NO llegan a convertirse en asientos firmes en la Entidad Registral de destino, esta debe conservar:",
+      "options": [
+        {
+          "text": "Solo el mensaje de datos de intercambio, excluidos los documentos adjuntos",
+          "isCorrect": false
+        },
+        {
+          "text": "Los documentos adjuntos, durante el plazo que fije la política de gestión de documentos",
+          "isCorrect": false
+        },
+        {
+          "text": "El mensaje de datos de intercambio y sus documentos adjuntos, hasta recibir el ACK de rechazo",
+          "isCorrect": false
+        },
+        {
+          "text": "Únicamente la traza de la transacción de intercambio realizada",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El apartado VI.2.e) establece que, en ese caso, la Entidad Registral de destino «no debe conservar el mensaje de datos de intercambio ni sus documentos adjuntos. Únicamente debe conservar traza de la transacción de intercambio realizada». Las demás opciones suponen conservar el mensaje o los documentos adjuntos, lo que el apartado excluye.",
+      "legalReference": "NTI SICRES 4.0 (Resolución de 22-07-2021), apartado VI.2.e)"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0009",
+      "statement": "Según el apartado «Resumen» de la ficha del SIR en el Centro de Transferencia de Tecnología del PAe, el Sistema de Interconexión de Registros (SIR) es:",
+      "options": [
+        {
+          "text": "Una solución de registro completa que gestiona las oficinas de registro de entrada/salida y proporciona su propio libro de registro",
+          "isCorrect": false
+        },
+        {
+          "text": "La infraestructura básica que permite el intercambio de asientos electrónicos de registro entre las AAPP",
+          "isCorrect": true
+        },
+        {
+          "text": "Una aplicación web de archivo definitivo de expedientes y documentos electrónicos de las Administraciones Públicas",
+          "isCorrect": false
+        },
+        {
+          "text": "Un sistema para la gestión de los documentos y expedientes electrónicos de la gestión viva del expediente",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El Resumen de la ficha del SIR lo define como «la infraestructura básica que permite el intercambio de asientos electrónicos de registro entre las AAPP». La solución de registro completa con libro propio corresponde a ORVE, la aplicación web de archivo definitivo a Archive y el sistema de gestión de documentos y expedientes de la gestión viva a InSide, descripciones que figuran en las fichas de esas soluciones y no en la del SIR.",
+      "legalReference": "PAe, SIR (ficha del CTT), «Resumen»"
+    },
+    {
+      "key": "malaga-programador-c1/registro-electronico/0010",
+      "statement": "Según el apartado «Resumen» de la ficha de GEISER en el Centro de Transferencia de Tecnología del PAe, además de la gestión de sus oficinas de registro de entrada/salida, GEISER cubre:",
+      "options": [
+        {
+          "text": "La gestión automática de todas las notificaciones y comunicaciones que generan los organismos emisores",
+          "isCorrect": false
+        },
+        {
+          "text": "El archivado definitivo de los expedientes electrónicos remitidos por las aplicaciones consumidoras",
+          "isCorrect": false
+        },
+        {
+          "text": "La recepción y envío de registros en las unidades tramitadoras destinatarias de la documentación",
+          "isCorrect": true
+        },
+        {
+          "text": "La generación de documentos PDF de visualización de los documentos y expedientes electrónicos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El Resumen de la ficha de GEISER indica que es una solución integral de registro «que cubre tanto la gestión de sus oficinas de registro de entrada/salida como la recepción y envío de registros en las unidades tramitadoras destinatarias de la documentación». Las demás funciones (gestión de notificaciones, archivado definitivo y generación de PDF de visualización) no figuran en el Resumen de GEISER, sino en las fichas de otras soluciones del PAe.",
+      "legalReference": "PAe, GEISER (ficha del CTT), «Resumen»"
+    }
+  ]
+}
