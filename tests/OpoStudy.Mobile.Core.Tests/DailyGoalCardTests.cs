@@ -52,9 +52,9 @@ public sealed class DailyGoalCardTests
     {
         var days = new[]
         {
-            new DayActivityResponse(new DateOnly(2026, 11, 18), 3, 10, false, true),
-            new DayActivityResponse(new DateOnly(2026, 11, 19), 10, 10, true, false),
-            new DayActivityResponse(new DateOnly(2026, 11, 20), 0, 10, false, false),
+            new DayActivityResponse(new DateOnly(2026, 11, 18), 3, 10, false, true, 0),
+            new DayActivityResponse(new DateOnly(2026, 11, 19), 10, 10, true, false, 0),
+            new DayActivityResponse(new DateOnly(2026, 11, 20), 0, 10, false, false, 0),
         };
 
         var dots = DailyGoalCard.Dots(Streak(days: days));
@@ -106,7 +106,7 @@ public sealed class DailyGoalCardTests
     {
         // 2026-11-14 is a Saturday.
         var days = Enumerable.Range(0, 7)
-            .Select(i => new DayActivityResponse(new DateOnly(2026, 11, 14).AddDays(i), i, 10, i % 2 == 0, false))
+            .Select(i => new DayActivityResponse(new DateOnly(2026, 11, 14).AddDays(i), i, 10, i % 2 == 0, false, 0))
             .ToArray();
 
         var dots = DailyGoalCard.Dots(Streak(days: days));

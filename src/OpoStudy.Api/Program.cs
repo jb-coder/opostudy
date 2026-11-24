@@ -7,6 +7,7 @@ using OpoStudy.Api.Features.Gradings;
 using OpoStudy.Api.Features.PracticalCases;
 using OpoStudy.Api.Features.Progress;
 using OpoStudy.Api.Features.Quizzes;
+using OpoStudy.Api.Features.Stats;
 using OpoStudy.Api.Features.SystemInfo;
 using OpoStudy.Api.Features.Users;
 using OpoStudy.Api.OpenApi;
@@ -66,6 +67,7 @@ api.MapPracticalCasesEndpoints();
 api.MapQuizzesEndpoints();
 api.MapProgressEndpoints();
 api.MapGradingsEndpoints();
+api.MapStatsEndpoints();
 
 app.Run();
 

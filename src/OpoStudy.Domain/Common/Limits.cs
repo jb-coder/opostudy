@@ -42,6 +42,12 @@ public static class Limits
     public const int StreakHistoryDays = 7;
     public const int MaxStreakFreezes = 2;
 
+    /// <summary>Longest date range (both ends included) of the activity statistics.</summary>
+    public const int MaxActivityRangeDays = 92;
+
+    /// <summary>Gradings listed as recent scores in the statistics.</summary>
+    public const int RecentScoresCount = 10;
+
     /// <summary>Oldest time of an answer the server accepts when syncing a quiz taken offline.</summary>
     public static readonly TimeSpan MaxOfflineAge = TimeSpan.FromDays(7);
 }

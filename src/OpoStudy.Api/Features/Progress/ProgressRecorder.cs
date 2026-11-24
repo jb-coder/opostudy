@@ -125,8 +125,8 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db, ProgressTracker tra
             {
                 var date = from.AddDays(offset);
                 return activities.TryGetValue(date, out var a)
-                    ? new DayActivityResponse(date, a.AnsweredCount, a.Goal, a.IsGoalMet, a.IsProtected)
-                    : new DayActivityResponse(date, 0, user.DailyGoal, false, false);
+                    ? new DayActivityResponse(date, a.AnsweredCount, a.Goal, a.IsGoalMet, a.IsProtected, a.XpEarned)
+                    : new DayActivityResponse(date, 0, user.DailyGoal, false, false, 0);
             })
             .ToList();
         var todayActivity = lastDays[^1];
