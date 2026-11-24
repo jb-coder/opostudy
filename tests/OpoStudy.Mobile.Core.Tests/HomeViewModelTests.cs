@@ -544,6 +544,16 @@ public sealed class HomeViewModelTests
     }
 
     [Fact]
+    public async Task OpenStatsCommand_Executed_NavigatesToStats()
+    {
+        var sut = CreateSut();
+
+        await sut.OpenStatsCommand.ExecuteAsync(null);
+
+        await _navigation.Received(1).GoToAsync(Routes.Stats);
+    }
+
+    [Fact]
     public async Task SignOutCommand_WhileBusy_CannotExecute()
     {
         var gate = new TaskCompletionSource();

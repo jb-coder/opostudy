@@ -24,6 +24,36 @@ public sealed class OpoStudyApiTests
         handler.LastRequestUri.ShouldBe(new Uri("http://localhost:5054/api/v1/version"));
     }
 
+    [Fact]
+    public async Task GetActivityAsync_Dates_AreSentAsIsoWithFromAndToNames()
+    {
+        using var handler = new StubHandler("""{"today":"2026-11-24","dailyGoal":10,"days":[{"date":"2026-11-03","answeredCount":12,"goal":10,"goalMet":true,"protected":false,"xpEarned":160}]}""");
+        using var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5054") };
+        var api = RestService.ForGenerated<IOpoStudyApi>(client, ApiJsonContext.Default);
+
+        var response = await api.GetActivityAsync(new DateOnly(2026, 11, 1), new DateOnly(2026, 11, 30), TestContext.Current.CancellationToken);
+
+        handler.LastRequestUri.ShouldBe(new Uri("http://localhost:5054/api/v1/me/activity?from=2026-11-01&to=2026-11-30"));
+        response.Today.ShouldBe(new DateOnly(2026, 11, 24));
+        response.Days.Single().XpEarned.ShouldBe(160);
+    }
+
+    [Fact]
+    public async Task GetStatsAsync_ExamId_IsSentAsQueryAndDeserializes()
+    {
+        var examId = Guid.NewGuid();
+        using var handler = new StubHandler(
+            $$$"""{"examId":"{{{examId}}}","quizzes":{"answeredCount":4,"correctCount":3,"finishedQuizCount":1,"availableTopicCount":2,"topics":[]},"practicalCases":{"completedCount":0,"averagePercent":null,"bestScores":[],"recentScores":[]}}""");
+        using var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5054") };
+        var api = RestService.ForGenerated<IOpoStudyApi>(client, ApiJsonContext.Default);
+
+        var response = await api.GetStatsAsync(examId, TestContext.Current.CancellationToken);
+
+        handler.LastRequestUri.ShouldBe(new Uri($"http://localhost:5054/api/v1/me/stats?examId={examId}"));
+        response.Quizzes.AnsweredCount.ShouldBe(4);
+        response.PracticalCases.AveragePercent.ShouldBeNull();
+    }
+
     private sealed class StubHandler(string json) : HttpMessageHandler
     {
         public Uri? LastRequestUri { get; private set; }

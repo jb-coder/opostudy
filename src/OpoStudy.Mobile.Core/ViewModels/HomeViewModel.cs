@@ -738,6 +738,9 @@ public sealed partial class HomeViewModel(
     private Task StartQuizAsync() => navigation.GoToAsync(Routes.Exams);
 
     [RelayCommand]
+    private Task OpenStatsAsync() => navigation.GoToAsync(Routes.Stats);
+
+    [RelayCommand]
     private Task OpenStyleGuideAsync() => navigation.GoToAsync(Routes.StyleGuide);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not sync the time zone ({ExceptionType})")]

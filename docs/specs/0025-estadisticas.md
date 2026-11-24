@@ -2,7 +2,7 @@
 
 - **Issue:** #75
 - **Milestone:** v0.4.0
-- **Estado:** lista
+- **Estado:** implementada
 
 > Recoge lo aplazado en la 0010 (calendario mensual), la 0011 (XP por día), la 0012 (estadísticas por tema) y la 0021 (media y evolución de los supuestos).
 
@@ -108,14 +108,14 @@ Sin tablas, columnas, índices ni migraciones nuevas.
 **`StatsPage`**: `RefreshView` + `CollectionView` (temas como elementos; el resto, en `Header` y `Footer`), con `OfflineBanner` arriba. De arriba abajo:
 1. **Indicadores** (rejilla 2×2, valor grande + etiqueta): «Respondidas», «Aciertos» (`72 %`, o `—` sin respuestas), «Tests completados» y «Temas practicados» (`5 de 12`).
 2. **Por tema**: título, `ProgressBar` de aciertos, «72 % · 18 de 25», «Última práctica: 12 nov 2026» y botón «Practicar este tema».
-   - Muestra los 5 más flojos. Si hay más, «Ver todos los temas (N)» / «Ver menos».
+   - Muestra los 5 más flojos. Si hay más, «Ver todos los temas (N)» / «Ver menos»; se mantiene al recargar y se reinicia al cambiar de oposición.
    - El título se muestra tal cual (ya lleva «Tema N.»).
-   - «Practicar este tema»: `CreateQuizAsync` de 10 preguntas del tema y navegación a `Routes.Quiz`. Deshabilitado con `AvailableQuestionCount = 0` o mientras está ocupado.
-3. **Actividad**: calendario del mes (semana de lunes a domingo), con «Mes anterior» / «Mes siguiente» (este, deshabilitado en el mes en curso).
-   - Estado del día con color **y** marca: objetivo cumplido ✓ (fondo `Success`, texto `OnPrimary`), actividad sin objetivo • (borde `Success`), protegido 🛡️, hoy en negrita con borde `Primary`. Los futuros van atenuados y no se pueden tocar.
+   - «Practicar este tema»: `CreateQuizAsync` de 10 preguntas del tema y navegación a `Routes.Quiz`. Deshabilitado con `AvailableQuestionCount = 0` o mientras está ocupado. Sus errores se muestran en la tarjeta del tema.
+3. **Actividad**: calendario del mes (semana de lunes a domingo), con los botones «‹» y «›» (descripción accesible «Mes anterior» / «Mes siguiente»; este, deshabilitado en el mes en curso). Si el `Today` del servidor cae en otro mes que el del dispositivo, la primera carga salta a ese mes.
+   - Estado del día con color **y** marca: objetivo cumplido ✓ (fondo `Success`, texto `OnPrimary`), actividad sin objetivo • (borde `Success`), protegido 🛡️ (aunque tenga respuestas), hoy en negrita con borde `Primary`. Los futuros van atenuados y no se pueden tocar.
    - Leyenda de las marcas debajo. Resumen: «12 días con actividad · 9 objetivos cumplidos · +640 XP». Un día protegido sin respuestas ni XP no suma en los «días con actividad».
-   - Tocar un día muestra su detalle: «Martes 12 de noviembre: 14 preguntas de 10 · objetivo cumplido · +160 XP», o «Sin actividad».
-   - Celda de 48 dp de alto y ancho = un séptimo de la tarjeta, con `SemanticProperties.Description` igual al detalle.
+   - Tocar un día muestra su detalle: «Martes 12 de noviembre: 14 preguntas de 10 · objetivo cumplido · +160 XP», o «Martes 3 de noviembre: sin actividad». No responde mientras no estén los datos del mes.
+   - Celda de 48 dp de alto como mínimo y ancho = un séptimo de la tarjeta, con `SemanticProperties.Description` igual al detalle.
 4. **Supuestos**: «3 correcciones · media 74,5 %».
    - Gráfica de barras verticales (hasta 10, de la más antigua a la más reciente) con XAML: `BoxView` de alto fijo, `ScaleY` = porcentaje y `AnchorY = 1`, en `Primary`. Encima, el porcentaje; debajo, el día y el mes (`d/M`). Cada barra lleva su descripción accesible. La fila se desplaza en horizontal si no cabe.
    - «Mejor nota por supuesto»: título, «18,5 / 25 · 74 %» y «2 intentos». Tocarlo abre `Routes.Grading` con `BestGradingId`.
@@ -128,7 +128,7 @@ Sin tablas, columnas, índices ni migraciones nuevas.
 | Sin datos (0 respuestas y 0 correcciones) | «Aún no hay estadísticas. Haz tu primer test y aquí verás tu progreso.» + botón «Hacer un test» → `Routes.Topics` de la oposición. El calendario se sigue mostrando |
 | Solo falta una parte | «Aún no has respondido preguntas.» o «Aún no tienes supuestos corregidos.» en su bloque |
 | Sin oposiciones | «No hay oposiciones disponibles.» |
-| Sin conexión, sin datos cargados | «Las estadísticas necesitan conexión» + «Reintentar». No se llama a la API si `OfflineState.IsOffline` |
+| Sin conexión, sin datos cargados | «Las estadísticas necesitan conexión» + «Reintentar». No se llama a la API si `!OfflineState.HasInternet` (con `IsOffline`, un fallo puntual dejaría «Reintentar» sin efecto) |
 | Sin conexión, con datos cargados | Se conservan y se avisa: «Sin conexión. Se muestran los últimos datos cargados.» |
 | Error de `GET /me/stats` | Mensaje de `ApiErrorMessages` + «Reintentar», conservando lo cargado |
 | Error de `GET /me/activity` | Solo en la tarjeta del calendario: «No se ha podido cargar la actividad.» + «Reintentar». No afecta al resto, y nunca se pintan los datos de otro mes |
@@ -141,19 +141,19 @@ Sin tablas, columnas, índices ni migraciones nuevas.
 - No se registran estadísticas ni textos en los logs. No hacen falta secretos nuevos.
 
 ## Criterios de aceptación
-- [ ] Un usuario nuevo recibe recuentos a 0, `AveragePercent = null` y listas vacías en `GET /me/stats`, y `Days` vacío en `GET /me/activity`.
-- [ ] Los recuentos por tema incluyen tests por tema, aleatorios, repasos y tests a medias; las preguntas sin responder no cuentan. La suma por tema coincide con el total.
-- [ ] Los temas van de más débil a más fuerte con los desempates indicados.
-- [ ] Las respuestas a preguntas desactivadas cuentan, y el tema sin preguntas activas tiene `AvailableQuestionCount = 0`.
-- [ ] Solo cuentan correcciones `Completed`; la media, la mejor nota por supuesto y las últimas 10 son correctas, y nada de otra oposición aparece.
-- [ ] `GET /me/activity` devuelve `from` y `to` inclusive, la XP y el objetivo de cada día, los días protegidos, y omite las filas sin actividad.
-- [ ] Los errores de la tabla devuelven el código y la clave indicados.
-- [ ] Los datos de un usuario no dependen de los de otro, y sin token se recibe 401.
-- [ ] `has-pending-model-changes` no detecta cambios de modelo.
-- [ ] La app muestra los cuatro bloques, recarga al volver de un test y «Practicar este tema» abre el test.
-- [ ] Los estados de la tabla se cumplen.
-- [ ] Capturas en tema claro y oscuro y con `font_scale 1.3`: nada se corta, y ningún estado depende solo del color.
-- [ ] Build sin warnings y tests en verde.
+- [x] Un usuario nuevo recibe recuentos a 0, `AveragePercent = null` y listas vacías en `GET /me/stats`, y `Days` vacío en `GET /me/activity`.
+- [x] Los recuentos por tema incluyen tests por tema, aleatorios, repasos y tests a medias; las preguntas sin responder no cuentan. La suma por tema coincide con el total.
+- [x] Los temas van de más débil a más fuerte con los desempates indicados.
+- [x] Las respuestas a preguntas desactivadas cuentan, y el tema sin preguntas activas tiene `AvailableQuestionCount = 0`.
+- [x] Solo cuentan correcciones `Completed`; la media, la mejor nota por supuesto y las últimas 10 son correctas, y nada de otra oposición aparece.
+- [x] `GET /me/activity` devuelve `from` y `to` inclusive, la XP y el objetivo de cada día, los días protegidos, y omite las filas sin actividad.
+- [x] Los errores de la tabla devuelven el código y la clave indicados.
+- [x] Los datos de un usuario no dependen de los de otro, y sin token se recibe 401.
+- [x] `has-pending-model-changes` no detecta cambios de modelo.
+- [x] La app muestra los cuatro bloques, recarga al volver de un test y «Practicar este tema» abre el test.
+- [ ] Los estados de la tabla se cumplen. Cubiertos por tests; sin ver en el emulador: vacío, sin oposiciones, error de actividad y selector de oposición.
+- [x] Capturas en tema claro y oscuro y con `font_scale 1.3`: nada se corta, y ningún estado depende solo del color.
+- [x] Build sin warnings y tests en verde.
 
 ## Plan de tests
 - **Unitarios (Mobile.Core):**
@@ -168,3 +168,5 @@ Sin tablas, columnas, índices ni migraciones nuevas.
   3. Calendario: mes anterior y siguiente, detalle de un día.
   4. Modo avión con y sin datos cargados.
   5. Capturas claro, oscuro y `font_scale 1.3`.
+
+**Cambios de estilo compartidos:** estilo implícito de `ProgressBar` (`Primary`, con la pista en `Outline` en Android) y estado deshabilitado de `TextButton` sin fondo. Afectan también a Inicio.
