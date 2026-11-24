@@ -239,7 +239,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "La Descripción de la ficha indica que «en el proceso de intercambio entre Archivos, permite la generación de DIPs (Dissemination Information Package) de manera semiautomática, para el traspaso entre centros de archivo compatibles con estos protocolos». Los SIP son los paquetes a los que se aplican las reglas de validación y que se envían a Archive («enviar SIP»), y los AIP son los que «se generan internamente en el software de Archivo».",
+      "explanation": "La Descripción de la ficha indica que, «en el proceso de intercambio entre Archivos, permite la generación de DIPs (Dissemination Information Package) de manera semiautomática, para el traspaso entre centros de archivo compatibles con estos protocolos». Archive también trabaja con los otros paquetes, pero con otra finalidad: incluye herramientas para la generación de los SIP, que se envían a Archive mediante servicios web («enviar SIP») y se validan con reglas, y permite visualizar los AIP que «se generan internamente en el software de Archivo».",
       "legalReference": "PAe, Archive (ficha del CTT), «Descripción»"
     }
   ]

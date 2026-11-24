@@ -124,7 +124,7 @@
     },
     {
       "key": "malaga-programador-c1/registro-electronico/0006",
-      "statement": "Según el apartado IV.1 de la NTI SICRES 4.0, una de las principales características de SICRES 4.0 que la diferencian de sus versiones anteriores es:",
+      "statement": "Según el apartado IV.1 de la NTI SICRES 4.0, una de las principales características que diferencian a SICRES 4.0 de su antecesora, SICRES 3.0, es:",
       "options": [
         {
           "text": "La incorporación de ficheros adjuntos a los intercambios de asientos registrales",
@@ -196,27 +196,27 @@
     },
     {
       "key": "malaga-programador-c1/registro-electronico/0009",
-      "statement": "Según el apartado «Resumen» de la ficha del SIR en el Centro de Transferencia de Tecnología del PAe, el Sistema de Interconexión de Registros (SIR) es:",
+      "statement": "Según el apartado «Resumen» de la ficha de ORVE (Oficina de Registro Virtual) en el Centro de Transferencia de Tecnología del PAe, ORVE es:",
       "options": [
         {
-          "text": "Una solución de registro completa que gestiona las oficinas de registro de entrada/salida y proporciona su propio libro de registro",
+          "text": "Un sistema para la gestión de documentos y expedientes electrónicos que cumple los requisitos del Esquema Nacional de Interoperabilidad",
           "isCorrect": false
         },
         {
-          "text": "La infraestructura básica que permite el intercambio de asientos electrónicos de registro entre las AAPP",
+          "text": "Una solución de registro completa que gestiona las oficinas de registro de entrada/salida de una Administración y proporciona su propio libro",
           "isCorrect": true
         },
         {
-          "text": "Una aplicación web de archivo definitivo de expedientes y documentos electrónicos de las Administraciones Públicas",
+          "text": "Una aplicación web de archivo definitivo de expedientes y documentos electrónicos, con gestión de centros de archivo multidepartamental",
           "isCorrect": false
         },
         {
-          "text": "Un sistema para la gestión de los documentos y expedientes electrónicos de la gestión viva del expediente",
+          "text": "Una plataforma para gestionar automáticamente todas las notificaciones y comunicaciones que se generan en los organismos emisores",
           "isCorrect": false
         }
       ],
-      "explanation": "El Resumen de la ficha del SIR lo define como «la infraestructura básica que permite el intercambio de asientos electrónicos de registro entre las AAPP». La solución de registro completa con libro propio corresponde a ORVE, la aplicación web de archivo definitivo a Archive y el sistema de gestión de documentos y expedientes de la gestión viva a InSide, descripciones que figuran en las fichas de esas soluciones y no en la del SIR.",
-      "legalReference": "PAe, SIR (ficha del CTT), «Resumen»"
+      "explanation": "El Resumen de la ficha define ORVE como «una solución de registro completa que proporciona un servicio en la nube que permite gestionar las Oficinas de Registro de entrada/salida de una Administración, proporcionando su propio libro de registro». El sistema para la gestión de documentos y expedientes electrónicos es InSide, la aplicación web de archivo definitivo es Archive y la plataforma que gestiona las notificaciones y comunicaciones de los organismos emisores es Notifica, según las fichas de esas soluciones.",
+      "legalReference": "PAe, ORVE (ficha del CTT), «Resumen»"
     },
     {
       "key": "malaga-programador-c1/registro-electronico/0010",

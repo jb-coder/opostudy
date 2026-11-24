@@ -41,7 +41,7 @@ Dar 40 preguntas de test, redactadas y verificadas contra el texto de la fuente 
 | RD 203/2021, Reglamento de actuación y funcionamiento del sector público por medios electrónicos (también su anexo de definiciones) | `BOE-A-2021-5032` | `RD 203/2021, art. 42.1` |
 | RD 4/2010, Esquema Nacional de Interoperabilidad | `BOE-A-2010-1331` | `RD 4/2010 (ENI), art. 21.1` |
 | NTI de Modelo de Datos para el Intercambio de asientos entre las entidades registrales (SICRES 4.0), Resolución de 22-07-2021 | `BOE-A-2021-13749` | `NTI SICRES 4.0 (Resolución de 22-07-2021), apartado V` |
-| Orden PCM/1382/2021, Registro Electrónico General de la AGE | `BOE-A-2021-20477` | `Orden PCM/1382/2021, art. 1.2` |
+| Orden PCM/1382/2021, Registro Electrónico General de la AGE | `BOE-A-2021-20477` | `Orden PCM/1382/2021, art. 1.3` |
 | NTI de Documento Electrónico, Resolución de 19-07-2011 | `BOE-A-2011-13169` | `NTI de Documento Electrónico (Resolución de 19-07-2011), apartado III` |
 | NTI de Expediente Electrónico, Resolución de 19-07-2011 | `BOE-A-2011-13170` | `NTI de Expediente Electrónico (Resolución de 19-07-2011), apartado III.1` |
 | NTI de Digitalización de Documentos, Resolución de 19-07-2011 | `BOE-A-2011-13168` | `NTI de Digitalización (Resolución de 19-07-2011), apartado IV` |
