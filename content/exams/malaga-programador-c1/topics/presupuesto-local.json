@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "presupuesto-local",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0001",
+      "statement": "Según el artículo 168.4 del TRLRHL, el presidente de la entidad local remitirá el presupuesto general, informado por la Intervención y con sus anexos y documentación complementaria, al Pleno de la corporación para su aprobación, enmienda o devolución antes del día:",
+      "options": [
+        {
+          "text": "15 de septiembre",
+          "isCorrect": false
+        },
+        {
+          "text": "1 de octubre",
+          "isCorrect": false
+        },
+        {
+          "text": "15 de octubre",
+          "isCorrect": true
+        },
+        {
+          "text": "31 de octubre",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 168.4 establece que el presidente de la entidad formará el presupuesto general y lo remitirá, informado por la Intervención, «al Pleno de la corporación antes del día 15 de octubre para su aprobación, enmienda o devolución». El 15 de septiembre es la fecha límite del artículo 168.2 y 3 para que los organismos autónomos y las sociedades mercantiles remitan a la entidad local sus presupuestos o previsiones.",
+      "legalReference": "TRLRHL, art. 168.4"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0002",
+      "statement": "Según el artículo 169.1 del TRLRHL, aprobado inicialmente el presupuesto general, se expondrá al público, previo anuncio en el boletín oficial de la provincia, durante:",
+      "options": [
+        {
+          "text": "10 días",
+          "isCorrect": false
+        },
+        {
+          "text": "15 días",
+          "isCorrect": true
+        },
+        {
+          "text": "20 días",
+          "isCorrect": false
+        },
+        {
+          "text": "30 días",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 169.1 dispone que, aprobado inicialmente, el presupuesto general «se expondrá al público, previo anuncio en el boletín oficial de la provincia o, en su caso, de la comunidad autónoma uniprovincial, por 15 días, durante los cuales los interesados podrán examinarlos y presentar reclamaciones ante el Pleno». Si hay reclamaciones, el Pleno dispone de un mes para resolverlas; ese mes no es el plazo de exposición pública.",
+      "legalReference": "TRLRHL, art. 169.1"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0003",
+      "statement": "Según el artículo 169.6 del TRLRHL, si al iniciarse el ejercicio económico no hubiese entrado en vigor el presupuesto correspondiente:",
+      "options": [
+        {
+          "text": "Se considerará automáticamente prorrogado el del ejercicio anterior, con sus créditos iniciales",
+          "isCorrect": true
+        },
+        {
+          "text": "Se aplicará un presupuesto provisional equivalente a una doceava parte mensual del ejercicio anterior",
+          "isCorrect": false
+        },
+        {
+          "text": "Quedará suspendida toda ejecución de gastos hasta la entrada en vigor del nuevo presupuesto",
+          "isCorrect": false
+        },
+        {
+          "text": "El Pleno deberá aprobar en el plazo de un mes un presupuesto transitorio de gastos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 169.6 prevé que «se considerará automáticamente prorrogado el del anterior, con sus créditos iniciales, sin perjuicio de las modificaciones que se realicen conforme a lo dispuesto en los artículos 177, 178 y 179» y hasta la entrada en vigor del nuevo presupuesto. La prórroga no afecta a los créditos para servicios o programas que deban concluir en el ejercicio anterior o que estén financiados con crédito u otros ingresos específicos o afectados. El artículo no contempla presupuestos provisionales por doceavas partes, ni suspensión de la ejecución, ni presupuestos transitorios.",
+      "legalReference": "TRLRHL, art. 169.6"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0004",
+      "statement": "Según el artículo 54.1 del Real Decreto 500/1990, el acto mediante el cual se acuerda la realización de un gasto determinado por una cuantía cierta o aproximada, reservando a tal fin la totalidad o parte de un crédito presupuestario, es:",
+      "options": [
+        {
+          "text": "La disposición o compromiso del gasto",
+          "isCorrect": false
+        },
+        {
+          "text": "El reconocimiento y liquidación de la obligación",
+          "isCorrect": false
+        },
+        {
+          "text": "La ordenación del pago",
+          "isCorrect": false
+        },
+        {
+          "text": "La autorización del gasto",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 54.1 define la autorización como «el acto mediante el cual se acuerda la realización de un gasto determinado por una cuantía cierta o aproximada, reservando a tal fin la totalidad o parte de un crédito presupuestario», y el apartado 2 añade que constituye el inicio del procedimiento de ejecución del gasto sin implicar relaciones con terceros externos. La disposición (art. 56) se refiere a gastos previamente autorizados por un importe exactamente determinado, el reconocimiento de la obligación (art. 58) declara la existencia de un crédito exigible contra la Entidad y la ordenación del pago (art. 61) es la orden de pago que se expide sobre una obligación ya reconocida y liquidada.",
+      "legalReference": "RD 500/1990, art. 54.1"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0005",
+      "statement": "Según el artículo 179.2 del TRLRHL, la aprobación de las transferencias de crédito entre distintos grupos de función corresponderá al Pleno de la corporación, salvo cuando las bajas y las altas afecten a:",
+      "options": [
+        {
+          "text": "Créditos de personal",
+          "isCorrect": true
+        },
+        {
+          "text": "Créditos ampliables",
+          "isCorrect": false
+        },
+        {
+          "text": "Créditos extraordinarios concedidos durante el ejercicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Créditos para inversiones reales",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 179.2 dispone que «la aprobación de las transferencias de crédito entre distintos grupos de función corresponderá al Pleno de la corporación salvo cuando las bajas y las altas afecten a créditos de personal». Los créditos ampliables y los extraordinarios concedidos durante el ejercicio ni siquiera pueden verse afectados por transferencias (art. 180.1.a), y los créditos para inversiones reales no figuran como excepción en este artículo.",
+      "legalReference": "TRLRHL, art. 179.2"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0006",
+      "statement": "Según el artículo 177.1 del TRLRHL, cuando haya de realizarse algún gasto que no pueda demorarse hasta el ejercicio siguiente y no exista en el presupuesto de la corporación crédito para él, el presidente ordenará la incoación del expediente de:",
+      "options": [
+        {
+          "text": "Suplemento de crédito",
+          "isCorrect": false
+        },
+        {
+          "text": "Transferencia de crédito",
+          "isCorrect": false
+        },
+        {
+          "text": "Crédito extraordinario",
+          "isCorrect": true
+        },
+        {
+          "text": "Generación de crédito",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 177.1 prevé que, ante un gasto que no puede demorarse hasta el ejercicio siguiente, el presidente ordenará la incoación del expediente «de concesión de crédito extraordinario, en el primer caso» (cuando no existe crédito) o «de suplemento de crédito, en el segundo» (cuando el consignado es insuficiente o no ampliable). Por ello el suplemento de crédito falla en este supuesto; las transferencias y las generaciones de crédito son otras modificaciones reguladas en los artículos 179 y 181.",
+      "legalReference": "TRLRHL, art. 177.1"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0007",
+      "statement": "Según el artículo 191.3 del TRLRHL, las entidades locales deberán confeccionar la liquidación de su presupuesto antes del día:",
+      "options": [
+        {
+          "text": "1 de febrero del ejercicio siguiente",
+          "isCorrect": false
+        },
+        {
+          "text": "1 de marzo del ejercicio siguiente",
+          "isCorrect": true
+        },
+        {
+          "text": "31 de marzo del ejercicio siguiente",
+          "isCorrect": false
+        },
+        {
+          "text": "15 de mayo del ejercicio siguiente",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 191.3 señala que «las entidades locales deberán confeccionar la liquidación de su presupuesto antes del día primero de marzo del ejercicio siguiente», y que su aprobación corresponde al presidente de la entidad local, previo informe de la Intervención. El final de marzo es el plazo del artículo 193.5 para remitir copia de la liquidación a la Administración del Estado y a la comunidad autónoma, y el 15 de mayo es el plazo del artículo 212.1 para rendir los estados y cuentas.",
+      "legalReference": "TRLRHL, art. 191.3"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0008",
+      "statement": "Según el artículo 3.1 del Real Decreto 424/2017, el control interno de la actividad económico-financiera del sector público local se ejercerá por el órgano interventor mediante el ejercicio de:",
+      "options": [
+        {
+          "text": "La función interventora y la contabilidad pública",
+          "isCorrect": false
+        },
+        {
+          "text": "El control de legalidad y el control de eficacia",
+          "isCorrect": false
+        },
+        {
+          "text": "La función interventora y la fiscalización externa",
+          "isCorrect": false
+        },
+        {
+          "text": "La función interventora y el control financiero",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 3.1 establece que el control interno «se ejercerá por el órgano interventor mediante el ejercicio de la función interventora y el control financiero». El control de eficacia queda incluido, según el artículo 3.4, dentro del control financiero, que comprende el control permanente y la auditoría pública; la fiscalización externa de las cuentas es función propia del Tribunal de Cuentas (TRLRHL, art. 223.1), no del órgano interventor.",
+      "legalReference": "RD 424/2017, art. 3.1"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0009",
+      "statement": "Según el artículo 4.3 del Real Decreto 424/2017, el órgano interventor dispondrá de un modelo de control eficaz que asegure, con medios propios o externos, el control efectivo de, al menos, el siguiente porcentaje del presupuesto general consolidado del ejercicio:",
+      "options": [
+        {
+          "text": "El cincuenta por ciento",
+          "isCorrect": false
+        },
+        {
+          "text": "El sesenta por ciento",
+          "isCorrect": false
+        },
+        {
+          "text": "El ochenta por ciento",
+          "isCorrect": true
+        },
+        {
+          "text": "El cien por cien",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 4.3 dispone que el modelo «asegurará, con medios propios o externos, el control efectivo de, al menos, el ochenta por ciento del presupuesto general consolidado del ejercicio mediante la aplicación de las modalidades de función interventora y control financiero». Solo «en el transcurso de tres ejercicios consecutivos y en base a un análisis previo de riesgos» debe haberse alcanzado el cien por cien, por lo que este no es el mínimo exigido en cada ejercicio.",
+      "legalReference": "RD 424/2017, art. 4.3"
+    },
+    {
+      "key": "malaga-programador-c1/presupuesto-local/0010",
+      "statement": "Según el artículo 223.2 del TRLRHL, las entidades locales rendirán al Tribunal de Cuentas la cuenta general correspondiente al ejercicio económico anterior antes del día:",
+      "options": [
+        {
+          "text": "15 de mayo de cada año",
+          "isCorrect": false
+        },
+        {
+          "text": "1 de junio de cada año",
+          "isCorrect": false
+        },
+        {
+          "text": "1 de octubre de cada año",
+          "isCorrect": false
+        },
+        {
+          "text": "15 de octubre de cada año",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 223.2 señala que las entidades locales rendirán al Tribunal de Cuentas, «antes del día 15 de octubre de cada año, la cuenta general» del ejercicio económico anterior. Las demás fechas corresponden a otros trámites de la cuenta general del artículo 212: el 15 de mayo para rendir los estados y cuentas, el 1 de junio para someterla a informe de la Comisión Especial de Cuentas y el 1 de octubre como límite para su aprobación por el Pleno.",
+      "legalReference": "TRLRHL, art. 223.2"
+    }
+  ]
+}

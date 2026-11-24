@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "regimen-local",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/regimen-local/0001",
+      "statement": "Según el artículo 140 de la Constitución Española, los Alcaldes serán elegidos:",
+      "options": [
+        {
+          "text": "Por los Concejales o por los vecinos",
+          "isCorrect": true
+        },
+        {
+          "text": "Exclusivamente por los vecinos mediante sufragio universal, igual, libre, directo y secreto",
+          "isCorrect": false
+        },
+        {
+          "text": "Exclusivamente por los Concejales mediante votación por mayoría absoluta",
+          "isCorrect": false
+        },
+        {
+          "text": "Por los vecinos, solo en los municipios que funcionen en régimen de concejo abierto",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 140 establece que «los Alcaldes serán elegidos por los Concejales o por los vecinos». Lo que el precepto exige que se haga por sufragio universal, igual, libre, directo y secreto es la elección de los Concejales por los vecinos, no la del Alcalde, por lo que las opciones que limitan la elección a uno solo de los dos procedimientos son incorrectas. El concejo abierto aparece en el artículo solo para remitir a la ley sus condiciones, no como único caso de elección del Alcalde por los vecinos.",
+      "legalReference": "CE, art. 140"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0002",
+      "statement": "Según el artículo 141.1 de la Constitución Española, cualquier alteración de los límites provinciales habrá de ser aprobada por:",
+      "options": [
+        {
+          "text": "Las Cortes Generales mediante ley ordinaria",
+          "isCorrect": false
+        },
+        {
+          "text": "El Gobierno de la Nación mediante real decreto",
+          "isCorrect": false
+        },
+        {
+          "text": "Las Cortes Generales mediante ley orgánica",
+          "isCorrect": true
+        },
+        {
+          "text": "El Parlamento de la Comunidad Autónoma afectada mediante ley autonómica",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 141.1 dispone que «cualquier alteración de los límites provinciales habrá de ser aprobada por las Cortes Generales mediante ley orgánica». No basta una ley ordinaria ni un real decreto, y la competencia no corresponde al Parlamento de la Comunidad Autónoma, sino a las Cortes Generales.",
+      "legalReference": "CE, art. 141.1"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0003",
+      "statement": "Según el artículo 4.1 de la Ley 7/1985, NO es una potestad que corresponda en todo caso a los municipios, las provincias y las islas, dentro de la esfera de sus competencias:",
+      "options": [
+        {
+          "text": "Las potestades reglamentaria y de autoorganización",
+          "isCorrect": false
+        },
+        {
+          "text": "La potestad de programación o planificación",
+          "isCorrect": false
+        },
+        {
+          "text": "La potestad legislativa",
+          "isCorrect": true
+        },
+        {
+          "text": "La potestad de revisión de oficio de sus actos y acuerdos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Entre las potestades y prerrogativas que el artículo 4.1 atribuye en todo caso a los municipios, las provincias y las islas figuran las potestades reglamentaria y de autoorganización (letra a), la potestad de programación o planificación (letra c) y la potestad de revisión de oficio de sus actos y acuerdos (letra g). La potestad legislativa no aparece en ninguna de las letras a) a h) de ese apartado, por lo que es la única opción que NO les corresponde según este artículo.",
+      "legalReference": "Ley 7/1985, art. 4.1"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0004",
+      "statement": "Según el artículo 20.1.b) de la Ley 7/1985, la Junta de Gobierno Local existe en todos los municipios con población superior a:",
+      "options": [
+        {
+          "text": "1.000 habitantes",
+          "isCorrect": false
+        },
+        {
+          "text": "5.000 habitantes",
+          "isCorrect": true
+        },
+        {
+          "text": "20.000 habitantes",
+          "isCorrect": false
+        },
+        {
+          "text": "50.000 habitantes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 20.1.b) señala que «la Junta de Gobierno Local existe en todos los municipios con población superior a 5.000 habitantes y en los de menos, cuando así lo disponga su reglamento orgánico o así lo acuerde el Pleno de su ayuntamiento». Los tramos de 20.000 y 50.000 habitantes son los que el artículo 26.1 utiliza para otros servicios mínimos, y el de 1.000 habitantes es el del artículo 36.1.b) para garantizar los servicios de secretaría e intervención; ninguno de ellos rige la existencia de la Junta de Gobierno Local.",
+      "legalReference": "Ley 7/1985, art. 20.1.b)"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0005",
+      "statement": "Según el artículo 22.2 de la Ley 7/1985, corresponde en todo caso al Pleno del ayuntamiento:",
+      "options": [
+        {
+          "text": "Dictar bandos",
+          "isCorrect": false
+        },
+        {
+          "text": "Aprobar la oferta de empleo público",
+          "isCorrect": false
+        },
+        {
+          "text": "Ejercer la jefatura de la Policía Municipal",
+          "isCorrect": false
+        },
+        {
+          "text": "La aprobación del reglamento orgánico y de las ordenanzas",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 22.2.d) atribuye al Pleno «la aprobación del reglamento orgánico y de las ordenanzas». Dictar bandos (art. 21.1.e), aprobar la oferta de empleo público (art. 21.1.g) y ejercer la jefatura de la Policía Municipal (art. 21.1.i) son atribuciones del Alcalde.",
+      "legalReference": "Ley 7/1985, art. 22.2.d)"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0006",
+      "statement": "Según el artículo 26.1 de la Ley 7/1985, el servicio de protección civil debe prestarse, en todo caso:",
+      "options": [
+        {
+          "text": "En todos los Municipios",
+          "isCorrect": false
+        },
+        {
+          "text": "En los Municipios con población superior a 5.000 habitantes",
+          "isCorrect": false
+        },
+        {
+          "text": "En los Municipios con población superior a 20.000 habitantes",
+          "isCorrect": true
+        },
+        {
+          "text": "En los Municipios con población superior a 50.000 habitantes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 26.1.c) dispone que «en los Municipios con población superior a 20.000 habitantes, además» de los servicios anteriores, deben prestar «protección civil, evaluación e información de situaciones de necesidad social y la atención inmediata a personas en situación o riesgo de exclusión social, prevención y extinción de incendios e instalaciones deportivas de uso público». La protección civil no figura entre los servicios exigidos en todos los Municipios (letra a); el tramo de 5.000 habitantes (letra b) añade parque público, biblioteca pública y tratamiento de residuos, y el de 50.000 (letra d) añade el transporte colectivo urbano de viajeros y el medio ambiente urbano.",
+      "legalReference": "Ley 7/1985, art. 26.1.c)"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0007",
+      "statement": "Según el artículo 27.1 de la Ley 7/1985, la delegación de competencias del Estado o de las Comunidades Autónomas en los Municipios deberá determinar, entre otros extremos, su duración, que no podrá ser inferior a:",
+      "options": [
+        {
+          "text": "Un año",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos años",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres años",
+          "isCorrect": false
+        },
+        {
+          "text": "Cinco años",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 27.1 establece que la delegación «deberá determinar el alcance, contenido, condiciones y duración de ésta, que no podrá ser inferior a cinco años». Por tanto, una duración de uno, dos o tres años no cumple el mínimo legal.",
+      "legalReference": "Ley 7/1985, art. 27.1"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0008",
+      "statement": "Según el artículo 33.2 de la Ley 7/1985, corresponde en todo caso al Pleno de la Diputación:",
+      "options": [
+        {
+          "text": "La aprobación de los planes de carácter provincial",
+          "isCorrect": true
+        },
+        {
+          "text": "Dirigir el gobierno y la administración de la provincia",
+          "isCorrect": false
+        },
+        {
+          "text": "Nombrar a los Vicepresidentes",
+          "isCorrect": false
+        },
+        {
+          "text": "Desempeñar la jefatura superior de todo el personal",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 33.2.d) atribuye al Pleno «la aprobación de los planes de carácter provincial». Dirigir el gobierno y la administración de la provincia (art. 34.1.a), desempeñar la jefatura superior de todo el personal (art. 34.1.h) y nombrar a los Vicepresidentes (art. 34.3) corresponden al Presidente de la Diputación.",
+      "legalReference": "Ley 7/1985, art. 33.2.d)"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0009",
+      "statement": "Según el artículo 36.1.b) de la Ley 7/1985, la Diputación garantizará en todo caso la prestación de los servicios de secretaría e intervención en los municipios de:",
+      "options": [
+        {
+          "text": "Menos de 5.000 habitantes",
+          "isCorrect": false
+        },
+        {
+          "text": "Menos de 1.000 habitantes",
+          "isCorrect": true
+        },
+        {
+          "text": "Menos de 20.000 habitantes",
+          "isCorrect": false
+        },
+        {
+          "text": "Menos de 50.000 habitantes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 36.1.b) señala que, en su asistencia y cooperación a los Municipios, la Diputación «en todo caso garantizará en los municipios de menos de 1.000 habitantes la prestación de los servicios de secretaría e intervención». Los tramos de 5.000 y 20.000 habitantes aparecen en el artículo 36.1.c) para el tratamiento de residuos y para la prevención y extinción de incendios, respectivamente, y el de 50.000 habitantes es un tramo del artículo 26.1.d) para servicios mínimos municipales.",
+      "legalReference": "Ley 7/1985, art. 36.1.b)"
+    },
+    {
+      "key": "malaga-programador-c1/regimen-local/0010",
+      "statement": "Según el artículo 35.1 de la Ley 7/1985, la Junta de Gobierno de la Diputación se integra por el Presidente y un número de Diputados no superior a:",
+      "options": [
+        {
+          "text": "La mitad del número legal de los mismos",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos tercios del número legal de los mismos",
+          "isCorrect": false
+        },
+        {
+          "text": "Un cuarto del número legal de los mismos",
+          "isCorrect": false
+        },
+        {
+          "text": "Un tercio del número legal de los mismos",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 35.1 dispone que la Junta de Gobierno «se integra por el Presidente y un número de Diputados no superior al tercio del número legal de los mismos, nombrados y separados libremente por aquél, dando cuenta al Pleno». Por tanto, ni la mitad ni los dos tercios ni un cuarto son el límite legal.",
+      "legalReference": "Ley 7/1985, art. 35.1"
+    }
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "contratos-sector-publico",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0001",
+      "statement": "Según el artículo 1.3 de la Ley 9/2017, en toda contratación pública se incorporarán de manera transversal y preceptiva criterios sociales y medioambientales:",
+      "options": [
+        {
+          "text": "Siempre que guarde relación con el objeto del contrato",
+          "isCorrect": true
+        },
+        {
+          "text": "Siempre que el valor estimado del contrato supere los umbrales de la regulación armonizada",
+          "isCorrect": false
+        },
+        {
+          "text": "Únicamente cuando así lo decida el órgano de contratación en el pliego de cláusulas administrativas",
+          "isCorrect": false
+        },
+        {
+          "text": "Exclusivamente en los contratos de obras y en los de concesión de servicios",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 1.3 dispone que «en toda contratación pública se incorporarán de manera transversal y preceptiva criterios sociales y medioambientales siempre que guarde relación con el objeto del contrato». Por tanto, la incorporación es preceptiva (no potestativa), no depende del valor estimado ni se limita a determinados tipos contractuales.",
+      "legalReference": "Ley 9/2017, art. 1.3"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0002",
+      "statement": "Según el artículo 3.1.h) de la Ley 9/2017, forman parte del sector público las sociedades mercantiles en cuyo capital social la participación, directa o indirecta, de determinadas entidades del sector público sea superior al:",
+      "options": [
+        {
+          "text": "25 por 100",
+          "isCorrect": false
+        },
+        {
+          "text": "40 por 100",
+          "isCorrect": false
+        },
+        {
+          "text": "50 por 100",
+          "isCorrect": true
+        },
+        {
+          "text": "75 por 100",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 3.1.h) incluye en el sector público «las sociedades mercantiles en cuyo capital social la participación, directa o indirecta, de entidades de las mencionadas en las letras a), b), c), d), e), g) y h) del presente apartado sea superior al 50 por 100». También se incluyen, sin superar ese porcentaje, las que se encuentren respecto de dichas entidades en el supuesto del artículo 5 del texto refundido de la Ley del Mercado de Valores.",
+      "legalReference": "Ley 9/2017, art. 3.1.h)"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0003",
+      "statement": "Según el artículo 3.2 de la Ley 9/2017, dentro del sector público tendrán la consideración de Administraciones Públicas, entre otras:",
+      "options": [
+        {
+          "text": "Las Mutuas colaboradoras con la Seguridad Social",
+          "isCorrect": false
+        },
+        {
+          "text": "Las Universidades Públicas",
+          "isCorrect": true
+        },
+        {
+          "text": "Las fundaciones públicas",
+          "isCorrect": false
+        },
+        {
+          "text": "Las sociedades mercantiles con participación pública superior al 50 por 100",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 3.2.a) considera Administraciones Públicas a las entidades de las letras a), b), c) y l) del artículo 3.1, y la letra c) incluye «los Organismos Autónomos, las Universidades Públicas y las autoridades administrativas independientes». Las Mutuas colaboradoras con la Seguridad Social (letra f) y las fundaciones públicas (letra e) forman parte del sector público y son poderes adjudicadores (art. 3.3), y las sociedades mercantiles (letra h) forman parte del sector público, pero ninguna de ellas figura entre las Administraciones Públicas del apartado 2.a).",
+      "legalReference": "Ley 9/2017, art. 3.2.a)"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0004",
+      "statement": "Según el artículo 11.1 de la Ley 9/2017, queda excluida del ámbito de la Ley:",
+      "options": [
+        {
+          "text": "La adquisición de equipos y sistemas para el tratamiento de la información",
+          "isCorrect": false
+        },
+        {
+          "text": "El arrendamiento financiero de bienes muebles",
+          "isCorrect": false
+        },
+        {
+          "text": "La concesión de servicios",
+          "isCorrect": false
+        },
+        {
+          "text": "La relación de servicio de los funcionarios públicos",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 11.1 establece que «la relación de servicio de los funcionarios públicos y los contratos regulados en la legislación laboral queda excluida del ámbito de la presente Ley». En cambio, la adquisición de equipos y sistemas para el tratamiento de la información y el arrendamiento financiero de bienes muebles son contratos de suministro (art. 16.1 y 16.3.b), y la concesión de servicios es uno de los tipos contractuales que regula el artículo 15.",
+      "legalReference": "Ley 9/2017, art. 11.1"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0005",
+      "statement": "Según el artículo 6.1.a) de la Ley 9/2017, para que un convenio entre entidades del sector público quede excluido de la Ley, las entidades intervinientes no han de tener vocación de mercado, la cual se presumirá cuando realicen en el mercado abierto un porcentaje de las actividades objeto de colaboración igual o superior al:",
+      "options": [
+        {
+          "text": "10 por ciento",
+          "isCorrect": false
+        },
+        {
+          "text": "20 por ciento",
+          "isCorrect": true
+        },
+        {
+          "text": "30 por ciento",
+          "isCorrect": false
+        },
+        {
+          "text": "50 por ciento",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 6.1.a) exige que las entidades intervinientes «no han de tener vocación de mercado, la cual se presumirá cuando realicen en el mercado abierto un porcentaje igual o superior al 20 por ciento de las actividades objeto de colaboración». Los porcentajes del 10, 30 y 50 por ciento no figuran en este precepto.",
+      "legalReference": "Ley 9/2017, art. 6.1.a)"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0006",
+      "statement": "Según el artículo 14.4 de la Ley 9/2017, en el contrato de concesión de obras, que implica la transferencia al concesionario de un riesgo operacional, se entiende por riesgo de demanda:",
+      "options": [
+        {
+          "text": "El relativo al suministro de las obras o servicios objeto del contrato",
+          "isCorrect": false
+        },
+        {
+          "text": "El de no tener garantizado recuperar las inversiones ni cubrir los costes en condiciones normales de funcionamiento",
+          "isCorrect": false
+        },
+        {
+          "text": "El que se produce cuando el coste de construcción supera el presupuesto base de licitación",
+          "isCorrect": false
+        },
+        {
+          "text": "El que se debe a la demanda real de las obras o servicios objeto del contrato",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 14.4 señala que el derecho de explotación debe implicar la transferencia al concesionario de un riesgo operacional «abarcando el riesgo de demanda o el de suministro, o ambos», y define el riesgo de demanda como «el que se debe a la demanda real de las obras o servicios objeto del contrato». El relativo al suministro es el riesgo de suministro, que el artículo define aparte; que no esté garantizado recuperar las inversiones ni cubrir los costes en condiciones normales de funcionamiento es lo que determina, según el mismo apartado, que el concesionario asume un riesgo operacional, no la definición del riesgo de demanda. El exceso del coste de construcción no aparece en el artículo.",
+      "legalReference": "Ley 9/2017, art. 14.4"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0007",
+      "statement": "Según el artículo 16.3.b) de la Ley 9/2017, los contratos de adquisición de programas de ordenador desarrollados a medida se considerarán contratos de:",
+      "options": [
+        {
+          "text": "Obras",
+          "isCorrect": false
+        },
+        {
+          "text": "Suministro",
+          "isCorrect": false
+        },
+        {
+          "text": "Servicios",
+          "isCorrect": true
+        },
+        {
+          "text": "Concesión de servicios",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 16.3.b) considera contratos de suministro los que tengan por objeto la adquisición y el arrendamiento de equipos y sistemas de telecomunicaciones o para el tratamiento de la información, sus dispositivos y programas, «a excepción de los contratos de adquisición de programas de ordenador desarrollados a medida, que se considerarán contratos de servicios». Por tanto, el desarrollo a medida no es suministro, y tampoco obra ni concesión de servicios.",
+      "legalReference": "Ley 9/2017, art. 16.3.b)"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0008",
+      "statement": "Según el artículo 17 de la Ley 9/2017, NO podrán ser objeto de los contratos de servicios:",
+      "options": [
+        {
+          "text": "Los servicios que impliquen ejercicio de la autoridad inherente a los poderes públicos",
+          "isCorrect": true
+        },
+        {
+          "text": "Las prestaciones de hacer consistentes en el desarrollo de una actividad",
+          "isCorrect": false
+        },
+        {
+          "text": "Las prestaciones dirigidas a la obtención de un resultado distinto de una obra o suministro",
+          "isCorrect": false
+        },
+        {
+          "text": "Los servicios en que el adjudicatario se obligue a ejecutar el servicio de forma sucesiva y por precio unitario",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 17 define los contratos de servicios como aquellos cuyo objeto son «prestaciones de hacer consistentes en el desarrollo de una actividad o dirigidas a la obtención de un resultado distinto de una obra o suministro, incluyendo aquellos en que el adjudicatario se obligue a ejecutar el servicio de forma sucesiva y por precio unitario», y añade que «no podrán ser objeto de estos contratos los servicios que impliquen ejercicio de la autoridad inherente a los poderes públicos». Las otras tres opciones describen, por tanto, objetos que sí admite este contrato.",
+      "legalReference": "Ley 9/2017, art. 17"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0009",
+      "statement": "Según el artículo 18.1.a) de la Ley 9/2017, cuando un contrato mixto comprenda prestaciones propias de dos o más contratos de obras, suministros o servicios, para determinar las normas que regirán su adjudicación se atenderá:",
+      "options": [
+        {
+          "text": "A las normas del contrato de obras, que prevalecen en todo caso",
+          "isCorrect": false
+        },
+        {
+          "text": "Al contrato cuyo plazo de ejecución sea mayor",
+          "isCorrect": false
+        },
+        {
+          "text": "Al carácter de la prestación principal",
+          "isCorrect": true
+        },
+        {
+          "text": "A las normas más favorables para la concurrencia de licitadores",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 18.1.a) dispone que, en ese supuesto, «se atenderá al carácter de la prestación principal». Solo en los contratos mixtos compuestos en parte por servicios y en parte por suministros, o por servicios especiales del anexo IV y otros servicios, el objeto principal se determina por el mayor valor estimado; el artículo no atribuye prevalencia automática a las obras ni utiliza el plazo de ejecución o la mayor concurrencia como criterio.",
+      "legalReference": "Ley 9/2017, art. 18.1.a)"
+    },
+    {
+      "key": "malaga-programador-c1/contratos-sector-publico/0010",
+      "statement": "Según el artículo 25.1.a) de la Ley 9/2017, aunque lo celebre una Administración Pública, tendrá carácter privado el contrato de servicios cuyo objeto sea:",
+      "options": [
+        {
+          "text": "La suscripción a revistas, publicaciones periódicas y bases de datos",
+          "isCorrect": true
+        },
+        {
+          "text": "El mantenimiento y soporte de sistemas de información",
+          "isCorrect": false
+        },
+        {
+          "text": "La limpieza de edificios públicos",
+          "isCorrect": false
+        },
+        {
+          "text": "La asistencia técnica para la dirección de obras",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 25.1.a) atribuye carácter administrativo a los contratos de obra, concesión de obra, concesión de servicios, suministro y servicios celebrados por una Administración Pública, pero tendrán carácter privado, entre otros, los contratos de servicios «cuyo objeto sea la suscripción a revistas, publicaciones periódicas y bases de datos» (número 2.º). El resto de servicios indicados conservan la regla general y son, por tanto, contratos administrativos.",
+      "legalReference": "Ley 9/2017, art. 25.1.a)"
+    }
+  ]
+}
