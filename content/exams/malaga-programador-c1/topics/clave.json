@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "clave",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/clave/0001",
+      "statement": "Según el artículo 9.4 de la Ley 39/2015, la aceptación de alguno de los sistemas de identificación electrónica de los interesados por la Administración General del Estado servirá para:",
+      "options": [
+        {
+          "text": "Acreditar la identificación electrónica del interesado solo ante la Administración General del Estado y sus organismos públicos",
+          "isCorrect": false
+        },
+        {
+          "text": "Acreditar frente a todas las Administraciones Públicas, salvo prueba en contrario, la identificación electrónica del interesado",
+          "isCorrect": true
+        },
+        {
+          "text": "Acreditar de forma definitiva la identificación electrónica del interesado, sin que se admita prueba en contrario",
+          "isCorrect": false
+        },
+        {
+          "text": "Habilitar al interesado para firmar documentos electrónicos ante cualquier Administración Pública",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 9.4 dispone que «la aceptación de alguno de estos sistemas por la Administración General del Estado servirá para acreditar frente a todas las Administraciones Públicas, salvo prueba en contrario, la identificación electrónica de los interesados en el procedimiento administrativo». Por tanto, el efecto no se limita a la Administración General del Estado ni es definitivo, porque admite prueba en contrario. Y se refiere a la identificación, no a la firma de documentos, que regula el artículo 10.",
+      "legalReference": "Ley 39/2015, art. 9.4"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0002",
+      "statement": "Según el artículo 33.4 del Real Decreto 203/2021, el Registro Electrónico de Apoderamientos de la Administración General del Estado y los registros particulares de apoderamientos:",
+      "options": [
+        {
+          "text": "Son públicos, de modo que cualquier persona puede consultar los poderes inscritos",
+          "isCorrect": false
+        },
+        {
+          "text": "Solo pueden ser consultados por la Administración, sin que el interesado acceda a los poderes",
+          "isCorrect": false
+        },
+        {
+          "text": "No tienen carácter público: el interesado solo accede a los apoderamientos de los que es poderdante o apoderado",
+          "isCorrect": true
+        },
+        {
+          "text": "Son públicos solo en lo que se refiere a los poderes generales del artículo 6.4.a) de la Ley 39/2015",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 33.4 dispone que estos registros «deberán ser interoperables y no tienen carácter público, por lo que el interesado sólo podrá acceder a la información de los apoderamientos de los que sea poderdante o apoderado». No son públicos, ni en general ni para un tipo de poder, y tampoco se reservan a la Administración: el interesado accede a los poderes en los que figura como poderdante o apoderado.",
+      "legalReference": "RD 203/2021, art. 33.4"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0003",
+      "statement": "Según el artículo 5 bis, apartado 3, del Reglamento (UE) 910/2014 (eIDAS), el código fuente de los componentes de programas informáticos de las carteras europeas de identidad digital:",
+      "options": [
+        {
+          "text": "Tendrá licencia de código abierto, con la posible excepción de ciertos componentes por razones justificadas",
+          "isCorrect": true
+        },
+        {
+          "text": "Será propiedad de la Comisión Europea, que lo pondrá a disposición de los Estados miembros",
+          "isCorrect": false
+        },
+        {
+          "text": "Se mantendrá siempre confidencial, para proteger los datos de identificación de los usuarios",
+          "isCorrect": false
+        },
+        {
+          "text": "Tendrá licencia propietaria, que cada Estado miembro podrá ceder a los proveedores de la cartera",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 5 bis.3 dispone que el código fuente «tendrá licencia de código abierto» y que los Estados miembros podrán disponer que, «por razones debidamente justificadas, no se divulgue el código fuente de componentes específicos distintos de los instalados en los dispositivos de los usuarios». Por eso no es siempre confidencial. El artículo tampoco atribuye la propiedad del código a la Comisión ni prevé una licencia propietaria.",
+      "legalReference": "Reglamento (UE) 910/2014 (eIDAS), art. 5 bis.3"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0004",
+      "statement": "Según la disposición adicional tercera del Real Decreto 203/2021 (nodo de interoperabilidad de identificación electrónica), las entidades del sector público deben admitir en todo caso los esquemas de identificación notificados por otros Estados miembros siempre que su nivel de seguridad sea:",
+      "options": [
+        {
+          "text": "Únicamente alto, cualquiera que sea el nivel exigido por el procedimiento o servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Bajo, sustancial o alto, con independencia del nivel exigido por el procedimiento o servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Sustancial o alto, aunque sea inferior al nivel exigido por el procedimiento o servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Sustancial o alto, e igual o superior al nivel exigido por el procedimiento o servicio",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "La disposición adicional tercera crea «el nodo de interoperabilidad de identificación electrónica del Reino de España para el reconocimiento mutuo de identidades electrónicas entre los Estados miembros». Su apartado 4 impone admitir en todo caso esos esquemas si se dan dos condiciones: que «tenga un nivel de seguridad en la identificación electrónica sustancial o alto» y que su nivel «sea igual o superior al nivel de seguridad exigido por el procedimiento o servicio». Fallan, pues, admitir solo el nivel alto, incluir el bajo (en el reglamento eIDAS, art. 6.2, su reconocimiento es solo facultativo: «podrá ser reconocido») o aceptar un nivel inferior al exigido.",
+      "legalReference": "RD 203/2021, disposición adicional tercera, apartado 4"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0005",
+      "statement": "Según el apartado primero del Acuerdo publicado como anexo de la Orden PRE/1838/2014, Cl@ve permite al ciudadano relacionarse electrónicamente con los servicios públicos a través de una plataforma común mediante:",
+      "options": [
+        {
+          "text": "Únicamente certificados electrónicos cualificados, sin admitir el uso de claves concertadas",
+          "isCorrect": false
+        },
+        {
+          "text": "La utilización de claves concertadas, previo registro como usuario de la plataforma",
+          "isCorrect": true
+        },
+        {
+          "text": "Un identificador asignado de oficio a cada ciudadano, sin necesidad de registro previo",
+          "isCorrect": false
+        },
+        {
+          "text": "Un código de verificación enviado por correo postal al domicilio del ciudadano",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado primero aprueba Cl@ve como un sistema «que permitirá al ciudadano relacionarse electrónicamente con los servicios públicos a través de una plataforma común mediante la utilización de claves concertadas previo registro como usuario de la misma». El registro previo es, por tanto, un requisito. El apartado no habla de certificados como único medio, ni de identificadores asignados de oficio, ni de códigos enviados por correo postal.",
+      "legalReference": "Orden PRE/1838/2014, apartado primero"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0006",
+      "statement": "Según el apartado cuarto.2 del Acuerdo publicado como anexo de la Orden PRE/1838/2014, otras Administraciones Públicas pueden incorporarse al sistema Cl@ve:",
+      "options": [
+        {
+          "text": "Adhiriéndose mediante convenio, en las condiciones técnicas, económicas y organizativas fijadas",
+          "isCorrect": true
+        },
+        {
+          "text": "Mediante simple comunicación a la plataforma, sin convenio y sin sujeción a condiciones económicas",
+          "isCorrect": false
+        },
+        {
+          "text": "Por acuerdo del Consejo de Ministros, que aprueba individualmente cada incorporación al sistema",
+          "isCorrect": false
+        },
+        {
+          "text": "A través de una ley autonómica o de una ordenanza local que declare expresamente su adhesión",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado cuarto.2 establece que «podrán adherirse al sistema mediante convenio otras Administraciones Públicas en las condiciones técnicas, económicas y organizativas que se determinen en las prescripciones técnicas de desarrollo». La adhesión exige, pues, convenio y está sujeta a condiciones, también económicas; el apartado no prevé ni la simple comunicación, ni un acuerdo del Consejo de Ministros, ni una norma autonómica o local.",
+      "legalReference": "Orden PRE/1838/2014, apartado cuarto.2"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0007",
+      "statement": "Según el apartado IV.1 de la Resolución de 14-12-2015 (prescripciones técnicas de Cl@ve), que usa la expresión «certificado electrónico reconocido», el registro de «Nivel Avanzado» es aquel en el que el ciudadano facilita sus datos de registro:",
+      "options": [
+        {
+          "text": "De forma telemática, sin autenticación previa mediante certificado electrónico reconocido, con datos conocidos por el ciudadano y la administración",
+          "isCorrect": false
+        },
+        {
+          "text": "Únicamente de forma presencial en una oficina, ante un empleado público habilitado al efecto",
+          "isCorrect": false
+        },
+        {
+          "text": "De forma presencial ante un empleado público habilitado, o telemática previa autenticación con certificado electrónico reconocido",
+          "isCorrect": true
+        },
+        {
+          "text": "De forma telemática, mediante un código de un solo uso recibido en el dispositivo móvil del ciudadano",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado IV.1 define el «Nivel Avanzado» como aquel «en el que los datos del registro de usuario son facilitados por el ciudadano, bien de forma presencial en una oficina ante un empleado público habilitado al efecto, o bien, son comunicados de forma telemática, previa autenticación del ciudadano mediante un certificado electrónico reconocido». La primera opción describe el Nivel Básico, que es telemático «pero sin una autenticación previa mediante certificado electrónico reconocido». La segunda es falsa, porque el apartado admite también la vía telemática con certificado, y la cuarta no figura como forma de registro en el apartado.",
+      "legalReference": "Resolución de 14-12-2015 (prescripciones técnicas de Cl@ve), apartado IV.1"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0008",
+      "statement": "Según el apartado IV.4 de la Resolución de 14-12-2015 (prescripciones técnicas de Cl@ve), el Punto de Acceso del sistema Cl@ve:",
+      "options": [
+        {
+          "text": "Conserva los datos personales de los usuarios para facilitar su acceso a otro servicio sin identificarse de nuevo",
+          "isCorrect": false
+        },
+        {
+          "text": "Almacena la credencial de cada usuario para validarla sin consultar al proveedor del servicio de identificación",
+          "isCorrect": false
+        },
+        {
+          "text": "Conserva únicamente los datos de identificación de los usuarios, cifrados, para reconstruir los incidentes",
+          "isCorrect": false
+        },
+        {
+          "text": "No almacena ningún dato de carácter personal, sino solo información técnica no vinculada a personas físicas o jurídicas",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El apartado IV.4 dispone que «el Punto de Acceso del sistema Cl@ve no almacenará ningún dato de carácter personal, sino únicamente información técnica no vinculada a personas físicas o jurídicas», con el objeto de poder reconstruir la secuencia de mensajes en caso de incidente. Aunque permite al ciudadano acceder a otro servicio sin identificarse de nuevo, no conserva datos personales, ni credenciales, ni datos de identificación cifrados.",
+      "legalReference": "Resolución de 14-12-2015 (prescripciones técnicas de Cl@ve), apartado IV.4"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0009",
+      "statement": "Según el apartado 6.3 del «Manual de Integración para Proveedores de Servicios» de Cl@ve (r14), la Pasarela Cl@ve es:",
+      "options": [
+        {
+          "text": "El elemento que encamina al usuario al IdP adecuado según los requisitos del proveedor de servicio",
+          "isCorrect": true
+        },
+        {
+          "text": "El componente que almacena las identidades de los usuarios y los autentica lanzándoles un desafío",
+          "isCorrect": false
+        },
+        {
+          "text": "La aplicación que aporta la funcionalidad al usuario, a excepción del proceso de autenticación del mismo",
+          "isCorrect": false
+        },
+        {
+          "text": "El nodo eIDAS español, que actúa como conector con los nodos de los demás países de la Unión Europea",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 6.3 define la pasarela como «el elemento central que permite encaminar al usuario hacia el IdP adecuado, atendiendo a los requisitos del proveedor de servicio», y añade que «tanto los proveedores de servicio como los proveedores de identidad sólo se comunican con la pasarela». La segunda opción describe al proveedor de identidad (apartado 6.2: «el componente que almacena las identidades, y por tanto autentica e identifica a usuarios»), la tercera al proveedor de servicios (apartado 6.1: aplicaciones «que aportan la funcionalidad al usuario, a excepción del proceso de autenticación») y la cuarta, un componente distinto del apartado 6.4, que se suma a la pasarela para identificar a ciudadanos europeos.",
+      "legalReference": "PAe, Cl@ve, «Manual de Integración para Proveedores de Servicios» r14, §6.3"
+    },
+    {
+      "key": "malaga-programador-c1/clave/0010",
+      "statement": "Según el apartado 8.2.3 del «Manual de Integración para Proveedores de Servicios» de Cl@ve (r14), un proveedor de servicios puede incluir en la petición SAML el atributo RelayState, que:",
+      "options": [
+        {
+          "text": "Solicita expresamente que se fuerce la autenticación en la pasarela Cl@ve",
+          "isCorrect": false
+        },
+        {
+          "text": "Deshabilita uno de los proveedores de identificación en la ventana de selección de la pasarela",
+          "isCorrect": false
+        },
+        {
+          "text": "Se devuelve en la respuesta SAML con el mismo valor enviado, firmado por la pasarela",
+          "isCorrect": true
+        },
+        {
+          "text": "Indica a la pasarela el nivel de calidad de la credencial (LoA) que exige el proveedor de servicios",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Según el apartado 8.2.3, el atributo RelayState «será devuelto en el SAML de respuesta con el mismo valor que se ha enviado en la petición» y, a diferencia del parámetro POST que se intercambia fuera del token, «se devuelve firmado por la pasarela»; el proveedor puede usarlo para relacionar petición y respuesta o para persistir información en los ciclos asíncronos. La primera opción es la función del atributo ForceAuthn (apartado 8.2.4: «indica que el SP solicita expresamente que se fuerce la autenticación en la pasarela Cl@ve»), y la segunda, la de los atributos del apartado 8.2.2 (para «deshabilitar el IdP» en la pasarela). El apartado 8.2.3 no atribuye a RelayState la indicación del nivel de calidad de la credencial.",
+      "legalReference": "PAe, Cl@ve, «Manual de Integración para Proveedores de Servicios» r14, §8.2.3"
+    }
+  ]
+}
