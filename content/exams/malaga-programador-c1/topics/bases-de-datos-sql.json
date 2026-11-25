@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "bases-de-datos-sql",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0001",
+      "statement": "Según Métrica v3, en el modelo entidad/relación extendido, ¿cuál es la definición de categoría?",
+      "options": [
+        {
+          "text": "El tipo de entidad de nivel superior que se abstrae a partir de varios subtipos y al que se asignan sus atributos y relaciones comunes",
+          "isCorrect": false
+        },
+        {
+          "text": "El nuevo tipo de entidad que se construye como composición de otros tipos de entidad y de su tipo de relación",
+          "isCorrect": false
+        },
+        {
+          "text": "El subtipo que resulta de la unión de varios tipos de entidad, de modo que hay varios supertipos y un solo subtipo",
+          "isCorrect": true
+        },
+        {
+          "text": "La relación entre dos tipos de entidades de dominios independientes que coyunturalmente se asocian",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Métrica v3 define: «Se denomina categoría al subtipo que aparece como resultado de la unión de varios tipos de entidad». Por eso tiene varios supertipos y un solo subtipo. El supertipo que reúne los atributos comunes de varios subtipos es la generalización, el tipo de entidad compuesto por otros y su relación es la agregación y la relación entre tipos de dominios independientes es la asociación.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Modelo Entidad/Relación Extendido», Descripción"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0002",
+      "statement": "Según Métrica v3, en el modelo entidad/relación extendido se dice que una relación es exclusiva cuando:",
+      "options": [
+        {
+          "text": "la existencia de una relación entre dos tipos de entidades implica la no existencia de las otras relaciones",
+          "isCorrect": true
+        },
+        {
+          "text": "asocia un tipo de entidad débil, cuya existencia depende de otra entidad, con un tipo de entidad regular",
+          "isCorrect": false
+        },
+        {
+          "text": "para toda ocurrencia de un tipo de entidad existe al menos una ocurrencia del tipo de entidad asociado",
+          "isCorrect": false
+        },
+        {
+          "text": "asocia tipos de entidad regulares, es decir, que tienen existencia por sí mismas y no dependen de otra entidad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Métrica v3 dice que una relación es exclusiva cuando «la existencia de una relación entre dos tipos de entidades implica la no existencia de las otras relaciones». Asociar un tipo de entidad débil con uno regular es una relación débil, asociar tipos regulares es una relación regular y exigir al menos una ocurrencia asociada para toda ocurrencia es lo que define una relación obligatoria según la cardinalidad.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Modelo Entidad/Relación Extendido», Descripción (Relación)"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0003",
+      "statement": "Según Métrica v3, ¿en qué caso depende transitivamente un atributo Z de otro atributo X?",
+      "options": [
+        {
+          "text": "Cuando Y determina a X, X no determina a Y e Y determina a Z",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando X determina directamente a Y y a Z, sin que Y determine a Z",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando Z determina a Y, X determina a Y e Y no determina a Z",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando X determina a Y, Y no determina a X e Y determina a Z",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Métrica v3 establece: «Un atributo depende transitivamente de otro si, y sólo si, depende de él a través de otro atributo». Z depende transitivamente de X si X → Y, Y no determina a X e Y → Z, de modo que X implica a Z a través de Y. En las demás opciones no hay un camino de X a Z que pase por Y: o Z depende directamente de X, o Z y X dependen ambos de Y, o ambos determinan a Y.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Normalización», Dependencia transitiva"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0004",
+      "statement": "Según el glosario de PostgreSQL, ¿cuál es la definición de aislamiento (Isolation), una de las propiedades ACID de las transacciones?",
+      "options": [
+        {
+          "text": "Los cambios de una transacción confirmada permanecen aunque se produzca un fallo del sistema",
+          "isCorrect": false
+        },
+        {
+          "text": "Los efectos de una transacción no son visibles para las transacciones concurrentes antes de que se confirme",
+          "isCorrect": true
+        },
+        {
+          "text": "Todas las operaciones de una transacción se completan como una unidad o no se completa ninguna",
+          "isCorrect": false
+        },
+        {
+          "text": "Los datos cumplen las restricciones de integridad; si no es así al confirmar, la transacción se deshace",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El glosario de PostgreSQL define el aislamiento como la propiedad por la que los efectos de una transacción no son visibles para las transacciones concurrentes antes de que se confirme. Que los cambios confirmados permanezcan tras un fallo es la durabilidad, completar todas las operaciones o ninguna es la atomicidad y cumplir las restricciones de integridad, deshaciendo la transacción si quedan violaciones sin resolver al confirmar, es la consistencia.",
+      "legalReference": "PostgreSQL 19, Glosario, «Isolation»"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0005",
+      "statement": "En PostgreSQL, se crea una vista materializada con CREATE MATERIALIZED VIEW … AS SELECT … WITH NO DATA. Al consultarla antes de refrescarla:",
+      "options": [
+        {
+          "text": "devuelve cero filas, porque todavía no contiene datos",
+          "isCorrect": false
+        },
+        {
+          "text": "ejecuta su consulta en ese momento, como una vista normal, y devuelve el resultado",
+          "isCorrect": false
+        },
+        {
+          "text": "se rellena sola con esa primera consulta y devuelve sus filas",
+          "isCorrect": false
+        },
+        {
+          "text": "falla con un error, porque no está poblada hasta que se refresca",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Con WITH NO DATA la vista materializada no se rellena al crearla: queda marcada como no consultable (unscannable) y no se puede consultar hasta ejecutar REFRESH MATERIALIZED VIEW. Una consulta previa produce un error, no un resultado vacío. Ejecutar la consulta en cada acceso es lo que hace una vista normal, que no se materializa físicamente.",
+      "legalReference": "PostgreSQL 19, «CREATE MATERIALIZED VIEW»; «CREATE VIEW»"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0006",
+      "statement": "En PostgreSQL, se ejecutan estas sentencias:\n\nCREATE TABLE badge (\n  id int PRIMARY KEY,\n  code text UNIQUE\n);\nINSERT INTO badge VALUES (1, NULL);\nINSERT INTO badge VALUES (2, NULL);\n\n¿Qué ocurre con las dos inserciones?",
+      "options": [
+        {
+          "text": "La segunda falla con un error de violación de unicidad, porque dos nulos se consideran iguales",
+          "isCorrect": false
+        },
+        {
+          "text": "Las dos se aceptan, porque por defecto dos nulos no se consideran iguales en una restricción UNIQUE",
+          "isCorrect": true
+        },
+        {
+          "text": "La primera falla, porque una restricción UNIQUE obliga a que la columna sea NOT NULL",
+          "isCorrect": false
+        },
+        {
+          "text": "Las dos fallan, porque un valor nulo no puede cumplir una restricción UNIQUE",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Por defecto, en una restricción UNIQUE de PostgreSQL dos nulos no se consideran iguales, así que se pueden guardar varias filas con nulo en la columna. Esto cambia con la cláusula NULLS NOT DISTINCT, con la que la segunda inserción sí falla. La documentación añade que la norma SQL deja este tratamiento a la implementación y que otros gestores se comportan de otro modo; la clave primaria, en cambio, exige además NOT NULL.",
+      "legalReference": "PostgreSQL 19, §5.5.3"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0007",
+      "statement": "En PostgreSQL, se define esta clave ajena y existen jugadores con team_id = 1:\n\nCREATE TABLE team (id int PRIMARY KEY);\nCREATE TABLE player (\n  id int PRIMARY KEY,\n  team_id int DEFAULT 99 REFERENCES team(id) ON DELETE SET NULL\n);\n\nAl ejecutar DELETE FROM team WHERE id = 1, esos jugadores:",
+      "options": [
+        {
+          "text": "siguen en la tabla, con team_id puesto a nulo",
+          "isCorrect": true
+        },
+        {
+          "text": "se borran de la tabla a la vez que el equipo",
+          "isCorrect": false
+        },
+        {
+          "text": "siguen en la tabla, con team_id igual a 1",
+          "isCorrect": false
+        },
+        {
+          "text": "siguen en la tabla, con team_id igual a 99",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "ON DELETE SET NULL hace que, al borrar la fila referenciada, las columnas de clave ajena de las filas que la referencian pasen a nulo, y los jugadores se conservan. Borrarlos con el equipo es lo que hace ON DELETE CASCADE, y asignar el valor por defecto de la columna (99), ON DELETE SET DEFAULT. Conservar team_id = 1 sin que exista el equipo incumpliría la clave ajena.",
+      "legalReference": "PostgreSQL 19, §5.5.5"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0008",
+      "statement": "En PostgreSQL, la tabla member tiene los ids 1, 2 y 3, y la columna member_id de la tabla absence tiene los valores 1 y NULL. ¿Qué devuelve esta consulta?\n\nSELECT id FROM member\nWHERE id NOT IN (SELECT member_id FROM absence)\nORDER BY id;",
+      "options": [
+        {
+          "text": "Las filas 2 y 3, porque el nulo no coincide con ningún id",
+          "isCorrect": false
+        },
+        {
+          "text": "Un error, porque la subconsulta devuelve un valor nulo",
+          "isCorrect": false
+        },
+        {
+          "text": "Ninguna fila, porque para los ids 2 y 3 la condición es nula",
+          "isCorrect": true
+        },
+        {
+          "text": "Las filas 1, 2 y 3, porque NOT IN no compara los ids con valores nulos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Si la subconsulta devuelve algún nulo y ningún valor igual al de la izquierda, el resultado de NOT IN es nulo, no verdadero. El id 1 coincide con un valor y da falso, y los ids 2 y 3 dan nulo, así que ninguno cumple el WHERE. No hay error ni se ignora el nulo. Con NOT EXISTS o filtrando los nulos en la subconsulta se obtendrían los ids 2 y 3.",
+      "legalReference": "PostgreSQL 19, §9.25.3"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0009",
+      "statement": "En PostgreSQL, la tabla folder contiene estas filas (id, parent_id): (1, NULL), (2, 1), (3, 1), (4, 2), (5, 4) y (6, NULL). ¿Qué filas devuelve esta consulta?\n\nWITH RECURSIVE tree AS (\n  SELECT id FROM folder WHERE id = 2\n  UNION ALL\n  SELECT f.id FROM folder f JOIN tree t ON f.parent_id = t.id\n)\nSELECT id FROM tree ORDER BY id;",
+      "options": [
+        {
+          "text": "Las filas 1 y 2",
+          "isCorrect": false
+        },
+        {
+          "text": "Las filas 4 y 5",
+          "isCorrect": false
+        },
+        {
+          "text": "Las filas 2, 4 y 5",
+          "isCorrect": true
+        },
+        {
+          "text": "Las filas 1, 2, 4 y 5",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El término no recursivo da la fila 2 y el recursivo se repite sustituyendo la tabla de trabajo por las filas del paso anterior, hasta que no produce filas. Como la unión es f.parent_id = t.id, en cada paso se añaden los hijos: 4 (hijo de 2) y después 5 (hijo de 4). El resultado incluye la fila inicial y sus descendientes, no su padre (1), y la fila 3 queda fuera por ser hija de 1.",
+      "legalReference": "PostgreSQL 19, §7.8.2"
+    },
+    {
+      "key": "malaga-programador-c1/bases-de-datos-sql/0010",
+      "statement": "En PostgreSQL, la tabla a_city contiene las ciudades Ronda, Ronda y Antequera, y la tabla b_city contiene Ronda y Coín. ¿Cuántas veces aparece Ronda en el resultado de esta consulta?\n\nSELECT city FROM a_city\nUNION\nSELECT city FROM b_city;",
+      "options": [
+        {
+          "text": "Una vez, porque UNION elimina las filas duplicadas del resultado",
+          "isCorrect": true
+        },
+        {
+          "text": "Tres veces, porque UNION conserva todas las filas de ambas consultas",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos veces, porque UNION elimina los duplicados entre las dos consultas, pero no dentro de cada una",
+          "isCorrect": false
+        },
+        {
+          "text": "Cero veces, porque UNION descarta las filas que aparecen en las dos consultas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "UNION elimina las filas duplicadas del resultado, igual que DISTINCT, salvo que se indique ALL; por eso Ronda aparece una sola vez, aunque esté repetida en la primera consulta y presente en la segunda. Conservar todas las filas (tres Ronda) es el comportamiento de UNION ALL. Descartar las filas presentes en las dos consultas no es lo que hace UNION.",
+      "legalReference": "PostgreSQL 19, §7.4"
+    }
+  ]
+}

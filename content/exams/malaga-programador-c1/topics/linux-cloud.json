@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "linux-cloud",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/linux-cloud/0001",
+      "statement": "En Linux, según la descripción de la jerarquía del sistema de ficheros, ¿qué contiene el directorio /dev?",
+      "options": [
+        {
+          "text": "Ficheros de configuración locales de la máquina",
+          "isCorrect": false
+        },
+        {
+          "text": "Ficheros estáticos que necesita el cargador de arranque",
+          "isCorrect": false
+        },
+        {
+          "text": "Ficheros especiales que se refieren a dispositivos físicos",
+          "isCorrect": true
+        },
+        {
+          "text": "Puntos de montaje de medios extraíbles, como memorias USB",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La página hier(7) describe /dev como el directorio de los ficheros especiales o de dispositivo, que se refieren a dispositivos físicos. Los ficheros de configuración locales de la máquina están en /etc, los ficheros estáticos del cargador de arranque en /boot y los puntos de montaje de medios extraíbles en /media.",
+      "legalReference": "Linux man-pages 6.19, hier(7)"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0002",
+      "statement": "En Linux, ¿dónde se definen los grupos adicionales de un usuario, además de su grupo primario?",
+      "options": [
+        {
+          "text": "En el campo GID de la línea del usuario, en /etc/passwd",
+          "isCorrect": false
+        },
+        {
+          "text": "En el campo de usuarios de la línea de cada grupo, en /etc/group",
+          "isCorrect": true
+        },
+        {
+          "text": "En el campo GID de la línea de cada grupo, en /etc/group",
+          "isCorrect": false
+        },
+        {
+          "text": "En el campo GECOS de la línea del usuario, en /etc/passwd",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Según passwd(5), el campo GID de /etc/passwd es el identificador numérico del grupo primario del usuario, y los grupos adicionales se definen en el fichero de grupos del sistema. Según group(5), cada línea de /etc/group contiene el nombre del grupo, la contraseña, el GID y la lista de los usuarios que son miembros, separados por comas. El GID de /etc/group es el identificador numérico del grupo, y el campo GECOS es informativo.",
+      "legalReference": "Linux man-pages 6.19, passwd(5) y group(5)"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0003",
+      "statement": "En Linux, un proceso con umask 027 crea un fichero nuevo solicitando el modo 0666 (por ejemplo, con touch). El directorio no tiene ACL por defecto. ¿Qué modo tiene el fichero?",
+      "options": [
+        {
+          "text": "0640 (rw-r-----)",
+          "isCorrect": true
+        },
+        {
+          "text": "0637 (rw--wxrwx)",
+          "isCorrect": false
+        },
+        {
+          "text": "0660 (rw-rw----)",
+          "isCorrect": false
+        },
+        {
+          "text": "0750 (rwxr-x---)",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Según umask(2), los permisos que figuran en la máscara se desactivan en el modo solicitado: con 0666 y la máscara 027, el propietario conserva rw-, el grupo se queda en r-- (se quita w) y el resto pierde todos los permisos, es decir, 0640. No es una resta: 666 menos 027 en octal daría 0637. El modo 0660 deja escritura al grupo, que la máscara quita, y 0750 incluye ejecución, que no estaba en el modo solicitado.",
+      "legalReference": "Linux man-pages 6.19, umask(2)"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0004",
+      "statement": "En Linux, se aplica chmod 1777 a un directorio. ¿Qué efecto tiene el primer dígito, el 1?",
+      "options": [
+        {
+          "text": "Los ficheros nuevos toman el grupo del directorio en lugar del grupo efectivo del proceso que los crea",
+          "isCorrect": false
+        },
+        {
+          "text": "Los programas que contiene se ejecutan con los privilegios del propietario del fichero ejecutable",
+          "isCorrect": false
+        },
+        {
+          "text": "Los ficheros que contiene pueden borrarlos los miembros del grupo propietario del directorio",
+          "isCorrect": false
+        },
+        {
+          "text": "Los ficheros que contiene pueden borrarlos su propietario, el del directorio o un proceso privilegiado",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "En el modo numérico de chmod(1), el primer dígito selecciona los atributos set-user-ID (4), set-group-ID (2) y de borrado restringido o sticky (1). Según inode(7), el bit sticky en un directorio hace que un fichero de ese directorio solo puedan renombrarlo o borrarlo el propietario del fichero, el propietario del directorio y un proceso privilegiado. Que los ficheros nuevos tomen el grupo del directorio es propio del bit set-group-ID, y ejecutar un programa con los privilegios de su propietario, del bit set-user-ID del fichero.",
+      "legalReference": "GNU coreutils 9.11, chmod(1); Linux man-pages 6.19, inode(7)"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0005",
+      "statement": "En Linux, ¿qué par de señales no se puede capturar, bloquear ni ignorar?",
+      "options": [
+        {
+          "text": "SIGTERM y SIGKILL",
+          "isCorrect": false
+        },
+        {
+          "text": "SIGINT y SIGSTOP",
+          "isCorrect": false
+        },
+        {
+          "text": "SIGKILL y SIGSTOP",
+          "isCorrect": true
+        },
+        {
+          "text": "SIGHUP y SIGTSTP",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La página signal(7) indica que las señales SIGKILL y SIGSTOP no pueden capturarse, bloquearse ni ignorarse. SIGTERM (terminación), SIGINT (interrupción desde el teclado), SIGHUP (desconexión del terminal de control) y SIGTSTP (parada desde el terminal) son señales que el proceso puede capturar con su propio manejador.",
+      "legalReference": "Linux man-pages 6.19, signal(7)"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0006",
+      "statement": "Según el NIST SP 800-145, ¿qué característica esencial de la nube permite monitorizar, controlar e informar del uso de los recursos, midiéndolo a un nivel de abstracción adecuado al tipo de servicio?",
+      "options": [
+        {
+          "text": "Servicio medido (measured service)",
+          "isCorrect": true
+        },
+        {
+          "text": "Agrupación de recursos (resource pooling)",
+          "isCorrect": false
+        },
+        {
+          "text": "Elasticidad rápida (rapid elasticity)",
+          "isCorrect": false
+        },
+        {
+          "text": "Autoservicio bajo demanda (on-demand self-service)",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Según el NIST SP 800-145, en el servicio medido (measured service) los sistemas en la nube controlan y optimizan automáticamente el uso de recursos mediante una capacidad de medición, y ese uso puede monitorizarse, controlarse e informarse con transparencia para proveedor y consumidor. La agrupación de recursos es el modelo multiinquilino, la elasticidad rápida es el aprovisionamiento y la liberación de capacidades según la demanda, y el autoservicio bajo demanda es que el consumidor aprovisione por sí mismo sin interacción humana.",
+      "legalReference": "NIST SP 800-145, §2"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0007",
+      "statement": "Según el NIST SP 800-145, ¿qué capacidad recibe el consumidor en el modelo de plataforma como servicio (PaaS)?",
+      "options": [
+        {
+          "text": "Configurar los servidores y la red que forman la infraestructura de nube subyacente",
+          "isCorrect": false
+        },
+        {
+          "text": "Aprovisionar procesamiento, almacenamiento, redes y otros recursos informáticos fundamentales",
+          "isCorrect": false
+        },
+        {
+          "text": "Modificar el código de las aplicaciones del proveedor para adaptarlas a sus necesidades",
+          "isCorrect": false
+        },
+        {
+          "text": "Desplegar en la nube aplicaciones creadas con lenguajes y herramientas que soporta el proveedor",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "En PaaS, el NIST SP 800-145 define la capacidad del consumidor como desplegar en la infraestructura de la nube aplicaciones creadas o adquiridas por él con los lenguajes de programación, bibliotecas, servicios y herramientas que soporta el proveedor. El consumidor no gestiona ni controla la infraestructura subyacente, con sus redes y servidores. Aprovisionar recursos informáticos fundamentales es la capacidad propia de IaaS, y modificar el código de las aplicaciones del proveedor no figura en la definición de PaaS.",
+      "legalReference": "NIST SP 800-145, §2"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0008",
+      "statement": "Un ayuntamiento usa el correo web de un proveedor, que se ejecuta en una infraestructura de nube y al que se accede con el navegador. Según el NIST SP 800-145, ¿qué puede llegar a controlar el ayuntamiento en ese modelo de servicio?",
+      "options": [
+        {
+          "text": "Las capacidades individuales que ofrece la aplicación de correo",
+          "isCorrect": false
+        },
+        {
+          "text": "Los ajustes limitados de configuración propios de cada usuario",
+          "isCorrect": true
+        },
+        {
+          "text": "La configuración del entorno en el que se aloja la aplicación",
+          "isCorrect": false
+        },
+        {
+          "text": "Los sistemas operativos y el almacenamiento de los servidores",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Usar las aplicaciones del proveedor mediante un navegador (el NIST SP 800-145 cita el correo web) corresponde al software como servicio (SaaS). En ese modelo el consumidor no gestiona ni controla la infraestructura subyacente (red, servidores, sistemas operativos y almacenamiento) ni las capacidades individuales de la aplicación, con la posible excepción de ajustes limitados de configuración específicos del usuario. La configuración del entorno de alojamiento tampoco está entre lo que puede controlar.",
+      "legalReference": "NIST SP 800-145, §2"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0009",
+      "statement": "Un organismo usa su nube de uso exclusivo y, cuando hay picos de carga, desborda parte del trabajo a un servicio de nube de uso abierto al público (cloud bursting). Ambas infraestructuras siguen siendo entidades distintas, unidas por tecnología que permite la portabilidad de datos y aplicaciones. Según el NIST SP 800-145, ¿qué modelo de despliegue es esta combinación?",
+      "options": [
+        {
+          "text": "Nube privada",
+          "isCorrect": false
+        },
+        {
+          "text": "Nube pública",
+          "isCorrect": false
+        },
+        {
+          "text": "Nube comunitaria",
+          "isCorrect": false
+        },
+        {
+          "text": "Nube híbrida",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El NIST SP 800-145 define la nube híbrida como la composición de dos o más infraestructuras de nube distintas (privada, comunitaria o pública) que siguen siendo entidades únicas, pero están unidas por tecnología estandarizada o propietaria que permite la portabilidad de datos y aplicaciones; su ejemplo es el cloud bursting para equilibrar la carga entre nubes. Ninguna de las otras tres es una composición de infraestructuras distintas.",
+      "legalReference": "NIST SP 800-145, §2"
+    },
+    {
+      "key": "malaga-programador-c1/linux-cloud/0010",
+      "statement": "Según el NIST SP 800-145, ¿dónde existe la infraestructura de una nube pública?",
+      "options": [
+        {
+          "text": "En las instalaciones de las organizaciones consumidoras del servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "En las instalaciones del proveedor que presta el servicio de nube",
+          "isCorrect": true
+        },
+        {
+          "text": "En las instalaciones de una organización designada por los usuarios",
+          "isCorrect": false
+        },
+        {
+          "text": "En las instalaciones de un tercero distinto del proveedor",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El NIST SP 800-145 indica que la nube pública existe en las instalaciones del proveedor de la nube (on the premises of the cloud provider), aunque su propiedad, gestión y operación puedan corresponder a una empresa, a una organización académica o gubernamental, o a una combinación de ellas. La definición no sitúa la infraestructura en las instalaciones de los consumidores, de una organización designada por ellos ni de un tercero.",
+      "legalReference": "NIST SP 800-145, §2"
+    }
+  ]
+}

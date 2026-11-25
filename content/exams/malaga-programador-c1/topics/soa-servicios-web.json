@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "soa-servicios-web",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0001",
+      "statement": "Según el modelo de referencia para la arquitectura orientada a servicios de OASIS (SOA-RM 1.0), la arquitectura orientada a servicios (SOA) es:",
+      "options": [
+        {
+          "text": "La información necesaria para utilizar, o para considerar utilizar, un servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Un paradigma para organizar y utilizar capacidades distribuidas que pueden estar bajo el control de distintos dominios de propiedad",
+          "isCorrect": true
+        },
+        {
+          "text": "El conjunto de elementos técnicos y de negocio que forman un camino entre quienes tienen necesidades y quienes tienen capacidades",
+          "isCorrect": false
+        },
+        {
+          "text": "Un marco abstracto para comprender las relaciones significativas entre las entidades de un entorno, independiente de tecnologías concretas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 2.1 define SOA como un paradigma para organizar y utilizar capacidades distribuidas que pueden estar bajo el control de distintos dominios de propiedad. La información necesaria para usar un servicio es la descripción del servicio (apartado 3.3.1), el conjunto de elementos técnicos y de negocio que forman un camino entre quienes tienen necesidades y quienes tienen capacidades es el contexto de ejecución (execution context) y el marco abstracto para comprender las relaciones entre las entidades de un entorno es un modelo de referencia (apartado 1.1).",
+      "legalReference": "OASIS SOA-RM 1.0, §2.1"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0002",
+      "statement": "Según el modelo de referencia para la arquitectura orientada a servicios de OASIS (SOA-RM 1.0), una de las precondiciones de la visibilidad (visibility) entre un consumidor y un proveedor de servicios es:",
+      "options": [
+        {
+          "text": "El estado compartido (shared state)",
+          "isCorrect": false
+        },
+        {
+          "text": "El efecto en el mundo real (real world effect)",
+          "isCorrect": false
+        },
+        {
+          "text": "La interacción (interaction)",
+          "isCorrect": false
+        },
+        {
+          "text": "La alcanzabilidad (reachability)",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El apartado 3.2.1 establece que las precondiciones de la visibilidad son el conocimiento de la otra parte (awareness), la voluntad (willingness) y la alcanzabilidad (reachability): los participantes tienen que poder interactuar. La interacción y el efecto en el mundo real son otros conceptos de la dinámica de los servicios (apartados 3.2.2 y 3.2.3), y un cambio en el estado compartido es uno de los efectos que puede tener invocar un servicio; no son precondiciones de la visibilidad.",
+      "legalReference": "OASIS SOA-RM 1.0, §3.2.1"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0003",
+      "statement": "Según la Norma Técnica de Interoperabilidad de Protocolos de intermediación de datos (apartado III.5.3), los servicios web implementados para los intercambios de datos se diseñarán en base a la utilización de mensajes en formato XML con estructuras basadas en:",
+      "options": [
+        {
+          "text": "Esquemas XML publicados que faciliten su interpretación",
+          "isCorrect": true
+        },
+        {
+          "text": "Hojas de estilo XSLT publicadas que faciliten su presentación",
+          "isCorrect": false
+        },
+        {
+          "text": "Expresiones XPath publicadas que faciliten su consulta",
+          "isCorrect": false
+        },
+        {
+          "text": "Espacios de nombres registrados que faciliten su identificación",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado III.5.3.b) se refiere a «Mensajes en formato XML (eXtensible Mark-up Language) con estructuras basadas en esquemas XML publicados que faciliten su interpretación». Las hojas de estilo XSLT, las expresiones XPath y los espacios de nombres no figuran entre las bases de diseño que enumera ese apartado.",
+      "legalReference": "NTI de Protocolos de intermediación de datos (Resolución de 28-06-2012), apartado III.5.3"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0004",
+      "statement": "Según SOAP 1.2 (parte 1), el elemento Envelope de un mensaje SOAP contiene, en este orden:",
+      "options": [
+        {
+          "text": "Un elemento Header obligatorio y un elemento Body obligatorio",
+          "isCorrect": false
+        },
+        {
+          "text": "Un elemento Header obligatorio y un elemento Body opcional",
+          "isCorrect": false
+        },
+        {
+          "text": "Un elemento Header opcional y un elemento Body obligatorio",
+          "isCorrect": true
+        },
+        {
+          "text": "Un elemento Header opcional y un elemento Body opcional",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 5.1 establece que el Envelope tiene uno o dos elementos hijos, en este orden: un Header opcional y un Body obligatorio. El Header es el mecanismo para extender un mensaje de forma descentralizada y modular, pero un mensaje puede carecer de él; el Body, en cambio, transmite la información destinada al receptor final y siempre está presente.",
+      "legalReference": "SOAP 1.2, parte 1, §5.1"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0005",
+      "statement": "Según WSDL 2.0 (parte 1), un componente Binding describe:",
+      "options": [
+        {
+          "text": "Secuencias de mensajes que un servicio envía o recibe, agrupadas en operaciones",
+          "isCorrect": false
+        },
+        {
+          "text": "Un conjunto de puntos finales en los que se ofrece una implementación desplegada concreta del servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Los detalles de un punto final concreto en el que está disponible un servicio dado",
+          "isCorrect": false
+        },
+        {
+          "text": "Un formato de mensaje concreto y un protocolo de transmisión que pueden usarse para definir un punto final",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El apartado 2.7.1 define el componente Binding como la descripción de un formato de mensaje concreto y de un protocolo de transmisión que pueden usarse para definir un punto final (endpoint), es decir, los detalles de implementación necesarios para acceder al servicio. Las secuencias de mensajes agrupadas en operaciones son del componente Interface (apartado 2.2.1), el conjunto de puntos finales es del componente Service (apartado 2.12.1) y los detalles de un punto final concreto son del componente Endpoint (apartado 2.13.1).",
+      "legalReference": "WSDL 2.0, parte 1, §2.7.1"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0006",
+      "statement": "Según XPath 3.1 (con el mismo resultado en XPath 1.0), dado este documento XML:\n<lista>\n <grupo><item>a</item><item>b</item></grupo>\n <grupo/>\n <grupo><item>c</item></grupo>\n <grupo><item>d</item><item>e</item><item>f</item></grupo>\n</lista>\n¿qué devuelve la expresión count(//item[1])?",
+      "options": [
+        {
+          "text": "1",
+          "isCorrect": false
+        },
+        {
+          "text": "3",
+          "isCorrect": true
+        },
+        {
+          "text": "4",
+          "isCorrect": false
+        },
+        {
+          "text": "6",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La expresión //item[1] equivale a /descendant-or-self::node()/child::item[1], de modo que el predicado se aplica a los hijos item de cada padre: selecciona a, c y d, el primer item de los grupos que tienen alguno. El apartado 3.3.5 advierte de que no equivale a /descendant::item[1], que selecciona solo el primer item descendiente (a). El 4 es el número de grupos, incluido el vacío, y el 6 es el total de elementos item.",
+      "legalReference": "XPath 3.1, §3.3.5"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0007",
+      "statement": "Según Namespaces in XML 1.0 (tercera edición), el nombre de espacio de nombres de un atributo sin prefijo:",
+      "options": [
+        {
+          "text": "Carece de valor, aunque haya un espacio de nombres por defecto en su ámbito",
+          "isCorrect": true
+        },
+        {
+          "text": "Coincide con el espacio de nombres por defecto que esté declarado en su ámbito",
+          "isCorrect": false
+        },
+        {
+          "text": "Coincide con el del elemento raíz del documento, tenga este prefijo o no",
+          "isCorrect": false
+        },
+        {
+          "text": "Coincide con el del último prefijo que se haya declarado en su ámbito",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 6.2 establece que una declaración de espacio de nombres por defecto se aplica a los nombres de elementos sin prefijo, pero no directamente a los nombres de atributos: el nombre de espacio de nombres de un atributo sin prefijo carece de valor. Tomar el espacio de nombres por defecto es lo que ocurre con un elemento sin prefijo. El apartado no lo hace depender del elemento raíz ni del último prefijo declarado.",
+      "legalReference": "Namespaces in XML 1.0 (3.ª ed.), §6.2"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0008",
+      "statement": "Según WS-Security: SOAP Message Security 1.1.1, ¿cuál de las siguientes cuestiones queda fuera del ámbito de la especificación?",
+      "options": [
+        {
+          "text": "El envío de tokens de seguridad como parte de un mensaje",
+          "isCorrect": false
+        },
+        {
+          "text": "La integridad del contenido de un mensaje SOAP",
+          "isCorrect": false
+        },
+        {
+          "text": "El no repudio de los mensajes intercambiados",
+          "isCorrect": true
+        },
+        {
+          "text": "La confidencialidad del contenido de un mensaje SOAP",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La introducción indica que la especificación ofrece tres mecanismos principales: enviar tokens de seguridad como parte de un mensaje, integridad del mensaje y confidencialidad del mensaje. El apartado 1.1.2 deja fuera de su ámbito el establecimiento de un contexto de seguridad o de mecanismos de autenticación, la derivación de claves, el anuncio y el intercambio de políticas de seguridad, cómo se establece la confianza y el no repudio.",
+      "legalReference": "WS-Security 1.1.1 (SOAP Message Security), §1 y §1.1.2"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0009",
+      "statement": "Según SAML 2.0 (Core), un elemento AuthnStatement de una aserción es una declaración de la autoridad SAML que afirma:",
+      "options": [
+        {
+          "text": "Que el sujeto de la aserción fue autenticado por un medio concreto en un momento determinado",
+          "isCorrect": true
+        },
+        {
+          "text": "Que el sujeto de la aserción está asociado con los atributos especificados",
+          "isCorrect": false
+        },
+        {
+          "text": "Que una petición de acceso del sujeto a un recurso dio lugar a la decisión de autorización especificada",
+          "isCorrect": false
+        },
+        {
+          "text": "Que la aserción está dirigida a una audiencia concreta",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 2.7.2 define AuthnStatement como la declaración de la autoridad SAML que afirma que el sujeto de la aserción fue autenticado por un medio concreto en un momento determinado. Afirmar que el sujeto está asociado con atributos es AttributeStatement (apartado 2.7.3) y afirmar que una petición de acceso a un recurso ha dado lugar a una decisión de autorización es AuthzDecisionStatement (apartado 2.7.4). Dirigir la aserción a una audiencia concreta es una condición (AudienceRestriction, apartado 2.5.1), no una declaración.",
+      "legalReference": "SAML 2.0 (Core), §2.7.2"
+    },
+    {
+      "key": "malaga-programador-c1/soa-servicios-web/0010",
+      "statement": "Según SAML 2.0 (Bindings), ¿qué característica tiene el enlace HTTP Artifact?",
+      "options": [
+        {
+          "text": "Codifica el mensaje SAML completo en base64 y lo envía en un control oculto de un formulario HTML mediante una petición POST",
+          "isCorrect": false
+        },
+        {
+          "text": "Transmite por el agente de usuario una referencia (artefacto), que el receptor resuelve con un ArtifactResolve por otro enlace síncrono",
+          "isCorrect": true
+        },
+        {
+          "text": "Comprime el mensaje SAML completo con DEFLATE y lo coloca en la cadena de consulta de una URL que se envía con una petición GET",
+          "isCorrect": false
+        },
+        {
+          "text": "Identifica una aserción mediante un URI que, al resolverse, devuelve esa aserción o un error propio del protocolo de transporte",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 3.6.2 destina el enlace HTTP Artifact a los casos en que el agente de usuario HTTP actúa como intermediario pero sus limitaciones impiden o desaconsejan transmitir por él el mensaje entero; el receptor del artefacto envía un ArtifactResolve al emisor mediante otro enlace síncrono, como SOAP. Codificar el mensaje en base64 en un formulario es el enlace HTTP POST (apartado 3.5.4), comprimirlo con DEFLATE en la URL es el enlace HTTP Redirect (apartado 3.4.4) e identificar una aserción con un URI es el enlace URI (apartado 3.7.2.1).",
+      "legalReference": "SAML 2.0 (Bindings), §3.6.2"
+    }
+  ]
+}
