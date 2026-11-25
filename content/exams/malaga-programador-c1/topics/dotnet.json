@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "dotnet",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/dotnet/0001",
+      "statement": "En .NET, cuando el compilador de un lenguaje como C# genera código administrado, ¿qué produce además del código en lenguaje intermedio común (CIL)?",
+      "options": [
+        {
+          "text": "Una biblioteca de tipos aparte, en lenguaje IDL, que describe los tipos y los miembros del código",
+          "isCorrect": false
+        },
+        {
+          "text": "Una entrada en el registro del sistema, con los datos de los tipos y las dependencias del componente",
+          "isCorrect": false
+        },
+        {
+          "text": "Metadatos que describen los tipos y sus miembros, contenidos con el CIL en el mismo fichero PE",
+          "isCorrect": true
+        },
+        {
+          "text": "Instrucciones nativas de la CPU, que el CLR ejecuta después sin una nueva compilación",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Al compilar a CIL, el compilador genera también metadatos que describen los tipos, las firmas de sus miembros y los miembros a los que el código hace referencia. El CIL y los metadatos van juntos en un fichero ejecutable portable (PE), de modo que el código se describe a sí mismo y no hacen falta bibliotecas de tipos ni IDL. Tampoco se guardan en el registro: la información de los tipos y sus dependencias viaja con el código como metadatos. El CIL es un conjunto de instrucciones independiente de la CPU que se convierte a código nativo antes de ejecutarse, no un código nativo ya generado.",
+      "legalReference": "Microsoft Learn (.NET 10), «Managed execution process», «Compile to CIL»; «Common Language Runtime (CLR) overview»"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0002",
+      "statement": "En .NET, ¿qué atributo se aplica al código fuente para que el compilador compruebe que un componente es compatible con la Common Language Specification (CLS)?",
+      "options": [
+        {
+          "text": "CLSCompliantAttribute",
+          "isCorrect": true
+        },
+        {
+          "text": "SerializableAttribute",
+          "isCorrect": false
+        },
+        {
+          "text": "ComVisibleAttribute",
+          "isCorrect": false
+        },
+        {
+          "text": "ObsoleteAttribute",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La documentación indica que se puede determinar en tiempo de compilación si un componente se ajusta a la CLS aplicando el atributo CLSCompliantAttribute al código fuente, por ejemplo con CLSCompliant(true) sobre el ensamblado. Los tipos exportados deben exponer solo características de la CLS para ser plenamente utilizables desde otros lenguajes. Los otros tres atributos existen en .NET, pero ninguno sirve para comprobar la CLS.",
+      "legalReference": "Microsoft Learn (.NET 10), «Language independence and language-independent components», introducción"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0003",
+      "statement": "En .NET, ¿los objetos de qué generaciones se recolectan en una recolección de basura de la generación 1?",
+      "options": [
+        {
+          "text": "Los de la generación 1",
+          "isCorrect": false
+        },
+        {
+          "text": "Los de las generaciones 1 y 2",
+          "isCorrect": false
+        },
+        {
+          "text": "Los de las generaciones 0, 1 y 2",
+          "isCorrect": false
+        },
+        {
+          "text": "Los de las generaciones 0 y 1",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "La documentación explica que recolectar una generación significa recolectar los objetos de esa generación y los de todas las generaciones más jóvenes. Por eso, al recolectar la generación 1 se recolectan las generaciones 1 y 0. Recolectar las tres generaciones corresponde a la recolección de la generación 2, que se llama recolección completa (full garbage collection) porque recupera objetos de todas las generaciones.",
+      "legalReference": "Microsoft Learn (.NET 10), «Fundamentals of garbage collection», «Generations»"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0004",
+      "statement": "En C#, ¿qué muestra este programa de consola con instrucciones de nivel superior (la clase R va al final del fichero)?\ntry { F(); } catch { Console.Write(\"C\"); }\nstatic void F()\n{\n    using var r = new R();\n    Console.Write(\"A\");\n    throw new Exception();\n}\nclass R : IDisposable { public void Dispose() => Console.Write(\"D\"); }",
+      "options": [
+        {
+          "text": "ACD",
+          "isCorrect": false
+        },
+        {
+          "text": "ADC",
+          "isCorrect": true
+        },
+        {
+          "text": "AC",
+          "isCorrect": false
+        },
+        {
+          "text": "DAC",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Una declaración using libera el objeto al terminar el ámbito en que se declara, y lo hace aunque se produzca una excepción, porque el compilador la reescribe como try/finally. Por eso Dispose escribe D al salir de F, antes de que el catch de quien la llamó escriba C, y la salida es ADC. Sin using solo se mostraría AC, y Dispose tampoco se llama al declarar la variable ni después del catch.",
+      "legalReference": "Microsoft Learn (.NET 10), «using statement - ensure the correct use of disposable objects»"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0005",
+      "statement": "En .NET, ¿qué caracteriza a una aplicación publicada como autocontenida (self-contained)?",
+      "options": [
+        {
+          "text": "La publicación incluye los ficheros de .NET, sin exigir que el equipo tenga instalado el runtime",
+          "isCorrect": true
+        },
+        {
+          "text": "El equipo donde se ejecuta le aplica el último parche de seguridad del runtime que tenga instalado",
+          "isCorrect": false
+        },
+        {
+          "text": "Se publica una DLL portable de la aplicación que se inicia con la orden dotnet seguida de su nombre",
+          "isCorrect": false
+        },
+        {
+          "text": "Los ficheros de la aplicación se agrupan en un único binario específico del sistema operativo y la CPU",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Una publicación autocontenida incluye todos los ficheros de .NET necesarios para ejecutar la aplicación, por lo que el entorno no necesita tener el runtime preinstalado. Como lleva su propio runtime, no recibe automáticamente los parches de seguridad del equipo: solo se actualiza publicando una nueva versión de la aplicación. La actualización automática es propia de la publicación dependiente del marco, la DLL portable se obtiene con UseAppHost=false y el binario único es el despliegue de fichero único, que existe en los dos modos.",
+      "legalReference": "Microsoft Learn (.NET 10), «.NET application publishing overview», «Publish as self-contained»"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0006",
+      "statement": "En C#, ¿qué muestra este programa de consola con instrucciones de nivel superior (los tipos se declaran al final del fichero)?\nvar p1 = new Pt();\nvar b1 = new Box();\nvar p2 = p1;\nvar b2 = b1;\np2.X = 5;\nb2.X = 5;\nConsole.WriteLine($\"{p1.X} {b1.X}\");\nstruct Pt { public int X; }\nclass Box { public int X; }",
+      "options": [
+        {
+          "text": "5 5",
+          "isCorrect": false
+        },
+        {
+          "text": "5 0",
+          "isCorrect": false
+        },
+        {
+          "text": "0 5",
+          "isCorrect": true
+        },
+        {
+          "text": "0 0",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Pt es un tipo de valor: al asignarlo a p2, esa variable recibe una copia nueva, así que cambiar p2.X no modifica p1.X, que sigue valiendo 0. Box es una clase, un tipo de referencia: b2 apunta al objeto original y no se hace copia, por lo que el cambio también se ve en b1.X, que vale 5. La salida es 0 5. Los demás resultados atribuyen a un tipo el comportamiento del otro.",
+      "legalReference": "Microsoft Learn (.NET 10), «Common Type System», «Types in .NET»"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0007",
+      "statement": "En C#, ¿qué muestra este código, con las clases declaradas fuera de Main?\nA x = new B();\nA y = new C();\nConsole.WriteLine(x.F() + y.F());\nclass A { public virtual string F() => \"A\"; }\nclass B : A { public override string F() => \"B\"; }\nclass C : A { public new string F() => \"C\"; }",
+      "options": [
+        {
+          "text": "BC",
+          "isCorrect": false
+        },
+        {
+          "text": "BA",
+          "isCorrect": true
+        },
+        {
+          "text": "AA",
+          "isCorrect": false
+        },
+        {
+          "text": "AC",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Al invocar un método virtual, el runtime comprueba el tipo del objeto y llama al miembro que lo sobrescribe en la clase más derivada; si ninguna clase derivada lo sobrescribe, se llama al original. B.F usa override, así que x.F() devuelve B. C.F declara new y no sobrescribe a A.F, de modo que a través de una variable de tipo A se llama al original y y.F() devuelve A. La salida es BA.",
+      "legalReference": "Microsoft Learn (.NET 10), «virtual (C# Reference)»"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0008",
+      "statement": "En C#, ¿qué muestra este programa de consola con instrucciones de nivel superior?\nConsole.WriteLine(string.Join(\",\", F(new[] { 3, 1, -2, 5 })));\nstatic IEnumerable<int> F(int[] a)\n{\n    foreach (var n in a)\n    {\n        if (n < 0) yield break;\n        yield return n;\n    }\n}",
+      "options": [
+        {
+          "text": "3,1,-2,5",
+          "isCorrect": false
+        },
+        {
+          "text": "3,1,5",
+          "isCorrect": false
+        },
+        {
+          "text": "3,1,-2",
+          "isCorrect": false
+        },
+        {
+          "text": "3,1",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "La instrucción yield break señala de forma explícita el final de la iteración. Al llegar al valor -2, el iterador termina sin devolver ese valor ni los siguientes, y la salida es 3,1. Si en lugar de terminar solo se saltara el valor negativo, saldría 3,1,5. Las salidas 3,1,-2 y 3,1,-2,5 suponen que el iterador devuelve el valor negativo, que en cambio provoca el yield break.",
+      "legalReference": "Microsoft Learn (.NET 10), «yield statement - provide the next element»"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0009",
+      "statement": "En C#, ¿dónde se puede utilizar el operador await?",
+      "options": [
+        {
+          "text": "En un método, una lambda o un método anónimo marcados con async",
+          "isCorrect": true
+        },
+        {
+          "text": "En un método que devuelve Task, aunque no esté modificado con async",
+          "isCorrect": false
+        },
+        {
+          "text": "En el bloque de una instrucción lock dentro de un método async",
+          "isCorrect": false
+        },
+        {
+          "text": "En el cuerpo de una función local síncrona declarada en un método async",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La documentación indica que await solo puede usarse en un método, una expresión lambda o un método anónimo modificado con async. Dentro de un método async tampoco se permite en el cuerpo de una función local síncrona ni en el bloque de una instrucción lock. Que el método devuelva Task no basta: sin el modificador async, el compilador rechaza el await.",
+      "legalReference": "Microsoft Learn (.NET 10), «await operator - asynchronously await for a task to complete»"
+    },
+    {
+      "key": "malaga-programador-c1/dotnet/0010",
+      "statement": "En ASP.NET Core, con la inyección de dependencias de .NET, ¿cuándo se liberan (Dispose) los servicios registrados como singleton en una aplicación que procesa solicitudes?",
+      "options": [
+        {
+          "text": "Al terminar la solicitud en la que el contenedor los creó por primera vez",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando el código que los resolvió desde el contenedor llama a su método Dispose",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando el recolector de basura detecta que ninguna solicitud los está utilizando",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuando se libera el ServiceProvider del contenedor, al cerrarse la aplicación",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Un servicio singleton se crea una vez y la misma instancia atiende todas las solicitudes; el contenedor lo libera automáticamente cuando se libera el ServiceProvider al cerrar la aplicación, y hasta entonces su memoria no se libera. Terminar la solicitud libera los servicios transient y scoped. Los servicios no deben liberarse desde el código que los resolvió del contenedor, porque lo hace el propio contenedor.",
+      "legalReference": "Microsoft Learn (.NET 10), «Service lifetimes», «Singleton»"
+    }
+  ]
+}
