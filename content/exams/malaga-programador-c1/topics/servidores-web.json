@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "servidores-web",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/servidores-web/0001",
+      "statement": "Según la RFC 9110, un servidor de origen recibe una solicitud con un método que reconoce e implementa, pero que el recurso de destino no admite. ¿Qué código de estado debería enviar?",
+      "options": [
+        {
+          "text": "501 (Not Implemented), porque el servidor no admite la funcionalidad que exige la solicitud",
+          "isCorrect": false
+        },
+        {
+          "text": "405 (Method Not Allowed), porque el método es conocido, pero el recurso de destino no lo admite",
+          "isCorrect": true
+        },
+        {
+          "text": "406 (Not Acceptable), porque el recurso no tiene una representación que el cliente acepte",
+          "isCorrect": false
+        },
+        {
+          "text": "415 (Unsupported Media Type), porque el formato del contenido enviado no es compatible con el recurso",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La RFC 9110 indica que, si el método se reconoce y se implementa pero el recurso de destino no lo permite, el servidor debería responder 405, y que la respuesta 405 debe llevar un campo Allow con los métodos que el recurso admite. El 501 corresponde a un método que el servidor no reconoce o no puede admitir en ningún recurso. El 406 se refiere a la negociación proactiva de contenido y el 415 al formato del contenido de la solicitud.",
+      "legalReference": "RFC 9110, §9.1 y §15.5.6"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0002",
+      "statement": "Según la RFC 9110, ¿por qué un cliente puede repetir automáticamente una solicitud PUT si la conexión se cierra antes de recibir la respuesta?",
+      "options": [
+        {
+          "text": "Porque PUT es idempotente: varias solicitudes idénticas tienen el mismo efecto previsto que una",
+          "isCorrect": true
+        },
+        {
+          "text": "Porque PUT es seguro: su semántica es de lectura y no modifica el estado del recurso de destino",
+          "isCorrect": false
+        },
+        {
+          "text": "Porque la respuesta a PUT es almacenable en caché, así que la repetición se atiende sin llegar al servidor",
+          "isCorrect": false
+        },
+        {
+          "text": "Porque PUT devuelve la misma respuesta ante solicitudes idénticas, y el cliente puede comparar las dos respuestas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La RFC 9110 define un método como idempotente si el efecto previsto en el servidor de varias solicitudes idénticas es el mismo que el de una sola, y cita PUT, DELETE y los métodos seguros. Por eso la solicitud puede repetirse tras un fallo de comunicación, aunque la respuesta pueda ser distinta. PUT no es seguro, porque modifica el recurso, y sus respuestas no son almacenables en caché.",
+      "legalReference": "RFC 9110, §9.2.2"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0003",
+      "statement": "Según la RFC 9111, ¿qué indica la directiva no-cache, sin argumentos, en el campo Cache-Control de una respuesta?",
+      "options": [
+        {
+          "text": "Que la caché no puede almacenar ninguna parte de la solicitud ni de la respuesta y debe eliminarla cuanto antes",
+          "isCorrect": false
+        },
+        {
+          "text": "Que las cachés compartidas no pueden almacenar la respuesta, porque está destinada a un único usuario",
+          "isCorrect": false
+        },
+        {
+          "text": "Que la respuesta no puede usarse para atender otra solicitud sin validarla antes con el servidor de origen",
+          "isCorrect": true
+        },
+        {
+          "text": "Que los intermediarios no pueden transformar el contenido de la respuesta, tenga o no una caché",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La RFC 9111 define no-cache, sin argumentos, como la indicación de que la respuesta no se debe usar para atender otra solicitud sin reenviarla antes para su validación y recibir una respuesta satisfactoria. La caché sí puede almacenarla. Impedir el almacenamiento es la función de no-store, limitarlo a las cachés privadas es la de private y prohibir las transformaciones es la de no-transform.",
+      "legalReference": "RFC 9111, §5.2.2.4"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0004",
+      "statement": "En Apache HTTP Server 2.4, con esta configuración (cada directorio existe y su index.html contiene su nombre), ¿qué DocumentRoot atiende una solicitud con la cabecera Host: b.test?\n<VirtualHost *:80>\n  ServerName a.test\n  ServerAlias *.test\n  DocumentRoot /srv/a\n</VirtualHost>\n<VirtualHost *:80>\n  ServerName b.test\n  DocumentRoot /srv/b\n</VirtualHost>",
+      "options": [
+        {
+          "text": "/srv/b, porque la coincidencia exacta con ServerName tiene prioridad sobre las que usan comodines",
+          "isCorrect": false
+        },
+        {
+          "text": "El de la configuración principal, porque ServerName a.test no coincide con el nombre pedido",
+          "isCorrect": false
+        },
+        {
+          "text": "Ninguno, porque httpd -t rechaza la configuración al solaparse un comodín con un ServerName",
+          "isCorrect": false
+        },
+        {
+          "text": "/srv/a, porque es la primera coincidencia y los comodines no tienen menor prioridad",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Los hosts virtuales basados en nombre se evalúan en el orden en que aparecen y se usa el primer ServerName o ServerAlias que coincide, sin ninguna precedencia especial para los comodines ni para ServerName frente a ServerAlias. El nombre b.test coincide antes con *.test, del primer host, así que responde /srv/a. La configuración principal solo atiende las solicitudes que no coinciden con ningún host virtual, y la configuración es válida.",
+      "legalReference": "Apache HTTP Server 2.4, «Name-based Virtual Host Support»"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0005",
+      "statement": "En Apache HTTP Server 2.4, con mod_headers cargado y /usr/local/apache2/htdocs como raíz de documentos, ¿qué valor tiene la cabecera X-Source en la respuesta a GET /?\n<Location \"/\">\n  Header set X-Source \"location\"\n</Location>\n<Directory \"/usr/local/apache2/htdocs\">\n  Header set X-Source \"directory\"\n</Directory>",
+      "options": [
+        {
+          "text": "location, porque Location se combina después de Directory, sea cual sea su posición en el fichero",
+          "isCorrect": true
+        },
+        {
+          "text": "directory, porque se aplica la sección que aparece en último lugar en el fichero de configuración",
+          "isCorrect": false
+        },
+        {
+          "text": "directory, porque Directory, que trabaja sobre el sistema de ficheros, se combina después de Location",
+          "isCorrect": false
+        },
+        {
+          "text": "location, directory, porque Header set añade el valor de cada sección que coincide con la solicitud",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Apache combina las secciones en un orden fijo: primero Directory (sin expresiones regulares) y .htaccess, después DirectoryMatch, luego Files y FilesMatch, a continuación Location y LocationMatch y al final If. Como Header set reemplaza el valor, el de Location sustituye al de Directory aunque aparezca antes en el fichero.",
+      "legalReference": "Apache HTTP Server 2.4, «Configuration Sections», «How the sections are merged»"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0006",
+      "statement": "En nginx, con estas locations, ¿qué cuerpo devuelve la respuesta a GET /img/icons/a.png?\nlocation / { return 200 \"root\\n\"; }\nlocation /img/ { return 200 \"img\\n\"; }\nlocation /img/icons/ { return 200 \"icons\\n\"; }\nlocation ~ \\.png$ { return 200 \"png\\n\"; }",
+      "options": [
+        {
+          "text": "icons, porque se elige el prefijo que coincide en más caracteres con la URI",
+          "isCorrect": false
+        },
+        {
+          "text": "img, porque se elige la primera location de prefijo que coincide según el orden del fichero",
+          "isCorrect": false
+        },
+        {
+          "text": "png, porque la primera expresión regular que coincide se prefiere al prefijo más largo",
+          "isCorrect": true
+        },
+        {
+          "text": "root, porque location / se evalúa primero y la búsqueda termina en cuanto hay coincidencia",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "nginx busca primero entre las locations de prefijo y recuerda la de prefijo más largo (aquí /img/icons/). Después comprueba las expresiones regulares en el orden del fichero y usa la primera que coincide (aquí \\.png$), de modo que la regular prevalece. Solo se usaría el prefijo recordado si ninguna expresión coincidiera, o si ese prefijo llevara el modificador ^~.",
+      "legalReference": "Documentación de nginx, «Module ngx_http_core_module», directiva location"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0007",
+      "statement": "En Apache HTTP Server 2.4, ¿qué describe mejor el módulo mod_proxy_fcgi cuando se usa con un servidor de aplicaciones PHP-FPM?",
+      "options": [
+        {
+          "text": "Reenvía las solicitudes por FastCGI y arranca el proceso de la aplicación cuando hace falta",
+          "isCorrect": false
+        },
+        {
+          "text": "Reenvía las solicitudes por FastCGI a un proceso de la aplicación que se arranca aparte",
+          "isCorrect": true
+        },
+        {
+          "text": "Reenvía las solicitudes por HTTP a PHP-FPM, que las atiende como un servidor web más",
+          "isCorrect": false
+        },
+        {
+          "text": "Ejecuta el intérprete de PHP dentro de los procesos de httpd, sin usar un proceso externo",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "mod_proxy_fcgi aporta a mod_proxy el soporte del protocolo FastCGI, con el que httpd se comunica con PHP-FPM. A diferencia de mod_fcgid, no se encarga de arrancar el proceso de la aplicación: para eso existe fcgistarter (en algunas plataformas) o el gestor de procesos del propio entorno FastCGI. Reenviar por HTTP o incrustar el intérprete en httpd no es lo que hace este módulo.",
+      "legalReference": "Apache HTTP Server 2.4, «Apache Module mod_proxy_fcgi»"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0008",
+      "statement": "En PHP 8, con PDO y MySQL, se ejecuta este código. ¿Qué afirmación es correcta?\n$order = $_GET['order'];\n$sql = \"SELECT id FROM user WHERE name = :name ORDER BY \" . $order;\n$stmt = $pdo->prepare($sql);\n$stmt->bindValue(':name', $name);\n$stmt->execute();",
+      "options": [
+        {
+          "text": "La consulta es segura, porque prepare() trata como datos todo el texto, también el fragmento de ORDER BY",
+          "isCorrect": false
+        },
+        {
+          "text": "El valor de :name queda protegido, pero la inyección es posible porque ORDER BY se concatena sin escapar",
+          "isCorrect": true
+        },
+        {
+          "text": "La consulta es segura, porque PDO escapa de forma automática el fragmento concatenado al ejecutarla",
+          "isCorrect": false
+        },
+        {
+          "text": "La consulta es insegura, porque bindValue() no entrecomilla el valor, a diferencia de bindParam()",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Con sentencias preparadas los parámetros no hay que entrecomillarlos, porque el controlador lo hace, y si una aplicación usa exclusivamente parámetros no hay inyección. Pero el manual advierte de que, si otras partes de la consulta se construyen con entrada sin escapar, la inyección sigue siendo posible: aquí la entrada de order se concatena. PDO no escapa lo concatenado y tanto bindValue() como bindParam() protegen el valor enlazado.",
+      "legalReference": "Manual de PHP, «Prepared statements and stored procedures»"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0009",
+      "statement": "En PHP 8, con PDO ya conectado en modo de excepciones a MySQL (tabla users InnoDB, vacía), ¿qué muestra este código?\n$pdo->beginTransaction();\n$pdo->exec(\"INSERT INTO users (name) VALUES ('Ana')\");\n$pdo->exec(\"CREATE TABLE audit (id INT PRIMARY KEY)\");\ntry { $pdo->rollBack(); } catch (PDOException $e) {}\necho $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();",
+      "options": [
+        {
+          "text": "1: el CREATE TABLE confirma de forma implícita la transacción, incluido el INSERT",
+          "isCorrect": true
+        },
+        {
+          "text": "0: rollBack() deshace lo ejecutado desde beginTransaction(), incluido el CREATE TABLE",
+          "isCorrect": false
+        },
+        {
+          "text": "0: rollBack() deshace el INSERT, aunque la tabla creada ya ha quedado confirmada",
+          "isCorrect": false
+        },
+        {
+          "text": "1: exec() confirma cada sentencia al ejecutarla, así que beginTransaction() no llega a tener efecto",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En MySQL, una sentencia DDL como CREATE TABLE termina la transacción activa como si se hubiera hecho un COMMIT antes de ejecutarla, y así lo advierte el manual de PDO. El INSERT queda confirmado y el rollBack() posterior no lo deshace, de modo que COUNT(*) vale 1. Tampoco es cierto que exec() confirme cada sentencia dentro de una transacción abierta, ni que el rollback alcance a la tabla creada.",
+      "legalReference": "Manual de PHP, «Transactions and auto-commit»; MySQL 9.7, «Statements That Cause an Implicit Commit»"
+    },
+    {
+      "key": "malaga-programador-c1/servidores-web/0010",
+      "statement": "En MySQL, la tabla t (id INT PRIMARY KEY, name VARCHAR(10), note VARCHAR(10)) contiene la fila (1, 'a', 'n'). Tras ejecutar lo siguiente, ¿qué devuelve el SELECT?\nREPLACE INTO t (id, name) VALUES (1, 'b');\nSELECT * FROM t;",
+      "options": [
+        {
+          "text": "Una fila con id 1, name b y note n, porque REPLACE modifica las columnas indicadas",
+          "isCorrect": false
+        },
+        {
+          "text": "Una fila con id 1, name a y note n, porque REPLACE no hace nada si la clave primaria ya existe",
+          "isCorrect": false
+        },
+        {
+          "text": "Un error de clave duplicada, porque REPLACE funciona como INSERT cuando la clave ya existe",
+          "isCorrect": false
+        },
+        {
+          "text": "Una fila con id 1, name b y note NULL, porque borra la fila anterior e inserta otra",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "REPLACE funciona como INSERT, salvo que si una fila antigua tiene el mismo valor de PRIMARY KEY o de un índice UNIQUE, la borra antes de insertar la nueva. Las columnas que no se indican toman su valor por defecto (aquí NULL), por lo que note pierde el valor n. Quien quiera conservarlo debe usar INSERT ... ON DUPLICATE KEY UPDATE, que actualiza la fila existente.",
+      "legalReference": "MySQL 9.7, «REPLACE Statement»"
+    }
+  ]
+}
