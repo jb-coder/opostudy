@@ -119,7 +119,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "El throughput es el número de elementos terminados por unidad de tiempo, y se mide con el recuento exacto de elementos. El WIP cuenta los elementos iniciados y no terminados; el Cycle Time y el Work Item Age son tiempos transcurridos (entre el inicio y el fin de un elemento, y entre su inicio y la fecha actual, respectivamente).",
+      "explanation": "El throughput es el número de elementos terminados por unidad de tiempo. El WIP cuenta los elementos iniciados y no terminados; el Cycle Time y el Work Item Age son tiempos transcurridos (entre el inicio y el fin de un elemento, y entre su inicio y la fecha actual, respectivamente).",
       "legalReference": "The Kanban Guide (05-2025), «Flow Metrics»"
     },
     {
@@ -143,8 +143,8 @@
           "isCorrect": false
         }
       ],
-      "explanation": "Los procesos principales de Métrica v3 son Planificación de Sistemas de Información, Desarrollo de Sistemas de Información (que se subdivide en cinco procesos) y Mantenimiento de Sistemas de Información. Seguridad, Gestión de Proyectos y Gestión de la Configuración son interfaces, junto con el Aseguramiento de la Calidad, y dan soporte al proyecto en los aspectos organizativos.",
-      "legalReference": "Métrica v3, Introducción, «PROCESOS PRINCIPALES DE MÉTRICA VERSIÓN 3»"
+      "explanation": "Los procesos principales de Métrica v3 son Planificación de Sistemas de Información, Desarrollo de Sistemas de Información (que se subdivide en cinco procesos) y Mantenimiento de Sistemas de Información. Seguridad, Gestión de Proyectos y Gestión de la Configuración son interfaces, junto con el Aseguramiento de la Calidad.",
+      "legalReference": "Métrica v3, Introducción, «PROCESOS PRINCIPALES DE MÉTRICA VERSIÓN 3» e «INTERFACES DE MÉTRICA VERSIÓN 3»"
     },
     {
       "key": "malaga-programador-c1/metodologias-agiles/0007",
@@ -216,7 +216,7 @@
         }
       ],
       "explanation": "Métrica v3 establece que los cambios de requisitos deben plantearse al Comité de Seguimiento y que la inclusión de las modificaciones se someterá a su aprobación, previo análisis del impacto en la planificación y el coste asociado. En la actividad GPS 7 es ese comité quien decide sobre la procedencia del cambio. El Comité de Dirección revisa y aprueba formalmente cada proceso, el Equipo de Proyecto estima el esfuerzo del cambio una vez aprobado y el Grupo de Aseguramiento de la Calidad desarrolla el plan de calidad del proyecto.",
-      "legalReference": "Métrica v3, Gestión de Proyectos, «GESTIÓN DE CAMBIOS EN LOS REQUISITOS»; GPS 7"
+      "legalReference": "Métrica v3, Gestión de Proyectos, «GESTIÓN DE CAMBIOS EN LOS REQUISITOS», GPS 7 y GPS 8; Participantes, «PERFIL DIRECTIVO» y «PERFIL ANALISTA»"
     },
     {
       "key": "malaga-programador-c1/metodologias-agiles/0010",

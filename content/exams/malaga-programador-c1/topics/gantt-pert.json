@@ -172,31 +172,31 @@
     },
     {
       "key": "malaga-programador-c1/gantt-pert/0008",
-      "statement": "Según Métrica v3, ¿cómo se representa un plan de trabajo en el diagrama de Gantt?",
+      "statement": "Según Métrica v3, en un diagrama de Gantt las actividades se pueden encadenar por dos motivos. ¿Cuál es el encadenamiento orgánico?",
       "options": [
         {
-          "text": "Las tareas van en el eje de abscisas, el tiempo en el de ordenadas y cada actividad es una barra limitada por sus fechas previstas de comienzo y fin",
+          "text": "El que se debe a que una actividad necesita que haya terminado otra de la que depende",
           "isCorrect": false
         },
         {
-          "text": "Las tareas van en el eje de ordenadas, el tiempo en el de abscisas y cada actividad es un arco que une el suceso de comienzo con el de fin",
+          "text": "El que se debe a que varias actividades tienen la misma fecha prevista de comienzo",
           "isCorrect": false
         },
         {
-          "text": "Las tareas van en el eje de ordenadas, el tiempo en el de abscisas y cada actividad es una barra limitada por sus fechas previstas de comienzo y fin",
+          "text": "El que se debe a que el recurso asignado a una actividad está ocupado en otra anterior",
           "isCorrect": true
         },
         {
-          "text": "Las tareas van en el eje de abscisas, el tiempo en el de ordenadas y cada actividad es un arco que une el suceso de comienzo con el de fin",
+          "text": "El que se debe a que varias actividades del diagrama se agrupan en una misma fase del proyecto",
           "isCorrect": false
         }
       ],
-      "explanation": "En el diagrama de Gantt las tareas se sitúan en el eje de ordenadas y los tiempos en el de abscisas, y cada actividad se dibuja como una barra limitada por las fechas previstas de comienzo y fin. Los arcos que unen sucesos son la notación del grafo PERT, no la del Gantt, y las opciones con los ejes intercambiados no se corresponden con la notación de Métrica v3.",
+      "explanation": "Métrica v3 distingue el «Encadenamiento orgánico o por ocupación de recursos» (por ejemplo, un programador no puede empezar un programa hasta que haya terminado el anterior) del «Encadenamiento funcional o por prelaciones» (por ejemplo, un programa no puede probarse hasta que haya sido escrito), que es el de la primera opción. Empezar en la misma fecha o agruparse en una fase no son motivos de encadenamiento.",
       "legalReference": "Métrica v3, Técnicas y prácticas, «Diagrama de Gantt»"
     },
     {
       "key": "malaga-programador-c1/gantt-pert/0009",
-      "statement": "Según Métrica v3, en la técnica del patrón de límites un proyecto tiene un esfuerzo estimado de 54 personas-mes y un plazo de 9 meses, una vez deducido lo que la técnica descuenta antes de repartir. ¿Cuántas personas trabajan de media durante la situación de pleno rendimiento?",
+      "statement": "Según Métrica v3, en la técnica del patrón de límites, el esfuerzo y la duración que quedan por repartir, ya hechas todas las deducciones que prevé la técnica, son de 54 personas-mes y 9 meses. ¿Cuántas personas trabajan de media durante la situación de pleno rendimiento?",
       "options": [
         {
           "text": "6 personas",
@@ -223,7 +223,7 @@
       "statement": "Según Métrica v3, ¿para qué sirve la estructura de descomposición de trabajo (WBS)?",
       "options": [
         {
-          "text": "Para agrupar en un árbol las actividades según su naturaleza y asignarlas a cuentas que den soporte a la contabilidad analítica del proyecto",
+          "text": "Para agrupar en un árbol las actividades según su naturaleza y asignarlas a cuentas de la contabilidad del proyecto",
           "isCorrect": true
         },
         {

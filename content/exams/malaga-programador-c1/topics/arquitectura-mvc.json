@@ -7,23 +7,23 @@
       "statement": "Según la documentación de ASP.NET Core MVC, el modelo no depende de la vista ni del controlador. ¿Qué permite esa separación?",
       "options": [
         {
-          "text": "Cambiar el modelo sin que la vista ni el controlador se vean afectados, pues no dependen de él",
+          "text": "Cambiar el modelo sin que la vista ni el controlador se vean afectados por el cambio",
           "isCorrect": false
         },
         {
-          "text": "Elegir desde el propio modelo la vista que se muestra al usuario tras cada operación",
+          "text": "Escribir el modelo de manera que conozca las vistas en las que se muestran sus datos",
           "isCorrect": false
         },
         {
-          "text": "Construir y probar el modelo con independencia de la presentación visual de la aplicación",
+          "text": "Construir y probar el modelo con independencia de la presentación visual de los datos",
           "isCorrect": true
         },
         {
-          "text": "Atender la interacción del usuario desde la vista, sin pasar por el controlador",
+          "text": "Compilar la vista y el controlador sin que hagan referencia a los tipos del modelo",
           "isCorrect": false
         }
       ],
-      "explanation": "La documentación indica que la vista y el controlador dependen del modelo, pero que el modelo no depende de ellos, y que esa es una de las ventajas clave de la separación: permite construir y probar el modelo con independencia de la presentación visual. Por eso es falso que el modelo pueda cambiar sin afectar a la vista y al controlador, que sí dependen de él. Elegir la vista y responder a la interacción del usuario son tareas del controlador, no del modelo ni de la vista.",
+      "explanation": "La documentación indica que la vista y el controlador dependen del modelo, pero que el modelo no depende de ellos, y que esa es una de las ventajas clave de la separación: permite construir y probar el modelo con independencia de la presentación visual. Como la vista y el controlador sí dependen del modelo, un cambio en él puede afectarlos y no se pueden compilar sin hacer referencia a sus tipos. Y que el modelo conociera las vistas sería justo la dependencia que se evita.",
       "legalReference": "Microsoft Learn (ASP.NET Core 10), «Overview of ASP.NET Core MVC», «MVC pattern»"
     },
     {
@@ -31,23 +31,23 @@
       "statement": "Según la documentación de ASP.NET Core MVC, las vistas fuertemente tipadas suelen usar tipos ViewModel. ¿Qué contienen esos tipos y quién crea sus instancias?",
       "options": [
         {
-          "text": "Los datos que se muestran en esa vista; las instancias las crea y rellena el controlador a partir del modelo",
+          "text": "Los datos que se muestran en la vista; las crea y rellena el controlador a partir del modelo",
           "isCorrect": true
         },
         {
-          "text": "Los datos que se muestran en esa vista; las instancias las crea y rellena la vista a partir de la petición HTTP",
+          "text": "Las operaciones de negocio de la aplicación; las crea y rellena el motor de vistas Razor",
           "isCorrect": false
         },
         {
-          "text": "La lógica de negocio que necesita esa vista; las instancias las crea y rellena el controlador a partir de la base de datos",
+          "text": "La lógica que guarda el estado de la aplicación; las crea y rellena la vista al mostrarse",
           "isCorrect": false
         },
         {
-          "text": "La lógica de negocio que necesita esa vista; las instancias las crea y rellena el modelo a partir de los datos de la vista",
+          "text": "Los valores de la ruta solicitada; las crea y rellena el enrutamiento antes de la acción",
           "isCorrect": false
         }
       ],
-      "explanation": "Los tipos ViewModel están diseñados para contener los datos que se muestran en la vista, y es el controlador quien crea y rellena sus instancias a partir del modelo. La lógica de negocio se encapsula en el modelo, no en el ViewModel, y la vista presenta contenido con la mínima lógica posible: no construye datos a partir de la petición.",
+      "explanation": "Los tipos ViewModel están diseñados para contener los datos que se muestran en la vista, y es el controlador quien crea y rellena sus instancias a partir del modelo. Las operaciones de negocio y la lógica que guarda el estado de la aplicación se encapsulan en el modelo, no en el ViewModel, y la vista usa esas instancias, pero no las crea. El enrutamiento asocia la URL con una acción del controlador.",
       "legalReference": "Microsoft Learn (ASP.NET Core 10), «Overview of ASP.NET Core MVC», «Model Responsibilities»"
     },
     {
@@ -155,11 +155,11 @@
           "isCorrect": false
         },
         {
-          "text": "Con un actor Bibliotecario, que es el papel que esos usuarios llevan a cabo al interactuar con el sistema",
+          "text": "Con un actor Bibliotecario, que es el papel que desempeñan al interactuar con el sistema",
           "isCorrect": true
         },
         {
-          "text": "Con un actor Biblioteca, que representa al propio sistema de información que se está desarrollando",
+          "text": "Con un actor Biblioteca, que representa al propio sistema de información que se desarrolla",
           "isCorrect": false
         },
         {
@@ -187,7 +187,7 @@
           "isCorrect": false
         },
         {
-          "text": "Los distintos caminos por los que puede evolucionar el caso de uso según las condiciones de su realización",
+          "text": "Los distintos caminos por los que puede evolucionar, según las condiciones que se van dando",
           "isCorrect": true
         }
       ],

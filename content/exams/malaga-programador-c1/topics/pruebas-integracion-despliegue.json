@@ -52,7 +52,7 @@
     },
     {
       "key": "malaga-programador-c1/pruebas-integracion-despliegue/0003",
-      "statement": "En Selenium WebDriver (Java), la página del fragmento crea el elemento con id ready 5 segundos después de cargarse. ¿Qué ocurre al ejecutar estas líneas?\n\ndriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));\ndriver.get(\"data:text/html,<script>setTimeout(() => document.body.innerHTML = '<p id=ready>ready</p>', 5000)</script>\");\nString text = driver.findElement(By.id(\"ready\")).getText();",
+      "statement": "En Selenium WebDriver (Java), driver es un WebDriver con la sesión del navegador ya abierta y la página del fragmento crea el elemento con id ready 5 segundos después de cargarse. ¿Qué ocurre al ejecutar estas líneas?\n\ndriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));\ndriver.get(\"data:text/html,<script>setTimeout(() => document.body.innerHTML = '<p id=ready>ready</p>', 5000)</script>\");\nString text = driver.findElement(By.id(\"ready\")).getText();",
       "options": [
         {
           "text": "Lanza NoSuchElementException tras esperar 2 segundos, porque el elemento aún no existe",
@@ -124,26 +124,26 @@
     },
     {
       "key": "malaga-programador-c1/pruebas-integracion-despliegue/0006",
-      "statement": "En un Jenkinsfile declarativo se ejecuta este trabajo, cuyo único stage termina con código de salida 1. ¿Qué mensajes escribe el bloque post en el registro?\n\npipeline {\n  agent any\n  stages { stage('Test') { steps { sh 'exit 1' } } }\n  post {\n    always { echo 'always' }\n    success { echo 'success' }\n    failure { echo 'failure' }\n  }\n}",
+      "statement": "En un Jenkinsfile declarativo se ejecuta este trabajo, cuyo único stage termina con código de salida 1. ¿Qué mensajes escribe el bloque post en el registro, sin tener en cuenta el orden?\n\npipeline {\n  agent any\n  stages { stage('Test') { steps { sh 'exit 1' } } }\n  post {\n    unstable { echo 'unstable' }\n    failure { echo 'failure' }\n    unsuccessful { echo 'unsuccessful' }\n  }\n}",
       "options": [
         {
-          "text": "always y failure",
+          "text": "failure y unsuccessful",
           "isCorrect": true
         },
         {
-          "text": "failure",
+          "text": "failure y unstable",
           "isCorrect": false
         },
         {
-          "text": "always, success y failure",
+          "text": "unstable y unsuccessful",
           "isCorrect": false
         },
         {
-          "text": "success y failure",
+          "text": "failure, unstable y unsuccessful",
           "isCorrect": false
         }
       ],
-      "explanation": "Las condiciones del bloque post se evalúan según el estado final del pipeline: always se ejecuta sea cual sea el estado y failure cuando el estado es fallido (rojo). Como el stage termina con código 1, el trabajo acaba en FAILURE, de modo que se escriben always y failure y no se ejecuta success. Las demás opciones omiten always, que no depende del estado, o suman success, que exige un trabajo correcto.",
+      "explanation": "Las condiciones del bloque post se evalúan según el estado final de la ejecución. Como el paso sh termina con código 1, el estado es fallido: se cumplen failure, que corresponde al estado fallido, y unsuccessful, que se cumple con cualquier estado que no sea correcto. unstable corresponde a otro estado, el inestable, causado normalmente por pruebas fallidas o incumplimientos de calidad del código, y no se cumple. Las opciones que incluyen unstable confunden los dos estados.",
       "legalReference": "Jenkins, User Handbook, «Pipeline Syntax», «post»"
     },
     {
@@ -167,7 +167,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "Una directiva environment dentro de un stage define las variables solo para los pasos de ese stage, mientras que en el bloque pipeline se aplicaría a todos los pasos. TARGET existe en Build, que escribe Build:staging; en Test no está definida y el shell la expande a una cadena vacía, así que escribe Test:. Build:staging y Test:staging sería el resultado si la directiva estuviera en el bloque pipeline; las dos opciones que empiezan por Build: sin valor suponen que la directiva no llega ni al stage donde se declara.",
+      "explanation": "Una directiva environment dentro de un stage define las variables solo para los pasos de ese stage, mientras que en el bloque pipeline se aplicaría a todos los pasos. TARGET existe en Build, que escribe Build:staging; en Test no está definida y el shell la expande a una cadena vacía, así que escribe Test:. Build:staging y Test:staging sería el resultado si la directiva estuviera en el bloque pipeline; Build: y Test: supone que la directiva no llega ni al stage donde se declara, y Build: y Test:staging, que empieza a aplicarse en el stage siguiente.",
       "legalReference": "Jenkins, User Handbook, «Pipeline Syntax», «environment»"
     },
     {
@@ -192,7 +192,7 @@
         }
       ],
       "explanation": "Un perfil de calidad define, para un lenguaje, el conjunto de reglas de codificación que se aplican durante el análisis. Las condiciones que debe cumplir el código las define el quality gate, y qué parte del código se considera nueva, la definición de código nuevo (new code). Excluir ficheros y carpetas del análisis tampoco es lo que define un perfil.",
-      "legalReference": "SonarQube Server 2026.5, «Managing quality profiles» y «Quality standards and new code»"
+      "legalReference": "SonarQube Server 2026.5, «Managing quality profiles», «Understanding quality gates» y «Quality standards and new code»"
     },
     {
       "key": "malaga-programador-c1/pruebas-integracion-despliegue/0009",

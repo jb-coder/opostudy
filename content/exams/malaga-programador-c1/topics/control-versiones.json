@@ -103,23 +103,23 @@
       "statement": "En Git, según Pro Git (2.ª ed.), las ramas main y topic han divergido a partir de un ancestro común y no hay conflictos. ¿Qué hace Git al ejecutar git merge topic estando en main?",
       "options": [
         {
-          "text": "Mueve el puntero de main hasta la confirmación de topic, sin crear una confirmación nueva",
+          "text": "Mueve el puntero de main hasta la confirmación de topic, sin crear ninguna confirmación",
           "isCorrect": false
         },
         {
-          "text": "Combina las instantáneas de las dos puntas y la del ancestro común en una confirmación con más de un padre",
+          "text": "Crea una confirmación con varios padres, a partir de las dos puntas y su ancestro común",
           "isCorrect": true
         },
         {
-          "text": "Combina las instantáneas de la punta de topic y del ancestro común, sin la de la punta de main, en una confirmación con más de un padre",
+          "text": "Crea una confirmación con un solo padre, que reúne en main todos los cambios de topic",
           "isCorrect": false
         },
         {
-          "text": "Combina las instantáneas de las dos puntas, sin recurrir al ancestro común, en una confirmación con más de un padre",
+          "text": "Crea una confirmación con varios padres, cuyo contenido es el de la punta de topic",
           "isCorrect": false
         }
       ],
-      "explanation": "Como la confirmación de main no es ascendiente directa de la de topic, Git no puede limitarse a mover el puntero: hace una fusión a tres bandas (three-way merge) con las instantáneas a las que apuntan las puntas de las dos ramas y con la de su ancestro común, y crea una confirmación de fusión (merge commit) que apunta a la nueva instantánea y tiene más de un padre. Mover el puntero solo ocurre cuando la rama actual es ascendiente directa de la fusionada, y la fusión usa las tres instantáneas: las de las dos puntas y la del ancestro común.",
+      "explanation": "Como la confirmación de main no es ascendiente directa de la de topic, Git no puede limitarse a mover el puntero: hace una fusión a tres bandas (three-way merge) con las instantáneas a las que apuntan las puntas de las dos ramas y con la de su ancestro común, y crea una confirmación de fusión (merge commit), que tiene más de un padre. Mover el puntero es lo que ocurre cuando la rama actual es ascendiente directa de la fusionada. La confirmación de fusión no tiene un solo padre, y su contenido combina las dos ramas en lugar de tomar el de una de ellas.",
       "legalReference": "Pro Git (2.ª ed.), §3.2, «Basic Merging»"
     },
     {
@@ -220,27 +220,27 @@
     },
     {
       "key": "malaga-programador-c1/control-versiones/0010",
-      "statement": "En Git, con la identidad configurada, se ejecutan estas órdenes en un directorio vacío. ¿Qué muestra la última? (En las opciones, cada espacio se escribe como · y las líneas se separan con comas).\n\ngit init -b main\necho 1 > a.txt && git add a.txt && git commit -m one\necho 2 >> a.txt\necho 3 > b.txt && echo 5 > d.txt\necho 4 > c.txt && git add c.txt\ngit stash\ngit status -s",
+      "statement": "En Git, con la identidad configurada, se ejecutan estas órdenes en un directorio vacío. ¿Qué ficheros muestra la última?\n\ngit init -b main\necho a > a.txt && git add a.txt && git commit -m A\ngit branch topic\ngit switch topic\necho b > b.txt && git add b.txt && git commit -m B\necho c > c.txt && git add c.txt && git commit -m C\ngit switch main\ngit cherry-pick topic\nls",
       "options": [
         {
-          "text": "A··c.txt, ??·b.txt, ??·d.txt",
+          "text": "a.txt, b.txt y c.txt",
           "isCorrect": false
         },
         {
-          "text": "??·b.txt, ??·d.txt",
+          "text": "a.txt y c.txt",
           "isCorrect": true
         },
         {
-          "text": "·M·a.txt, ??·b.txt, ??·d.txt",
+          "text": "b.txt y c.txt",
           "isCorrect": false
         },
         {
-          "text": "No muestra nada",
+          "text": "a.txt y b.txt",
           "isCorrect": false
         }
       ],
-      "explanation": "git stash guarda los cambios de los ficheros rastreados, tanto los modificados como los preparados, y devuelve el directorio de trabajo al estado de HEAD: la modificación de a.txt y el c.txt preparado se guardan y desaparecen del árbol. Por omisión no incluye los ficheros sin seguimiento, así que b.txt y d.txt siguen en el árbol y son lo único que muestra el estado. Con --keep-index quedaría también c.txt preparado, con --staged solo se guardaría lo preparado y a.txt seguiría modificado, y con --include-untracked (-u) tampoco quedarían b.txt ni d.txt.",
-      "legalReference": "Git, referencia, git-stash; Pro Git (2.ª ed.), §7.3, «Stashing and Cleaning»"
+      "explanation": "git cherry-pick topic aplica en la rama actual el cambio que introduce la confirmación indicada, aquí la de la punta de topic (C), y lo registra en una confirmación nueva. Por eso main, que tenía a.txt, gana c.txt, pero no b.txt, que se añadió en la confirmación B. Los tres ficheros estarían en main si se fusionara topic entera; a.txt y b.txt, si se aplicara solo la confirmación B; y b.txt y c.txt son los que añaden las dos confirmaciones de topic, sin contar el que main ya tenía.",
+      "legalReference": "Git, referencia, git-cherry-pick; Pro Git (2.ª ed.), §5.3, «Rebasing and Cherry-Picking Workflows»"
     }
   ]
 }
