@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "arquitectura-mvc",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0001",
+      "statement": "Según la documentación de ASP.NET Core MVC, el modelo no depende de la vista ni del controlador. ¿Qué permite esa separación?",
+      "options": [
+        {
+          "text": "Cambiar el modelo sin que la vista ni el controlador se vean afectados, pues no dependen de él",
+          "isCorrect": false
+        },
+        {
+          "text": "Elegir desde el propio modelo la vista que se muestra al usuario tras cada operación",
+          "isCorrect": false
+        },
+        {
+          "text": "Construir y probar el modelo con independencia de la presentación visual de la aplicación",
+          "isCorrect": true
+        },
+        {
+          "text": "Atender la interacción del usuario desde la vista, sin pasar por el controlador",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La documentación indica que la vista y el controlador dependen del modelo, pero que el modelo no depende de ellos, y que esa es una de las ventajas clave de la separación: permite construir y probar el modelo con independencia de la presentación visual. Por eso es falso que el modelo pueda cambiar sin afectar a la vista y al controlador, que sí dependen de él. Elegir la vista y responder a la interacción del usuario son tareas del controlador, no del modelo ni de la vista.",
+      "legalReference": "Microsoft Learn (ASP.NET Core 10), «Overview of ASP.NET Core MVC», «MVC pattern»"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0002",
+      "statement": "Según la documentación de ASP.NET Core MVC, las vistas fuertemente tipadas suelen usar tipos ViewModel. ¿Qué contienen esos tipos y quién crea sus instancias?",
+      "options": [
+        {
+          "text": "Los datos que se muestran en esa vista; las instancias las crea y rellena el controlador a partir del modelo",
+          "isCorrect": true
+        },
+        {
+          "text": "Los datos que se muestran en esa vista; las instancias las crea y rellena la vista a partir de la petición HTTP",
+          "isCorrect": false
+        },
+        {
+          "text": "La lógica de negocio que necesita esa vista; las instancias las crea y rellena el controlador a partir de la base de datos",
+          "isCorrect": false
+        },
+        {
+          "text": "La lógica de negocio que necesita esa vista; las instancias las crea y rellena el modelo a partir de los datos de la vista",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Los tipos ViewModel están diseñados para contener los datos que se muestran en la vista, y es el controlador quien crea y rellena sus instancias a partir del modelo. La lógica de negocio se encapsula en el modelo, no en el ViewModel, y la vista presenta contenido con la mínima lógica posible: no construye datos a partir de la petición.",
+      "legalReference": "Microsoft Learn (ASP.NET Core 10), «Overview of ASP.NET Core MVC», «Model Responsibilities»"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0003",
+      "statement": "Según la documentación de ASP.NET Core MVC, en una aplicación con este controlador, ¿con qué petición se ejecuta la acción Edit?\n\n[Route(\"[controller]/[action]\")]\npublic class LoansController : Controller\n{\n  [HttpGet]\n  public string List() => \"list\";\n\n  [HttpGet(\"{id}\")]\n  public string Edit(int id) => \"edit \" + id;\n}",
+      "options": [
+        {
+          "text": "GET /Loans/7",
+          "isCorrect": false
+        },
+        {
+          "text": "GET /Loans/List/7",
+          "isCorrect": false
+        },
+        {
+          "text": "GET /Loans/Edit?id=7",
+          "isCorrect": false
+        },
+        {
+          "text": "GET /Loans/Edit/7",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Con el enrutamiento por atributos, el token [controller] se sustituye por el nombre del controlador (Loans) y [action] por el de la acción, y la plantilla de Edit añade el parámetro {id}: la ruta resultante es Loans/Edit/{id}. Por eso GET /Loans/Edit/7 ejecuta Edit y devuelve el texto edit 7. Las otras peticiones no coinciden con ninguna ruta: a /Loans/7 le falta el nombre de la acción, /Loans/List/7 corresponde a List, que no tiene parámetro de ruta, y en /Loans/Edit?id=7 el valor va en la cadena de consulta y no en la ruta, donde la plantilla lo exige.",
+      "legalReference": "Microsoft Learn (ASP.NET Core 10), «Routing to controller actions in ASP.NET Core», «Token replacement in route templates [controller], [action], [area]»"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0004",
+      "statement": "Según la documentación de ASP.NET Core MVC, un modelo tiene la propiedad entera Rating con el atributo [Range(1, 5)]. En un envío del formulario se escribe x en ese campo y en otro se escribe 0. ¿Qué tipo de error registra ModelState en cada caso?",
+      "options": [
+        {
+          "text": "Con x, un error de validación del modelo; con 0, un error de enlace de modelos",
+          "isCorrect": false
+        },
+        {
+          "text": "Con x, un error de enlace de modelos; con 0, un error de validación del modelo",
+          "isCorrect": true
+        },
+        {
+          "text": "En ambos casos, un error de enlace de modelos, porque el valor no es válido para el campo",
+          "isCorrect": false
+        },
+        {
+          "text": "En ambos casos, un error de validación del modelo, porque el valor incumple las reglas del campo",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El estado del modelo recoge errores de dos subsistemas. Los de enlace de modelos son, en general, errores de conversión de datos, como escribir x en un campo entero. La validación se produce después del enlace y señala los datos que no cumplen las reglas de negocio, como un 0 en un campo que espera una valoración entre 1 y 5. Ambas fases ocurren antes de ejecutar la acción, que debe consultar ModelState.IsValid.",
+      "legalReference": "Microsoft Learn (ASP.NET Core 10), «Model validation in ASP.NET Core MVC and Razor Pages», «Model state»"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0005",
+      "statement": "Según la documentación de ASP.NET Core MVC, una aplicación tiene este layout y esta vista Razor. ¿Qué ocurre al solicitar la página de la vista?\n\nLayout (_Layout.cshtml):\n@RenderBody()\n\nVista (Index.cshtml):\n<h1>Libros</h1>\n@section Scripts {\n  <script src=\"~/js/libros.js\"></script>\n}",
+      "options": [
+        {
+          "text": "Se lanza una excepción, porque la sección Scripts está definida y el layout no la renderiza ni la ignora",
+          "isCorrect": true
+        },
+        {
+          "text": "Se muestra la página sin la etiqueta script, porque el layout descarta las secciones que no renderiza",
+          "isCorrect": false
+        },
+        {
+          "text": "Se muestra la página con la etiqueta script al final, porque RenderBody incluye las secciones de la vista",
+          "isCorrect": false
+        },
+        {
+          "text": "Se muestra la página sin la sección y se registra una advertencia, porque el layout no la ha solicitado",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Si una vista define una sección, el layout debe renderizarla con RenderSection o ignorarla con IgnoreSection; de lo contrario se produce un error. Aquí el layout llama a RenderBody y nada más, así que la sección Scripts queda sin renderizar y la solicitud falla con una excepción. RenderBody dibuja el cuerpo de la vista, no sus secciones, y el motor de vistas no descarta sin más las secciones que el layout no pide.",
+      "legalReference": "Microsoft Learn (ASP.NET Core 10), «Layout in ASP.NET Core», «Sections»"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0006",
+      "statement": "En Spring MVC, ¿qué papel desempeña el DispatcherServlet en el patrón de controlador frontal (front controller)?",
+      "options": [
+        {
+          "text": "Es un Servlet que se declara para cada controlador de la aplicación y atiende las peticiones de la ruta de ese controlador",
+          "isCorrect": false
+        },
+        {
+          "text": "Es un Servlet que genera el HTML de la respuesta rellenando la plantilla de la vista con los datos del modelo",
+          "isCorrect": false
+        },
+        {
+          "text": "Es un Servlet central que aplica un algoritmo común de procesamiento y delega el trabajo en componentes configurables",
+          "isCorrect": true
+        },
+        {
+          "text": "Es un Servlet que valida y transforma las peticiones antes de que lleguen a los controladores de la aplicación",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Spring MVC está diseñado en torno al patrón de controlador frontal: un Servlet central, el DispatcherServlet, ofrece un algoritmo compartido para procesar las peticiones, mientras que el trabajo real lo realizan componentes delegados configurables, que descubre mediante la configuración de Spring (asignación de peticiones, resolución de vistas, gestión de excepciones y más). Por eso es un Servlet central y no uno por cada controlador, y tareas como generar la respuesta con una vista o validar los datos de la petición corresponden a los componentes delegados.",
+      "legalReference": "Spring Framework 7.1, «DispatcherServlet»"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0007",
+      "statement": "Según Métrica v3, en una biblioteca tres bibliotecarios realizan los mismos préstamos y devoluciones con el sistema que se está desarrollando. ¿Cómo se representan en un diagrama de casos de uso?",
+      "options": [
+        {
+          "text": "Con tres actores, uno por cada bibliotecario, porque cada actor representa a una persona concreta",
+          "isCorrect": false
+        },
+        {
+          "text": "Con un actor Bibliotecario, que es el papel que esos usuarios llevan a cabo al interactuar con el sistema",
+          "isCorrect": true
+        },
+        {
+          "text": "Con un actor Biblioteca, que representa al propio sistema de información que se está desarrollando",
+          "isCorrect": false
+        },
+        {
+          "text": "Con un actor Bibliotecario, que se dibuja dentro de los límites del sistema como parte de él",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Según Métrica v3, un actor es «algo o alguien que se encuentra fuera del sistema y que interactúa con él». Si se habla de usuarios, es el papel que pueden llevar a cabo en su forma de interactuar con el sistema, y un único actor puede representar a muchos usuarios diferentes; además, un usuario puede actuar como actores diferentes. Por eso no hace falta un actor por persona, el sistema que se desarrolla no es un actor y el actor está fuera del sistema, no dentro de sus límites.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Casos de Uso», «Diagrama de casos de uso»"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0008",
+      "statement": "Según Métrica v3, ¿qué son los escenarios de un caso de uso?",
+      "options": [
+        {
+          "text": "Las condiciones que deben cumplirse para que se realice el caso de uso, definidas en su especificación",
+          "isCorrect": false
+        },
+        {
+          "text": "Las condiciones que se cumplen una vez realizado el caso de uso, definidas en su especificación",
+          "isCorrect": false
+        },
+        {
+          "text": "Los casos de uso más sencillos y manejables en que se descompone uno demasiado complejo",
+          "isCorrect": false
+        },
+        {
+          "text": "Los distintos caminos por los que puede evolucionar el caso de uso según las condiciones de su realización",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Métrica v3 indica que la especificación de un caso de uso puede enumerar sus escenarios, que son «los distintos caminos por los que puede evolucionar un caso de uso, dependiendo de las condiciones que se van dando en su realización». Las condiciones que deben cumplirse para realizarlo son sus precondiciones y las que se cumplen después, sus postcondiciones; los casos de uso demasiado complejos se descomponen en un segundo nivel de casos más sencillos.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Casos de Uso», «Especificación de un caso de uso»"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0009",
+      "statement": "Según UML 2.5.1, el caso de uso \"Cobrar multa\" extiende (Extend) al caso de uso \"Devolver libro\" cuando la devolución llega con retraso. ¿Dónde se define el punto de extensión en el que se inserta su comportamiento?",
+      "options": [
+        {
+          "text": "En el caso de uso Cobrar multa, que es el caso de uso que extiende",
+          "isCorrect": false
+        },
+        {
+          "text": "En el actor Socio, que inicia los dos casos de uso",
+          "isCorrect": false
+        },
+        {
+          "text": "En el caso de uso Devolver libro, que es el caso de uso extendido",
+          "isCorrect": true
+        },
+        {
+          "text": "En el sujeto Biblioteca, que contiene a los dos casos de uso",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En UML 2.5.1 una relación Extend va del caso de uso que extiende (la extensión) al caso extendido, y la extensión se produce en uno o más puntos de extensión definidos en el caso de uso extendido; cada punto tiene un nombre único dentro de su caso de uso. Aquí el punto se define en Devolver libro, y Cobrar multa aporta el comportamiento que se inserta, posiblemente con condición. Los puntos de extensión identifican lugares del comportamiento de un caso de uso, no de un actor ni del sujeto.",
+      "legalReference": "UML 2.5.1 (OMG), §18.1.3.2"
+    },
+    {
+      "key": "malaga-programador-c1/arquitectura-mvc/0010",
+      "statement": "Según UML 2.5.1, el caso de uso \"Prestar libro\" incluye (Include) al caso de uso \"Identificar socio\", que contiene una parte común a otros casos de uso. ¿Qué dependencia refleja la dirección de la relación?",
+      "options": [
+        {
+          "text": "Identificar socio depende de Prestar libro, pero Prestar libro no depende de Identificar socio",
+          "isCorrect": false
+        },
+        {
+          "text": "Prestar libro depende de Identificar socio, pero Identificar socio no depende de Prestar libro",
+          "isCorrect": true
+        },
+        {
+          "text": "Los dos casos de uso dependen el uno del otro, de manera que se deben describir a la vez",
+          "isCorrect": false
+        },
+        {
+          "text": "Los dos casos de uso son independientes entre sí, de manera que se pueden describir por separado",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En UML 2.5.1, Include se usa cuando hay partes comunes en el comportamiento de dos o más casos de uso: esa parte se extrae a un caso de uso aparte, que incluyen todos los casos base que la tienen. Lo que queda en un caso base suele no estar completo por sí mismo, sino depender de las partes incluidas, y la dirección de la relación indica que el caso base depende de la adición, pero no al revés. Además, el caso incluido debe estar disponible para describir por completo el que lo incluye.",
+      "legalReference": "UML 2.5.1 (OMG), §18.1.3.3"
+    }
+  ]
+}
