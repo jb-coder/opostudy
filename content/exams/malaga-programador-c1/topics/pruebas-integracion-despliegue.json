@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "pruebas-integracion-despliegue",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0001",
+      "statement": "En JUnit (Jupiter), con las anotaciones ya importadas, se ejecuta esta clase y las dos pruebas se superan. ¿Qué se imprime por la salida estándar?\n\n@TestInstance(TestInstance.Lifecycle.PER_CLASS)\nclass LoanCounterTest {\n  int loans;\n  @BeforeAll void init() { loans = 10; }\n  @Test void first() { loans++; System.out.print(loans + \" \"); }\n  @Test void second() { loans++; System.out.print(loans + \" \"); }\n}",
+      "options": [
+        {
+          "text": "11 11",
+          "isCorrect": false
+        },
+        {
+          "text": "11 12",
+          "isCorrect": true
+        },
+        {
+          "text": "1 2",
+          "isCorrect": false
+        },
+        {
+          "text": "1 1",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Con @TestInstance(Lifecycle.PER_CLASS) JUnit crea una única instancia de la clase para todas las pruebas, y por eso @BeforeAll puede ser un método no estático. init() fija loans en 10 y las dos pruebas comparten el campo: la primera imprime 11 y la segunda 12, sea cual sea el orden en que se ejecuten. 11 11 es la salida del ciclo por defecto (una instancia nueva por método) con la inicialización en un @BeforeEach; 1 2 y 1 1 son las salidas sin ningún método de inicialización, con una instancia compartida o con una por método.",
+      "legalReference": "JUnit 6.1, User Guide, «Test Instance Lifecycle»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0002",
+      "statement": "En JUnit (Jupiter), con las importaciones necesarias, se ejecuta esta clase de pruebas. ¿Cuál es el resultado?\n\nclass CatalogueTest {\n  @Test void loadsCatalogue() {\n    boolean loaded = false;\n    System.out.print(\"1\");\n    assumeTrue(loaded);\n    System.out.print(\"2\");\n  }\n}",
+      "options": [
+        {
+          "text": "Imprime 1 y la prueba falla, porque la aserción no se cumple",
+          "isCorrect": false
+        },
+        {
+          "text": "Imprime 12 y la prueba se supera, porque una suposición no interrumpe la ejecución",
+          "isCorrect": false
+        },
+        {
+          "text": "No imprime nada y la prueba se omite antes de ejecutarse, como si estuviera anotada con @Disabled",
+          "isCorrect": false
+        },
+        {
+          "text": "Imprime 1 y la prueba se aborta, porque la suposición no se cumple",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Cuando una suposición no se cumple, assumeTrue lanza una TestAbortedException y la prueba se aborta en lugar de marcarse como fallo: se imprime 1 y no llega a imprimirse 2. Que falle sería lo propio de una aserción como assertTrue, y que llegue al final solo ocurriría con loaded a true. Tampoco se omite antes de ejecutarse: eso es lo que hace @Disabled, que impide la ejecución del método.",
+      "legalReference": "JUnit 6.1, User Guide, «Assumptions»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0003",
+      "statement": "En Selenium WebDriver (Java), driver es un WebDriver con la sesión del navegador ya abierta y la página del fragmento crea el elemento con id ready 5 segundos después de cargarse. ¿Qué ocurre al ejecutar estas líneas?\n\ndriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));\ndriver.get(\"data:text/html,<script>setTimeout(() => document.body.innerHTML = '<p id=ready>ready</p>', 5000)</script>\");\nString text = driver.findElement(By.id(\"ready\")).getText();",
+      "options": [
+        {
+          "text": "Lanza NoSuchElementException tras esperar 2 segundos, porque el elemento aún no existe",
+          "isCorrect": true
+        },
+        {
+          "text": "Lanza TimeoutException tras esperar 2 segundos, porque el elemento aún no existe",
+          "isCorrect": false
+        },
+        {
+          "text": "Devuelve ready a los 5 segundos, porque la espera implícita dura hasta que el elemento existe",
+          "isCorrect": false
+        },
+        {
+          "text": "Lanza NoSuchElementException de inmediato, porque el elemento no existe al invocar findElement",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La espera implícita es global: si no localiza el elemento, el controlador espera el tiempo configurado (aquí 2 segundos) antes de devolver el error. Como el elemento se crea a los 5 segundos, findElement falla a los 2 con NoSuchElementException. TimeoutException es el error de una espera explícita (WebDriverWait) cuando no se cumple la condición; la espera implícita no dura hasta que aparece el elemento, sino el valor fijado; y el error no es inmediato porque ese valor es 2 segundos.",
+      "legalReference": "Selenium, documentación, «Waiting Strategies» y «Understanding Common Errors»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0004",
+      "statement": "Según la documentación de Selenium sobre el patrón Page Object, ¿qué ventaja tiene modelar cada página con una clase propia?",
+      "options": [
+        {
+          "text": "Que las verificaciones se escriben en el Page Object y las pruebas se limitan a llamarlo",
+          "isCorrect": false
+        },
+        {
+          "text": "Que los localizadores se escriben en las pruebas que los usan y quedan a la vista",
+          "isCorrect": false
+        },
+        {
+          "text": "Que los cambios de la interfaz de la página se corrigen en un único lugar, el Page Object",
+          "isCorrect": true
+        },
+        {
+          "text": "Que cada Page Object abre su propia sesión del navegador y las pruebas van en paralelo",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Un Page Object modela en el código de las pruebas las áreas de la interfaz con las que interactúan. Si la interfaz de la página cambia, las pruebas no tienen que cambiar: solo se corrige el código del Page Object, de modo que las modificaciones quedan en un único lugar. La documentación separa de forma limpia el código de la prueba y el específico de la página (localizadores y disposición), y deja las verificaciones en la prueba, no en el Page Object. La gestión de sesiones del navegador o la ejecución en paralelo no se atribuyen al patrón.",
+      "legalReference": "Selenium, documentación, «Page object models»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0005",
+      "statement": "En Nexus Repository, ¿qué es un repositorio de tipo grupo (group)?",
+      "options": [
+        {
+          "text": "Un repositorio que almacena los componentes propios de la organización y es su ubicación de referencia",
+          "isCorrect": false
+        },
+        {
+          "text": "Un repositorio que combina varios repositorios, incluso otros grupos, en uno solo con una única URL",
+          "isCorrect": true
+        },
+        {
+          "text": "Un repositorio que guarda en una caché local el contenido de uno remoto y lo sirve a los clientes",
+          "isCorrect": false
+        },
+        {
+          "text": "Un repositorio que elimina de forma automática los componentes que cumplen una política de limpieza",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Un repositorio de grupo combina varios repositorios, incluidos otros grupos, en un único repositorio: los usuarios configuran una sola URL y los administradores pueden seguir añadiendo repositorios al grupo. Las otras opciones describen otros conceptos: el repositorio hosted almacena componentes como ubicación de referencia, el proxy guarda en caché el contenido de un repositorio remoto, y las políticas de limpieza (cleanup policies) eliminan componentes, pero no son un tipo de repositorio.",
+      "legalReference": "Sonatype Nexus Repository 3, «Repository Types»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0006",
+      "statement": "En un Jenkinsfile declarativo se ejecuta este trabajo, cuyo único stage termina con código de salida 1. ¿Qué mensajes escribe el bloque post en el registro, sin tener en cuenta el orden?\n\npipeline {\n  agent any\n  stages { stage('Test') { steps { sh 'exit 1' } } }\n  post {\n    unstable { echo 'unstable' }\n    failure { echo 'failure' }\n    unsuccessful { echo 'unsuccessful' }\n  }\n}",
+      "options": [
+        {
+          "text": "failure y unsuccessful",
+          "isCorrect": true
+        },
+        {
+          "text": "failure y unstable",
+          "isCorrect": false
+        },
+        {
+          "text": "unstable y unsuccessful",
+          "isCorrect": false
+        },
+        {
+          "text": "failure, unstable y unsuccessful",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Las condiciones del bloque post se evalúan según el estado final de la ejecución. Como el paso sh termina con código 1, el estado es fallido: se cumplen failure, que corresponde al estado fallido, y unsuccessful, que se cumple con cualquier estado que no sea correcto. unstable corresponde a otro estado, el inestable, causado normalmente por pruebas fallidas o incumplimientos de calidad del código, y no se cumple. Las opciones que incluyen unstable confunden los dos estados.",
+      "legalReference": "Jenkins, User Handbook, «Pipeline Syntax», «post»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0007",
+      "statement": "En un Jenkinsfile declarativo se ejecuta este trabajo y los dos stage se completan. ¿Qué líneas escriben los comandos echo, una cada uno?\n\npipeline {\n  agent any\n  stages {\n    stage('Build') {\n      environment { TARGET = 'staging' }\n      steps { sh 'echo \"Build:$TARGET\"' }\n    }\n    stage('Test') { steps { sh 'echo \"Test:$TARGET\"' } }\n  }\n}",
+      "options": [
+        {
+          "text": "Build:staging y Test:staging",
+          "isCorrect": false
+        },
+        {
+          "text": "Build: y Test:",
+          "isCorrect": false
+        },
+        {
+          "text": "Build:staging y Test:",
+          "isCorrect": true
+        },
+        {
+          "text": "Build: y Test:staging",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Una directiva environment dentro de un stage define las variables solo para los pasos de ese stage, mientras que en el bloque pipeline se aplicaría a todos los pasos. TARGET existe en Build, que escribe Build:staging; en Test no está definida y el shell la expande a una cadena vacía, así que escribe Test:. Build:staging y Test:staging sería el resultado si la directiva estuviera en el bloque pipeline; Build: y Test: supone que la directiva no llega ni al stage donde se declara, y Build: y Test:staging, que empieza a aplicarse en el stage siguiente.",
+      "legalReference": "Jenkins, User Handbook, «Pipeline Syntax», «environment»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0008",
+      "statement": "En SonarQube Server, ¿qué define un perfil de calidad (quality profile) para un lenguaje?",
+      "options": [
+        {
+          "text": "El conjunto de condiciones que debe cumplir el código para superar el análisis",
+          "isCorrect": false
+        },
+        {
+          "text": "El conjunto de líneas añadidas o modificadas recientemente, en las que se centra el análisis",
+          "isCorrect": false
+        },
+        {
+          "text": "El conjunto de ficheros y carpetas que se excluyen del análisis del proyecto",
+          "isCorrect": false
+        },
+        {
+          "text": "El conjunto de reglas de codificación que se aplican durante el análisis del código",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Un perfil de calidad define, para un lenguaje, el conjunto de reglas de codificación que se aplican durante el análisis. Las condiciones que debe cumplir el código las define el quality gate, y qué parte del código se considera nueva, la definición de código nuevo (new code). Excluir ficheros y carpetas del análisis tampoco es lo que define un perfil.",
+      "legalReference": "SonarQube Server 2026.5, «Managing quality profiles», «Understanding quality gates» y «Quality standards and new code»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0009",
+      "statement": "En Ansible, se ejecuta dos veces seguidas esta guía (playbook) en un equipo donde /tmp/loans.txt y /tmp/members.txt no existen al empezar. ¿Cuántas veces se ejecuta el handler Report en cada ejecución?\n\n- hosts: localhost\n  tasks:\n    - ansible.builtin.copy: { dest: /tmp/loans.txt, content: \"a\" }\n      notify: Report\n    - ansible.builtin.copy: { dest: /tmp/members.txt, content: \"b\" }\n      notify: Report\n  handlers:\n    - name: Report\n      ansible.builtin.debug: { msg: done }",
+      "options": [
+        {
+          "text": "Dos en la primera ejecución y ninguna en la segunda",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos en la primera ejecución y una en la segunda",
+          "isCorrect": false
+        },
+        {
+          "text": "Una en la primera ejecución y ninguna en la segunda",
+          "isCorrect": true
+        },
+        {
+          "text": "Una en la primera ejecución y una en la segunda",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Un handler solo se ejecuta cuando lo notifica una tarea que cambia algo, y notificarlo varias veces no lo repite: se ejecuta una vez, al terminar las tareas del play. En la primera ejecución las dos tareas crean sus ficheros (changed=2) y Report se ejecuta una vez. En la segunda los ficheros ya existen con ese contenido, las tareas no cambian nada (changed=0), nadie notifica el handler y no se ejecuta. Dos ejecuciones serían contar cada notificación; una en la segunda, ejecutarlo aunque no haya cambios.",
+      "legalReference": "Ansible, documentación (core 2.21), «Handlers: running operations on change» y «Desired state and idempotency»"
+    },
+    {
+      "key": "malaga-programador-c1/pruebas-integracion-despliegue/0010",
+      "statement": "En LXC, ¿qué caracteriza a un contenedor sin privilegios (unprivileged)?",
+      "options": [
+        {
+          "text": "El uid 0 del contenedor se asigna a un usuario sin privilegios del anfitrión, fuera del contenedor",
+          "isCorrect": true
+        },
+        {
+          "text": "El uid 0 del contenedor se asigna al uid 0 del anfitrión, y AppArmor, SELinux y seccomp protegen el anfitrión",
+          "isCorrect": false
+        },
+        {
+          "text": "El contenedor arranca con un núcleo propio, distinto del núcleo del anfitrión, para aislarse de él",
+          "isCorrect": false
+        },
+        {
+          "text": "El contenedor aplica límites de cgroup de memoria, CPU y procesos que impiden ataques de denegación de servicio",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En un contenedor sin privilegios el uid 0 del contenedor se asigna a un usuario sin privilegios fuera de él, y solo tiene derechos extra sobre los recursos que le pertenecen. Es lo contrario del contenedor con privilegios, donde el uid 0 del contenedor es el uid 0 del anfitrión y la protección recae en el control de acceso obligatorio (AppArmor, SELinux), los filtros seccomp, la retirada de capacidades y los espacios de nombres. LXC busca un entorno cercano a una instalación Linux estándar sin un núcleo aparte, y no pretende impedir por defecto los ataques de denegación de servicio: hereda los límites de cgroup de su padre.",
+      "legalReference": "LXC, documentación, «Security» e «Introduction»"
+    }
+  ]
+}

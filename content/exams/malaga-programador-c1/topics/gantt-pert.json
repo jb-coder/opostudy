@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "gantt-pert",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/gantt-pert/0001",
+      "statement": "Según Métrica v3, en el método PERT, ¿qué es un suceso?",
+      "options": [
+        {
+          "text": "La ejecución de una tarea que exige recursos, como mano de obra, maquinaria o materiales",
+          "isCorrect": false
+        },
+        {
+          "text": "Un punto en el tiempo que no consume recursos y marca el principio o el fin de una o varias actividades",
+          "isCorrect": true
+        },
+        {
+          "text": "Una relación de orden que exige haber finalizado la actividad precedente para poder iniciar la siguiente",
+          "isCorrect": false
+        },
+        {
+          "text": "Un cuadro de dos columnas que recoge cada actividad del proyecto junto a sus actividades precedentes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Métrica v3 define el suceso como «un acontecimiento, un punto en el tiempo, una fecha en el calendario»: no consume recursos y solo indica el principio o el fin de una actividad o de un conjunto de ellas. La primera opción describe la actividad, que sí exige recursos; la tercera, una prelación, y la cuarta, el cuadro de prelaciones, con el que se recogen las prelaciones de forma sistematizada para construir el grafo.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Program Evaluation & Review Technique - PERT»"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0002",
+      "statement": "Según Métrica v3, en el método PERT, un proyecto tiene este cuadro de prelaciones (actividad: precedentes):\n\nA: -\nB: -\nC: A, B\nD: A\nE: C, D\nF: D\nG: E, F\n\nSi se construye con él la matriz de encadenamientos, ¿cuántas casillas se marcan con una X?",
+      "options": [
+        {
+          "text": "7 casillas",
+          "isCorrect": false
+        },
+        {
+          "text": "10 casillas",
+          "isCorrect": false
+        },
+        {
+          "text": "5 casillas",
+          "isCorrect": false
+        },
+        {
+          "text": "8 casillas",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "En la matriz de encadenamientos, cada X indica que la actividad de la fila necesita que haya finalizado la de la columna, así que hay una X por cada precedente del cuadro: C tiene 2, D tiene 1, E tiene 2, F tiene 1 y G tiene 2, es decir, 2 + 1 + 2 + 1 + 2 = 8. Siete es el número de actividades (la dimensión de la matriz), cinco es el número de filas que tienen algún precedente y diez resulta de contar también las filas de A y de B (guion en lugar de precedentes), que son las actividades sin precedentes y por tanto las filas sin ninguna X.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Program Evaluation & Review Technique - PERT»"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0003",
+      "statement": "Según el tutorial de gestión del valor ganado del Departamento de Energía de EE. UU. (DOE, módulo 3), una actividad tiene una estimación optimista de 4 días, una más probable de 10 días y una pesimista de 22 días. ¿Qué duración le corresponde con la fórmula de PERT?",
+      "options": [
+        {
+          "text": "11 días",
+          "isCorrect": true
+        },
+        {
+          "text": "10 días",
+          "isCorrect": false
+        },
+        {
+          "text": "12 días",
+          "isCorrect": false
+        },
+        {
+          "text": "13 días",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El tutorial da la duración de PERT como (pesimista + 4 · más probable + optimista) / 6, es decir, (22 + 4 · 10 + 4) / 6 = 66 / 6 = 11 días. Diez días es la estimación del método CPM, que usa solo el valor más probable; 12 es la media aritmética de los tres valores, (4 + 10 + 22) / 3, que no pondera el más probable, y 13 es el punto medio entre el optimista y el pesimista, (4 + 22) / 2.",
+      "legalReference": "DOE, Earned Value Management Tutorial, módulo 3, «Methods for Determining Activity Duration»"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0004",
+      "statement": "Según el método del camino crítico (CPM), un proyecto tiene las actividades siguientes:\n\nA: 4 semanas, sin precedentes\nB: 3 semanas, sin precedentes\nC: 5 semanas, precedente A\nD: 6 semanas, precedentes A y B\nE: 4 semanas, precedente C\nF: 3 semanas, precedentes D y E\n\n¿Cuál es la duración mínima del proyecto?",
+      "options": [
+        {
+          "text": "13 semanas",
+          "isCorrect": false
+        },
+        {
+          "text": "25 semanas",
+          "isCorrect": false
+        },
+        {
+          "text": "16 semanas",
+          "isCorrect": true
+        },
+        {
+          "text": "12 semanas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El camino crítico es la secuencia de actividades de mayor duración total, y esa duración es la mínima posible del proyecto. Las rutas son A-C-E-F (4 + 5 + 4 + 3 = 16 semanas), A-D-F (4 + 6 + 3 = 13) y B-D-F (3 + 6 + 3 = 12), así que el camino crítico es A-C-E-F y el proyecto dura 16 semanas. Trece es la suma de una ruta no crítica, doce es la de la ruta más corta y 25 resulta de sumar todas las actividades como si se hicieran una tras otra.",
+      "legalReference": "NASA Schedule Management Handbook (SP-2010-3403 Rev. 1), §5.5.10"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0005",
+      "statement": "Según el método del camino crítico (CPM), un proyecto tiene las actividades siguientes:\n\nA: 3 semanas, sin precedentes\nB: 5 semanas, sin precedentes\nC: 4 semanas, precedente A\nD: 2 semanas, precedente A\nE: 6 semanas, precedentes B y C\nF: 3 semanas, precedente D\nG: 2 semanas, precedentes E y F\n\n¿Cuál es la holgura total de la actividad D?",
+      "options": [
+        {
+          "text": "5 semanas",
+          "isCorrect": true
+        },
+        {
+          "text": "0 semanas",
+          "isCorrect": false
+        },
+        {
+          "text": "10 semanas",
+          "isCorrect": false
+        },
+        {
+          "text": "13 semanas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La holgura total es el tiempo que una actividad puede retrasarse sin retrasar el fin del proyecto. El camino crítico es A-C-E-G, con 3 + 4 + 6 + 2 = 15 semanas, y la ruta que pasa por D es A-D-F-G, con 3 + 2 + 3 + 2 = 10 semanas, así que la holgura total de D es 15 - 10 = 5 semanas. Cero es la holgura libre de D, porque F empieza en cuanto D termina; 10 es la duración de su ruta y 13 resulta de restar a la duración del proyecto solo la duración de D (15 - 2).",
+      "legalReference": "NASA Schedule Management Handbook (SP-2010-3403 Rev. 1), §5.5.10 y §5.5.11"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0006",
+      "statement": "Según el método del camino crítico (CPM), un proyecto tiene las actividades siguientes:\n\nA: 3 semanas, sin precedentes\nB: 3 semanas, precedente A\nC: 6 semanas, precedente B\nD: 5 semanas, sin precedentes\nE: 3 semanas, precedentes B y D\nF: 4 semanas, precedentes C y E\n\n¿Cuál es la holgura libre de la actividad D?",
+      "options": [
+        {
+          "text": "4 semanas",
+          "isCorrect": false
+        },
+        {
+          "text": "3 semanas",
+          "isCorrect": false
+        },
+        {
+          "text": "5 semanas",
+          "isCorrect": false
+        },
+        {
+          "text": "1 semana",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "La holgura libre es el tiempo que una actividad puede retrasarse sin afectar al inicio temprano de sus sucesoras inmediatas. D puede terminar al final de la semana 5 y su sucesora inmediata, E, no puede empezar hasta que termina B, al final de la semana 6, así que la holgura libre de D es 6 - 5 = 1 semana. Cuatro es la holgura total de D: el proyecto dura 16 semanas por el camino crítico A-B-C-F y la ruta D-E-F suma 12. Tres es la holgura de E (16 menos las 13 semanas de la ruta A-B-E-F) y cinco es la duración de D.",
+      "legalReference": "NASA Schedule Management Handbook (SP-2010-3403 Rev. 1), §5.5.10 y §5.5.11"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0007",
+      "statement": "Según el manual de programación de la NASA (Schedule Management Handbook), ¿qué describe la relación comienzo-comienzo (start-to-start, SS) entre dos actividades?",
+      "options": [
+        {
+          "text": "La actividad sucesora no puede comenzar hasta que la predecesora haya terminado",
+          "isCorrect": false
+        },
+        {
+          "text": "La actividad sucesora no puede comenzar hasta que la predecesora haya comenzado",
+          "isCorrect": true
+        },
+        {
+          "text": "La actividad sucesora no puede terminar hasta que la predecesora haya terminado",
+          "isCorrect": false
+        },
+        {
+          "text": "La actividad sucesora no puede terminar hasta que la predecesora haya comenzado",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En la relación comienzo-comienzo la sucesora no puede empezar hasta que la predecesora ha empezado, y se usa cuando dos actividades han de arrancar a la vez, por ejemplo en los puntos de integración. La primera opción es la relación fin-comienzo, la más habitual; la tercera es fin-fin, y la cuarta, comienzo-fin, que el manual califica de muy poco común.",
+      "legalReference": "NASA Schedule Management Handbook (SP-2010-3403 Rev. 1), §5.5.8.1"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0008",
+      "statement": "Según Métrica v3, en un diagrama de Gantt las actividades se pueden encadenar por dos motivos. ¿Cuál es el encadenamiento orgánico?",
+      "options": [
+        {
+          "text": "El que se debe a que una actividad necesita que haya terminado otra de la que depende",
+          "isCorrect": false
+        },
+        {
+          "text": "El que se debe a que varias actividades tienen la misma fecha prevista de comienzo",
+          "isCorrect": false
+        },
+        {
+          "text": "El que se debe a que el recurso asignado a una actividad está ocupado en otra anterior",
+          "isCorrect": true
+        },
+        {
+          "text": "El que se debe a que varias actividades del diagrama se agrupan en una misma fase del proyecto",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Métrica v3 distingue el «Encadenamiento orgánico o por ocupación de recursos» (por ejemplo, un programador no puede empezar un programa hasta que haya terminado el anterior) del «Encadenamiento funcional o por prelaciones» (por ejemplo, un programa no puede probarse hasta que haya sido escrito), que es el de la primera opción. Empezar en la misma fecha o agruparse en una fase no son motivos de encadenamiento.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Diagrama de Gantt»"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0009",
+      "statement": "Según Métrica v3, en la técnica del patrón de límites, el esfuerzo y la duración que quedan por repartir, ya hechas todas las deducciones que prevé la técnica, son de 54 personas-mes y 9 meses. ¿Cuántas personas trabajan de media durante la situación de pleno rendimiento?",
+      "options": [
+        {
+          "text": "6 personas",
+          "isCorrect": false
+        },
+        {
+          "text": "9 personas",
+          "isCorrect": true
+        },
+        {
+          "text": "4,5 personas",
+          "isCorrect": false
+        },
+        {
+          "text": "18 personas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La técnica divide el proyecto en tres situaciones (arranque, pleno rendimiento y finalización) de duración aproximadamente igual, es decir, 9 / 3 = 3 meses cada una. Asigna la mitad del esfuerzo (27 personas-mes) al pleno rendimiento: 27 / 3 = 9 personas. La otra mitad se reparte a partes iguales entre arranque y finalización: 13,5 personas-mes en cada una, o 4,5 personas de media. Seis es la media de todo el proyecto (54 / 9), que no distingue situaciones, y 18 resulta de repartir todo el esfuerzo en una sola situación (54 / 3).",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Patrón de límites»"
+    },
+    {
+      "key": "malaga-programador-c1/gantt-pert/0010",
+      "statement": "Según Métrica v3, ¿para qué sirve la estructura de descomposición de trabajo (WBS)?",
+      "options": [
+        {
+          "text": "Para agrupar en un árbol las actividades según su naturaleza y asignarlas a cuentas que sirven de soporte a la contabilidad",
+          "isCorrect": true
+        },
+        {
+          "text": "Para establecer las dependencias entre las tareas y saber de qué manera han de encadenarse en la planificación del proyecto",
+          "isCorrect": false
+        },
+        {
+          "text": "Para representar el plan de trabajo mostrando las tareas, el momento de su comienzo y su terminación y cómo se encadenan",
+          "isCorrect": false
+        },
+        {
+          "text": "Para obtener previsiones de desviaciones en la duración del desarrollo a partir de la cronología de las estimaciones de un hito",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La WBS descompone las actividades del proyecto según su naturaleza (desarrollo, calidad, gestión, etc.) en un árbol y las asigna a cuentas, de modo que el presupuesto inicial se controla por cuentas y queda un histórico útil para proyectos futuros. Las otras opciones describen el objetivo de otras técnicas de Métrica v3: el PERT establece las dependencias entre tareas, el Gantt representa el plan de trabajo y el diagrama de extrapolación prevé desviaciones en la duración.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Estructura de Descomposición de Trabajo (WBS - Work Breakdown Structure)»"
+    }
+  ]
+}

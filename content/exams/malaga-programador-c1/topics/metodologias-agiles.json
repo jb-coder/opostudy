@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "metodologias-agiles",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0001",
+      "statement": "Según los principios del Manifiesto Ágil, ¿cuál es la medida principal de progreso?",
+      "options": [
+        {
+          "text": "La documentación completa",
+          "isCorrect": false
+        },
+        {
+          "text": "El software funcionando",
+          "isCorrect": true
+        },
+        {
+          "text": "El plan inicial cumplido",
+          "isCorrect": false
+        },
+        {
+          "text": "Las horas trabajadas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Uno de los principios dice: «El software funcionando es la medida principal de progreso». La documentación extensiva y seguir un plan son, en los valores del Manifiesto, elementos que se valoran menos que el software funcionando y que la respuesta ante el cambio. Las horas trabajadas no aparecen en sus principios como medida de progreso.",
+      "legalReference": "Manifiesto Ágil, principios"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0002",
+      "statement": "Según la Guía de Scrum de 2020, si el Sprint Goal se vuelve obsoleto, ¿quién tiene la autoridad para cancelar el Sprint?",
+      "options": [
+        {
+          "text": "El Product Owner",
+          "isCorrect": true
+        },
+        {
+          "text": "El Scrum Master",
+          "isCorrect": false
+        },
+        {
+          "text": "Los Developers",
+          "isCorrect": false
+        },
+        {
+          "text": "Los interesados clave",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La guía indica que un Sprint podría cancelarse si el Sprint Goal se vuelve obsoleto y que «Solo el Propietario del Producto tiene la autoridad para cancelar el Sprint». El Scrum Master, los Developers y los interesados clave no tienen esa autoridad.",
+      "legalReference": "Guía de Scrum 2020, «El Sprint»"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0003",
+      "statement": "Según la Guía de Scrum de 2020, ¿a qué pilar corresponde la exigencia de que el proceso y el trabajo emergentes sean visibles para quienes realizan el trabajo y para quienes lo reciben?",
+      "options": [
+        {
+          "text": "A la inspección",
+          "isCorrect": false
+        },
+        {
+          "text": "A la adaptación",
+          "isCorrect": false
+        },
+        {
+          "text": "A la transparencia",
+          "isCorrect": true
+        },
+        {
+          "text": "A la autogestión",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La guía dice que «El proceso y el trabajo emergentes deben ser visibles para aquellos que realizan el trabajo, así como para los que reciben el trabajo», y lo recoge en el pilar de la transparencia. La inspección es el examen frecuente de los artefactos y del progreso para detectar problemas, y la adaptación, el ajuste del proceso o de los materiales cuando algo se desvía de lo aceptable. La autogestión no es un pilar, sino una característica de los equipos, que deciden internamente quién hace qué, cuándo y cómo.",
+      "legalReference": "Guía de Scrum 2020, «Transparencia»"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0004",
+      "statement": "Según la Guía de Scrum de 2020, ¿cuál de estas responsabilidades corresponde al Scrum Master?",
+      "options": [
+        {
+          "text": "Seleccionar los elementos del Product Backlog que entran en el Sprint",
+          "isCorrect": false
+        },
+        {
+          "text": "Estimar el tamaño de los elementos del Product Backlog",
+          "isCorrect": false
+        },
+        {
+          "text": "Crear el Sprint Backlog como plan del Sprint",
+          "isCorrect": false
+        },
+        {
+          "text": "Promover la eliminación de los impedimentos del Scrum Team",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Entre las formas en que el Scrum Master sirve al equipo Scrum, la guía incluye «Promover la eliminación de los impedimentos para el progreso del equipo Scrum». Crear el Sprint Backlog es una de las responsabilidades de los Developers, que además seleccionan los elementos del Product Backlog del Sprint en diálogo con el Product Owner y son responsables del tamaño de esos elementos.",
+      "legalReference": "Guía de Scrum 2020, «Scrum Master»"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0005",
+      "statement": "Según The Kanban Guide, un equipo cuenta cada semana cuántos elementos de trabajo (work items) ha terminado. ¿Qué métrica de flujo obtiene con ese recuento?",
+      "options": [
+        {
+          "text": "Throughput (rendimiento)",
+          "isCorrect": true
+        },
+        {
+          "text": "Cycle Time (tiempo de ciclo)",
+          "isCorrect": false
+        },
+        {
+          "text": "Work Item Age (edad del elemento)",
+          "isCorrect": false
+        },
+        {
+          "text": "WIP (trabajo en curso)",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El throughput es el número de elementos terminados por unidad de tiempo. El WIP cuenta los elementos iniciados y no terminados; el Cycle Time y el Work Item Age son tiempos transcurridos (entre el inicio y el fin de un elemento, y entre su inicio y la fecha actual, respectivamente).",
+      "legalReference": "The Kanban Guide (05-2025), «Flow Metrics»"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0006",
+      "statement": "Según Métrica v3, su estructura distingue procesos principales e interfaces de apoyo al proyecto. ¿Cuáles son los procesos principales?",
+      "options": [
+        {
+          "text": "Planificación, Desarrollo y Seguridad",
+          "isCorrect": false
+        },
+        {
+          "text": "Desarrollo, Mantenimiento y Gestión de Proyectos",
+          "isCorrect": false
+        },
+        {
+          "text": "Planificación, Desarrollo y Mantenimiento",
+          "isCorrect": true
+        },
+        {
+          "text": "Planificación, Mantenimiento y Gestión de la Configuración",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Los procesos principales de Métrica v3 son Planificación de Sistemas de Información, Desarrollo de Sistemas de Información (que se subdivide en cinco procesos) y Mantenimiento de Sistemas de Información. Seguridad, Gestión de Proyectos y Gestión de la Configuración son interfaces, junto con el Aseguramiento de la Calidad.",
+      "legalReference": "Métrica v3, Introducción, «PROCESOS PRINCIPALES DE MÉTRICA VERSIÓN 3» e «INTERFACES DE MÉTRICA VERSIÓN 3»"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0007",
+      "statement": "Según Métrica v3, ¿qué perfil de participante tiene la responsabilidad de elaborar un catálogo detallado de requisitos que describa con precisión el sistema de información, mediante entrevistas y sesiones de trabajo con los responsables de la organización y los usuarios?",
+      "options": [
+        {
+          "text": "Jefe de Proyecto",
+          "isCorrect": false
+        },
+        {
+          "text": "Programador",
+          "isCorrect": false
+        },
+        {
+          "text": "Consultor",
+          "isCorrect": false
+        },
+        {
+          "text": "Analista",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Métrica v3 asigna esa responsabilidad al perfil Analista, que actúa como interlocutor entre los usuarios y el equipo de proyecto en lo que a requisitos se refiere. El Jefe de Proyecto estima el esfuerzo y dirige el proyecto, el Consultor asesora en las cuestiones de su especialidad y el Programador construye el código a partir del diseño técnico.",
+      "legalReference": "Métrica v3, Participantes, «PERFIL ANALISTA»"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0008",
+      "statement": "Según Métrica v3, ¿en qué estrategia de desarrollo se considera el proyecto como un todo, dividido en procesos, y cada proceso empieza cuando ha finalizado el anterior?",
+      "options": [
+        {
+          "text": "En la estrategia por subsistemas",
+          "isCorrect": false
+        },
+        {
+          "text": "En la estrategia clásica",
+          "isCorrect": true
+        },
+        {
+          "text": "En la estrategia por prototipo",
+          "isCorrect": false
+        },
+        {
+          "text": "En la estrategia híbrida",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Métrica v3 llama «Clásica o en cascada» a la estrategia que considera el proyecto como un todo, dividido en procesos, en la que cada proceso no comienza hasta que finaliza el anterior. La estrategia por subsistemas divide el sistema en subsistemas semi-independientes; la de prototipo genera un prototipo funcional en los primeros procesos y lo completa con evaluaciones y revisiones sucesivas, y la híbrida desarrolla cada subsistema con un enfoque diferente de los demás.",
+      "legalReference": "Métrica v3, Gestión de Proyectos, GPI 2.1"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0009",
+      "statement": "Según Métrica v3, si durante el desarrollo de un proyecto se solicita un cambio de requisitos, ¿qué órgano aprueba su inclusión, previo análisis del impacto en la planificación y el coste?",
+      "options": [
+        {
+          "text": "El Comité de Dirección",
+          "isCorrect": false
+        },
+        {
+          "text": "El Equipo de Proyecto",
+          "isCorrect": false
+        },
+        {
+          "text": "El Comité de Seguimiento",
+          "isCorrect": true
+        },
+        {
+          "text": "El Grupo de Aseguramiento de la Calidad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Métrica v3 establece que los cambios de requisitos deben plantearse al Comité de Seguimiento y que la inclusión de las modificaciones se someterá a su aprobación, previo análisis del impacto en la planificación y el coste asociado. En la actividad GPS 7 es ese comité quien decide sobre la procedencia del cambio. El Comité de Dirección revisa y aprueba formalmente cada proceso, el Equipo de Proyecto estima el esfuerzo del cambio una vez aprobado y el Grupo de Aseguramiento de la Calidad desarrolla el plan de calidad del proyecto.",
+      "legalReference": "Métrica v3, Gestión de Proyectos, «GESTIÓN DE CAMBIOS EN LOS REQUISITOS», GPS 7 y GPS 8; Participantes, «PERFIL DIRECTIVO» y «PERFIL ANALISTA»"
+    },
+    {
+      "key": "malaga-programador-c1/metodologias-agiles/0010",
+      "statement": "Según Métrica v3, ¿qué tipo de prueba tiene como objetivo eliminar el «efecto onda», es decir, comprobar que los cambios sobre un componente no introducen comportamientos no deseados ni errores en otros componentes no modificados?",
+      "options": [
+        {
+          "text": "Pruebas de integración",
+          "isCorrect": false
+        },
+        {
+          "text": "Pruebas de aceptación",
+          "isCorrect": false
+        },
+        {
+          "text": "Pruebas del sistema",
+          "isCorrect": false
+        },
+        {
+          "text": "Pruebas de regresión",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El objetivo de las pruebas de regresión es «eliminar el efecto onda»; se llevan a cabo cada vez que se hace un cambio en el sistema, ya sea para corregir un error o para una mejora, y suelen repetir pruebas ya realizadas. Las de integración verifican el ensamblaje entre componentes ya probados unitariamente, las del sistema ejercitan el sistema de información globalmente y las de aceptación permiten al usuario determinar si acepta el sistema.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Pruebas de Regresión»"
+    }
+  ]
+}
