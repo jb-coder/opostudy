@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "control-versiones",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/control-versiones/0001",
+      "statement": "Según Pro Git (2.ª ed.), además de Git, ¿cuál de estos sistemas de control de versiones es un ejemplo de sistema distribuido, en el que los clientes reflejan por completo el repositorio, incluido su historial?",
+      "options": [
+        {
+          "text": "Subversion",
+          "isCorrect": false
+        },
+        {
+          "text": "Mercurial",
+          "isCorrect": true
+        },
+        {
+          "text": "CVS",
+          "isCorrect": false
+        },
+        {
+          "text": "RCS",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Pro Git cita como ejemplos de sistemas distribuidos Git, Mercurial y Darcs: sus clientes no se limitan a descargar la última instantánea de los ficheros, sino que reflejan el repositorio con todo su historial, de modo que cada clon es una copia de seguridad completa. CVS, Subversion y Perforce son sistemas centralizados, con un único servidor que contiene todos los ficheros versionados, y RCS es un sistema local, que guarda conjuntos de parches en un formato especial en disco.",
+      "legalReference": "Pro Git (2.ª ed.), §1.1, «About Version Control»"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0002",
+      "statement": "En Git, con la identidad configurada, se ejecutan estas órdenes en un directorio vacío. ¿Qué muestra la última? (En las opciones, cada espacio se escribe como · y las líneas se separan con comas).\n\ngit init -b main\necho 1 > a.txt && git add a.txt && git commit -m one\necho 2 >> a.txt && git add a.txt\necho 3 >> a.txt\ngit status -s",
+      "options": [
+        {
+          "text": "M··a.txt",
+          "isCorrect": false
+        },
+        {
+          "text": "·M·a.txt",
+          "isCorrect": false
+        },
+        {
+          "text": "MM·a.txt",
+          "isCorrect": true
+        },
+        {
+          "text": "AM·a.txt",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En el formato corto, la columna de la izquierda indica el estado del área de preparación (staging area) y la de la derecha, el del árbol de trabajo (working tree). a.txt se modificó y se preparó con el segundo add, y después se volvió a modificar: tiene cambios preparados y otros sin preparar, por eso sale MM (el caso del Rakefile de Pro Git). Solo M en la primera columna sería un fichero modificado y preparado sin cambios posteriores, solo M en la segunda, uno modificado sin preparar, y AM, un fichero nuevo preparado y modificado después (aquí a.txt ya estaba confirmado).",
+      "legalReference": "Pro Git (2.ª ed.), §2.2, «Short Status»"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0003",
+      "statement": "En Git, según Pro Git (2.ª ed.), ¿qué almacena un objeto de tipo tree?",
+      "options": [
+        {
+          "text": "Las entradas de un directorio: el modo, el tipo, el hash y el nombre de cada blob o subárbol",
+          "isCorrect": true
+        },
+        {
+          "text": "El contenido de un fichero, sin su nombre, identificado por el hash de ese contenido",
+          "isCorrect": false
+        },
+        {
+          "text": "El árbol raíz del proyecto, las confirmaciones padre, la autoría y el mensaje de la confirmación",
+          "isCorrect": false
+        },
+        {
+          "text": "El parche con los cambios que introduce una confirmación respecto de la anterior",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Un objeto tree corresponde a una entrada de directorio de UNIX: contiene una o más entradas, cada una con el hash de un blob o de otro tree junto con su modo, su tipo y su nombre de fichero. El blob guarda solo el contenido de un fichero, sin su nombre; el objeto commit guarda el árbol raíz, las confirmaciones padre, la autoría y el mensaje. Git no guarda parches: piensa en sus datos como una serie de instantáneas, a diferencia de los sistemas basados en diferencias.",
+      "legalReference": "Pro Git (2.ª ed.), §10.2, «Tree Objects»"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0004",
+      "statement": "En Git, con la identidad configurada, se ejecutan estas órdenes en un directorio vacío. ¿Qué muestra la última, que lista los asuntos de las confirmaciones de la más reciente a la más antigua?\n\ngit init -b main\ngit commit --allow-empty -m A\ngit branch topic\necho b > b.txt && git add b.txt && git commit -m B\ngit switch topic\necho c > c.txt && git add c.txt && git commit -m C\ngit rebase main\ngit log --format=%s",
+      "options": [
+        {
+          "text": "B, C, A",
+          "isCorrect": false
+        },
+        {
+          "text": "C, A",
+          "isCorrect": false
+        },
+        {
+          "text": "B, A",
+          "isCorrect": false
+        },
+        {
+          "text": "C, B, A",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "La rama topic nace en A; main avanza con B y topic con C. Al ejecutar git rebase main estando en topic, Git va al ancestro común, toma el cambio de cada confirmación de topic y lo reaplica sobre main: C se vuelve a crear encima de B y el registro queda lineal, C, B, A. C, A es el registro de topic antes de integrar nada, B, A es el de main, y B, C, A es el de main si, al revés, se ejecutara git rebase topic estando en main, porque se reaplica la rama en la que se está.",
+      "legalReference": "Pro Git (2.ª ed.), §3.6, «The Basic Rebase»"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0005",
+      "statement": "En Git, según Pro Git (2.ª ed.), las ramas main y topic han divergido a partir de un ancestro común y no hay conflictos. ¿Qué hace Git al ejecutar git merge topic estando en main?",
+      "options": [
+        {
+          "text": "Mueve el puntero de main hasta la confirmación de topic, sin crear una confirmación nueva",
+          "isCorrect": false
+        },
+        {
+          "text": "Combina las instantáneas de las dos puntas y la del ancestro común en una confirmación con más de un padre",
+          "isCorrect": true
+        },
+        {
+          "text": "Combina las instantáneas de la punta de topic y del ancestro común, sin la de la punta de main, en una confirmación con más de un padre",
+          "isCorrect": false
+        },
+        {
+          "text": "Combina las instantáneas de las dos puntas, sin recurrir al ancestro común, en una confirmación con más de un padre",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Como la confirmación de main no es ascendiente directa de la de topic, Git no puede limitarse a mover el puntero: hace una fusión a tres bandas (three-way merge) con las instantáneas a las que apuntan las puntas de las dos ramas y con la de su ancestro común, y crea una confirmación de fusión (merge commit) que apunta a la nueva instantánea y tiene más de un padre. Mover el puntero solo ocurre cuando la rama actual es ascendiente directa de la fusionada, y la fusión usa las tres instantáneas: las de las dos puntas y la del ancestro común.",
+      "legalReference": "Pro Git (2.ª ed.), §3.2, «Basic Merging»"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0006",
+      "statement": "En Git, con la identidad configurada, se ejecutan estas órdenes en un directorio vacío. ¿Qué muestra la última? (En las opciones, cada espacio se escribe como · y las líneas se separan con comas).\n\ngit init -b main\necho one > a.txt && git add a.txt && git commit -m one\necho two > a.txt && echo x > b.txt\ngit add a.txt b.txt && git commit -m two\ngit reset --soft HEAD~1\ngit status -s",
+      "options": [
+        {
+          "text": "M··a.txt, A··b.txt",
+          "isCorrect": true
+        },
+        {
+          "text": "·M·a.txt, ??·b.txt",
+          "isCorrect": false
+        },
+        {
+          "text": "M··a.txt, ??·b.txt",
+          "isCorrect": false
+        },
+        {
+          "text": "No muestra nada",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "git reset --soft HEAD~1 mueve la rama a la confirmación anterior y deja sin cambios el índice y el árbol de trabajo. El índice sigue teniendo el contenido de la confirmación deshecha, así que respecto del nuevo HEAD a.txt aparece modificado y preparado (M en la primera columna) y b.txt como añadido (A). Con --mixed el índice se actualiza y quedarían a.txt modificado sin preparar y b.txt sin seguimiento; con --hard el árbol de trabajo también se sobrescribe y no se muestra nada; y a.txt preparado con b.txt sin seguimiento supondría que --soft deja sin preparar los ficheros nuevos.",
+      "legalReference": "Git, referencia, git-reset; Pro Git (2.ª ed.), §7.7, «Reset Demystified»"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0007",
+      "statement": "En Git, con la identidad configurada, se ejecutan estas órdenes en un directorio vacío. ¿Qué muestran las dos últimas?\n\ngit init -b main\necho one > a.txt && git add a.txt && git commit -m one\necho two > a.txt && git commit -am two\ngit revert --no-edit HEAD\ngit rev-list --count HEAD\ncat a.txt",
+      "options": [
+        {
+          "text": "1 confirmación; a.txt contiene one",
+          "isCorrect": false
+        },
+        {
+          "text": "2 confirmaciones; a.txt contiene one",
+          "isCorrect": false
+        },
+        {
+          "text": "3 confirmaciones; a.txt contiene one",
+          "isCorrect": true
+        },
+        {
+          "text": "2 confirmaciones; a.txt contiene two",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "git revert registra una confirmación nueva que invierte los cambios de la indicada, en lugar de borrar la antigua: el historial pasa de dos a tres confirmaciones (la tercera, con el mensaje Revert \"two\") y a.txt vuelve a contener one. Una sola confirmación con one es lo que deja git reset --hard HEAD~1, que quita la confirmación de la rama; con git revert --no-commit los cambios quedan en el árbol de trabajo y el índice sin confirmar (2 confirmaciones, one); y 2 confirmaciones con two es el estado de partida, sin deshacer nada.",
+      "legalReference": "Git, referencia, git-revert; git-reset"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0008",
+      "statement": "En Git, con la identidad configurada, se ejecutan estas órdenes en un directorio vacío. ¿Qué muestran las dos últimas, en ese orden?\n\ngit init --bare -b main r.git\ngit clone r.git x && git -C x commit --allow-empty -m A && git -C x push origin main\ngit clone r.git y\ngit -C x commit --allow-empty -m B && git -C x push origin main\ncd y && git fetch origin\ngit log -1 --format=%s main\ngit log -1 --format=%s origin/main",
+      "options": [
+        {
+          "text": "B y después B",
+          "isCorrect": false
+        },
+        {
+          "text": "A y después A",
+          "isCorrect": false
+        },
+        {
+          "text": "B y después A",
+          "isCorrect": false
+        },
+        {
+          "text": "A y después B",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "git fetch origin descarga el trabajo nuevo del servidor y actualiza la rama de seguimiento origin/main, pero no lo fusiona ni modifica lo que se tiene en curso: la rama local main sigue en A y origin/main pasa a B. B y B es lo que daría git pull origin main, que hace el fetch y fusiona la rama remota en la actual; A y A, lo que se vería sin descargar nada; y B y A invierte las dos ramas.",
+      "legalReference": "Pro Git (2.ª ed.), §2.5, «Fetching and Pulling from Your Remotes»"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0009",
+      "statement": "Según Pro Git (2.ª ed.), en el flujo de trabajo del gestor de integración (integration-manager), una persona colaboradora publica sus cambios en su propio repositorio público y avisa al responsable del proyecto. ¿Cómo los incorpora este?",
+      "options": [
+        {
+          "text": "Añade su repositorio como remoto, prueba los cambios en local, los fusiona en su rama y sube el resultado al repositorio principal",
+          "isCorrect": true
+        },
+        {
+          "text": "Da a la persona colaboradora acceso de escritura al repositorio principal para que sincronice con él su trabajo y lo suba directamente",
+          "isCorrect": false
+        },
+        {
+          "text": "Delega en un teniente la fusión de las ramas de la persona colaboradora y fusiona después la rama master de ese teniente en la suya",
+          "isCorrect": false
+        },
+        {
+          "text": "Rechaza su subida por no ser un avance rápido hasta que descargue el trabajo del repositorio principal y lo fusione en el suyo",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En este flujo cada desarrollador tiene permiso de escritura en su propio repositorio público y de lectura en los de los demás, y existe un repositorio canónico que representa el proyecto oficial. El responsable lo añade como remoto, prueba los cambios en local, los fusiona en su rama y sube el resultado al repositorio principal. Dar acceso de escritura a todos y rechazar la subida que no sea de avance rápido es el flujo centralizado, y delegar en tenientes que fusionan ramas de tema antes de que un dictador benevolente integre es el flujo de dictador y tenientes.",
+      "legalReference": "Pro Git (2.ª ed.), §5.1, «Distributed Workflows»"
+    },
+    {
+      "key": "malaga-programador-c1/control-versiones/0010",
+      "statement": "En Git, con la identidad configurada, se ejecutan estas órdenes en un directorio vacío. ¿Qué muestra la última? (En las opciones, cada espacio se escribe como · y las líneas se separan con comas).\n\ngit init -b main\necho 1 > a.txt && git add a.txt && git commit -m one\necho 2 >> a.txt\necho 3 > b.txt && echo 5 > d.txt\necho 4 > c.txt && git add c.txt\ngit stash\ngit status -s",
+      "options": [
+        {
+          "text": "A··c.txt, ??·b.txt, ??·d.txt",
+          "isCorrect": false
+        },
+        {
+          "text": "??·b.txt, ??·d.txt",
+          "isCorrect": true
+        },
+        {
+          "text": "·M·a.txt, ??·b.txt, ??·d.txt",
+          "isCorrect": false
+        },
+        {
+          "text": "No muestra nada",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "git stash guarda los cambios de los ficheros rastreados, tanto los modificados como los preparados, y devuelve el directorio de trabajo al estado de HEAD: la modificación de a.txt y el c.txt preparado se guardan y desaparecen del árbol. Por omisión no incluye los ficheros sin seguimiento, así que b.txt y d.txt siguen en el árbol y son lo único que muestra el estado. Con --keep-index quedaría también c.txt preparado, con --staged solo se guardaría lo preparado y a.txt seguiría modificado, y con --include-untracked (-u) tampoco quedarían b.txt ni d.txt.",
+      "legalReference": "Git, referencia, git-stash; Pro Git (2.ª ed.), §7.3, «Stashing and Cleaning»"
+    }
+  ]
+}
