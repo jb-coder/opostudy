@@ -31,23 +31,23 @@
       "statement": "En Linux, ¿dónde se definen los grupos adicionales de un usuario, además de su grupo primario?",
       "options": [
         {
-          "text": "En el campo GID de su línea de /etc/passwd, con los identificadores separados por comas",
+          "text": "En el campo GID de la línea del usuario, en /etc/passwd",
           "isCorrect": false
         },
         {
-          "text": "En /etc/group, donde cada grupo enumera los nombres de sus usuarios",
+          "text": "En la lista de usuarios de cada grupo, en /etc/group",
           "isCorrect": true
         },
         {
-          "text": "En el campo GECOS de su línea de /etc/passwd, a continuación del nombre completo",
+          "text": "En el campo GID de la línea de cada grupo, en /etc/group",
           "isCorrect": false
         },
         {
-          "text": "En el campo del intérprete de órdenes de su línea de /etc/passwd, tras la ruta",
+          "text": "En el campo GECOS de la línea del usuario, en /etc/passwd",
           "isCorrect": false
         }
       ],
-      "explanation": "Según passwd(5), el campo GID de /etc/passwd es el identificador numérico del grupo primario, y los grupos adicionales del usuario se definen en el fichero de grupos del sistema. Según group(5), cada línea de /etc/group tiene el formato nombre_de_grupo:contraseña:GID:lista_de_usuarios, con los nombres de los usuarios miembros separados por comas. El campo GECOS es informativo y el último campo es el programa que se ejecuta al iniciar sesión.",
+      "explanation": "Según passwd(5), el campo GID de /etc/passwd es el identificador numérico del grupo primario del usuario, y los grupos adicionales se definen en el fichero de grupos del sistema. Según group(5), cada línea de /etc/group contiene el nombre del grupo, la contraseña, el GID y la lista de los usuarios que son miembros, separados por comas. El GID de /etc/group es el identificador numérico del grupo, y el campo GECOS es informativo.",
       "legalReference": "Linux man-pages 6.19, passwd(5) y group(5)"
     },
     {
@@ -172,26 +172,26 @@
     },
     {
       "key": "malaga-programador-c1/linux-cloud/0008",
-      "statement": "Según el NIST SP 800-145, ¿qué controla el consumidor en el modelo de infraestructura como servicio (IaaS)?",
+      "statement": "Un ayuntamiento usa el correo web de un proveedor, que se ejecuta en una infraestructura de nube y al que se accede con el navegador. Según el NIST SP 800-145, ¿qué puede llegar a controlar el ayuntamiento en ese modelo de servicio?",
       "options": [
         {
-          "text": "La red, los servidores y el almacenamiento de la infraestructura de la nube subyacente",
+          "text": "Las capacidades individuales que ofrece la aplicación de correo",
           "isCorrect": false
         },
         {
-          "text": "Los sistemas operativos, el almacenamiento y las aplicaciones desplegadas, y quizá algún componente de red",
+          "text": "Los ajustes limitados de configuración propios de cada usuario",
           "isCorrect": true
         },
         {
-          "text": "Las aplicaciones desplegadas y quizá la configuración del entorno de alojamiento, sin el sistema operativo",
+          "text": "La configuración del entorno en el que se aloja la aplicación",
           "isCorrect": false
         },
         {
-          "text": "Los ajustes de configuración de la aplicación del proveedor, los específicos de cada usuario",
+          "text": "Los sistemas operativos y el almacenamiento de los servidores",
           "isCorrect": false
         }
       ],
-      "explanation": "Según el NIST SP 800-145, en IaaS el consumidor no gestiona ni controla la infraestructura de la nube subyacente, pero sí controla los sistemas operativos, el almacenamiento y las aplicaciones desplegadas, y posiblemente un control limitado de algunos componentes de red (por ejemplo, los cortafuegos de host). Controlar las aplicaciones desplegadas y la configuración del entorno de alojamiento, sin sistema operativo, es PaaS, y solo los ajustes de configuración específicos del usuario es SaaS.",
+      "explanation": "Usar las aplicaciones del proveedor mediante un navegador (el NIST SP 800-145 cita el correo web) corresponde al software como servicio (SaaS). En ese modelo el consumidor no gestiona ni controla la infraestructura subyacente (red, servidores, sistemas operativos y almacenamiento) ni las capacidades individuales de la aplicación, con la posible excepción de ajustes limitados de configuración específicos del usuario. El control de la configuración del entorno de alojamiento aparece en el modelo de plataforma, y el de los sistemas operativos y el almacenamiento, en el de infraestructura.",
       "legalReference": "NIST SP 800-145, §2"
     },
     {

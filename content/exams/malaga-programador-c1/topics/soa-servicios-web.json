@@ -52,26 +52,26 @@
     },
     {
       "key": "malaga-programador-c1/soa-servicios-web/0003",
-      "statement": "Según la Norma Técnica de Interoperabilidad de Protocolos de intermediación de datos (apartado III.5.3), los servicios web implementados para los intercambios de datos se diseñarán en base a la utilización de servicios definidos mediante un lenguaje:",
+      "statement": "Según la Norma Técnica de Interoperabilidad de Protocolos de intermediación de datos (apartado III.5.3), los servicios web implementados para los intercambios de datos se diseñarán en base a la utilización de mensajes en formato XML con estructuras basadas en:",
       "options": [
         {
-          "text": "WSDL (Web Services Description Language)",
+          "text": "Esquemas XML publicados que faciliten su interpretación",
           "isCorrect": true
         },
         {
-          "text": "BPEL (Business Process Execution Language)",
+          "text": "Hojas de estilo XSLT publicadas que faciliten su presentación",
           "isCorrect": false
         },
         {
-          "text": "XSLT (Extensible Stylesheet Language Transformations)",
+          "text": "Expresiones XPath publicadas que faciliten su consulta",
           "isCorrect": false
         },
         {
-          "text": "XPath (XML Path Language)",
+          "text": "Espacios de nombres registrados que faciliten su identificación",
           "isCorrect": false
         }
       ],
-      "explanation": "El apartado III.5.3.a) dispone que los servicios web se diseñarán en base a «Servicios definidos mediante un lenguaje WSDL (Web Services Description Language)». BPEL, XSLT y XPath no figuran entre las bases de diseño que enumera ese apartado, que añade los mensajes en formato XML con esquemas publicados y los estándares de seguridad en las comunicaciones.",
+      "explanation": "El apartado III.5.3.b) se refiere a «Mensajes en formato XML (eXtensible Mark-up Language) con estructuras basadas en esquemas XML publicados que faciliten su interpretación». Las hojas de estilo XSLT, las expresiones XPath y los espacios de nombres no figuran entre las bases de diseño que enumera ese apartado.",
       "legalReference": "NTI de Protocolos de intermediación de datos (Resolución de 28-06-2012), apartado III.5.3"
     },
     {
