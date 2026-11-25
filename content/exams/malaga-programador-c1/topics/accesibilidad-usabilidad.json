@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "accesibilidad-usabilidad",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0001",
+      "statement": "Según el artículo 3.4 del Real Decreto 1112/2018, entre los contenidos excluidos de su ámbito de aplicación están:",
+      "options": [
+        {
+          "text": "Los formularios digitales de tramitación y los procesos de identificación y firma de los sitios web",
+          "isCorrect": false
+        },
+        {
+          "text": "La información no textual, como las imágenes, que aparece en las páginas de los sitios web",
+          "isCorrect": false
+        },
+        {
+          "text": "Los contenidos de terceros ajenos a la financiación, el desarrollo y el control del sujeto obligado",
+          "isCorrect": true
+        },
+        {
+          "text": "Las formas de interacción bidireccional que se ofrecen a las personas usuarias de los sitios web",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 3.4.e) excluye los «contenidos de terceros que no estén financiados ni desarrollados por el sujeto obligado ni estén bajo su control». Las demás opciones son contenido accesible incluido en el ámbito: el artículo 3.2 abarca «la información tanto textual como no textual», «las formas de interacción bidireccional» y «el tratamiento de formularios digitales y la cumplimentación de los procesos de identificación, autenticación, firma y pago».",
+      "legalReference": "RD 1112/2018, art. 3.4.e)"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0002",
+      "statement": "Según el artículo 15.1 del Real Decreto 1112/2018, ¿cada cuánto tiempo, como máximo, debe actualizarse la declaración de accesibilidad de un sitio web, aunque no se realice una revisión de accesibilidad?",
+      "options": [
+        {
+          "text": "Cada año",
+          "isCorrect": true
+        },
+        {
+          "text": "Cada dos años",
+          "isCorrect": false
+        },
+        {
+          "text": "Cada seis meses",
+          "isCorrect": false
+        },
+        {
+          "text": "Cada mes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 15.1 dispone que la declaración «será actualizada periódicamente, como mínimo una vez al año, o cada vez que se realice una revisión de accesibilidad conforme a lo especificado en el artículo 17». Los demás intervalos no figuran en el precepto.",
+      "legalReference": "RD 1112/2018, art. 15.1"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0003",
+      "statement": "Según el artículo 17.3 del Real Decreto 1112/2018, las revisiones de accesibilidad deben abarcar todos los requisitos exigidos y tener en consideración:",
+      "options": [
+        {
+          "text": "La revisión automática con herramientas informáticas, dejando como opcional la revisión manual experta",
+          "isCorrect": false
+        },
+        {
+          "text": "La revisión manual de una muestra de páginas, sin que sea necesario documentar el resultado obtenido",
+          "isCorrect": false
+        },
+        {
+          "text": "La revisión automática de todas las páginas, reservando la manual para las quejas que se reciban",
+          "isCorrect": false
+        },
+        {
+          "text": "La revisión automática y la manual experta, recogiendo el resultado en un informe",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 17.3 exige que las revisiones «tendrán en consideración tanto aspectos de revisión automática como aspectos de revisión manual experta» y que el resultado «deberá quedar recogido en un informe de revisión de la accesibilidad». Por eso no basta con una sola modalidad, ni la revisión manual es solo reactiva, ni se puede omitir el informe.",
+      "legalReference": "RD 1112/2018, art. 17.3"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0004",
+      "statement": "Según el artículo 2.c) del Real Decreto 203/2021, el principio de facilidad de uso determina que el diseño de los servicios electrónicos esté:",
+      "options": [
+        {
+          "text": "Orientado a la unidad tramitadora, de modo que se reduzca el tiempo de gestión interna de cada expediente",
+          "isCorrect": false
+        },
+        {
+          "text": "Centrado en las personas usuarias, de forma que se minimice el grado de conocimiento necesario para el uso",
+          "isCorrect": true
+        },
+        {
+          "text": "Dirigido a personas con conocimientos técnicos avanzados, de modo que se reduzca el número de pasos del trámite",
+          "isCorrect": false
+        },
+        {
+          "text": "Condicionado a que la persona usuaria cuente con una formación previa específica sobre el uso del servicio",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 2.c) establece que el principio de facilidad de uso «determina que el diseño de los servicios electrónicos esté centrado en las personas usuarias, de forma que se minimice el grado de conocimiento necesario para el uso del servicio». El resto de opciones invierten esa idea: priorizan la gestión interna o exigen conocimientos o formación a quien usa el servicio.",
+      "legalReference": "RD 203/2021, art. 2.c)"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0005",
+      "statement": "Según el artículo 2.l) del Real Decreto Legislativo 1/2013, el diseño universal o diseño para todas las personas es la actividad por la que se conciben o proyectan desde el origen, siempre que sea posible, entornos, productos y servicios de tal forma que puedan ser utilizados por todas las personas:",
+      "options": [
+        {
+          "text": "En la mayor extensión posible, sin necesidad de adaptación ni diseño especializado",
+          "isCorrect": true
+        },
+        {
+          "text": "Tras las modificaciones y adaptaciones que cada persona solicite en un caso particular",
+          "isCorrect": false
+        },
+        {
+          "text": "Mediante un diseño especializado para cada grupo, aplicado al terminar el proyecto",
+          "isCorrect": false
+        },
+        {
+          "text": "Una vez adaptados al grupo mayoritario, con soluciones específicas para los demás",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 2.l) define el diseño universal como la actividad que concibe los entornos, productos y servicios desde el origen para que todas las personas puedan utilizarlos «en la mayor extensión posible, sin necesidad de adaptación ni diseño especializado». La segunda opción describe más bien los ajustes razonables del artículo 2.m), que se aplican a una persona concreta; las otras dos suponen adaptar o especializar el diseño después.",
+      "legalReference": "RDLeg 1/2013, art. 2.l)"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0006",
+      "statement": "Según las WCAG 2.2, ¿qué requisito debe cumplir una página web para alcanzar la conformidad de nivel AA?",
+      "options": [
+        {
+          "text": "Satisfacer solo los criterios de nivel AA, porque los de nivel A se presuponen cumplidos y no se evalúan",
+          "isCorrect": false
+        },
+        {
+          "text": "Satisfacer todos los criterios de los niveles A, AA y AAA que sean aplicables al contenido de la página",
+          "isCorrect": false
+        },
+        {
+          "text": "Satisfacer todos los criterios de nivel A y, como mínimo, la mitad de los criterios de nivel AA",
+          "isCorrect": false
+        },
+        {
+          "text": "Satisfacer todos los criterios de nivel A y de nivel AA, o contar con una versión alternativa conforme",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Las WCAG 2.2 (requisito de conformidad 5.2.1) establecen que la conformidad de nivel AA exige satisfacer todos los criterios de éxito de nivel A y de nivel AA, o proporcionar una versión alternativa que sea conforme con el nivel AA. Incluir también los criterios de nivel AAA corresponde a la conformidad de nivel AAA, y los de nivel A no se pueden omitir ni cumplir de forma parcial.",
+      "legalReference": "WCAG 2.2, requisito de conformidad 5.2.1"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0007",
+      "statement": "Según el criterio 1.4.3 de las WCAG 2.2 (contraste mínimo, de nivel AA), ¿cuál es la relación de contraste mínima exigida para la presentación visual del texto que no es de gran tamaño?",
+      "options": [
+        {
+          "text": "3:1",
+          "isCorrect": false
+        },
+        {
+          "text": "4,5:1",
+          "isCorrect": true
+        },
+        {
+          "text": "6:1",
+          "isCorrect": false
+        },
+        {
+          "text": "7:1",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El criterio 1.4.3 (nivel AA) exige para el texto una relación de contraste de al menos 4,5:1; solo para el texto de gran tamaño baja a 3:1. La relación de 7:1 corresponde al criterio 1.4.6 (contraste mejorado), de nivel AAA, y 6:1 no es el valor de ninguno de los dos.",
+      "legalReference": "WCAG 2.2, criterio 1.4.3"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0008",
+      "statement": "Según el artículo 4 del Real Decreto 1112/2018, ¿qué principio de la accesibilidad exige que los contenidos puedan ser interpretados de forma fiable por una gran variedad de agentes de usuario, incluidas las tecnologías de asistencia?",
+      "options": [
+        {
+          "text": "Perceptibilidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Operabilidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Robustez",
+          "isCorrect": true
+        },
+        {
+          "text": "Comprensibilidad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 4.ñ) define la robustez como el principio «que exige que los contenidos sean suficientemente sólidos para poder ser interpretados de forma fiable por una gran variedad de agentes de usuario, incluidas las tecnologías de asistencia». La perceptibilidad se refiere a que la información y los componentes se puedan percibir (letra l), la operabilidad a que los componentes y la navegación se puedan utilizar (letra m) y la comprensibilidad a que la información y el funcionamiento de la interfaz se puedan comprender (letra n).",
+      "legalReference": "RD 1112/2018, art. 4.ñ)"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0009",
+      "statement": "Según el criterio 1.4.10 de las WCAG 2.2 (reflujo, de nivel AA), el contenido de desplazamiento vertical debe poder presentarse sin pérdida de información ni desplazamiento en dos dimensiones con un ancho equivalente a:",
+      "options": [
+        {
+          "text": "320 píxeles CSS",
+          "isCorrect": true
+        },
+        {
+          "text": "256 píxeles CSS",
+          "isCorrect": false
+        },
+        {
+          "text": "480 píxeles CSS",
+          "isCorrect": false
+        },
+        {
+          "text": "600 píxeles CSS",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El criterio 1.4.10 exige que el contenido de desplazamiento vertical se pueda presentar con un ancho equivalente a 320 píxeles CSS, que equivale a una ventana inicial de 1280 píxeles con un zoom del 400 %. El valor de 256 píxeles CSS es la altura que se aplica al contenido de desplazamiento horizontal, y 480 y 600 no figuran en el criterio. Se admiten excepciones para las partes que necesitan una disposición bidimensional, como mapas o tablas de datos.",
+      "legalReference": "WCAG 2.2, criterio 1.4.10"
+    },
+    {
+      "key": "malaga-programador-c1/accesibilidad-usabilidad/0010",
+      "statement": "Según el Process Document del W3C (2025), ¿qué etapa de madurez de la vía de Recomendaciones se publica para señalar que el documento, ya revisado ampliamente, cumple los requisitos técnicos del grupo de trabajo y que es momento de una revisión final y de reunir experiencia de implementación?",
+      "options": [
+        {
+          "text": "First Public Working Draft (primer borrador público de trabajo)",
+          "isCorrect": false
+        },
+        {
+          "text": "Working Draft (borrador de trabajo) posterior al primero",
+          "isCorrect": false
+        },
+        {
+          "text": "W3C Recommendation (recomendación del W3C)",
+          "isCorrect": false
+        },
+        {
+          "text": "Candidate Recommendation (recomendación candidata)",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Según el apartado 6.3.1 del Process Document, el W3C publica una Candidate Recommendation, que satisface los requisitos técnicos del grupo de trabajo y ya ha recibido una amplia revisión, para indicar a la comunidad que es momento de una revisión final y de reunir experiencia de implementación. Los Working Draft sirven para recabar esa revisión amplia con anterioridad, y la Recommendation es la etapa final, cuando el documento ya cuenta con el respaldo del W3C y de sus miembros.",
+      "legalReference": "W3C Process Document (2025), §6.3.1"
+    }
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "auditoria-informatica",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0001",
+      "statement": "Según el anexo IV del Real Decreto 311/2022, la auditoría de la seguridad persigue la obtención de evidencias objetivas y su evaluación objetiva para determinar en qué medida se cumplen los criterios de auditoría en relación con:",
+      "options": [
+        {
+          "text": "la disponibilidad media de los servicios prestados y el tiempo de respuesta ante las incidencias registradas",
+          "isCorrect": false
+        },
+        {
+          "text": "la idoneidad de los controles de seguridad adoptados y el cumplimiento de la política y las normas de seguridad",
+          "isCorrect": true
+        },
+        {
+          "text": "la formación recibida por el personal y el grado de satisfacción de los usuarios con los servicios prestados",
+          "isCorrect": false
+        },
+        {
+          "text": "la rentabilidad de las inversiones realizadas en seguridad y el coste de mantenimiento de los controles adoptados",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El anexo IV define la auditoría de la seguridad como un proceso sistemático, independiente y documentado cuyo fin es determinar el cumplimiento de los criterios de auditoría «en relación con la idoneidad de los controles de seguridad adoptados, el cumplimiento de la política de seguridad, las normas y los procedimientos operativos establecidos». Por eso se evalúan los controles y el cumplimiento normativo, no la disponibilidad de los servicios, la satisfacción de los usuarios ni la rentabilidad de las inversiones, que no figuran en la definición.",
+      "legalReference": "RD 311/2022 (ENS), anexo IV"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0002",
+      "statement": "Según el anexo III del Real Decreto 311/2022, las actividades de auditoría que impliquen comprobaciones en los sistemas operativos deberán ser:",
+      "options": [
+        {
+          "text": "ejecutadas sin previo aviso",
+          "isCorrect": false
+        },
+        {
+          "text": "limitadas a un entorno de pre-producción",
+          "isCorrect": false
+        },
+        {
+          "text": "delegadas en quien administra el sistema",
+          "isCorrect": false
+        },
+        {
+          "text": "planificadas y acordadas previamente",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El anexo III, apartado 1.3, dispone que «Las actividades de auditoría que impliquen comprobaciones en los sistemas operativos deberán ser planificadas y acordadas previamente». No se prevé que se hagan sin aviso, ni que se limiten a un entorno de pre-producción, ni que se deleguen en quien administra el sistema.",
+      "legalReference": "RD 311/2022 (ENS), anexo III, apartado 1.3"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0003",
+      "statement": "Según el artículo 31.1 del Real Decreto 311/2022, ¿cuál es el intervalo máximo entre dos auditorías regulares ordinarias de los sistemas de información comprendidos en su ámbito de aplicación?",
+      "options": [
+        {
+          "text": "Dos años",
+          "isCorrect": true
+        },
+        {
+          "text": "Un año",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres años",
+          "isCorrect": false
+        },
+        {
+          "text": "Cuatro años",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 31.1 establece que los sistemas «serán objeto de una auditoría regular ordinaria, al menos cada dos años, que verifique el cumplimiento de los requerimientos del ENS». Los demás intervalos (uno, tres o cuatro años) no figuran en el precepto.",
+      "legalReference": "RD 311/2022 (ENS), art. 31.1"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0004",
+      "statement": "Según el artículo 31.5 del Real Decreto 311/2022, los informes de auditoría se presentan al responsable del sistema y al responsable de la seguridad. ¿Quién los analiza y presenta sus conclusiones al responsable del sistema para que adopte las medidas correctoras adecuadas?",
+      "options": [
+        {
+          "text": "El responsable de la información",
+          "isCorrect": false
+        },
+        {
+          "text": "El responsable del servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "El responsable de la seguridad",
+          "isCorrect": true
+        },
+        {
+          "text": "El delegado de protección de datos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 31.5 dispone que «Estos informes serán analizados por este último que presentará sus conclusiones al responsable del sistema para que adopte las medidas correctoras adecuadas», y «este último» es el responsable de la seguridad. Ni el responsable de la información ni el del servicio ni el delegado de protección de datos tienen esa función en el precepto.",
+      "legalReference": "RD 311/2022 (ENS), art. 31.5"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0005",
+      "statement": "Según la ITS de Auditoría de la Seguridad, ¿cuál de estas actividades queda EXCLUIDA de las tareas de auditoría para asegurar la independencia objetiva de la Entidad Certificadora?",
+      "options": [
+        {
+          "text": "Requerir a la entidad titular la información pertinente para los trabajos",
+          "isCorrect": false
+        },
+        {
+          "text": "Redactar los documentos o procedimientos de actuación que requiere el ENS",
+          "isCorrect": true
+        },
+        {
+          "text": "Documentar en el informe los criterios metodológicos, el alcance y el objetivo",
+          "isCorrect": false
+        },
+        {
+          "text": "Emitir el dictamen final sobre la conformidad del sistema con el ENS",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado IV.2 dice que, para asegurar la independencia objetiva, las tareas de auditoría «no incluirán en ningún caso la ejecución de acciones que puedan ser consideradas actividades de consultoría o similares, tales como implantación o modificación de aplicaciones, relacionadas con el sistema auditado, redacción de documentos requeridos por el ENS o procedimientos de actuación». Las otras tres actividades son propias de la auditoría: pedir información (V.1), definir y documentar criterios, alcance y objetivo (IV.1) y dictaminar sobre la conformidad (VI).",
+      "legalReference": "ITS de Auditoría (Resolución de 27-03-2018), apartado IV.2"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0006",
+      "statement": "Según la ITS de Auditoría de la Seguridad, ante un dictamen «DESFAVORABLE», ¿cuál es el plazo máximo, contado desde la fecha de emisión del Informe de Auditoría, para que la entidad titular del sistema auditado se someta a una auditoría extraordinaria?",
+      "options": [
+        {
+          "text": "Seis meses",
+          "isCorrect": true
+        },
+        {
+          "text": "Un mes",
+          "isCorrect": false
+        },
+        {
+          "text": "Un año",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos años",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado VI.5 establece que, ante un dictamen «DESFAVORABLE», la entidad titular, «en un plazo no superior a seis meses desde la fecha de emisión del Informe de Auditoría, deberá someterse a una Auditoría Extraordinaria, exclusivamente sobre los hallazgos de no conformidad evidenciados». Los otros plazos no son los de este apartado.",
+      "legalReference": "ITS de Auditoría (Resolución de 27-03-2018), apartado VI.5"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0007",
+      "statement": "Según el artículo 28.3.h) del RGPD, el encargado del tratamiento pondrá a disposición del responsable la información necesaria para demostrar el cumplimiento de sus obligaciones y permitirá y contribuirá a la realización de auditorías, incluidas inspecciones, por parte de:",
+      "options": [
+        {
+          "text": "un tercero que designe libremente el propio encargado del tratamiento",
+          "isCorrect": false
+        },
+        {
+          "text": "los interesados cuyos datos se traten o el auditor que ellos designen",
+          "isCorrect": false
+        },
+        {
+          "text": "el delegado de protección de datos del encargado o quien este designe",
+          "isCorrect": false
+        },
+        {
+          "text": "el responsable, o bien otro auditor autorizado por dicho responsable",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 28.3.h) obliga al encargado a permitir y contribuir a la realización de auditorías, incluidas inspecciones, «por parte del responsable o de otro auditor autorizado por dicho responsable». La autorización corresponde al responsable, no al encargado, a los interesados ni al delegado de protección de datos del encargado.",
+      "legalReference": "RGPD, art. 28.3.h)"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0008",
+      "statement": "Según el artículo 340.1 de la Ley de Enjuiciamiento Civil, los peritos deberán:",
+      "options": [
+        {
+          "text": "Estar colegiados en el Colegio profesional de la provincia en la que se tramite el proceso",
+          "isCorrect": false
+        },
+        {
+          "text": "Contar con un mínimo de cinco años de ejercicio profesional en la materia del dictamen",
+          "isCorrect": false
+        },
+        {
+          "text": "Poseer el título oficial que corresponda a la materia y ser acreditados expertos en ella",
+          "isCorrect": true
+        },
+        {
+          "text": "Ser nombrados siempre entre personas entendidas en la materia, aunque exista título oficial",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 340.1 dispone que «Los peritos deberán poseer el título oficial que corresponda a la materia objeto del dictamen y a la naturaleza de este y ser acreditados expertos en la materia». Solo si se trata de materias no comprendidas en títulos profesionales oficiales «habrán de ser nombrados entre personas entendidas en aquellas materias», de modo que esa vía no es la regla general. La colegiación provincial y los cinco años de ejercicio no figuran en el precepto.",
+      "legalReference": "Ley 1/2000 (LEC), art. 340.1"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0009",
+      "statement": "Según el artículo 348 de la Ley de Enjuiciamiento Civil, el tribunal valorará los dictámenes periciales:",
+      "options": [
+        {
+          "text": "según las reglas de la sana crítica",
+          "isCorrect": true
+        },
+        {
+          "text": "como vinculantes si el perito es judicial",
+          "isCorrect": false
+        },
+        {
+          "text": "según un sistema de prueba tasada",
+          "isCorrect": false
+        },
+        {
+          "text": "dando preferencia al del demandante",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 348 es breve: «El tribunal valorará los dictámenes periciales según las reglas de la sana crítica». Por tanto, la valoración no es tasada, el dictamen del perito designado por el tribunal no vincula y no hay preferencia por la parte que lo aporta.",
+      "legalReference": "Ley 1/2000 (LEC), art. 348"
+    },
+    {
+      "key": "malaga-programador-c1/auditoria-informatica/0010",
+      "statement": "Según la medida de registro de la actividad [op.exp.8] del anexo II del Real Decreto 311/2022, ¿cuál de los siguientes datos incluirá, al menos, el registro de auditoría sobre cada evento?",
+      "options": [
+        {
+          "text": "La ubicación física del puesto",
+          "isCorrect": false
+        },
+        {
+          "text": "La contraseña empleada",
+          "isCorrect": false
+        },
+        {
+          "text": "El resultado, fallo o éxito",
+          "isCorrect": true
+        },
+        {
+          "text": "La duración de la sesión",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El requisito [op.exp.8.1] dispone que «Se generará un registro de auditoría, que incluirá, al menos, el identificador del usuario o entidad asociado al evento, fecha y hora, sobre qué información se realiza el evento, tipo de evento y el resultado del evento (fallo o éxito)». La ubicación física, la contraseña y la duración de la sesión no figuran en ese contenido mínimo.",
+      "legalReference": "RD 311/2022 (ENS), anexo II, op.exp.8.1"
+    }
+  ]
+}

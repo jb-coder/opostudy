@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "normalizacion",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/normalizacion/0001",
+      "statement": "Según el artículo 8.8 de la Ley 21/1992, de Industria, se considera ensayo:",
+      "options": [
+        {
+          "text": "El conjunto de operaciones que relaciona los valores indicados por un instrumento de medida con los valores conocidos de un mensurando",
+          "isCorrect": false
+        },
+        {
+          "text": "El examen o comprobación, con los equipos adecuados, de propiedades de un producto, proceso o servicio según un procedimiento especificado",
+          "isCorrect": true
+        },
+        {
+          "text": "La actividad que permite establecer la conformidad de una empresa, producto, proceso o servicio con los requisitos definidos en las normas",
+          "isCorrect": false
+        },
+        {
+          "text": "El examen sistemático e independiente de la eficacia del sistema de calidad de una empresa, o bien de alguna de las partes que lo componen",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 8.8 define el ensayo como la «Operación consistente en el examen o comprobación, con los equipos adecuados, de una o más propiedades de un producto, proceso o servicio de acuerdo con un procedimiento especificado». Relacionar los valores de un instrumento de medida con los del mensurando es la calibración (art. 8.15), establecer la conformidad con los requisitos de las normas es la certificación (art. 8.6) y examinar la eficacia del sistema de calidad es la auditoría de la calidad (art. 8.14).",
+      "legalReference": "Ley 21/1992, art. 8.8"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0002",
+      "statement": "Según el artículo 13.1 del Reglamento (UE) 1025/2012, la Comisión podrá identificar especificaciones técnicas de las TIC que no sean normas nacionales, europeas o internacionales pero cumplan los requisitos del anexo II, que podrán referenciarse principalmente para permitir:",
+      "options": [
+        {
+          "text": "El reconocimiento de las normas nacionales en otros Estados",
+          "isCorrect": false
+        },
+        {
+          "text": "La financiación de la normalización europea",
+          "isCorrect": false
+        },
+        {
+          "text": "La supervisión del mercado de productos de TIC",
+          "isCorrect": false
+        },
+        {
+          "text": "La interoperabilidad en la contratación pública",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 13.1 establece que esas especificaciones técnicas de las TIC «podrán referenciarse principalmente para permitir la interoperabilidad en la contratación pública». El reconocimiento de normas, la financiación de las organizaciones de normalización (capítulo V) y la supervisión del mercado no son la finalidad de esa identificación.",
+      "legalReference": "Reglamento (UE) 1025/2012, art. 13.1"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0003",
+      "statement": "Según el anexo I del Reglamento (UE) 1025/2012, ¿cuál de las siguientes es una organización europea de normalización?",
+      "options": [
+        {
+          "text": "CEN",
+          "isCorrect": true
+        },
+        {
+          "text": "ISO",
+          "isCorrect": false
+        },
+        {
+          "text": "IEC",
+          "isCorrect": false
+        },
+        {
+          "text": "UIT",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El anexo I enumera como organizaciones europeas de normalización el CEN (Comité Europeo de Normalización), el Cenelec y el ETSI. La ISO, la IEC y la UIT son, según el artículo 2.9, los organismos internacionales de normalización, no europeos.",
+      "legalReference": "Reglamento (UE) 1025/2012, anexo I"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0004",
+      "statement": "Según el artículo 8.4 de la Ley 21/1992, de Industria, se considera reglamento técnico:",
+      "options": [
+        {
+          "text": "La especificación técnica de aplicación repetitiva cuya observancia no es obligatoria, aprobada por un organismo reconocido por su actividad normativa",
+          "isCorrect": false
+        },
+        {
+          "text": "La certificación por parte de una Administración Pública de que el prototipo de un producto cumple los requisitos técnicos reglamentarios",
+          "isCorrect": false
+        },
+        {
+          "text": "La especificación técnica relativa a productos, procesos o instalaciones industriales, establecida con carácter obligatorio a través de una disposición",
+          "isCorrect": true
+        },
+        {
+          "text": "La actividad por la que se examinan diseños, productos, instalaciones, procesos productivos y servicios para verificar el cumplimiento de sus requisitos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 8.4 define el reglamento técnico como la especificación técnica sobre productos, procesos o instalaciones industriales «establecida con carácter obligatorio a través de una disposición». La especificación de observancia no obligatoria que aprueba un organismo reconocido es la norma (art. 8.3), la certificación de un prototipo por una Administración Pública es la homologación (art. 8.7) y el examen de diseños y productos para verificar requisitos es la inspección (art. 8.9).",
+      "legalReference": "Ley 21/1992, art. 8.4"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0005",
+      "statement": "Según el artículo 8 del Reglamento de la Infraestructura para la Calidad y la Seguridad Industrial (RD 2200/1995), los Organismos de normalización son:",
+      "options": [
+        {
+          "text": "Entidades privadas sin ánimo de lucro, que desarrollan en el ámbito estatal la elaboración de normas",
+          "isCorrect": true
+        },
+        {
+          "text": "Organismos públicos de la Administración competente en industria, que elaboran las normas en el ámbito estatal",
+          "isCorrect": false
+        },
+        {
+          "text": "Entidades privadas con ánimo de lucro, que financian la elaboración de normas con las cuotas de sus socios",
+          "isCorrect": false
+        },
+        {
+          "text": "Órganos del Consejo de Coordinación de la Seguridad Industrial, que aprueban las normas en el ámbito estatal",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 8 dispone que los Organismos de normalización «son entidades privadas sin ánimo de lucro, cuya finalidad es desarrollar en el ámbito estatal las actividades relacionadas con la elaboración de normas». Por tanto no son organismos públicos ni entidades con ánimo de lucro, ni órganos de ese Consejo.",
+      "legalReference": "RD 2200/1995, art. 8"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0006",
+      "statement": "Según el artículo 10.l) del Reglamento de la Infraestructura para la Calidad y la Seguridad Industrial (RD 2200/1995), el Organismo de normalización debe separar jurídica, funcional y contablemente sus actividades de normalización de cualquier actividad de:",
+      "options": [
+        {
+          "text": "Edición y venta de normas",
+          "isCorrect": false
+        },
+        {
+          "text": "Información pública de los proyectos de normas",
+          "isCorrect": false
+        },
+        {
+          "text": "Participación en las organizaciones europeas de normalización",
+          "isCorrect": false
+        },
+        {
+          "text": "Evaluación de la conformidad",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 10.l) exige «Separar jurídica, funcional y contablemente las actividades de normalización de cualquier actividad de evaluación de la conformidad». Las demás opciones son funciones que el Organismo sí desempeña: editar y vender normas (art. 11.i), remitir los proyectos para su información pública (art. 11.e) e integrarse en las organizaciones europeas e internacionales de normalización (art. 10.i).",
+      "legalReference": "RD 2200/1995, art. 10.l)"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0007",
+      "statement": "Según el artículo 4.8 del Reglamento (CE) 765/2008, el organismo nacional de acreditación NO podrá:",
+      "options": [
+        {
+          "text": "Controlar a los organismos de evaluación que haya acreditado",
+          "isCorrect": false
+        },
+        {
+          "text": "Retirar el certificado a un organismo que incumpla gravemente sus obligaciones",
+          "isCorrect": false
+        },
+        {
+          "text": "Poseer acciones en un organismo de evaluación de la conformidad",
+          "isCorrect": true
+        },
+        {
+          "text": "Expedir un certificado de acreditación a un organismo que resulte competente",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 4.8 dispone que el organismo nacional de acreditación «no podrá ofrecer o facilitar actividades o servicios facilitados por los organismos de evaluación de la conformidad, ni podrá prestar servicios de consultoría, poseer acciones ni tener intereses financieros o de gestión en un organismo de evaluación de la conformidad». Controlar a los organismos acreditados (art. 5.3), retirar el certificado (art. 5.4) y expedirlo a quien sea competente (art. 5.1) son, en cambio, tareas propias de la acreditación.",
+      "legalReference": "Reglamento (CE) 765/2008, art. 4.8"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0008",
+      "statement": "Según el artículo único del Real Decreto 1715/2010, la Entidad Nacional de Acreditación (ENAC) queda designada como:",
+      "options": [
+        {
+          "text": "Organismo nacional de normalización, con potestad pública para aprobar las normas españolas",
+          "isCorrect": false
+        },
+        {
+          "text": "Único organismo nacional de acreditación, dotado de potestad pública para otorgar acreditaciones",
+          "isCorrect": true
+        },
+        {
+          "text": "Entidad de certificación de referencia, habilitada para certificar a las empresas en el ámbito voluntario",
+          "isCorrect": false
+        },
+        {
+          "text": "Organismo de control, habilitado para inspeccionar las instalaciones en el ámbito de la seguridad industrial",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo único.1 dispone: «Se designa a la Entidad Nacional de Acreditación (ENAC) como único organismo nacional de acreditación, dotado de potestad pública para otorgar acreditaciones». Lo hace en cumplimiento del mandato del Reglamento (CE) 765/2008 de designar un único organismo nacional de acreditación. No es un organismo de normalización, ni una entidad de certificación, ni un organismo de control.",
+      "legalReference": "RD 1715/2010, artículo único.1"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0009",
+      "statement": "Según el artículo 56.2 del Reglamento (UE) 2019/881, la certificación de la ciberseguridad:",
+      "options": [
+        {
+          "text": "Es voluntaria, salvo que el Derecho de la Unión o de los Estados miembros disponga otra cosa",
+          "isCorrect": true
+        },
+        {
+          "text": "Es obligatoria, salvo que el esquema europeo permita la autoevaluación de la conformidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Es obligatoria, salvo que la autoridad nacional de certificación conceda una exención expresa",
+          "isCorrect": false
+        },
+        {
+          "text": "Es voluntaria, y ni el Derecho de la Unión ni el de los Estados miembros pueden imponerla",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 56.2 establece que «La certificación de la ciberseguridad será voluntaria, salvo que se disponga otra cosa en el Derecho de la Unión o de los Estados miembros». No es obligatoria con carácter general, ni con la salvedad de la autoevaluación o de una exención, y tampoco es voluntaria en todo caso, porque el Derecho de la Unión o el de un Estado miembro pueden imponerla.",
+      "legalReference": "Reglamento (UE) 2019/881, art. 56.2"
+    },
+    {
+      "key": "malaga-programador-c1/normalizacion/0010",
+      "statement": "Según el artículo 53.1 del Reglamento (UE) 2019/881, cuando un esquema europeo de certificación de la ciberseguridad permite la autoevaluación de la conformidad, esta se realiza bajo la responsabilidad exclusiva de:",
+      "options": [
+        {
+          "text": "La autoridad nacional de certificación de la ciberseguridad",
+          "isCorrect": false
+        },
+        {
+          "text": "Un organismo de evaluación de la conformidad acreditado",
+          "isCorrect": false
+        },
+        {
+          "text": "El Grupo Europeo de Certificación de la Ciberseguridad",
+          "isCorrect": false
+        },
+        {
+          "text": "El fabricante o proveedor del producto, servicio o proceso",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 53.1 dispone que el esquema podrá permitir la autoevaluación de la conformidad «bajo la responsabilidad exclusiva del fabricante o proveedor de productos, servicios o procesos de TIC o servicios de seguridad gestionados». La autoridad nacional de certificación solo recibe la declaración de conformidad y la documentación (art. 53.3), y ni los organismos de evaluación de la conformidad ni el Grupo Europeo asumen esa responsabilidad.",
+      "legalReference": "Reglamento (UE) 2019/881, art. 53.1"
+    }
+  ]
+}
