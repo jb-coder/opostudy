@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "transparencia-proteccion-datos",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0001",
+      "statement": "Según el artículo 17.3 de la Ley 19/2013, el solicitante de acceso a la información pública:",
+      "options": [
+        {
+          "text": "Debe motivar su solicitud, y la falta de motivación será causa de inadmisión",
+          "isCorrect": false
+        },
+        {
+          "text": "Debe acreditar un interés legítimo en la información que solicita",
+          "isCorrect": false
+        },
+        {
+          "text": "No está obligado a motivar su solicitud, y la ausencia de motivación no será por sí sola causa de rechazo",
+          "isCorrect": true
+        },
+        {
+          "text": "Solo puede dirigirse a la Administración en castellano, aunque exista lengua cooficial",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 17.3 dispone que «el solicitante no está obligado a motivar su solicitud de acceso a la información. Sin embargo, podrá exponer los motivos por los que solicita la información [...]. No obstante, la ausencia de motivación no será por si sola causa de rechazo de la solicitud». Tampoco se exige interés legítimo (el derecho corresponde a todas las personas, art. 12) y el artículo 17.4 permite dirigirse a las Administraciones en cualquiera de las lenguas cooficiales del territorio.",
+      "legalReference": "Ley 19/2013, art. 17.3"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0002",
+      "statement": "Según el artículo 20.1 de la Ley 19/2013, la resolución en la que se conceda o deniegue el acceso a la información pública deberá notificarse al solicitante en el plazo máximo de:",
+      "options": [
+        {
+          "text": "Un mes desde la recepción de la solicitud por el órgano competente para resolver",
+          "isCorrect": true
+        },
+        {
+          "text": "Diez días desde la recepción de la solicitud por el órgano competente para resolver",
+          "isCorrect": false
+        },
+        {
+          "text": "Quince días desde la recepción de la solicitud por el órgano competente para resolver",
+          "isCorrect": false
+        },
+        {
+          "text": "Tres meses desde la recepción de la solicitud por el órgano competente para resolver",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 20.1 fija «el plazo máximo de un mes desde la recepción de la solicitud por el órgano competente para resolver», ampliable por otro mes cuando el volumen o la complejidad de la información lo hagan necesario y previa notificación al solicitante. Transcurrido el plazo sin resolución expresa, la solicitud se entiende desestimada (art. 20.4). Los plazos de diez y quince días corresponden a otros trámites (art. 19.2 y 19.3) y el de tres meses, a la resolución de la reclamación ante el Consejo de Transparencia y Buen Gobierno (art. 24.4).",
+      "legalReference": "Ley 19/2013, art. 20.1"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0003",
+      "statement": "Según el artículo 24.1 de la Ley 19/2013, frente a toda resolución expresa o presunta en materia de acceso, la reclamación ante el Consejo de Transparencia y Buen Gobierno tiene carácter:",
+      "options": [
+        {
+          "text": "Obligatorio y previo a la vía contencioso-administrativa",
+          "isCorrect": false
+        },
+        {
+          "text": "Potestativo y posterior a la impugnación en vía contencioso-administrativa",
+          "isCorrect": false
+        },
+        {
+          "text": "Obligatorio, salvo que la resolución impugnada sea presunta",
+          "isCorrect": false
+        },
+        {
+          "text": "Potestativo y previo a su impugnación en vía contencioso-administrativa",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 24.1 permite interponer la reclamación ante el Consejo de Transparencia y Buen Gobierno «con carácter potestativo y previo a su impugnación en vía contencioso-administrativa». Por tanto, no es obligatoria (ni siquiera frente a resoluciones presuntas) y, si se utiliza, precede al recurso contencioso-administrativo; el artículo 20.5 confirma que las resoluciones son recurribles directamente ante esa jurisdicción.",
+      "legalReference": "Ley 19/2013, art. 24.1"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0004",
+      "statement": "Según el artículo 19.2 de la Ley 19/2013, cuando la solicitud de acceso no identifique de forma suficiente la información, se pedirá al solicitante que la concrete en un plazo de:",
+      "options": [
+        {
+          "text": "Cinco días",
+          "isCorrect": false
+        },
+        {
+          "text": "Diez días",
+          "isCorrect": true
+        },
+        {
+          "text": "Quince días",
+          "isCorrect": false
+        },
+        {
+          "text": "Un mes",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 19.2 establece que se pedirá al solicitante que concrete la información «en un plazo de diez días, con indicación de que, en caso de no hacerlo, se le tendrá por desistido, así como de la suspensión del plazo para dictar resolución». El plazo de quince días es el que se concede a los terceros afectados para alegar (art. 19.3), y el de un mes es el máximo para resolver (art. 20.1).",
+      "legalReference": "Ley 19/2013, art. 19.2"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0005",
+      "statement": "Según el artículo 32 de la Ley 1/2014 de Transparencia Pública de Andalucía, en el ámbito de la Administración de la Junta de Andalucía y sus entidades instrumentales, el plazo máximo para dictar y notificar la resolución sobre una solicitud de acceso desde su recepción por el órgano competente es de:",
+      "options": [
+        {
+          "text": "10 días hábiles",
+          "isCorrect": false
+        },
+        {
+          "text": "15 días hábiles",
+          "isCorrect": false
+        },
+        {
+          "text": "20 días hábiles",
+          "isCorrect": true
+        },
+        {
+          "text": "30 días hábiles",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 32 establece que, en el ámbito de la Administración de la Junta de Andalucía y sus entidades instrumentales, «el plazo máximo para dictar y notificar la resolución será de 20 días hábiles desde la recepción de la solicitud por el órgano competente para resolver, prorrogables por igual período» cuando el volumen o la complejidad de la información lo requiera, y la ampliación se notifica al solicitante. Los demás plazos no figuran en el precepto.",
+      "legalReference": "Ley 1/2014 de Andalucía, art. 32"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0006",
+      "statement": "Según el artículo 21 de la Ley 1/2014 de Transparencia Pública de Andalucía, cuando las entidades locales celebren sesiones plenarias, facilitarán su acceso a través de Internet, salvo causas justificadas de imposibilidad técnica o económica:",
+      "options": [
+        {
+          "text": "Bien transmitiendo la sesión, bien dando acceso al archivo audiovisual grabado una vez celebrada",
+          "isCorrect": true
+        },
+        {
+          "text": "Únicamente mediante la transmisión en directo de la sesión",
+          "isCorrect": false
+        },
+        {
+          "text": "Únicamente mediante la publicación del acta una vez aprobada por el Pleno",
+          "isCorrect": false
+        },
+        {
+          "text": "Solo previa solicitud motivada de la persona interesada en conocer la sesión",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 21 obliga a las entidades locales a facilitar el acceso a las sesiones plenarias a través de Internet, «bien transmitiendo la sesión, bien dando acceso al archivo audiovisual grabado una vez celebrada la misma». Basta con una de las dos modalidades, no se limita a la transmisión en directo ni a la publicación del acta, y no se condiciona a una solicitud. Además, las personas asistentes podrán grabar las sesiones por sus propios medios, respetando el funcionamiento ordinario de la institución.",
+      "legalReference": "Ley 1/2014 de Andalucía, art. 21"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0007",
+      "statement": "Según el artículo 47.1 de la Ley 1/2014 de Transparencia Pública de Andalucía, la persona que ejerza la Dirección del Consejo de Transparencia y Protección de Datos de Andalucía tiene un mandato de:",
+      "options": [
+        {
+          "text": "Cuatro años, renovable por otro periodo igual",
+          "isCorrect": false
+        },
+        {
+          "text": "Cinco años no renovable",
+          "isCorrect": true
+        },
+        {
+          "text": "Cinco años, renovable por otro periodo igual",
+          "isCorrect": false
+        },
+        {
+          "text": "Seis años no renovable",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 47.1 dispone que la persona que ejerza la Dirección del Consejo será nombrada «por un periodo de 5 años no renovable», aunque, expirado el mandato, continuará en el ejercicio de sus funciones hasta la toma de posesión del nuevo titular. El mandato de cinco años renovable es el de la Presidencia de la Agencia Española de Protección de Datos (LO 3/2018, art. 48.5), no el del Consejo andaluz.",
+      "legalReference": "Ley 1/2014 de Andalucía, art. 47.1"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0008",
+      "statement": "Según la letra e) del artículo 6.1 del RGPD, el tratamiento de datos personales es lícito cuando es necesario para:",
+      "options": [
+        {
+          "text": "La ejecución de un contrato en el que el interesado es parte",
+          "isCorrect": false
+        },
+        {
+          "text": "Proteger intereses vitales del interesado o de otra persona física",
+          "isCorrect": false
+        },
+        {
+          "text": "La satisfacción de intereses legítimos perseguidos por el responsable o por un tercero",
+          "isCorrect": false
+        },
+        {
+          "text": "El cumplimiento de una misión realizada en interés público o en el ejercicio de poderes públicos conferidos al responsable",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "La letra e) del artículo 6.1 considera lícito el tratamiento necesario «para el cumplimiento de una misión realizada en interés público o en el ejercicio de poderes públicos conferidos al responsable del tratamiento»; es la base habitual de las Administraciones públicas. Las otras opciones son las letras b) (contrato), d) (intereses vitales) y f) (intereses legítimos). Esta última, además, «no será de aplicación al tratamiento realizado por las autoridades públicas en el ejercicio de sus funciones» (art. 6.1, último párrafo).",
+      "legalReference": "RGPD, art. 6.1.e)"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0009",
+      "statement": "Según el artículo 37.1.a) del RGPD, el responsable y el encargado del tratamiento designarán un delegado de protección de datos siempre que el tratamiento lo lleve a cabo:",
+      "options": [
+        {
+          "text": "Una autoridad u organismo público, excepto los tribunales que actúen en ejercicio de su función judicial",
+          "isCorrect": true
+        },
+        {
+          "text": "Cualquier autoridad u organismo público, incluidos los tribunales cuando actúen en ejercicio de su función judicial",
+          "isCorrect": false
+        },
+        {
+          "text": "Cualquier entidad que trate datos personales de menores de edad",
+          "isCorrect": false
+        },
+        {
+          "text": "Cualquier entidad que realice transferencias de datos personales a terceros países",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 37.1.a) obliga a designar un delegado de protección de datos cuando «el tratamiento lo lleve a cabo una autoridad u organismo público, excepto los tribunales que actúen en ejercicio de su función judicial». Los tribunales en ese ejercicio quedan excluidos, y ni el tratamiento de datos de menores ni las transferencias a terceros países son por sí solos supuestos del apartado 1. Cuando el responsable sea una autoridad u organismo público, se puede designar un único delegado para varias de ellas (art. 37.3).",
+      "legalReference": "RGPD, art. 37.1.a)"
+    },
+    {
+      "key": "malaga-programador-c1/transparencia-proteccion-datos/0010",
+      "statement": "Según el artículo 77.2 de la Ley Orgánica 3/2018, cuando una entidad de la Administración Local cometa alguna de las infracciones de los artículos 72 a 74, la autoridad de protección de datos competente dictará resolución:",
+      "options": [
+        {
+          "text": "Imponiendo una multa administrativa de las previstas en el artículo 83 del RGPD",
+          "isCorrect": false
+        },
+        {
+          "text": "Archivando las actuaciones, al estar exceptuadas las Administraciones Públicas de este régimen",
+          "isCorrect": false
+        },
+        {
+          "text": "Declarando la infracción y estableciendo, en su caso, las medidas que proceda adoptar para que cese la conducta o se corrijan sus efectos",
+          "isCorrect": true
+        },
+        {
+          "text": "Remitiendo el expediente al Defensor del Pueblo para que dicte la resolución sancionadora",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 77.1.c) incluye a las entidades que integran la Administración Local, y el apartado 2 dispone que la autoridad «dictará resolución declarando la infracción y estableciendo, en su caso, las medidas que proceda adoptar para que cese la conducta o se corrijan los efectos de la infracción», con excepción de la prevista en el artículo 58.2.i del RGPD (la multa administrativa). Se notifica al responsable, al órgano del que dependa y a los afectados, y además se comunica al Defensor del Pueblo o a la institución autonómica análoga (apartado 5), pero este no resuelve. Apartado 2 en la redacción dada por la Ley 11/2023.",
+      "legalReference": "LO 3/2018, art. 77.2"
+    }
+  ]
+}

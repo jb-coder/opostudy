@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "php",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/php/0001",
+      "statement": "En PHP 8, se ejecuta este código:\n\nvar_dump(0 == \"a\", \"1\" == \"01\", \"10\" == \"1e1\");\n\n¿Qué salida produce?",
+      "options": [
+        {
+          "text": "bool(true) bool(true) bool(true)",
+          "isCorrect": false
+        },
+        {
+          "text": "bool(false) bool(true) bool(true)",
+          "isCorrect": true
+        },
+        {
+          "text": "bool(false) bool(false) bool(true)",
+          "isCorrect": false
+        },
+        {
+          "text": "bool(false) bool(true) bool(false)",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Desde PHP 8.0.0, 0 == \"a\" es false, porque ya no se convierte la cadena no numérica en número. En cambio, si los dos operandos son cadenas numéricas, o uno es un número y el otro una cadena numérica, la comparación es numérica. Por eso \"1\" == \"01\" y \"10\" == \"1e1\" son true. Antes de PHP 8, la primera comparación daba true.",
+      "legalReference": "Manual de PHP, «Comparison Operators»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0002",
+      "statement": "En PHP 8, se ejecuta este código:\n\nfunction add(array $a) { $a[] = 4; }\nfunction addRef(array &$a) { $a[] = 4; }\n$x = [1, 2, 3];\nadd($x);\naddRef($x);\necho count($x);\n\n¿Qué ocurre?",
+      "options": [
+        {
+          "text": "Muestra 4, porque el parámetro con & es el único que modifica el original",
+          "isCorrect": true
+        },
+        {
+          "text": "Muestra 5, porque las dos funciones añaden su elemento al array original",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra 3, porque las dos funciones trabajan con una copia del array original",
+          "isCorrect": false
+        },
+        {
+          "text": "Falla con un error, porque un array no se puede pasar por referencia",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Por defecto los argumentos se pasan por valor: lo que la función cambie no afecta a la variable de fuera. Para que una función modifique su argumento hay que pasarlo por referencia, anteponiendo & al parámetro. Así, add() trabaja con una copia y addRef() modifica $x, que queda con 4 elementos. Un array sí puede pasarse por referencia.",
+      "legalReference": "Manual de PHP, «Function parameters and arguments»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0003",
+      "statement": "En PHP 8, se ejecuta este código:\n\n$n = 1;\n$byValue = function () use ($n) { return $n; };\n$arrow = fn() => $n;\n$n = 2;\necho $byValue(), $arrow();\n\n¿Qué muestra?",
+      "options": [
+        {
+          "text": "Muestra 22, porque las dos funciones leen $n cuando se ejecutan",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra 12, porque la función flecha lee $n al ejecutarse y la clausura no",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra 21, porque la clausura lee $n al ejecutarse y la función flecha no",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra 11, porque las dos funciones capturan el valor de $n al crearse",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Una clausura hereda las variables del ámbito padre con use, y toma el valor que tenían cuando se definió la función, no cuando se llama. Una función flecha usa las variables del ámbito padre de forma automática y las captura por valor. Las dos conservan el 1 aunque $n valga 2 después. Solo con use (&$n) se vería el cambio posterior.",
+      "legalReference": "Manual de PHP, «Anonymous functions»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0004",
+      "statement": "En PHP 8, se ejecuta este código:\n\n$code = \"200\";\necho match ($code) {\n  200 => \"OK\",\n  404 => \"Not Found\",\n};\n\n¿Qué ocurre?",
+      "options": [
+        {
+          "text": "Muestra OK, porque match compara con == y convierte la cadena en entero",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra una cadena vacía, porque sin rama coincidente match no devuelve nada",
+          "isCorrect": false
+        },
+        {
+          "text": "Lanza UnhandledMatchError, porque match usa === y ninguna rama coincide",
+          "isCorrect": true
+        },
+        {
+          "text": "Devuelve null y emite un Warning, porque ninguna rama coincide con el valor",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Cada rama de match se compara con identidad (===), no con igualdad laxa como en switch. La cadena \"200\" no es idéntica al entero 200, así que ninguna rama coincide. Como match debe ser exhaustivo, si ninguna rama trata el valor se lanza UnhandledMatchError, salvo que exista la rama default.",
+      "legalReference": "Manual de PHP, «match»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0005",
+      "statement": "En PHP 8, se ejecuta este código:\n\nclass A {\n  public static function who() { echo \"A\"; }\n  public static function viaSelf() { self::who(); }\n  public static function viaStatic() { static::who(); }\n}\nclass B extends A {\n  public static function who() { echo \"B\"; }\n}\nB::viaSelf();\nB::viaStatic();\n\n¿Qué muestra?",
+      "options": [
+        {
+          "text": "Muestra AB: self:: usa la clase que define el método y static::, la llamada",
+          "isCorrect": true
+        },
+        {
+          "text": "Muestra BB: self:: y static:: usan la clase por la que se hizo la llamada",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra AA: self:: y static:: usan la clase donde está definido el método",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra BA: self:: usa la clase llamada y static::, la que define el método",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "self:: se resuelve con la clase a la que pertenece la función, es decir, donde se definió: A. static:: introduce el enlace estático en tiempo de ejecución y se resuelve con la clase nombrada en la última llamada sin reenvío, aquí B. La salida es AB; las otras combinaciones invierten o igualan el papel de self:: y static::.",
+      "legalReference": "Manual de PHP, «Late Static Bindings»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0006",
+      "statement": "En PHP 8, sin declare(strict_types=1), se ejecuta este código:\n\nfunction half(int $n) { return $n / 2; }\ntry {\n  half(\"abc\");\n} catch (Exception $e) {\n  echo \"E\";\n} catch (Error $e) {\n  echo \"R\";\n}\n\n¿Qué ocurre?",
+      "options": [
+        {
+          "text": "Se ejecuta el primer catch y muestra E, porque TypeError hereda de Exception",
+          "isCorrect": false
+        },
+        {
+          "text": "Se ejecutan los dos catch y muestra ER, porque el error cumple las dos clases",
+          "isCorrect": false
+        },
+        {
+          "text": "Se detiene sin ejecutar los catch, porque un error de tipo no se puede capturar",
+          "isCorrect": false
+        },
+        {
+          "text": "Se ejecuta el segundo catch y muestra R, porque TypeError hereda de Error",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Throwable es la interfaz base de lo que puede lanzarse y tiene dos ramas: Error y Exception. TypeError, que se lanza cuando un valor no puede interpretarse como el tipo declarado, está en la rama de Error. Por eso el primer catch no lo captura y sí el segundo. Los errores Throwable se capturan con catch como cualquier excepción.",
+      "legalReference": "Manual de PHP, «Throwable errors»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0007",
+      "statement": "En PHP 8, el fichero config.php contiene <?php $lang = \"es\"; y otro script de la misma carpeta ejecuta este código:\n\nfunction load() {\n  include __DIR__ . \"/config.php\";\n  echo $lang;\n}\nload();\necho $lang ?? \"none\";\n\n¿Qué muestra?",
+      "options": [
+        {
+          "text": "Muestra eses, porque las variables del fichero incluido quedan en el ámbito global",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra esnone, porque las variables del fichero incluido toman el ámbito de la función",
+          "isCorrect": true
+        },
+        {
+          "text": "Muestra nonees, porque el fichero incluido se evalúa fuera del ámbito de la función",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra un error, porque include no puede usarse en el cuerpo de una función",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Cuando se incluye un fichero, su código hereda el ámbito de variables de la línea donde está el include. Como está dentro de load(), $lang se comporta como si se hubiera definido en esa función: allí vale es. Fuera, $lang no existe y el operador ?? da none. Incluir un fichero dentro de una función es válido.",
+      "legalReference": "Manual de PHP, «include»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0008",
+      "statement": "En PHP 8, se llama a move_uploaded_file() con la ruta de un fichero local que no llegó por el mecanismo de subida HTTP POST de PHP. ¿Qué ocurre?",
+      "options": [
+        {
+          "text": "Mueve el fichero a la ruta de destino y devuelve true, porque comprueba que el origen exista",
+          "isCorrect": false
+        },
+        {
+          "text": "Lanza una excepción RuntimeException, porque el origen no es una subida válida",
+          "isCorrect": false
+        },
+        {
+          "text": "No hace nada y devuelve false, porque el origen no es una subida válida",
+          "isCorrect": true
+        },
+        {
+          "text": "Termina el script con un error fatal E_ERROR, porque el origen no es una subida válida",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "move_uploaded_file() comprueba que el fichero de origen sea una subida válida, es decir, recibida por el mecanismo de subida POST de PHP. Si no lo es, no se realiza ninguna acción y la función devuelve false. Esta comprobación evita que se mueva un fichero cualquiera del servidor, y por eso se usa con el valor tmp_name de $_FILES.",
+      "legalReference": "Manual de PHP, «move_uploaded_file»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0009",
+      "statement": "En PHP 8, se ejecuta este código con las sesiones habilitadas:\n\nsession_start();\n$_SESSION[\"user\"] = \"ana\";\nsession_destroy();\necho $_SESSION[\"user\"] ?? \"none\";\n\n¿Qué muestra?",
+      "options": [
+        {
+          "text": "Muestra ana, porque session_destroy() no borra las variables globales de la sesión",
+          "isCorrect": true
+        },
+        {
+          "text": "Muestra none, porque session_destroy() vacía el array $_SESSION al terminar",
+          "isCorrect": false
+        },
+        {
+          "text": "Lanza un Error, porque tras session_destroy() ya no existe el array $_SESSION",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra none, porque session_destroy() elimina la cookie de sesión y sus datos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "session_destroy() destruye los datos asociados a la sesión actual, pero no elimina las variables globales asociadas a la sesión ni la cookie de sesión. Por eso $_SESSION conserva el valor durante el resto del script. El manual indica limpiar el array $_SESSION en lugar de destruir la sesión y, para eliminarla del todo, borrar también la cookie con setcookie().",
+      "legalReference": "Manual de PHP, «session_destroy»"
+    },
+    {
+      "key": "malaga-programador-c1/php/0010",
+      "statement": "En PHP 8, se ejecuta este código:\n\n$h1 = password_hash(\"secret\", PASSWORD_DEFAULT);\n$h2 = password_hash(\"secret\", PASSWORD_DEFAULT);\nvar_dump($h1 === $h2, password_verify(\"secret\", $h1), password_verify(\"secret\", $h2));\n\n¿Qué se puede afirmar de la salida?",
+      "options": [
+        {
+          "text": "Los hashes son iguales y password_verify() acepta la contraseña con los dos",
+          "isCorrect": false
+        },
+        {
+          "text": "Los hashes son iguales y password_verify() falla, porque hay que indicarle la sal",
+          "isCorrect": false
+        },
+        {
+          "text": "Los hashes son distintos y password_verify() falla, porque la sal se guarda aparte",
+          "isCorrect": false
+        },
+        {
+          "text": "Los hashes son distintos y password_verify() acepta la contraseña con los dos",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "password_hash() genera una sal aleatoria en cada llamada, así que dos hashes de la misma contraseña son distintos y la comparación === da false. El algoritmo, el coste y la sal forman parte del hash devuelto, de modo que password_verify() tiene toda la información y no necesita la sal por separado. Las dos verificaciones dan true.",
+      "legalReference": "Manual de PHP, «password_hash»"
+    }
+  ]
+}

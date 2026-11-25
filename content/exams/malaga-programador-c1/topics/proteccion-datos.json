@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "proteccion-datos",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0001",
+      "statement": "Según el artículo 4 del RGPD, se entiende por «limitación del tratamiento»:",
+      "options": [
+        {
+          "text": "El tratamiento de datos personales de manera tal que ya no puedan atribuirse a un interesado sin utilizar información adicional",
+          "isCorrect": false
+        },
+        {
+          "text": "El marcado de los datos de carácter personal conservados con el fin de limitar su tratamiento en el futuro",
+          "isCorrect": true
+        },
+        {
+          "text": "La supresión o destrucción de los datos personales conservados por el responsable del tratamiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Toda forma de tratamiento automatizado de datos personales destinada a evaluar determinados aspectos personales de una persona física",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 4.3 define la «limitación del tratamiento» como «el marcado de los datos de carácter personal conservados con el fin de limitar su tratamiento en el futuro». La primera opción describe la seudonimización (art. 4.5) y la última, la elaboración de perfiles (art. 4.4). La supresión o destrucción figura en el artículo 4.2 entre las operaciones que constituyen «tratamiento», pero no es la limitación del tratamiento.",
+      "legalReference": "RGPD, art. 4.3"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0002",
+      "statement": "Según el artículo 5.1 del RGPD, el principio de «minimización de datos» exige que los datos personales sean:",
+      "options": [
+        {
+          "text": "Exactos y, si fuera necesario, actualizados",
+          "isCorrect": false
+        },
+        {
+          "text": "Tratados de manera lícita, leal y transparente en relación con el interesado",
+          "isCorrect": false
+        },
+        {
+          "text": "Recogidos con fines determinados, explícitos y legítimos",
+          "isCorrect": false
+        },
+        {
+          "text": "Adecuados, pertinentes y limitados a lo necesario en relación con los fines para los que son tratados",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 5.1.c) establece que los datos personales serán «adecuados, pertinentes y limitados a lo necesario en relación con los fines para los que son tratados («minimización de datos»)». Las demás opciones recogen otros principios del mismo apartado: la exactitud (letra d), la licitud, lealtad y transparencia (letra a) y la limitación de la finalidad (letra b).",
+      "legalReference": "RGPD, art. 5.1.c)"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0003",
+      "statement": "Según el artículo 7.1 de la Ley Orgánica 3/2018, el tratamiento de los datos personales de un menor de edad únicamente podrá fundarse en su consentimiento cuando sea mayor de:",
+      "options": [
+        {
+          "text": "Catorce años",
+          "isCorrect": true
+        },
+        {
+          "text": "Dieciséis años",
+          "isCorrect": false
+        },
+        {
+          "text": "Trece años",
+          "isCorrect": false
+        },
+        {
+          "text": "Dieciocho años",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 7.1 dispone que «el tratamiento de los datos personales de un menor de edad únicamente podrá fundarse en su consentimiento cuando sea mayor de catorce años». Los dieciséis años son la edad que fija el artículo 8.1 del RGPD para la oferta directa a niños de servicios de la sociedad de la información, pero la propia norma permite a los Estados miembros rebajarla (no por debajo de trece), y la ley orgánica española la sitúa en catorce. Para los menores de catorce años solo es lícito si consta el consentimiento del titular de la patria potestad o tutela (art. 7.2).",
+      "legalReference": "LO 3/2018, art. 7.1"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0004",
+      "statement": "Según el artículo 13.3 de la Ley Orgánica 3/2018, a los efectos del artículo 12.5 del RGPD, se podrá considerar repetitivo el ejercicio del derecho de acceso:",
+      "options": [
+        {
+          "text": "En más de una ocasión durante el plazo de tres meses, a menos que exista causa legítima para ello",
+          "isCorrect": false
+        },
+        {
+          "text": "En más de una ocasión durante el plazo de un año, a menos que exista causa legítima para ello",
+          "isCorrect": false
+        },
+        {
+          "text": "En más de una ocasión durante el plazo de seis meses, a menos que exista causa legítima para ello",
+          "isCorrect": true
+        },
+        {
+          "text": "En más de dos ocasiones durante el plazo de seis meses, a menos que exista causa legítima para ello",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 13.3 señala que «se podrá considerar repetitivo el ejercicio del derecho de acceso en más de una ocasión durante el plazo de seis meses, a menos que exista causa legítima para ello». Por tanto, ni el plazo de tres meses ni el de un año son los de la ley, y tampoco basta con superar dos ocasiones: el umbral es más de una vez en seis meses.",
+      "legalReference": "LO 3/2018, art. 13.3"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0005",
+      "statement": "Según el artículo 20.1 del RGPD, el interesado tiene derecho a la portabilidad de los datos que haya facilitado a un responsable cuando el tratamiento esté basado en el consentimiento o en un contrato y:",
+      "options": [
+        {
+          "text": "Se realice para el cumplimiento de una misión de interés público atribuida al responsable",
+          "isCorrect": false
+        },
+        {
+          "text": "Se efectúe por medios automatizados",
+          "isCorrect": true
+        },
+        {
+          "text": "Los datos hayan sido tratados ilícitamente por el responsable",
+          "isCorrect": false
+        },
+        {
+          "text": "Los datos ya no sean necesarios en relación con los fines para los que fueron recogidos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 20.1 exige dos requisitos acumulativos: que el tratamiento esté basado en el consentimiento o en un contrato (letra a) y que «se efectúe por medios automatizados» (letra b). El tratamiento necesario para una misión de interés público queda expresamente fuera de este derecho (art. 20.3). El tratamiento ilícito y la falta de necesidad de los datos son supuestos del derecho de supresión (art. 17.1.d y a), no de la portabilidad.",
+      "legalReference": "RGPD, art. 20.1"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0006",
+      "statement": "Según el artículo 30.5 del RGPD, las obligaciones de llevar el registro de actividades de tratamiento no se aplicarán, con carácter general, a ninguna empresa ni organización que emplee a menos de:",
+      "options": [
+        {
+          "text": "50 personas",
+          "isCorrect": false
+        },
+        {
+          "text": "100 personas",
+          "isCorrect": false
+        },
+        {
+          "text": "500 personas",
+          "isCorrect": false
+        },
+        {
+          "text": "250 personas",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 30.5 exime del registro a las empresas y organizaciones que empleen a menos de 250 personas, salvo que el tratamiento pueda entrañar un riesgo para los derechos y libertades de los interesados, no sea ocasional o incluya categorías especiales de datos (art. 9.1) o datos sobre condenas e infracciones penales (art. 10). Los demás umbrales no figuran en el precepto.",
+      "legalReference": "RGPD, art. 30.5"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0007",
+      "statement": "Según el artículo 38.3 del RGPD, respecto del delegado de protección de datos, el responsable y el encargado del tratamiento garantizarán que:",
+      "options": [
+        {
+          "text": "Rinda cuentas directamente al más alto nivel jerárquico del responsable o encargado",
+          "isCorrect": true
+        },
+        {
+          "text": "Reciba las instrucciones del responsable sobre el desempeño de sus funciones",
+          "isCorrect": false
+        },
+        {
+          "text": "Pueda ser destituido por el responsable cuando discrepe de las decisiones que este adopte",
+          "isCorrect": false
+        },
+        {
+          "text": "Dependa orgánicamente de la autoridad de control en el desempeño de sus funciones",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 38.3 dispone que el delegado «no reciba ninguna instrucción en lo que respecta al desempeño de dichas funciones», que no sea destituido ni sancionado por desempeñarlas y que «rendirá cuentas directamente al más alto nivel jerárquico del responsable o encargado». Por eso fallan las opciones que le someten a instrucciones o permiten su destitución por ejercer sus funciones. La autoridad de control es su punto de contacto (art. 39.1.e), pero el delegado no depende de ella.",
+      "legalReference": "RGPD, art. 38.3"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0008",
+      "statement": "Según el artículo 57.1 de la Ley Orgánica 3/2018, las autoridades autonómicas de protección de datos podrán ejercer las funciones y potestades de los artículos 57 y 58 del RGPD, de acuerdo con la normativa autonómica, cuando se refieran a:",
+      "options": [
+        {
+          "text": "Los tratamientos de los que sean responsables las empresas privadas con domicilio social en la Comunidad Autónoma",
+          "isCorrect": false
+        },
+        {
+          "text": "Los tratamientos de los que sea responsable la Administración General del Estado en el territorio autonómico",
+          "isCorrect": false
+        },
+        {
+          "text": "Los tratamientos de los que sean responsables las entidades del sector público autonómico o de las Entidades Locales de su ámbito territorial",
+          "isCorrect": true
+        },
+        {
+          "text": "Los tratamientos transfronterizos realizados por responsables establecidos en varios Estados miembros",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 57.1.a) atribuye a las autoridades autonómicas los «tratamientos de los que sean responsables las entidades integrantes del sector público de la correspondiente Comunidad Autónoma o de las Entidades Locales incluidas en su ámbito territorial». Los apartados b) y c) añaden las funciones públicas autonómicas o locales ejercidas por particulares y los tratamientos previstos en los Estatutos de Autonomía; no se incluyen las empresas privadas, la Administración General del Estado ni los tratamientos transfronterizos.",
+      "legalReference": "LO 3/2018, art. 57.1.a)"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0009",
+      "statement": "Según el artículo 20.2.i) del TRLPI, la puesta a disposición del público de obras, por procedimientos alámbricos o inalámbricos, de tal forma que cualquier persona pueda acceder a ellas desde el lugar y en el momento que elija, es un acto de:",
+      "options": [
+        {
+          "text": "Reproducción",
+          "isCorrect": false
+        },
+        {
+          "text": "Comunicación pública",
+          "isCorrect": true
+        },
+        {
+          "text": "Distribución",
+          "isCorrect": false
+        },
+        {
+          "text": "Transformación",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 20.2.i) incluye entre los actos de comunicación pública «la puesta a disposición del público de obras, por procedimientos alámbricos o inalámbricos, de tal forma que cualquier persona pueda acceder a ellas desde el lugar y en el momento que elija». La reproducción es la fijación de la obra que permite su comunicación o la obtención de copias (art. 18); la distribución es la puesta a disposición del público del original o de las copias en un soporte tangible (art. 19.1); la transformación es otro de los derechos de explotación del artículo 17.",
+      "legalReference": "TRLPI, art. 20.2.i)"
+    },
+    {
+      "key": "malaga-programador-c1/proteccion-datos/0010",
+      "statement": "Según el artículo 31.2 del TRLPI, para que una reproducción constituya el límite legal de copia privada y no necesite autorización del autor, debe realizarse:",
+      "options": [
+        {
+          "text": "A partir de una fuente lícita, sin que se vulneren las condiciones de acceso a la obra o prestación",
+          "isCorrect": true
+        },
+        {
+          "text": "Por una persona jurídica exclusivamente para su uso interno y sin fines comerciales",
+          "isCorrect": false
+        },
+        {
+          "text": "Con asistencia de terceros, siempre que no medie precio por la copia",
+          "isCorrect": false
+        },
+        {
+          "text": "Sobre obras aún no divulgadas, siempre que el titular de los derechos no se oponga",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 31.2.b) exige que «la reproducción se realice a partir de una fuente lícita y que no se vulneren las condiciones de acceso a la obra o prestación». Además, la reproducción debe hacerse sin asistencia de terceros, sobre obras ya divulgadas, por una persona física exclusivamente para su uso privado, no profesional ni empresarial y sin fines comerciales (art. 31.2, letra a). Por eso fallan las opciones que hablan de personas jurídicas, de asistencia de terceros o de obras no divulgadas.",
+      "legalReference": "TRLPI, art. 31.2"
+    }
+  ]
+}

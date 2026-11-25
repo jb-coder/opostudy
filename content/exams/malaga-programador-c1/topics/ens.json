@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "ens",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/ens/0001",
+      "statement": "Según el artículo 12.6 del Real Decreto 311/2022, ¿cuál de las siguientes opciones figura entre los requisitos mínimos con los que se desarrolla la política de seguridad?",
+      "options": [
+        {
+          "text": "Vigilancia continua",
+          "isCorrect": false
+        },
+        {
+          "text": "Profesionalidad",
+          "isCorrect": true
+        },
+        {
+          "text": "Reevaluación periódica",
+          "isCorrect": false
+        },
+        {
+          "text": "Seguridad como proceso integral",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 12.6 dispone que la política de seguridad «se establecerá de acuerdo con los principios básicos señalados en el capítulo II y se desarrollará aplicando los siguientes requisitos mínimos», y la letra d) es «Profesionalidad». Las otras tres opciones son principios básicos del artículo 5, que inspiran la política pero no son requisitos mínimos.",
+      "legalReference": "RD 311/2022 (ENS), art. 12.6"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0002",
+      "statement": "Según el artículo 9.2 del Real Decreto 311/2022, las líneas de defensa del sistema de información han de estar constituidas por medidas de naturaleza:",
+      "options": [
+        {
+          "text": "Preventiva, reactiva y correctiva",
+          "isCorrect": false
+        },
+        {
+          "text": "Jurídica, económica y técnica",
+          "isCorrect": false
+        },
+        {
+          "text": "Pública, privada y mixta",
+          "isCorrect": false
+        },
+        {
+          "text": "Organizativa, física y lógica",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 9.2 dispone que «Las líneas de defensa han de estar constituidas por medidas de naturaleza organizativa, física y lógica». Las demás clasificaciones no figuran en el precepto.",
+      "legalReference": "RD 311/2022 (ENS), art. 9.2"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0003",
+      "statement": "Según el artículo 13.3 del Real Decreto 311/2022, ¿qué relación debe existir, como regla general, entre el responsable de la seguridad y el responsable del sistema?",
+      "options": [
+        {
+          "text": "Han de ser personas distintas, sin dependencia jerárquica entre ambos",
+          "isCorrect": true
+        },
+        {
+          "text": "Pueden ser la misma persona siempre que la política de seguridad lo prevea expresamente",
+          "isCorrect": false
+        },
+        {
+          "text": "El responsable de la seguridad depende jerárquicamente del responsable del sistema",
+          "isCorrect": false
+        },
+        {
+          "text": "El responsable del sistema depende jerárquicamente del responsable de la seguridad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 13.3 establece que «El responsable de la seguridad será distinto del responsable del sistema, no debiendo existir dependencia jerárquica entre ambos». Solo cuando la ausencia justificada de recursos lo haga necesario caben situaciones excepcionales, y entonces deben aplicarse medidas compensatorias. Por eso no basta con que la política lo prevea ni cabe ninguna dependencia jerárquica, en un sentido o en otro.",
+      "legalReference": "RD 311/2022 (ENS), art. 13.3"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0004",
+      "statement": "Según el artículo 12.5 del Real Decreto 311/2022, los municipios podrán disponer de una política de seguridad común elaborada por:",
+      "options": [
+        {
+          "text": "La comunidad autónoma, para todos los municipios de su territorio",
+          "isCorrect": false
+        },
+        {
+          "text": "El órgano estatal competente en administración digital, para todas las entidades locales",
+          "isCorrect": false
+        },
+        {
+          "text": "La entidad local comarcal o provincial que asuma la seguridad de los sistemas municipales",
+          "isCorrect": true
+        },
+        {
+          "text": "Los propios municipios de una provincia, mediante un convenio suscrito entre todos ellos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 12.5 prevé que los municipios podrán disponer de una política de seguridad común «elaborada por la entidad local comarcal o provincial que asuma la responsabilidad de la seguridad de la información de los sistemas municipales». La norma no atribuye esa elaboración a la comunidad autónoma, a un órgano estatal ni a un convenio entre municipios.",
+      "legalReference": "RD 311/2022 (ENS), art. 12.5"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0005",
+      "statement": "Según el anexo I del Real Decreto 311/2022, un sistema de información en el que una dimensión de seguridad alcanza el nivel MEDIO y todas las demás el nivel BAJO es de categoría:",
+      "options": [
+        {
+          "text": "BÁSICA, porque la mayoría de las dimensiones tiene nivel BAJO",
+          "isCorrect": false
+        },
+        {
+          "text": "MEDIA, porque ninguna dimensión supera el nivel MEDIO",
+          "isCorrect": true
+        },
+        {
+          "text": "ALTA, porque se suman los niveles de todas las dimensiones",
+          "isCorrect": false
+        },
+        {
+          "text": "BÁSICA, porque deben alcanzar el nivel MEDIO al menos dos dimensiones",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El anexo I (apartado 4) dispone que «Un sistema de información será de categoría MEDIA si alguna de sus dimensiones de seguridad alcanza el nivel de seguridad MEDIO, y ninguna alcanza un nivel de seguridad superior». La categoría la marca la dimensión de mayor nivel; no depende de cuántas dimensiones haya en cada nivel ni de sumarlas.",
+      "legalReference": "RD 311/2022 (ENS), anexo I, apartado 4.1.b)"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0006",
+      "statement": "Según el artículo 41.1 del Real Decreto 311/2022, ¿a quién corresponde efectuar las valoraciones del impacto de un incidente de seguridad de las que parte la categoría del sistema?",
+      "options": [
+        {
+          "text": "Al responsable del sistema, por ser quien supervisa la operación diaria",
+          "isCorrect": false
+        },
+        {
+          "text": "Al CCN, mediante una auditoría previa del sistema",
+          "isCorrect": false
+        },
+        {
+          "text": "Al órgano que aprueba la política de seguridad de la organización",
+          "isCorrect": false
+        },
+        {
+          "text": "Al responsable o responsables de la información o servicios afectados",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 41.1 atribuye la facultad de efectuar las valoraciones del artículo 40, y su posterior modificación, «al responsable o responsables de la información o servicios afectados». Con base en ellas, el artículo 41.2 deja la determinación de la categoría del sistema al responsable de la seguridad. Ni el responsable del sistema, ni el CCN, ni el órgano que aprueba la política tienen esa facultad.",
+      "legalReference": "RD 311/2022 (ENS), art. 41.1"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0007",
+      "statement": "Según el artículo 28.2 del Real Decreto 311/2022, la relación de medidas de seguridad seleccionadas se formalizará en un documento, firmado por el responsable de la seguridad, denominado:",
+      "options": [
+        {
+          "text": "Declaración de Aplicabilidad",
+          "isCorrect": true
+        },
+        {
+          "text": "Declaración de Conformidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Política de seguridad",
+          "isCorrect": false
+        },
+        {
+          "text": "Perfil de cumplimiento específico",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 28.2 dispone que «La relación de medidas de seguridad seleccionadas se formalizará en un documento denominado Declaración de Aplicabilidad, firmado por el responsable de la seguridad». La declaración de conformidad manifiesta el cumplimiento del ENS (artículo 38), la política de seguridad recoge las directrices con las que la organización gestiona y protege la información (artículo 12.1) y los perfiles de cumplimiento específicos comprenden el conjunto de medidas que, a partir del análisis de riesgos, «resulten idóneas para una concreta categoría de seguridad» (artículo 30.1).",
+      "legalReference": "RD 311/2022 (ENS), art. 28.2"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0008",
+      "statement": "Según la medida mp.s.4 (protección frente a la denegación de servicio) del anexo II del Real Decreto 311/2022, como medida preventiva frente a estos ataques se planificará y dotará al sistema de:",
+      "options": [
+        {
+          "text": "Un sistema redundante que sustituya al principal cuando este quede inutilizado",
+          "isCorrect": false
+        },
+        {
+          "text": "Un mecanismo que bloquee el acceso de todo usuario no autenticado",
+          "isCorrect": false
+        },
+        {
+          "text": "Capacidad suficiente para atender con holgura a la carga prevista",
+          "isCorrect": true
+        },
+        {
+          "text": "Un registro de la actividad de los usuarios conservado durante un año",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La medida mp.s.4.1 dispone que «Se planificará y dotará al sistema de capacidad suficiente para atender con holgura a la carga prevista». Es una medida preventiva basada en el dimensionamiento del sistema. Las demás opciones no figuran en esa medida: ni la redundancia, ni el bloqueo general de usuarios no autenticados, ni el registro de la actividad durante un año.",
+      "legalReference": "RD 311/2022 (ENS), anexo II, mp.s.4.1"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0009",
+      "statement": "Según el artículo 38.1 del Real Decreto 311/2022, ¿qué se exige a los sistemas de información de categoría MEDIA para determinar su conformidad con el ENS?",
+      "options": [
+        {
+          "text": "Una autoevaluación para su declaración de la conformidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Una auditoría para la certificación de su conformidad",
+          "isCorrect": true
+        },
+        {
+          "text": "Una validación de su perfil de cumplimiento por el CCN",
+          "isCorrect": false
+        },
+        {
+          "text": "Una evaluación de impacto en la protección de datos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 38.1 señala que «los sistemas de categoría MEDIA o ALTA precisarán de una auditoría para la certificación de su conformidad», mientras que los de categoría BÁSICA «solo requerirán de una autoevaluación para su declaración de la conformidad». La validación de perfiles corresponde al CCN en otro contexto, y la evaluación de impacto pertenece a la normativa de protección de datos.",
+      "legalReference": "RD 311/2022 (ENS), art. 38.1"
+    },
+    {
+      "key": "malaga-programador-c1/ens/0010",
+      "statement": "Según el artículo 33.2 del Real Decreto 311/2022, las entidades del sector público notificarán al CCN los incidentes de seguridad que:",
+      "options": [
+        {
+          "text": "Tengan un impacto significativo en la seguridad de los sistemas",
+          "isCorrect": true
+        },
+        {
+          "text": "Afecten a sistemas de categoría ALTA, con independencia de su impacto",
+          "isCorrect": false
+        },
+        {
+          "text": "Hayan sido detectados por un tercero ajeno a la organización",
+          "isCorrect": false
+        },
+        {
+          "text": "Hayan supuesto una violación de la seguridad de datos personales",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 33.2 dispone que las entidades del sector público notificarán al CCN «aquellos incidentes que tengan un impacto significativo en la seguridad de los sistemas de información concernidos», de acuerdo con la correspondiente Instrucción Técnica de Seguridad. El criterio es el impacto, no la categoría del sistema, quién detecte el incidente ni la afectación a datos personales.",
+      "legalReference": "RD 311/2022 (ENS), art. 33.2"
+    }
+  ]
+}

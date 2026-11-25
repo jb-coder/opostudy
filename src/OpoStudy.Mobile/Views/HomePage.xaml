@@ -191,6 +191,20 @@
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">
                         <Label
                             Style="{StaticResource SubtitleLabel}"
+                            Text="Estadísticas"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <Label Text="Consulta tus aciertos, tus temas más flojos y tu calendario." />
+                        <Button
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Ver estadísticas"
+                            Command="{Binding OpenStatsCommand}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
                             Text="Estado del servidor"
                             SemanticProperties.HeadingLevel="Level2" />
 

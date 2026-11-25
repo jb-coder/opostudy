@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "notificaciones-notifica",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0001",
+      "statement": "Según el artículo 41.3 de la Ley 39/2015, en los procedimientos iniciados a solicitud de un interesado que no está obligado a relacionarse electrónicamente con la Administración, la notificación se practicará:",
+      "options": [
+        {
+          "text": "Por el medio que la Administración considere más eficaz para el procedimiento",
+          "isCorrect": false
+        },
+        {
+          "text": "Por el medio señalado al efecto por el interesado",
+          "isCorrect": true
+        },
+        {
+          "text": "Preferentemente en papel, en el domicilio que conste en el Padrón Municipal",
+          "isCorrect": false
+        },
+        {
+          "text": "Por medios electrónicos, aunque el interesado haya señalado otro medio en su solicitud",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 41.3 dispone que «En los procedimientos iniciados a solicitud del interesado, la notificación se practicará por el medio señalado al efecto por aquel.» y añade que «Esta notificación será electrónica en los casos en los que exista obligación de relacionarse de esta forma con la Administración», de modo que no es electrónica en todo caso ni la elige libremente la Administración. La consulta del domicilio del Padrón Municipal se prevé en los procedimientos iniciados de oficio (art. 41.4), y la preferencia por los medios electrónicos del art. 41.1 («Las notificaciones se practicarán preferentemente por medios electrónicos») va en sentido contrario a la práctica preferente en papel.",
+      "legalReference": "Ley 39/2015, art. 41.3"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0002",
+      "statement": "Según el artículo 41.7 de la Ley 39/2015, cuando el interesado fuera notificado por distintos cauces, se tomará como fecha de notificación:",
+      "options": [
+        {
+          "text": "La de la notificación practicada en último lugar",
+          "isCorrect": false
+        },
+        {
+          "text": "La de la notificación electrónica, cualquiera que sea el orden en que se hayan practicado",
+          "isCorrect": false
+        },
+        {
+          "text": "La de la notificación practicada por el medio señalado por el interesado en su solicitud",
+          "isCorrect": false
+        },
+        {
+          "text": "La de aquella que se hubiera producido en primer lugar",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 41.7 establece que «Cuando el interesado fuera notificado por distintos cauces, se tomará como fecha de notificación la de aquélla que se hubiera producido en primer lugar.» El precepto atiende solo al orden en que se produjeron las notificaciones, no a la última, ni al carácter electrónico del cauce, ni al medio señalado por el interesado.",
+      "legalReference": "Ley 39/2015, art. 41.7"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0003",
+      "statement": "Según el artículo 42.1 de la Ley 39/2015, todas las notificaciones que se practiquen en papel deberán ser puestas a disposición del interesado:",
+      "options": [
+        {
+          "text": "En la sede electrónica de la Administración u Organismo actuante, para su acceso voluntario",
+          "isCorrect": true
+        },
+        {
+          "text": "En el tablón de edictos del Ayuntamiento del último domicilio del interesado, para su consulta pública",
+          "isCorrect": false
+        },
+        {
+          "text": "En el boletín oficial de la Comunidad Autónoma o de la Provincia, como anuncio previo a su práctica",
+          "isCorrect": false
+        },
+        {
+          "text": "En el «Boletín Oficial del Estado», con carácter complementario a la entrega en papel",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 42.1 establece que «Todas las notificaciones que se practiquen en papel deberán ser puestas a disposición del interesado en la sede electrónica de la Administración u Organismo actuante para que pueda acceder al contenido de las mismas de forma voluntaria.» El anuncio en el boletín oficial de la Comunidad Autónoma o de la Provincia y en el tablón de edictos del Ayuntamiento es solo facultativo y previo al anuncio en el «Boletín Oficial del Estado» cuando la notificación es infructuosa (art. 44), y no sirve para poner a disposición toda notificación en papel.",
+      "legalReference": "Ley 39/2015, art. 42.1"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0004",
+      "statement": "Según el artículo 42.3 del RD 203/2021, la notificación por comparecencia en la sede electrónica o a través de la Dirección Electrónica Habilitada única conlleva la puesta a disposición de un acuse de recibo que contendrá, como mínimo:",
+      "options": [
+        {
+          "text": "El texto íntegro del acto notificado, con indicación de si pone fin o no a la vía administrativa y los recursos que procedan",
+          "isCorrect": false
+        },
+        {
+          "text": "La identificación del órgano que dictó el acto, el plazo máximo para resolver y los efectos del silencio administrativo",
+          "isCorrect": false
+        },
+        {
+          "text": "La identificación del acto y de la persona destinataria, y las fechas y horas de puesta a disposición y de acceso o rechazo",
+          "isCorrect": true
+        },
+        {
+          "text": "La identificación de la sede electrónica emisora, el medio de aviso utilizado y la fecha de publicación del acto en el boletín oficial",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 42.3 dispone que «El acuse contendrá, como mínimo, la identificación del acto notificado y la persona destinataria, la fecha y hora en la que se produjo la puesta a disposición y la fecha y hora del acceso a su contenido o del rechazo.» El texto íntegro y los recursos son contenido de la notificación (Ley 39/2015, art. 40.2), no del acuse. El plazo máximo para resolver y los efectos del silencio administrativo son objeto de otra comunicación al interesado (RD 203/2021, art. 41.b). El medio de aviso y la fecha de publicación en un boletín oficial no figuran en el contenido mínimo del acuse que fija el art. 42.3.",
+      "legalReference": "RD 203/2021, art. 42.3"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0005",
+      "statement": "Según el artículo 44.4 del RD 203/2021, cuando una incidencia técnica imposibilite el funcionamiento ordinario de la Dirección Electrónica Habilitada única, una vez comunicada a los emisores que la utilizan como medio de notificación, estos podrán:",
+      "options": [
+        {
+          "text": "Suspender de oficio la tramitación de todos los procedimientos en los que haya notificaciones pendientes de practicar",
+          "isCorrect": false
+        },
+        {
+          "text": "Determinar una ampliación del plazo no vencido para comparecer y acceder a las notificaciones emitidas",
+          "isCorrect": true
+        },
+        {
+          "text": "Practicar las notificaciones afectadas mediante un anuncio publicado en el «Boletín Oficial del Estado»",
+          "isCorrect": false
+        },
+        {
+          "text": "Considerar rechazadas, a todos los efectos, las notificaciones puestas a disposición antes de la incidencia técnica",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El artículo 44.4 prevé que, «una vez comunicada dicha incidencia a los órganos, organismos o entidades emisores que la utilicen como medio de notificación, estos podrán determinar una ampliación del plazo no vencido para comparecer y acceder a las notificaciones emitidas.» El precepto no contempla suspender los procedimientos, ni dar por rechazadas las notificaciones, ni sustituir la puesta a disposición por un anuncio en el «Boletín Oficial del Estado», que la Ley 39/2015 reserva a la notificación infructuosa (art. 44).",
+      "legalReference": "RD 203/2021, art. 44.4"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0006",
+      "statement": "Según el artículo 44.3 de la Ley 40/2015, cuando los participantes en un entorno cerrado de comunicaciones pertenezcan a distintas Administraciones, las condiciones y garantías de las comunicaciones se establecerán mediante:",
+      "options": [
+        {
+          "text": "Una resolución de la Administración General del Estado, que las impondrá al resto de participantes",
+          "isCorrect": false
+        },
+        {
+          "text": "Un acuerdo de la Conferencia Sectorial competente en materia de administración electrónica",
+          "isCorrect": false
+        },
+        {
+          "text": "Una orden ministerial del departamento competente en materia de administración digital",
+          "isCorrect": false
+        },
+        {
+          "text": "Un convenio suscrito entre las Administraciones participantes",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El artículo 44.3 establece que «Cuando los participantes pertenezcan a distintas Administraciones, las condiciones y garantías citadas en el apartado anterior se establecerán mediante convenio suscrito entre aquellas.» Cuando los participantes pertenecen a una misma Administración Pública, es ésta la que determina esas condiciones y garantías (art. 44.2); el artículo no prevé para el caso de distintas Administraciones ni una resolución que las imponga, ni un acuerdo sectorial, ni una orden ministerial.",
+      "legalReference": "Ley 40/2015, art. 44.3"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0007",
+      "statement": "Según la «Descripción» de la ficha del CTT de Notifica, ¿cuál de las siguientes vías de puesta a disposición se utiliza siempre?",
+      "options": [
+        {
+          "text": "La Dirección Electrónica Habilitada única (DEHú)",
+          "isCorrect": true
+        },
+        {
+          "text": "La sede electrónica del organismo emisor",
+          "isCorrect": false
+        },
+        {
+          "text": "El soporte papel, a través de Postal Externo",
+          "isCorrect": false
+        },
+        {
+          "text": "El soporte papel, con Centros de impresión y ensobrado (CIE)",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La Descripción de la ficha enumera las vías de puesta a disposición y empieza por «Siempre en sede electrónica, mediante la puesta a disposición en la Dirección Electrónica Habilitada única (DEHú)». La sede electrónica del organismo emisor se usa «si así se requiere», y el soporte papel (con CIE y operadores postales, o a través de Postal Externo) son otras vías de la misma lista, sin ese carácter permanente.",
+      "legalReference": "PAe, Notifica (ficha del CTT), «Descripción»"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0008",
+      "statement": "Según el manual «Integración de Servicios Web para Organismos Emisores» de Notifica, en el servicio Adviser:",
+      "options": [
+        {
+          "text": "Notifica actúa como servidor y el Organismo Emisor como cliente",
+          "isCorrect": false
+        },
+        {
+          "text": "La DEHú actúa como cliente y Notifica como servidor",
+          "isCorrect": false
+        },
+        {
+          "text": "Notifica actúa como cliente y el Organismo Emisor como servidor",
+          "isCorrect": true
+        },
+        {
+          "text": "El Organismo Emisor actúa como cliente y la sede electrónica como servidor",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 6 del manual indica, sobre el servicio Adviser: «En este servicio Web, Notifica actúa como cliente y el Organismo Emisor como servidor.» Así el organismo obtiene «una comunicación automática del estado de los envíos cuando se produzca una modificación en dicho estado». El reparto inverso es el de los Servicios Web para Organismos, en los que «la aplicación Notifica actúa con rol servidor y los Sistemas de Información de los Organismos Emisores como clientes» (apartado 4). La DEHú y la sede electrónica no intervienen en ese reparto de papeles.",
+      "legalReference": "PAe, Notifica, «Integración de Servicios Web para Organismos Emisores» v5.2, §6"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0009",
+      "statement": "Según el manual «Integración de Servicios Web para Organismos Emisores» de Notifica, ¿qué método permite incorporar a la plataforma un conjunto de 1 o N envíos para su gestión y puesta a disposición a través de las distintas vías de salida?",
+      "options": [
+        {
+          "text": "altaRemesaEnvios()",
+          "isCorrect": true
+        },
+        {
+          "text": "getCies()",
+          "isCorrect": false
+        },
+        {
+          "text": "infoEnvioLigero()",
+          "isCorrect": false
+        },
+        {
+          "text": "ampliarPlazoOE()",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 4.3.1 indica que «El método altaRemesaEnvios() permite incorporar a la plataforma Notifica un conjunto de 1 o N envíos para su gestión y puesta a disposición a través de las distintas vías de salida». Los otros métodos tienen otra función: getCies() «permite obtener un listado de los CIE disponibles para un Organismo Emisor» (4.3.3), infoEnvioLigero() «permite consultar de forma ligera el estado de un envío» (5.2.1) y ampliarPlazoOE() «permite a un Organismo Emisor aumentar el plazo de expiración de una notificación» (5.2.3).",
+      "legalReference": "PAe, Notifica, «Integración de Servicios Web para Organismos Emisores» v5.2, §4.3.1"
+    },
+    {
+      "key": "malaga-programador-c1/notificaciones-notifica/0010",
+      "statement": "Según el manual «Integración de Servicios Web para Organismos Emisores» de Notifica, un Organismo Emisor que se integre mediante servicios web debe implementar obligatoriamente, además de los servicios web para organismos:",
+      "options": [
+        {
+          "text": "Los servicios web para sedes electrónicas, que sincronizan los estados con la sede del organismo",
+          "isCorrect": false
+        },
+        {
+          "text": "Los servicios del Adviser, para recibir los datados y certificaciones de sus envíos",
+          "isCorrect": true
+        },
+        {
+          "text": "La aplicación web de Notifica, para la gestión manual de los envíos de cada unidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Una consulta periódica del estado de sus envíos mediante infoEnvioLigero()",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El apartado 4 del manual establece que «Cuando un Organismo Emisor desee integrarse con Notifica utilizando los Servicios Web deberá implementar obligatoriamente los servicios Web para Organismos y los del Adviser.» Los servicios web para sedes electrónicas son opcionales («Opcionalmente, podrán implementarse los servicios web para Sedes Electrónicas.»). La aplicación web es una alternativa o complemento («De forma alternativa y/o adicional», apartado 1.1). Y la consulta reiterada del estado de los envíos «es un incumplimiento de las condiciones del servicio» (apartado 5.2.1). El Adviser es el servicio que «permite entregar al Organismo Emisor los datados y certificaciones de los envíos» (apartado 6).",
+      "legalReference": "PAe, Notifica, «Integración de Servicios Web para Organismos Emisores» v5.2, §4"
+    }
+  ]
+}

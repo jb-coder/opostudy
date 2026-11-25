@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "html-css-javascript",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0001",
+      "statement": "Según el estándar HTML de WHATWG, ¿qué representa el elemento article?",
+      "options": [
+        {
+          "text": "Una agrupación temática de contenido, normalmente con un encabezado propio, como un capítulo de un texto extenso",
+          "isCorrect": false
+        },
+        {
+          "text": "Un bloque de enlaces de navegación principales, hacia otras páginas o hacia partes de la misma página",
+          "isCorrect": false
+        },
+        {
+          "text": "Una composición completa o autocontenida, en principio distribuible o reutilizable de forma independiente",
+          "isCorrect": true
+        },
+        {
+          "text": "Un contenido relacionado de forma tangencial con lo que lo rodea y que podría considerarse separado de ello",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El estándar define article como una composición completa o autocontenida, en principio distribuible o reutilizable de forma independiente (por ejemplo, en sindicación): una entrada de un foro o de un blog, un comentario de un usuario. La agrupación temática con encabezado es section, el bloque de enlaces de navegación es nav y el contenido tangencial, como una barra lateral, es aside.",
+      "legalReference": "HTML Living Standard (WHATWG, 25-11-2026), §4.3.2"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0002",
+      "statement": "Según el estándar HTML de WHATWG, ¿cuándo se evalúa un elemento script de tipo module que no lleva el atributo async?",
+      "options": [
+        {
+          "text": "Cuando la página ha terminado de analizarse, tenga o no el atributo defer",
+          "isCorrect": true
+        },
+        {
+          "text": "En cuanto está disponible, aunque la página no haya terminado de analizarse",
+          "isCorrect": false
+        },
+        {
+          "text": "En el momento de encontrarlo, con el análisis bloqueado hasta que termina",
+          "isCorrect": false
+        },
+        {
+          "text": "En el momento de encontrarlo, salvo que lleve además el atributo defer",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El estándar indica que, en los scripts de módulo sin async, el módulo y sus dependencias se obtienen en paralelo al análisis y se evalúan cuando la página ha terminado de analizarse, y que defer no tiene efecto sobre ellos. Evaluar en cuanto está disponible es el comportamiento de async, y obtener y evaluar bloqueando el análisis es el de un script clásico externo sin async ni defer.",
+      "legalReference": "HTML Living Standard (WHATWG, 25-11-2026), §4.12.1"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0003",
+      "statement": "Según el estándar HTML de WHATWG, ¿qué indica el atributo novalidate de un elemento form?",
+      "options": [
+        {
+          "text": "La dirección URL a la que se envían los datos del formulario",
+          "isCorrect": false
+        },
+        {
+          "text": "La codificación que se aplica a los datos del formulario al enviarlos",
+          "isCorrect": false
+        },
+        {
+          "text": "El destino en el que se muestra la respuesta recibida tras enviar el formulario",
+          "isCorrect": false
+        },
+        {
+          "text": "La omisión de la validación de los controles del formulario cuando se envía",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El estándar define novalidate (y formnovalidate en los botones de envío) como atributos booleanos que indican que el formulario no se valida durante el envío; sirve, por ejemplo, para un botón de guardar borrador en un formulario con campos obligatorios. La URL de envío la da action, la codificación de los datos enctype y el destino de la respuesta target.",
+      "legalReference": "HTML Living Standard (WHATWG, 25-11-2026), §4.10.19.6"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0004",
+      "statement": "En CSS, con el código siguiente, ¿de qué color se muestra el texto del enlace y por qué?\n<style>\n.nav .active { color: blue; }\nul li a.active { color: red; }\n</style>\n<ul class=\"nav\"><li>\n  <a class=\"active\">Inicio</a>\n</li></ul>",
+      "options": [
+        {
+          "text": "Azul, porque las especificidades son 0-2-0 en la primera regla y 0-0-4 en la segunda",
+          "isCorrect": false
+        },
+        {
+          "text": "Azul, porque las especificidades son 0-2-0 en la primera regla y 0-1-3 en la segunda",
+          "isCorrect": true
+        },
+        {
+          "text": "Rojo, porque las especificidades son 0-1-1 en la primera regla y 0-1-3 en la segunda",
+          "isCorrect": false
+        },
+        {
+          "text": "Rojo, porque las especificidades son 0-0-2 en la primera regla y 0-1-3 en la segunda",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Cada selector de clase suma en la columna b y cada selector de tipo en la columna c; las columnas se comparan de izquierda a derecha, no se suman. .nav .active vale 0-2-0 y ul li a.active vale 0-1-3, así que gana la primera aunque aparezca antes. El orden solo desempata cuando la especificidad es igual.",
+      "legalReference": "Selectors Level 3 (W3C), §9"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0005",
+      "statement": "En CSS, un div tiene width: 200px; padding: 10px; border: 5px solid; box-sizing: border-box. ¿Qué ancho tiene su área de contenido?",
+      "options": [
+        {
+          "text": "180px, porque se resta del ancho el relleno de ambos lados, pero no el borde",
+          "isCorrect": false
+        },
+        {
+          "text": "190px, porque se resta del ancho el borde de ambos lados, pero no el relleno",
+          "isCorrect": false
+        },
+        {
+          "text": "170px, porque se restan del ancho el relleno y el borde de ambos lados",
+          "isCorrect": true
+        },
+        {
+          "text": "230px, porque el relleno y el borde de ambos lados se suman al ancho indicado",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Con border-box, width determina la caja del borde: el relleno y el borde quedan dentro, y el ancho del contenido es el resultado de restar ambos: 200 - 2 × 10 - 2 × 5 = 170px. Con content-box, el ancho indicado sería el del contenido y la caja del borde mediría 200 + 20 + 10 = 230px.",
+      "legalReference": "CSS UI 3 (W3C), §3.1"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0006",
+      "statement": "En CSS, un contenedor display: flex de 400px de ancho tiene tres hijos vacíos con flex: 1, flex: 1 y flex: 2, en ese orden. ¿Qué ancho tiene cada hijo?",
+      "options": [
+        {
+          "text": "100px, 100px y 200px, porque cada uno recibe el espacio en proporción a su factor",
+          "isCorrect": true
+        },
+        {
+          "text": "Unos 133px cada uno, porque el espacio libre se reparte a partes iguales entre ellos",
+          "isCorrect": false
+        },
+        {
+          "text": "160px, 160px y 80px, porque cada uno recibe el espacio en proporción inversa a su factor",
+          "isCorrect": false
+        },
+        {
+          "text": "0px cada uno, porque un hijo vacío no tiene contenido a partir del que crecer",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En el atajo flex, si se omite flex-basis su valor es 0, de modo que un solo número equivale a ese factor de crecimiento con base 0. El espacio libre, 400px, se reparte en proporción a los factores, 1:1:2, es decir, 100px, 100px y 200px. No influye que los hijos estén vacíos, porque la base no depende del contenido.",
+      "legalReference": "CSS Flexbox 1 (W3C), §7.1 y §9.7"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0007",
+      "statement": "En JavaScript (ECMA-262), ¿qué muestra este código?\nvar fs = [];\nfor (var i = 0; i < 3; i++) {\n  fs.push(() => i);\n}\nconsole.log(fs.map(f => f()).join(','));",
+      "options": [
+        {
+          "text": "0,1,2",
+          "isCorrect": false
+        },
+        {
+          "text": "2,2,2",
+          "isCorrect": false
+        },
+        {
+          "text": "0,0,0",
+          "isCorrect": false
+        },
+        {
+          "text": "3,3,3",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Con var, el bucle for tiene una única variable i para todas las iteraciones, y las tres funciones la capturan. Cuando se llaman, el bucle ha terminado y i vale 3. Mostraría 0,1,2 si se declarara con let, que crea un enlace nuevo en cada iteración.",
+      "legalReference": "ECMA-262 (2026), §14.7.4.2 y §14.7.4.4"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0008",
+      "statement": "En JavaScript (ECMA-262), ¿qué muestra este código?\nconsole.log(typeof null, typeof [], typeof NaN);",
+      "options": [
+        {
+          "text": "object array number",
+          "isCorrect": false
+        },
+        {
+          "text": "object object number",
+          "isCorrect": true
+        },
+        {
+          "text": "null object number",
+          "isCorrect": false
+        },
+        {
+          "text": "object object NaN",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El operador typeof devuelve \"object\" para null y para cualquier objeto que no se pueda llamar, como un array, y \"number\" para NaN, que es un valor del tipo Number. No existe un resultado \"array\", \"null\" ni \"NaN\" del operador.",
+      "legalReference": "ECMA-262 (2026), §13.5.3.1"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0009",
+      "statement": "En JavaScript (ECMA-262), ¿qué muestra este código?\nclass A {\n  m() { return this; }\n}\nconst f = new A().m;\nconsole.log(f());",
+      "options": [
+        {
+          "text": "Un objeto de la clase A, porque el método conserva como this el objeto del que se extrajo",
+          "isCorrect": false
+        },
+        {
+          "text": "El objeto global, porque una función llamada sin receptor usa el global como this",
+          "isCorrect": false
+        },
+        {
+          "text": "undefined, porque se llama sin receptor y el código de una clase es estricto",
+          "isCorrect": true
+        },
+        {
+          "text": "Un error TypeError, porque el método no se puede extraer de la instancia",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Todo el código de una clase es código estricto. En una llamada sin receptor, como f(), this vale undefined y no se sustituye por el objeto global. Extraer el método no produce error y el método no se enlaza a la instancia salvo que se haga con bind o una función flecha.",
+      "legalReference": "ECMA-262 (2026), §11.2.2"
+    },
+    {
+      "key": "malaga-programador-c1/html-css-javascript/0010",
+      "statement": "En JavaScript (ECMA-262), ¿en qué orden muestra las letras este código?\nnew Promise(r => {\n  console.log('A');\n  r();\n}).then(() => console.log('B'));\nconsole.log('C');",
+      "options": [
+        {
+          "text": "A, C, B",
+          "isCorrect": true
+        },
+        {
+          "text": "A, B, C",
+          "isCorrect": false
+        },
+        {
+          "text": "C, A, B",
+          "isCorrect": false
+        },
+        {
+          "text": "B, A, C",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El ejecutor que se pasa al constructor Promise se llama de forma síncrona y escribe A. La función de then no se llama de inmediato, aunque la promesa ya esté cumplida: se encola como tarea y se ejecuta cuando termina el código en curso. Por eso C sale antes que B.",
+      "legalReference": "ECMA-262 (2026), §27.2.3.1 y §27.2.5.4.1"
+    }
+  ]
+}

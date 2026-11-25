@@ -82,7 +82,7 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
   | Pregunta | `Question` |
   | Opción | `AnswerOption` |
   | Aclaración | `Explanation` |
-  | Referencia legal | `LegalReference` |
+  | Fuente (referencia legal o técnica) | `LegalReference` |
   | Usuario | `User` |
   | Test realizado (intento) | `QuizAttempt` (`Quiz`, para no confundirlo con los tests de código) |
   | Respuesta del usuario | `QuizAnswer` |
@@ -110,6 +110,8 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
   | Puntuación de un criterio | `CriterionScore` |
   | Cuota mensual de correcciones | `GradingQuota` |
   | Corrector (proveedor LLM o falso) | `LlmCorrector` (`ILlmCorrector`) |
+  | Estadísticas | `Stats` |
+  | Porcentaje de aciertos | `Accuracy` |
 
 ### Calidad
 - **Tests**:

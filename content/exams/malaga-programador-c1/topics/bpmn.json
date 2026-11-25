@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "bpmn",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/bpmn/0001",
+      "statement": "Según Métrica v3, un proceso de la organización se descompone en una serie de actividades, que indican qué se hace, y estas, a su vez, en:",
+      "options": [
+        {
+          "text": "Recursos, que describen con qué medios se realiza cada actividad",
+          "isCorrect": false
+        },
+        {
+          "text": "Eventos, que describen cuándo se dispara cada actividad",
+          "isCorrect": false
+        },
+        {
+          "text": "Procedimientos, que describen cómo se realiza cada actividad",
+          "isCorrect": true
+        },
+        {
+          "text": "Objetivos, que describen para qué se realiza cada actividad",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "En el apartado sobre el modelado de procesos de la organización se lee: «Un proceso de la organización se descompone en una serie de actividades (qué se hace) y éstas en procedimientos (cómo se hace)». Los recursos, los eventos y los objetivos no son el nivel en que se descomponen las actividades.",
+      "legalReference": "Métrica v3, Técnicas y prácticas, «Modelado de Procesos de la Organización»"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0002",
+      "statement": "Según BPMN 2.0.2, ¿qué caracteriza a una coreografía (Choreography) autocontenida frente a un proceso normal?",
+      "options": [
+        {
+          "text": "Sus actividades son interacciones que representan intercambios de mensajes entre dos o más participantes, sin un controlador central",
+          "isCorrect": true
+        },
+        {
+          "text": "Su flujo está contenido en un único pool y no puede cruzar los límites de este, salvo mediante flujos de mensaje",
+          "isCorrect": false
+        },
+        {
+          "text": "Muestra al exterior las actividades de un proceso privado que se comunican con otros participantes, ocultando las internas",
+          "isCorrect": false
+        },
+        {
+          "text": "Describe la relación lógica de los intercambios de mensajes que giran en torno a un objeto de negocio, como un pedido",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Una coreografía autocontenida se parece a un proceso privado porque tiene actividades, eventos y puertas, pero sus actividades son interacciones que representan uno o más intercambios de mensajes entre dos o más participantes, y no hay un controlador central, una entidad responsable ni un observador. Un proceso normal existe dentro de un pool, la vista de lo que un proceso muestra al exterior es el proceso público y la relación lógica de intercambios de mensajes sobre un objeto de negocio es una conversación.",
+      "legalReference": "BPMN 2.0.2, §7.2.1"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0003",
+      "statement": "Según BPMN 2.0.2, un flujo de mensaje (Message Flow) conecta:",
+      "options": [
+        {
+          "text": "Dos objetos de flujo del mismo pool, cuando pertenecen a calles distintas",
+          "isCorrect": false
+        },
+        {
+          "text": "Un evento de inicio con la primera actividad de su proceso, para indicar el orden de ejecución",
+          "isCorrect": false
+        },
+        {
+          "text": "Un objeto de flujo con un artefacto, como una anotación de texto, para añadir información",
+          "isCorrect": false
+        },
+        {
+          "text": "Dos pools distintos, ya sea por su borde o mediante objetos de flujo situados dentro de ellos",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Un flujo de mensaje muestra el flujo de mensajes entre dos participantes y debe conectar dos pools separados, bien por el borde del pool o bien con objetos de flujo de su interior; no puede conectar dos objetos del mismo pool, aunque estén en calles distintas. El orden de las actividades de un proceso se muestra con el flujo de secuencia, y la información adicional con artefactos se une mediante una asociación.",
+      "legalReference": "BPMN 2.0.2, §9.4"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0004",
+      "statement": "Según BPMN 2.0.2, un pool (Pool) es la representación gráfica de:",
+      "options": [
+        {
+          "text": "Una subdivisión de un proceso que se extiende a lo largo de todo su nivel, en vertical o en horizontal",
+          "isCorrect": false
+        },
+        {
+          "text": "Un participante (Participant) de una colaboración, que puede contener un proceso o ser una caja negra vacía",
+          "isCorrect": true
+        },
+        {
+          "text": "Una agrupación de elementos gráficos de la misma categoría, que no altera los flujos de secuencia que contiene",
+          "isCorrect": false
+        },
+        {
+          "text": "Un subproceso expandido que muestra dentro del proceso los detalles de un nivel inferior de actividades",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Un pool es la representación gráfica de un participante en una colaboración y actúa también como contenedor gráfico que separa sus actividades de las de otros pools. Puede tener detalle interno, en forma del proceso que ejecuta, o carecer de él y ser una caja negra. La subdivisión de un proceso que recorre todo su nivel es la calle (Lane), la agrupación por categoría es el grupo (Group) y el subproceso expandido es una actividad.",
+      "legalReference": "BPMN 2.0.2, §7.3.1 y §9.3.1"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0005",
+      "statement": "Según BPMN 2.0.2, una actividad de llamada (Call Activity) identifica un punto del proceso donde se utiliza:",
+      "options": [
+        {
+          "text": "Un subproceso incrustado o una tarea atómica, definidos dentro del propio proceso que los invoca",
+          "isCorrect": false
+        },
+        {
+          "text": "Un subproceso de transacción o un subproceso ad hoc, definidos dentro del propio proceso que los invoca",
+          "isCorrect": false
+        },
+        {
+          "text": "Un proceso global o una tarea global (Global Task), definidos fuera del proceso que los invoca",
+          "isCorrect": true
+        },
+        {
+          "text": "Una operación o una interfaz de servicio, definidas en otro participante de la colaboración",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La actividad de llamada actúa como envoltorio para invocar un proceso global o una tarea global (Global Task): al activarse, el control pasa al elemento llamado. Los subprocesos incrustados, de transacción y ad hoc, igual que las tareas, se modelan dentro del propio proceso. Invocar una operación de un servicio corresponde a la tarea de servicio (Service Task).",
+      "legalReference": "BPMN 2.0.2, §10.3.6"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0006",
+      "statement": "Según BPMN 2.0.2, una tarea de recepción (Receive Task) es:",
+      "options": [
+        {
+          "text": "Una tarea simple diseñada para esperar a que llegue un mensaje de un participante externo",
+          "isCorrect": true
+        },
+        {
+          "text": "Una tarea simple diseñada para enviar un mensaje a un participante externo, tras lo cual se completa",
+          "isCorrect": false
+        },
+        {
+          "text": "Una tarea que usa algún tipo de servicio, como un servicio web o una aplicación automatizada, para hacer su trabajo",
+          "isCorrect": false
+        },
+        {
+          "text": "Una tarea que realiza una persona con ayuda de una aplicación, planificada mediante un gestor de listas de tareas",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Una tarea de recepción es una tarea simple diseñada para esperar a que llegue un mensaje de un participante externo al proceso; una vez recibido el mensaje, la tarea se completa. Enviar un mensaje es propio de la tarea de envío (Send Task), usar un servicio web o una aplicación automatizada, de la tarea de servicio (Service Task), y que una persona la realice con una aplicación, de la tarea de usuario (User Task).",
+      "legalReference": "BPMN 2.0.2, §10.3.3.1"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0007",
+      "statement": "Según BPMN 2.0.2, ¿qué restricción tiene un evento de fin (End Event) respecto a los flujos de secuencia?",
+      "options": [
+        {
+          "text": "No admite flujos de secuencia entrantes, porque el flujo del proceso comienza en él",
+          "isCorrect": false
+        },
+        {
+          "text": "Admite flujos de secuencia entrantes y salientes, como cualquier actividad del proceso",
+          "isCorrect": false
+        },
+        {
+          "text": "Admite flujos de secuencia salientes hacia un evento de inicio, para repetir el proceso",
+          "isCorrect": false
+        },
+        {
+          "text": "No admite flujos de secuencia salientes, porque el flujo del proceso termina en él",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El evento de fin indica dónde termina el proceso: en cuanto a los flujos de secuencia, pone fin al flujo y ninguno puede salir de él. Los flujos de secuencia sí llegan hasta él, y por eso consume los testigos (tokens) que recibe. No puede, por tanto, tener salidas como una actividad ni enlazar con un evento de inicio.",
+      "legalReference": "BPMN 2.0.2, §10.5.3"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0008",
+      "statement": "Según BPMN 2.0.2, un evento intermedio (Intermediate Event) adjunto al borde de una actividad puede utilizarse para:",
+      "options": [
+        {
+          "text": "Lanzar (throw) el disparador del evento hacia el exterior, pero no capturarlo",
+          "isCorrect": false
+        },
+        {
+          "text": "Capturar (catch) el disparador del evento que afecta a la actividad, pero no lanzarlo",
+          "isCorrect": true
+        },
+        {
+          "text": "Capturar o lanzar el disparador del evento, según decida quien modela el proceso",
+          "isCorrect": false
+        },
+        {
+          "text": "Capturar el disparador del evento si la actividad es un subproceso, pero no si es una tarea",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Un evento intermedio colocado en el flujo normal del proceso puede responder al disparador (catch) o lanzarlo (throw), pero uno adjunto al borde de una actividad solo puede capturarlo. Se usa así para representar la gestión de excepciones o de compensación, y puede adjuntarse al borde de una tarea o de un subproceso, contraído o expandido.",
+      "legalReference": "BPMN 2.0.2, §10.5.4"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0009",
+      "statement": "Según BPMN 2.0.2, una puerta paralela (Parallel Gateway) que converge varios flujos de secuencia, antes de activar su flujo de salida:",
+      "options": [
+        {
+          "text": "Encamina cada testigo (token) que llega hacia su salida, sin sincronizarlo con los demás",
+          "isCorrect": false
+        },
+        {
+          "text": "Activa su salida con el primer testigo que llega y descarta los que lleguen después",
+          "isCorrect": false
+        },
+        {
+          "text": "Espera a que haya llegado un testigo (token) por cada uno de sus flujos entrantes",
+          "isCorrect": true
+        },
+        {
+          "text": "Evalúa la condición de cada flujo entrante y cuenta los que resultan verdaderos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La puerta paralela sirve para sincronizar flujos paralelos y para crearlos: en la salida da un testigo a cada flujo saliente sin comprobar condiciones y, en la entrada, espera a que lleguen todos los flujos entrantes antes de activar sus salidas. La semántica de ejecución lo confirma al exigir al menos un testigo en cada flujo entrante. Encaminar cada testigo sin sincronizar es la fusión de la puerta exclusiva.",
+      "legalReference": "BPMN 2.0.2, §10.6.4"
+    },
+    {
+      "key": "malaga-programador-c1/bpmn/0010",
+      "statement": "Según BPMN 2.0.2, los caminos alternativos que siguen a una puerta basada en eventos (Event-Based Gateway) dependen de:",
+      "options": [
+        {
+          "text": "Un evento que ocurre, normalmente la recepción de un mensaje, y no de la evaluación de expresiones con datos del proceso",
+          "isCorrect": true
+        },
+        {
+          "text": "Todas las expresiones de condición de sus flujos salientes, evaluadas con datos del proceso, que pueden cumplirse a la vez",
+          "isCorrect": false
+        },
+        {
+          "text": "El número de testigos que llegan por sus flujos entrantes, según una expresión de activación que fija el modelador",
+          "isCorrect": false
+        },
+        {
+          "text": "Una decisión tomada por el propio proceso con datos que este conoce, que habilita un camino y descarta el resto",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "La puerta basada en eventos es un punto de ramificación en el que los caminos dependen de eventos que ocurren, normalmente la recepción de un mensaje, y no de expresiones evaluadas con datos del proceso, como en las puertas exclusiva e inclusiva. La decisión la toma otro participante con datos que el proceso no ve, por eso hace falta esta puerta. Evaluar a la vez todas las condiciones o sincronizar según una expresión de activación son comportamientos de otras puertas.",
+      "legalReference": "BPMN 2.0.2, §10.6.6"
+    }
+  ]
+}
