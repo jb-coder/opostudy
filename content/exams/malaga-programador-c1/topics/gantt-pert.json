@@ -223,7 +223,7 @@
       "statement": "Según Métrica v3, ¿para qué sirve la estructura de descomposición de trabajo (WBS)?",
       "options": [
         {
-          "text": "Para agrupar en un árbol las actividades según su naturaleza y asignarlas a cuentas de la contabilidad del proyecto",
+          "text": "Para agrupar en un árbol las actividades según su naturaleza y asignarlas a cuentas que sirven de soporte a la contabilidad",
           "isCorrect": true
         },
         {
