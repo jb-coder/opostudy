@@ -35,7 +35,7 @@
           "isCorrect": false
         },
         {
-          "text": "En la lista de usuarios de cada grupo, en /etc/group",
+          "text": "En el campo de usuarios de la línea de cada grupo, en /etc/group",
           "isCorrect": true
         },
         {
@@ -151,7 +151,7 @@
       "statement": "Según el NIST SP 800-145, ¿qué capacidad recibe el consumidor en el modelo de plataforma como servicio (PaaS)?",
       "options": [
         {
-          "text": "Usar las aplicaciones del proveedor que se ejecutan en la nube, desde un navegador o una interfaz de programa",
+          "text": "Configurar los servidores y la red que forman la infraestructura de nube subyacente",
           "isCorrect": false
         },
         {
@@ -167,7 +167,7 @@
           "isCorrect": true
         }
       ],
-      "explanation": "En PaaS, el NIST SP 800-145 define la capacidad del consumidor como desplegar en la infraestructura de la nube aplicaciones creadas o adquiridas por él con los lenguajes de programación, bibliotecas, servicios y herramientas que soporta el proveedor. Usar las aplicaciones del proveedor es SaaS y aprovisionar recursos informáticos fundamentales es IaaS. Modificar el código de las aplicaciones del proveedor no figura en la definición de ningún modelo de servicio.",
+      "explanation": "En PaaS, el NIST SP 800-145 define la capacidad del consumidor como desplegar en la infraestructura de la nube aplicaciones creadas o adquiridas por él con los lenguajes de programación, bibliotecas, servicios y herramientas que soporta el proveedor. El consumidor no gestiona ni controla la infraestructura subyacente, con sus redes y servidores. Aprovisionar recursos informáticos fundamentales es la capacidad propia de IaaS, y modificar el código de las aplicaciones del proveedor no figura en la definición de PaaS.",
       "legalReference": "NIST SP 800-145, §2"
     },
     {
@@ -191,7 +191,7 @@
           "isCorrect": false
         }
       ],
-      "explanation": "Usar las aplicaciones del proveedor mediante un navegador (el NIST SP 800-145 cita el correo web) corresponde al software como servicio (SaaS). En ese modelo el consumidor no gestiona ni controla la infraestructura subyacente (red, servidores, sistemas operativos y almacenamiento) ni las capacidades individuales de la aplicación, con la posible excepción de ajustes limitados de configuración específicos del usuario. El control de la configuración del entorno de alojamiento aparece en el modelo de plataforma, y el de los sistemas operativos y el almacenamiento, en el de infraestructura.",
+      "explanation": "Usar las aplicaciones del proveedor mediante un navegador (el NIST SP 800-145 cita el correo web) corresponde al software como servicio (SaaS). En ese modelo el consumidor no gestiona ni controla la infraestructura subyacente (red, servidores, sistemas operativos y almacenamiento) ni las capacidades individuales de la aplicación, con la posible excepción de ajustes limitados de configuración específicos del usuario. La configuración del entorno de alojamiento tampoco está entre lo que puede controlar.",
       "legalReference": "NIST SP 800-145, §2"
     },
     {
