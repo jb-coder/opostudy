@@ -6,6 +6,32 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-25
+
+Temario completo y estadísticas: los 40 temas tienen preguntas (410 en total) y la app muestra el progreso por tema, la actividad y la evolución de los supuestos.
+
+### Añadido
+
+- 360 preguntas nuevas, 10 por cada uno de los temas 5 a 40:
+  - Régimen local, personal, presupuesto y contratos: temas 5-8 (#67).
+  - Protección de datos, propiedad intelectual y protección jurídica del software, transparencia, prevención de riesgos laborales e igualdad: temas 15, 16, 39 y 40 (#68).
+  - Notificaciones, sede electrónica, registro y expediente electrónico: temas 31-34 (#69).
+  - SIA y DIR3, firma electrónica, Cl@ve y factura electrónica: temas 30 y 35-38 (#70).
+  - Redes, Esquema Nacional de Seguridad, auditoría, accesibilidad y normalización: temas 11, 12, 14, 17 y 18 (#71).
+  - Linux y nube, bases de datos y SQL, BPMN y SOA: temas 9, 10, 13 y 24 (#72).
+  - Java, .NET, HTML/CSS/JavaScript, PHP y servidores web: temas 19-22 y 25 (#73).
+  - MVC, métodos ágiles, Gantt y PERT, control de versiones, pruebas e integración y despliegue: temas 23 y 26-29 (#74).
+- API: estadísticas y actividad del usuario (#75).
+- App: pantalla de estadísticas con temas, calendario y supuestos (#75).
+
+### Corregido
+
+- Preguntas y aclaraciones ajustadas tras la revisión de las tandas 1 y 3-8 (#67, #69-#74).
+
+### Mantenimiento
+
+- Criterio de fuentes para los temas técnicos sin norma en el BOE (#65).
+
 ## [0.3.0] - 2026-11-23
 
 Supuestos prácticos: contenido real por bloque, redacción en la app y corrección automática con Gemini, con resultado detallado, historial y XP.
@@ -74,7 +100,8 @@ Primera versión: test de la oposición de Programador/a C1 (Diputación de Mál
 - Versionado SemVer sin sufijo `-alpha` (#34).
 - Actualización de dependencias: GitHub Actions (`actions/checkout`, `actions/setup-dotnet`, `actions/setup-java`, `github/codeql-action`) y paquetes de Microsoft y OpenTelemetry (#3, #4, #5, #6, #8, #11).
 
-[Unreleased]: https://github.com/jb-coder/opostudy/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/jb-coder/opostudy/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/jb-coder/opostudy/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/jb-coder/opostudy/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/jb-coder/opostudy/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/jb-coder/opostudy/releases/tag/v0.1.0
