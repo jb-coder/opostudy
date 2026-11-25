@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../schema/topic.schema.json",
+  "topic": "java",
+  "questions": [
+    {
+      "key": "malaga-programador-c1/java/0001",
+      "statement": "En la máquina virtual de Java (JVMS), ¿qué área de datos en tiempo de ejecución comparten todos los hilos y es la de la que se asigna la memoria de todas las instancias de clases y de los arrays?",
+      "options": [
+        {
+          "text": "La pila de la máquina virtual (Java Virtual Machine stack)",
+          "isCorrect": false
+        },
+        {
+          "text": "El montículo (heap) de la máquina virtual de Java",
+          "isCorrect": true
+        },
+        {
+          "text": "El registro pc (pc register) de la máquina virtual",
+          "isCorrect": false
+        },
+        {
+          "text": "La pila de métodos nativos (native method stack)",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El montículo es compartido por todos los hilos, se crea al arrancar la máquina virtual y de él se asigna la memoria de todas las instancias de clases y arrays. La pila de la máquina virtual es privada de cada hilo y guarda sus marcos (frames); el registro pc también es propio de cada hilo, y la pila de métodos nativos da soporte a los métodos escritos en otros lenguajes.",
+      "legalReference": "JVMS (Java SE 25), §2.5.3"
+    },
+    {
+      "key": "malaga-programador-c1/java/0002",
+      "statement": "En Java, se declara la clase Config y, dentro de main de otra clase, se ejecutan las dos últimas líneas. ¿Qué se imprime?\n\nclass Config {\n  static final int MAX = 5;\n  static final Integer LIMIT = 5;\n  static { System.out.print(\"init \"); }\n}\n\nSystem.out.print(Config.MAX + \" \");\nSystem.out.print(Config.LIMIT);",
+      "options": [
+        {
+          "text": "init 5 5",
+          "isCorrect": false
+        },
+        {
+          "text": "init 5 init 5",
+          "isCorrect": false
+        },
+        {
+          "text": "5 init 5",
+          "isCorrect": true
+        },
+        {
+          "text": "5 5",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Una clase se inicializa justo antes del primer uso de un campo estático que no sea una variable constante. MAX es una variable constante (tipo primitivo, final e inicializada con una expresión constante), así que leerla no inicializa Config y se imprime \"5 \". LIMIT es de tipo Integer y no es una variable constante: leerla inicializa la clase, se ejecuta el bloque estático (init) y después se imprime 5. La inicialización ocurre una sola vez.",
+      "legalReference": "JLS (Java SE 25), §12.4.1"
+    },
+    {
+      "key": "malaga-programador-c1/java/0003",
+      "statement": "En Java, ¿qué imprime este código dentro de main?\n\nString a = \"ja\";\nString b = \"va\";\nString c = \"java\";\nSystem.out.println((a + b == c) + \" \" + (\"ja\" + \"va\" == c) + \" \" + (a + b).equals(c));",
+      "options": [
+        {
+          "text": "false true true",
+          "isCorrect": true
+        },
+        {
+          "text": "true true true",
+          "isCorrect": false
+        },
+        {
+          "text": "false false true",
+          "isCorrect": false
+        },
+        {
+          "text": "true false true",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "El operador == compara identidades de objeto. \"ja\" + \"va\" es una expresión constante y se internaliza, así que es el mismo objeto que el literal \"java\": true. a + b no es una expresión constante (a y b no son final), por lo que crea una cadena nueva en ejecución y su identidad difiere de c: false. equals compara el contenido y da true.",
+      "legalReference": "JLS (Java SE 25), §3.10.5, §15.21.3 y §15.29"
+    },
+    {
+      "key": "malaga-programador-c1/java/0004",
+      "statement": "En Java, ¿qué imprime este código dentro de main?\n\nclass P { String n = \"P\"; String n() { return n; } }\nclass C extends P { String n = \"C\"; String n() { return n; } }\n\nP p = new C();\nSystem.out.println(p.n + p.n());",
+      "options": [
+        {
+          "text": "CC",
+          "isCorrect": false
+        },
+        {
+          "text": "PP",
+          "isCorrect": false
+        },
+        {
+          "text": "CP",
+          "isCorrect": false
+        },
+        {
+          "text": "PC",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "El campo n de C oculta (hiding) al de P, pero no lo sobrescribe: el acceso a un campo se resuelve por el tipo declarado de la expresión, P, y da P. El método n() sí se sobrescribe y se resuelve por la clase del objeto, C, que devuelve su propio campo, C. El resultado es PC.",
+      "legalReference": "JLS (Java SE 25), §8.3"
+    },
+    {
+      "key": "malaga-programador-c1/java/0005",
+      "statement": "En Java, se declaran estos tipos:\n\ninterface A { default String hi() { return \"A\"; } }\ninterface B { default String hi() { return \"B\"; } }\nclass C implements A, B { }\n\n¿Qué ocurre al compilar el código?",
+      "options": [
+        {
+          "text": "Compila, y hi() devuelve \"A\" porque se hereda la de la primera interfaz de la cláusula implements",
+          "isCorrect": false
+        },
+        {
+          "text": "No compila, porque C hereda dos métodos por defecto con la misma firma y debe sobrescribir hi()",
+          "isCorrect": true
+        },
+        {
+          "text": "Compila, y hi() devuelve \"B\" porque se hereda la de la última interfaz de la cláusula implements",
+          "isCorrect": false
+        },
+        {
+          "text": "Compila, y el conflicto se detecta al invocar hi(), que lanza una excepción en tiempo de ejecución",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Es un error de compilación que una clase herede un método por defecto cuya firma es equivalente a la de otro método heredado, salvo la excepción de un método abstracto declarado en una superclase. Aquí no se da, y la solución es que C declare su propio hi(). El orden de la cláusula implements no resuelve el conflicto, y el error se produce al compilar, no al ejecutar.",
+      "legalReference": "JLS (Java SE 25), §8.4.8.4"
+    },
+    {
+      "key": "malaga-programador-c1/java/0006",
+      "statement": "En Java, ¿qué se imprime al ejecutar este código dentro de main?\n\nclass R implements AutoCloseable {\n  String n;\n  R(String n) { this.n = n; System.out.print(\"open \" + n + \" \"); }\n  public void close() { System.out.print(\"close \" + n + \" \"); }\n}\n\ntry (R a = new R(\"a\"); R b = new R(\"b\")) {\n  System.out.print(\"body \" + a.n + b.n + \" \");\n  throw new IllegalStateException();\n} catch (IllegalStateException e) { System.out.print(\"catch\"); }",
+      "options": [
+        {
+          "text": "open a open b body ab close a close b catch",
+          "isCorrect": false
+        },
+        {
+          "text": "open a open b body ab catch close b close a",
+          "isCorrect": false
+        },
+        {
+          "text": "open a open b body ab close b close a catch",
+          "isCorrect": true
+        },
+        {
+          "text": "open a open b body ab catch close a close b",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Los recursos se inicializan de izquierda a derecha y se cierran en orden inverso: primero b y después a. Además, en un try con recursos con cláusula catch, todos los recursos ya se han cerrado cuando se ejecuta el catch. Por eso se imprime \"open a open b body ab close b close a catch\".",
+      "legalReference": "JLS (Java SE 25), §14.20.3"
+    },
+    {
+      "key": "malaga-programador-c1/java/0007",
+      "statement": "En Java, ¿qué imprime este código dentro de main?\n\nList<String> s = new ArrayList<>();\nList<Integer> i = new ArrayList<>();\nSystem.out.println(s.getClass() == i.getClass());",
+      "options": [
+        {
+          "text": "true, porque las dos listas son instancias de la misma clase en tiempo de ejecución",
+          "isCorrect": true
+        },
+        {
+          "text": "false, porque el compilador genera una clase distinta para cada argumento de tipo",
+          "isCorrect": false
+        },
+        {
+          "text": "No compila, porque no se pueden comparar las clases de dos listas con argumentos de tipo distintos",
+          "isCorrect": false
+        },
+        {
+          "text": "Lanza ClassCastException, porque los argumentos de tipo se comprueban al comparar las clases",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Una declaración de clase genérica define un conjunto de tipos parametrizados que comparten la misma clase en tiempo de ejecución, ya que los argumentos de tipo se borran. Por eso las dos listas son instancias de ArrayList y la comparación da true. Java no genera una clase por argumento de tipo y la comparación compila y no lanza excepción.",
+      "legalReference": "JLS (Java SE 25), §8.1.2"
+    },
+    {
+      "key": "malaga-programador-c1/java/0008",
+      "statement": "En Jakarta Servlet, el contenedor llama al método init de un servlet y este lanza una ServletException. ¿Qué debe hacer el contenedor con esa instancia?",
+      "options": [
+        {
+          "text": "Llamar a destroy sobre la instancia y retirarla después del servicio",
+          "isCorrect": false
+        },
+        {
+          "text": "Ponerla en servicio y devolver un error en cada petición que reciba",
+          "isCorrect": false
+        },
+        {
+          "text": "Mantenerla sin atender peticiones y sin crear otra instancia de ese servlet",
+          "isCorrect": false
+        },
+        {
+          "text": "Liberarla sin ponerla en servicio y sin llamar a su método destroy",
+          "isCorrect": true
+        }
+      ],
+      "explanation": "Si init lanza ServletException o UnavailableException, el servlet no debe pasar a servicio activo y el contenedor debe liberarlo. No se llama a destroy, porque se considera una inicialización fallida. Después el contenedor puede crear e inicializar una instancia nueva, salvo que haya que esperar el tiempo mínimo de indisponibilidad que indique la excepción.",
+      "legalReference": "Jakarta Servlet 6.1, §2.3.2.1"
+    },
+    {
+      "key": "malaga-programador-c1/java/0009",
+      "statement": "En Jakarta Persistence, ¿qué hace la operación merge del EntityManager sobre una entidad desasociada (detached)?",
+      "options": [
+        {
+          "text": "Elimina de la base de datos la fila que corresponde a la entidad",
+          "isCorrect": false
+        },
+        {
+          "text": "Convierte en gestionada la propia instancia desasociada que recibe",
+          "isCorrect": false
+        },
+        {
+          "text": "Copia el estado de la entidad en una instancia gestionada distinta",
+          "isCorrect": true
+        },
+        {
+          "text": "Recarga el estado de la entidad con los valores de la base de datos",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Si la entidad está desasociada, merge copia su estado en una instancia gestionada ya existente con la misma identidad, o crea una copia gestionada nueva. La instancia gestionada es la que devuelve el método; la que se pasó como argumento no pasa a estar gestionada. Eliminar la entidad corresponde a remove y recargar su estado desde la base de datos, a refresh.",
+      "legalReference": "Jakarta Persistence 3.2, §3.3.7.1"
+    },
+    {
+      "key": "malaga-programador-c1/java/0010",
+      "statement": "En Spring Framework, ¿qué ocurre con los métodos de destrucción configurados de un bean de ámbito prototype?",
+      "options": [
+        {
+          "text": "El contenedor no los llama, y es el código cliente quien debe liberar los recursos",
+          "isCorrect": true
+        },
+        {
+          "text": "El contenedor los llama al cerrarse el contexto, como ocurre con los demás ámbitos",
+          "isCorrect": false
+        },
+        {
+          "text": "El contenedor los llama cuando ninguna otra clase mantiene ya una referencia a la instancia",
+          "isCorrect": false
+        },
+        {
+          "text": "El contenedor los llama al terminar la petición que obtuvo la instancia mediante getBean",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Con el ámbito prototype, el contenedor instancia, configura y ensambla el bean y se lo entrega al cliente sin guardar registro de él. Por eso las llamadas de inicialización se ejecutan, pero las de destrucción configuradas no. El cliente debe limpiar los objetos y liberar los recursos que retengan. Es una diferencia respecto a los demás ámbitos.",
+      "legalReference": "Spring Framework 7.1, «Bean Scopes»"
+    }
+  ]
+}
