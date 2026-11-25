@@ -76,26 +76,26 @@
     },
     {
       "key": "malaga-programador-c1/dotnet/0004",
-      "statement": "En C#, ¿qué muestra este programa de consola con instrucciones de nivel superior (la clase R va al final del fichero)?\ntry { F(); } catch { Console.Write(\"C\"); }\nstatic void F()\n{\n    using var r = new R();\n    Console.Write(\"A\");\n    throw new Exception();\n}\nclass R : IDisposable { public void Dispose() => Console.Write(\"D\"); }",
+      "statement": "En C#, ¿qué muestra este programa de consola con instrucciones de nivel superior?\nF();\nstatic void F()\n{\n    using var a = new R(\"1\");\n    using (new R(\"2\")) { Console.Write(\"A\"); }\n    Console.Write(\"B\");\n}\nclass R(string n) : IDisposable { public void Dispose() => Console.Write(n); }",
       "options": [
         {
-          "text": "ACD",
+          "text": "AB21",
           "isCorrect": false
         },
         {
-          "text": "ADC",
+          "text": "A2B1",
           "isCorrect": true
         },
         {
-          "text": "AC",
+          "text": "A21B",
           "isCorrect": false
         },
         {
-          "text": "DAC",
+          "text": "AB12",
           "isCorrect": false
         }
       ],
-      "explanation": "Una declaración using libera el objeto al terminar el ámbito en que se declara, y lo hace aunque se produzca una excepción, porque el compilador la reescribe como try/finally. Por eso Dispose escribe D al salir de F, antes de que el catch de quien la llamó escriba C, y la salida es ADC. Sin using solo se mostraría AC, y Dispose tampoco se llama al declarar la variable ni después del catch.",
+      "explanation": "Una variable de una declaración using se libera al terminar el ámbito en que se declara, aquí el método F. En cambio, con una instrucción using el objeto se libera cuando el control sale de su bloque. Por eso se escribe A, después 2 (al salir del bloque), después B y por último 1 (al terminar F): A2B1.",
       "legalReference": "Microsoft Learn (.NET 10), «using statement - ensure the correct use of disposable objects»"
     },
     {
@@ -148,7 +148,7 @@
     },
     {
       "key": "malaga-programador-c1/dotnet/0007",
-      "statement": "En C#, ¿qué muestra este código, con las clases declaradas fuera de Main?\nA x = new B();\nA y = new C();\nConsole.WriteLine(x.F() + y.F());\nclass A { public virtual string F() => \"A\"; }\nclass B : A { public override string F() => \"B\"; }\nclass C : A { public new string F() => \"C\"; }",
+      "statement": "En C#, ¿qué muestra este programa de consola con instrucciones de nivel superior?\nA x = new B();\nA y = new C();\nConsole.WriteLine(x.F() + y.F());\nclass A { public virtual string F() => \"A\"; }\nclass B : A { public override string F() => \"B\"; }\nclass C : A { public new string F() => \"C\"; }",
       "options": [
         {
           "text": "BC",
@@ -167,8 +167,8 @@
           "isCorrect": false
         }
       ],
-      "explanation": "Al invocar un método virtual, el runtime comprueba el tipo del objeto y llama al miembro que lo sobrescribe en la clase más derivada; si ninguna clase derivada lo sobrescribe, se llama al original. B.F usa override, así que x.F() devuelve B. C.F declara new y no sobrescribe a A.F, de modo que a través de una variable de tipo A se llama al original y y.F() devuelve A. La salida es BA.",
-      "legalReference": "Microsoft Learn (.NET 10), «virtual (C# Reference)»"
+      "explanation": "El modificador override extiende el método virtual de la clase base, así que x.F() llama al de B, el tipo del objeto, y devuelve B. El modificador new oculta el método de la clase base, pero no lo sobrescribe: a través de una variable de tipo A se llama al original, y y.F() devuelve A. La salida es BA.",
+      "legalReference": "Microsoft Learn (.NET 10), «virtual (C# Reference)»; «Knowing When to Use Override and New Keywords (C# Programming Guide)»"
     },
     {
       "key": "malaga-programador-c1/dotnet/0008",
@@ -231,7 +231,7 @@
           "isCorrect": false
         },
         {
-          "text": "Cuando el recolector de basura detecta que ninguna solicitud los está utilizando",
+          "text": "Cuando el recolector de basura detecta que las solicitudes ya no los utilizan",
           "isCorrect": false
         },
         {

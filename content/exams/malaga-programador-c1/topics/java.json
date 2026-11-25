@@ -231,7 +231,7 @@
           "isCorrect": false
         },
         {
-          "text": "El contenedor los llama cuando ninguna otra clase mantiene ya una referencia a la instancia",
+          "text": "El contenedor los llama cuando el código cliente deja de mantener referencias a la instancia",
           "isCorrect": false
         },
         {

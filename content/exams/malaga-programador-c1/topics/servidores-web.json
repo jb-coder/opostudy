@@ -55,11 +55,11 @@
       "statement": "Según la RFC 9111, ¿qué indica la directiva no-cache, sin argumentos, en el campo Cache-Control de una respuesta?",
       "options": [
         {
-          "text": "Que la caché no puede almacenar ninguna parte de la solicitud ni de la respuesta y debe eliminarla cuanto antes",
+          "text": "Que la caché no puede almacenar la solicitud ni la respuesta y debe eliminarlas de su memoria cuanto antes",
           "isCorrect": false
         },
         {
-          "text": "Que las cachés compartidas no pueden almacenar la respuesta, porque está destinada a un único usuario",
+          "text": "Que las cachés compartidas no pueden almacenar la respuesta, porque está destinada a un usuario concreto",
           "isCorrect": false
         },
         {
@@ -91,7 +91,7 @@
           "isCorrect": false
         },
         {
-          "text": "/srv/a, porque es la primera coincidencia y los comodines no tienen menor prioridad",
+          "text": "/srv/a, porque es la primera coincidencia en el orden del fichero, aunque sea con un comodín",
           "isCorrect": true
         }
       ],
@@ -100,7 +100,7 @@
     },
     {
       "key": "malaga-programador-c1/servidores-web/0005",
-      "statement": "En Apache HTTP Server 2.4, con mod_headers cargado y /usr/local/apache2/htdocs como raíz de documentos, ¿qué valor tiene la cabecera X-Source en la respuesta a GET /?\n<Location \"/\">\n  Header set X-Source \"location\"\n</Location>\n<Directory \"/usr/local/apache2/htdocs\">\n  Header set X-Source \"directory\"\n</Directory>",
+      "statement": "En Apache HTTP Server 2.4, con mod_headers cargado y /srv/www como raíz de documentos, ¿qué valor tiene la cabecera X-Source en la respuesta a GET /?\n<Location \"/\">\n  Header set X-Source \"location\"\n</Location>\n<Directory \"/srv/www\">\n  Header set X-Source \"directory\"\n</Directory>",
       "options": [
         {
           "text": "location, porque Location se combina después de Directory, sea cual sea su posición en el fichero",
@@ -119,8 +119,8 @@
           "isCorrect": false
         }
       ],
-      "explanation": "Apache combina las secciones en un orden fijo: primero Directory (sin expresiones regulares) y .htaccess, después DirectoryMatch, luego Files y FilesMatch, a continuación Location y LocationMatch y al final If. Como Header set reemplaza el valor, el de Location sustituye al de Directory aunque aparezca antes en el fichero.",
-      "legalReference": "Apache HTTP Server 2.4, «Configuration Sections», «How the sections are merged»"
+      "explanation": "Apache combina las secciones en un orden fijo: primero Directory (sin expresiones regulares) y .htaccess, después DirectoryMatch, luego Files y FilesMatch, a continuación Location y LocationMatch y al final If. Como Header set reemplaza cualquier cabecera anterior con ese nombre, el de Location sustituye al de Directory aunque aparezca antes en el fichero.",
+      "legalReference": "Apache HTTP Server 2.4, «Configuration Sections», «How the sections are merged»; «Apache Module mod_headers»"
     },
     {
       "key": "malaga-programador-c1/servidores-web/0006",
@@ -172,7 +172,7 @@
     },
     {
       "key": "malaga-programador-c1/servidores-web/0008",
-      "statement": "En PHP 8, con PDO y MySQL, se ejecuta este código. ¿Qué afirmación es correcta?\n$order = $_GET['order'];\n$sql = \"SELECT id FROM user WHERE name = :name ORDER BY \" . $order;\n$stmt = $pdo->prepare($sql);\n$stmt->bindValue(':name', $name);\n$stmt->execute();",
+      "statement": "En PHP 8, con PDO y MySQL, se ejecuta este código. ¿Qué afirmación es correcta?\n$name = $_GET['name'];\n$order = $_GET['order'];\n$sql = \"SELECT id FROM user WHERE name = :name ORDER BY \" . $order;\n$stmt = $pdo->prepare($sql);\n$stmt->bindValue(':name', $name);\n$stmt->execute();",
       "options": [
         {
           "text": "La consulta es segura, porque prepare() trata como datos todo el texto, también el fragmento de ORDER BY",

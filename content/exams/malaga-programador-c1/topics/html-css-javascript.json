@@ -76,22 +76,22 @@
     },
     {
       "key": "malaga-programador-c1/html-css-javascript/0004",
-      "statement": "En CSS, con el código siguiente, ¿de qué color se muestra el texto del enlace?\n<style>\n.nav .active { color: blue; }\nul li a.active { color: red; }\n</style>\n<ul class=\"nav\"><li>\n  <a class=\"active\">Inicio</a>\n</li></ul>",
+      "statement": "En CSS, con el código siguiente, ¿de qué color se muestra el texto del enlace y por qué?\n<style>\n.nav .active { color: blue; }\nul li a.active { color: red; }\n</style>\n<ul class=\"nav\"><li>\n  <a class=\"active\">Inicio</a>\n</li></ul>",
       "options": [
         {
-          "text": "Rojo, porque la regla que aparece después en la hoja de estilos prevalece sobre la anterior",
+          "text": "Azul, porque las especificidades son 0-2-0 en la primera regla y 0-0-4 en la segunda",
           "isCorrect": false
         },
         {
-          "text": "Azul, porque la especificidad de la primera regla (0-2-0) supera a la de la segunda (0-1-3)",
+          "text": "Azul, porque las especificidades son 0-2-0 en la primera regla y 0-1-3 en la segunda",
           "isCorrect": true
         },
         {
-          "text": "Rojo, porque la especificidad de la segunda regla (0-1-3) supera a la de la primera (0-2-0)",
+          "text": "Rojo, porque las especificidades son 0-1-1 en la primera regla y 0-1-3 en la segunda",
           "isCorrect": false
         },
         {
-          "text": "Rojo, porque la segunda regla tiene más selectores simples que la primera (cuatro frente a dos)",
+          "text": "Rojo, porque las especificidades son 0-0-2 en la primera regla y 0-1-3 en la segunda",
           "isCorrect": false
         }
       ],
@@ -131,20 +131,20 @@
           "isCorrect": true
         },
         {
-          "text": "133px, 133px y 133px, porque el factor 2 se trata como 1 cuando los demás hijos valen 1",
+          "text": "Unos 133px cada uno, porque el espacio libre se reparte a partes iguales entre ellos",
           "isCorrect": false
         },
         {
-          "text": "80px, 80px y 240px, porque el factor 2 se cuenta como 3 al repartir el espacio",
+          "text": "160px, 160px y 80px, porque cada uno recibe el espacio en proporción inversa a su factor",
           "isCorrect": false
         },
         {
-          "text": "0px, 0px y 400px, porque el hijo con el factor mayor recibe todo el espacio libre",
+          "text": "0px cada uno, porque un hijo vacío no tiene contenido a partir del que crecer",
           "isCorrect": false
         }
       ],
-      "explanation": "Un flex con un solo número equivale a flex: número 1 0: base 0 y factor de crecimiento igual al número. El espacio libre de 400px se reparte en proporción 1:1:2, es decir, 100px, 100px y 200px. Los demás repartos no se corresponden con la proporción de los factores.",
-      "legalReference": "CSS Flexbox 1 (W3C), §7.1.1"
+      "explanation": "En el atajo flex, si se omite flex-basis su valor es 0, de modo que un solo número equivale a ese factor de crecimiento con base 0. El espacio libre, 400px, se reparte en proporción a los factores, 1:1:2, es decir, 100px, 100px y 200px. No influye que los hijos estén vacíos, porque la base no depende del contenido.",
+      "legalReference": "CSS Flexbox 1 (W3C), §7.1 y §9.7"
     },
     {
       "key": "malaga-programador-c1/html-css-javascript/0007",
