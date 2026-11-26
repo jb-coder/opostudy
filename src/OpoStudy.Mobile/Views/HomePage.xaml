@@ -119,6 +119,8 @@
                                 Grid.Column="1"
                                 IsToggled="{Binding ReminderEnabled}"
                                 IsEnabled="{Binding IsReminderToggleEnabled}"
+                                MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                                MinimumWidthRequest="{StaticResource MinTouchTarget}"
                                 VerticalOptions="Center"
                                 SemanticProperties.Description="Avisarme cada día" />
                         </Grid>

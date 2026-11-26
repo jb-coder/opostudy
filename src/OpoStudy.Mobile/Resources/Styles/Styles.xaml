@@ -29,6 +29,7 @@
         <Setter Property="CornerRadius" Value="{StaticResource CornerRadius}" />
         <Setter Property="MinimumHeightRequest" Value="{StaticResource MinTouchTarget}" />
         <Setter Property="MinimumWidthRequest" Value="{StaticResource MinTouchTarget}" />
+        <Setter Property="LineBreakMode" Value="WordWrap" />
         <Setter Property="Padding" Value="24,8" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>

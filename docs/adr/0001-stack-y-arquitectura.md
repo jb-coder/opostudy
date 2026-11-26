@@ -64,8 +64,21 @@ OpoStudy es una app móvil para repasar oposiciones. Arranca con una sola: Progr
 - **Versionado SemVer sin sufijos de fase**: `vMAJOR.MINOR.PATCH`.
   - Las versiones `0.x` ya indican que el proyecto está en desarrollo y puede cambiar sin aviso, así que no se usa `-alpha` ni `-beta`. En GitHub Releases se marcan como *pre-release*.
   - Cada milestone sube el MINOR (`v0.1.0`, `v0.2.0`…). Los hotfix suben el PATCH (`v0.1.1`).
-  - `v1.0.0` es la primera versión estable, publicable en tienda.
+  - `v1.0.0` es la primera versión estable: el rediseño accesible de la app (WCAG 2.2 AA en todas las pantallas, según `docs/diseno/sistema-diseno.md`).
+  - `v1.1.0` es la publicación en tienda (Google Play).
   - Si hace falta probar un APK antes de cerrar una versión, se etiqueta como candidata: `v0.2.0-rc.1`.
+
+### Roadmap
+Milestones de GitHub (título y descripción tal como figuran allí):
+
+| Milestone | Contenido |
+|---|---|
+| `v0.5.0` | Entrenador de examen: simulacro con tiempo y penalización, repaso espaciado, marcar y reportar preguntas, ajustes y endurecer la release |
+| `v0.6.0` | Contenido 2.ª ronda: más preguntas por tema, más supuestos y supuestos tipo test |
+| `v0.7.0` | Despliegue en VPS (Tailscale, Compose, backups, observabilidad) |
+| `v1.0.0` | Rediseño visual de la app MAUI y accesibilidad WCAG 2.2 AA |
+| `v1.1.0` | Producción (opcional): dominio, App Check, anuncios, premium, publicación en Play Store |
+| `v1.2.0` | iOS |
 
 ### Idioma del código
 - **El código se escribe en inglés**:
