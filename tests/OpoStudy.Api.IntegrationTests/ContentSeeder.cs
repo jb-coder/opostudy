@@ -17,6 +17,8 @@ namespace OpoStudy.Api.IntegrationTests;
 /// <param name="OtherExam">Active exam, different from <paramref name="Exam"/>, with one topic.</param>
 /// <param name="OtherExamTopic">Topic of <paramref name="OtherExam"/>.</param>
 /// <param name="PracticalCases">Practical cases of <paramref name="Exam"/> (keys ordered: A, B; C is inactive) and one of <paramref name="InactiveExam"/>.</param>
+/// <param name="Exercise1">Exercise 1 of <paramref name="Exam"/>: 3 questions, 10 minutes, out of 10, drawn from "Block I" (4 active questions).</param>
+/// <param name="Exercise2">Exercise 2 of <paramref name="Exam"/>: 5 questions from "Block I", so there are not enough.</param>
 /// <param name="Questions">Every seeded question by id (with its options, so the correct one is known).</param>
 internal sealed record SeededContent(
     Exam Exam,
@@ -28,7 +30,9 @@ internal sealed record SeededContent(
     Exam OtherExam,
     Topic OtherExamTopic,
     IReadOnlyDictionary<Guid, Question> Questions,
-    SeededPracticalCases PracticalCases)
+    SeededPracticalCases PracticalCases,
+    ExamExercise Exercise1,
+    ExamExercise Exercise2)
 {
     public IEnumerable<Question> ActiveQuestionsOf(Topic topic) =>
         Questions.Values.Where(q => q.TopicId == topic.Id && q.IsActive);
@@ -81,11 +85,15 @@ internal static class ContentSeeder
         caseC.Deactivate();
         var caseOfInactiveExam = NewCase(inactiveExam, id, "inactive-exam", partCount: 1);
 
+        var exercise1 = ExamExercise.Create(exam.Id, 1, "Exercise one", 3, 10, 10m, 0.5m, ["Block I"]);
+        var exercise2 = ExamExercise.Create(exam.Id, 2, "Exercise two", 5, 10, 10m, 0.5m, ["Block I"]);
+
         using var scope = services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<OpoStudyDbContext>();
         db.AddRange(exam, inactiveExam, otherExam, topic1, topic2, emptyTopic, inactiveExamTopic, otherExamTopic);
         db.AddRange(questions);
         db.AddRange(caseA, caseB, caseC, caseOfInactiveExam);
+        db.AddRange(exercise1, exercise2);
         await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         return new SeededContent(
@@ -98,7 +106,9 @@ internal static class ContentSeeder
             otherExam,
             otherExamTopic,
             questions.ToDictionary(q => q.Id),
-            new SeededPracticalCases(caseA, caseB, caseC, caseOfInactiveExam));
+            new SeededPracticalCases(caseA, caseB, caseC, caseOfInactiveExam),
+            exercise1,
+            exercise2);
     }
 
     private static Question NewQuestion(Topic topic, string id, string prefix, int index, int correctIndex) =>
