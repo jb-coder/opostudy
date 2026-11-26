@@ -38,6 +38,7 @@ public static class MauiProgram
 
 #if ANDROID
         ProgressBarTrack.Register();
+        ButtonInsets.Register();
 #endif
 
 #if DEBUG
@@ -56,6 +57,7 @@ public static class MauiProgram
         services.AddSingleton(LoadFirebaseOptions());
         services.AddSingleton<ISecureStore, SecureStore>();
         services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<IScreenReaderAnnouncer, ScreenReaderAnnouncer>();
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton(Preferences.Default);
         services.AddSingleton<IPreferencesStore, MauiPreferencesStore>();
