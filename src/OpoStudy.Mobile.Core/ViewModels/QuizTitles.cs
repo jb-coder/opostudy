@@ -11,6 +11,7 @@ public static class QuizTitles
     public const string ReviewAll = "Repaso de falladas";
     public const string ReviewMode = "Review";
     public const string MockExamMode = "MockExam";
+    public const string SpacedReviewMode = "SpacedReview";
     public const string MockExam = "Simulacro";
 
     /// <summary>Title of a quiz about one topic; a review of that topic when <paramref name="mistakesOnly"/>.</summary>
@@ -28,6 +29,11 @@ public static class QuizTitles
         if (quiz.Mode == MockExamMode)
         {
             return MockExam;
+        }
+
+        if (quiz.Mode == SpacedReviewMode)
+        {
+            return DueReviewCard.QuizTitle;
         }
 
         var review = quiz.Mode == ReviewMode;

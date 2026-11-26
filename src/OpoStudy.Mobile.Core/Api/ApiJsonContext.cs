@@ -8,6 +8,7 @@ using OpoStudy.Contracts.Offline;
 using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
+using OpoStudy.Contracts.Reviews;
 using OpoStudy.Contracts.Stats;
 using OpoStudy.Contracts.SystemInfo;
 using OpoStudy.Contracts.Users;
@@ -29,6 +30,7 @@ namespace OpoStudy.Mobile.Core.Api;
 [JsonSerializable(typeof(QuizResponse))]
 [JsonSerializable(typeof(SubmitAnswerRequest))]
 [JsonSerializable(typeof(AnswerFeedbackResponse))]
+[JsonSerializable(typeof(DueReviewSummaryResponse))]
 [JsonSerializable(typeof(StreakResponse))]
 [JsonSerializable(typeof(LevelResponse))]
 [JsonSerializable(typeof(UpdateDailyGoalRequest))]

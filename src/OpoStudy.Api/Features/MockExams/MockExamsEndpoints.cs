@@ -223,7 +223,7 @@ internal static class MockExamsEndpoints
         var xpGained = 0;
         foreach (var item in submitted)
         {
-            var recorded = await progress.RecordAnswerAsync(user, item.IsCorrect, now, cancellationToken);
+            var recorded = await progress.RecordAnswerAsync(user, item.QuestionId, item.IsCorrect, now, cancellationToken);
             xpGained += recorded.Xp.Gained;
         }
 

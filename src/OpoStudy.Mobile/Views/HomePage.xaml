@@ -178,6 +178,25 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <Border Style="{StaticResource CardBorder}" IsVisible="{Binding HasDueReviews}">
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Repaso de hoy"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <Label Text="{Binding DueReviewsText}" />
+                        <Label Style="{StaticResource CaptionLabel}" Text="Las que ya sabías, antes de que se te olviden." />
+                        <Button
+                            Text="Repasar"
+                            Command="{Binding StartDueReviewCommand}"
+                            SemanticProperties.Hint="Crea un test con las preguntas que tocan repasar hoy" />
+                        <Label
+                            Style="{StaticResource ErrorLabel}"
+                            Text="{Binding DueReviewErrorMessage}"
+                            IsVisible="{Binding HasDueReviewError}" />
+                    </VerticalStackLayout>
+                </Border>
+
                 <Border Style="{StaticResource CardBorder}">
                     <VerticalStackLayout Spacing="{StaticResource SpaceM}">
                         <Label

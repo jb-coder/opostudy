@@ -5,6 +5,7 @@ using OpoStudy.Contracts.Offline;
 using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
+using OpoStudy.Contracts.Reviews;
 using OpoStudy.Contracts.Stats;
 using OpoStudy.Contracts.SystemInfo;
 using OpoStudy.Contracts.Users;
@@ -39,6 +40,9 @@ public interface IOpoStudyApi
 
     [Get("/api/v1/exams/{examId}/mistakes")]
     Task<MistakeSummaryResponse> GetMistakesAsync(Guid examId, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/reviews/due")]
+    Task<DueReviewSummaryResponse> GetDueReviewsAsync(CancellationToken cancellationToken = default);
 
     [Get("/api/v1/quizzes")]
     Task<IReadOnlyList<QuizSummaryResponse>> GetQuizzesAsync(int skip, int take, CancellationToken cancellationToken = default);

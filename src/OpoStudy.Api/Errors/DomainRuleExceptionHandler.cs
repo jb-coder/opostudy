@@ -43,6 +43,8 @@ internal sealed class DomainRuleExceptionHandler : IExceptionHandler
             // Two concurrent first answers of the day insert the same daily_activities row.
             // Other unique violations stay unhandled (500) so real bugs are not disguised as conflicts.
             DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.DailyActivitiesPrimaryKey } } => DomainErrors.ConcurrencyConflict,
+            // Two concurrent first answers of the same question insert the same review_schedules row.
+            DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.ReviewSchedulesPrimaryKey } } => DomainErrors.ConcurrencyConflict,
             _ => null,
         };
         if (code is null)

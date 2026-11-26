@@ -21,6 +21,7 @@ internal static class DomainErrors
     public const string QuizForeignQuestion = "quiz.foreign_question";
     public const string QuizNoQuestionsAvailable = "quiz.no_questions_available";
     public const string QuizNoMistakes = "quiz.no_mistakes";
+    public const string QuizNoDueReviews = "quiz.no_due_reviews";
     public const string QuizConcurrentUpdate = "quiz.concurrent_update";
     public const string QuizInvalidQuestions = "quiz.invalid_questions";
     public const string QuizSyncConflict = "quiz.sync_conflict";
@@ -59,6 +60,7 @@ internal static class DomainErrors
             ["quiz.foreign_option"] = (StatusCodes.Status422UnprocessableEntity, "La opción elegida no corresponde a la pregunta."),
             [QuizInvalidQuestions] = (StatusCodes.Status422UnprocessableEntity, "Las preguntas del test no son válidas."),
             [QuizNoQuestionsAvailable] = (StatusCodes.Status422UnprocessableEntity, "No hay preguntas disponibles para este test."),
+            [QuizNoDueReviews] = (StatusCodes.Status422UnprocessableEntity, "No tienes preguntas para repasar hoy."),
             [QuizNoMistakes] = (StatusCodes.Status422UnprocessableEntity, "No tienes preguntas falladas pendientes de repasar aquí."),
             ["quiz.invalid_question_count"] = (StatusCodes.Status422UnprocessableEntity, "Un test debe tener entre 1 y 100 preguntas."),
             [ExamNotFound] = (StatusCodes.Status404NotFound, "La oposición no existe."),

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Domain.Common;
+using OpoStudy.Domain.Quizzes;
 using OpoStudy.Domain.Users;
 using OpoStudy.Infrastructure.Persistence;
 using OpoStudy.Infrastructure.Progress;
@@ -20,8 +21,9 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db, ProgressTracker tra
     /// <summary>
     /// Counts one answered question on the day of <paramref name="now"/> (in the user's time zone) and grants its XP.
     /// <paramref name="now"/> is the time of the answer, not the server's: an answer synced late passes its own time.
+    /// It also updates the spaced review schedule of <paramref name="questionId"/>.
     /// </summary>
-    public async Task<AnswerProgress> RecordAnswerAsync(User user, bool isCorrect, DateTimeOffset now, CancellationToken cancellationToken)
+    public async Task<AnswerProgress> RecordAnswerAsync(User user, Guid questionId, bool isCorrect, DateTimeOffset now, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(user);
 
@@ -43,6 +45,17 @@ internal sealed class ProgressRecorder(OpoStudyDbContext db, ProgressTracker tra
         var gained = XpRules.ForAnswer(isCorrect) + bonus;
         user.GainXp(gained);
         activity.AddXp(gained);
+
+        // FindAsync also finds schedules already tracked in this request (e.g. two answers of one sync).
+        var schedule = await db.ReviewSchedules.FindAsync([user.Id, questionId], cancellationToken);
+        if (schedule is null)
+        {
+            db.ReviewSchedules.Add(ReviewSchedule.Start(user.Id, questionId, isCorrect, today, now));
+        }
+        else
+        {
+            schedule.Register(isCorrect, today, now);
+        }
 
         return new AnswerProgress(
             new DailyProgressResponse(activity.AnsweredCount, activity.Goal, goalMetNow, user.Streak.CurrentAt(today)),

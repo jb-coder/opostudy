@@ -132,6 +132,10 @@ Milestones de GitHub (título y descripción tal como figuran allí):
   | Penalización por fallo (fracción de un acierto) | `PenaltyRatio` |
   | En blanco | `Blank` |
   | Entrega (de un simulacro) | `Submission` |
+  | Repaso espaciado | `SpacedReview` |
+  | Programación de repaso (de una pregunta) | `ReviewSchedule` |
+  | Caja (de Leitner) | `Box` |
+  | Fecha de repaso | `DueOn` |
 
 ### Calidad
 - **Tests**:

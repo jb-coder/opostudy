@@ -641,6 +641,46 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                     b.ToTable("quiz_attempts", (string)null);
                 });
 
+            modelBuilder.Entity("OpoStudy.Domain.Quizzes.ReviewSchedule", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("question_id");
+
+                    b.Property<int>("Box")
+                        .HasColumnType("integer")
+                        .HasColumnName("box");
+
+                    b.Property<DateOnly>("DueOn")
+                        .HasColumnType("date")
+                        .HasColumnName("due_on");
+
+                    b.Property<DateTimeOffset>("LastAnsweredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_answered_at");
+
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("UserId", "QuestionId")
+                        .HasName("pk_review_schedules");
+
+                    b.HasIndex("QuestionId")
+                        .HasDatabaseName("ix_review_schedules_question_id");
+
+                    b.HasIndex("UserId", "DueOn")
+                        .HasDatabaseName("ix_review_schedules_user_id_due_on");
+
+                    b.ToTable("review_schedules", (string)null);
+                });
+
             modelBuilder.Entity("OpoStudy.Domain.Users.DailyActivity", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -970,6 +1010,23 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_quiz_attempts_users_user_id");
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.Quizzes.ReviewSchedule", b =>
+                {
+                    b.HasOne("OpoStudy.Domain.Questions.Question", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_review_schedules_questions_question_id");
+
+                    b.HasOne("OpoStudy.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_review_schedules_users_user_id");
                 });
 
             modelBuilder.Entity("OpoStudy.Domain.Users.DailyActivity", b =>
