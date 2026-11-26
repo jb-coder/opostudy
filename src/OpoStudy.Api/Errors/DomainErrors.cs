@@ -22,6 +22,9 @@ internal static class DomainErrors
     public const string QuizNoQuestionsAvailable = "quiz.no_questions_available";
     public const string QuizNoMistakes = "quiz.no_mistakes";
     public const string QuizNoDueReviews = "quiz.no_due_reviews";
+    public const string QuizNoBookmarks = "quiz.no_bookmarks";
+    public const string QuestionNotFound = "question.not_found";
+    public const string QuestionAlreadyReported = "question.already_reported";
     public const string QuizConcurrentUpdate = "quiz.concurrent_update";
     public const string QuizInvalidQuestions = "quiz.invalid_questions";
     public const string QuizSyncConflict = "quiz.sync_conflict";
@@ -62,6 +65,9 @@ internal static class DomainErrors
             [QuizNoQuestionsAvailable] = (StatusCodes.Status422UnprocessableEntity, "No hay preguntas disponibles para este test."),
             [QuizNoDueReviews] = (StatusCodes.Status422UnprocessableEntity, "No tienes preguntas para repasar hoy."),
             [QuizNoMistakes] = (StatusCodes.Status422UnprocessableEntity, "No tienes preguntas falladas pendientes de repasar aquí."),
+            [QuizNoBookmarks] = (StatusCodes.Status422UnprocessableEntity, "No tienes preguntas marcadas aquí."),
+            [QuestionAlreadyReported] = (StatusCodes.Status409Conflict, "Ya reportaste esta pregunta. La revisaremos pronto."),
+            [QuestionNotFound] = (StatusCodes.Status404NotFound, "La pregunta no existe."),
             ["quiz.invalid_question_count"] = (StatusCodes.Status422UnprocessableEntity, "Un test debe tener entre 1 y 100 preguntas."),
             [ExamNotFound] = (StatusCodes.Status404NotFound, "La oposición no existe."),
             [TopicNotFound] = (StatusCodes.Status404NotFound, "El tema no existe."),

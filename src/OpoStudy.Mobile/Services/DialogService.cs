@@ -17,5 +17,8 @@ internal sealed class DialogService : IDialogService
         return choice == cancel ? null : choice;
     }
 
+    public Task<string?> PromptAsync(string title, string message, string accept, string cancel, string? placeholder, int maxLength) =>
+        MainThread.InvokeOnMainThreadAsync(() => CurrentShell().DisplayPromptAsync(title, message, accept, cancel, placeholder, maxLength));
+
     private static Shell CurrentShell() => Shell.Current ?? throw new InvalidOperationException("Shell is not initialized.");
 }

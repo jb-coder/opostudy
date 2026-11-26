@@ -13,4 +13,7 @@ public enum QuizMode
 
     /// <summary>Spaced review of the questions due today; the topic is optional.</summary>
     SpacedReview,
+
+    /// <summary>Review of the questions the user bookmarked; the topic is optional.</summary>
+    Bookmarks,
 }

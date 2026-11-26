@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 
 using Microsoft.Extensions.Logging;
 
+using OpoStudy.Contracts.Questions;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Navigation;
@@ -92,6 +93,12 @@ public sealed partial class QuizViewModel(
 
     private const string AnotherQuizTitle = "Hacer otro test";
 
+    private const string OptionalCommentMessage = "Cuéntanos qué pasa (opcional).";
+
+    private const string NeedCommentMessage = "Cuéntanos qué está mal.";
+
+    private const int CommentMaxLength = 500;
+
     private Guid _quizId;
 
     private Guid _examId;
@@ -127,7 +134,31 @@ public sealed partial class QuizViewModel(
 
     public override string OfflineBannerText => IsOffline ? OfflineState.BannerText : base.OfflineBannerText;
 
-    partial void OnIsOfflineChanged(bool value) => RaiseOfflineChanged();
+    partial void OnIsOfflineChanged(bool value)
+    {
+        RaiseOfflineChanged();
+        OnPropertyChanged(nameof(ShowQuestionActions));
+    }
+
+    /// <summary>Bookmarking and reporting need the server: they are hidden while the quiz is corrected locally.</summary>
+    public bool ShowQuestionActions => !IsOffline;
+
+    /// <summary>Whether the current question is bookmarked.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(BookmarkText))]
+    [NotifyPropertyChangedFor(nameof(BookmarkDescription))]
+    public partial bool IsCurrentBookmarked { get; set; }
+
+    public string BookmarkText => IsCurrentBookmarked ? "Marcada" : "Marcar";
+
+    public string BookmarkDescription => IsCurrentBookmarked ? "Quitar marca" : "Marcar pregunta para repasar";
+
+    /// <summary>A bookmark or report call is in progress.</summary>
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ToggleBookmarkCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ReportCommand))]
+    public partial bool IsActionBusy { get; set; }
+
 
     [ObservableProperty]
     public partial string QuizTitle { get; set; } = string.Empty;
@@ -430,6 +461,95 @@ public sealed partial class QuizViewModel(
         }
     }
 
+    [RelayCommand(CanExecute = nameof(CanUseActions))]
+    private async Task ToggleBookmarkAsync(CancellationToken cancellationToken)
+    {
+        var question = _questions[_index];
+        var bookmark = !question.IsBookmarked;
+        ErrorMessage = null;
+        IsActionBusy = true;
+        SetBookmarked(question, bookmark);
+        try
+        {
+            await (bookmark
+                ? api.BookmarkQuestionAsync(question.QuestionId, cancellationToken)
+                : api.UnbookmarkQuestionAsync(question.QuestionId, cancellationToken));
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogBookmarkFailed(ex, ex.GetType().FullName);
+            SetBookmarked(question, !bookmark);
+            ErrorMessage = ApiErrorMessages.From(ex);
+        }
+        finally
+        {
+            IsActionBusy = false;
+        }
+    }
+
+    private void SetBookmarked(QuestionState question, bool value)
+    {
+        question.IsBookmarked = value;
+        if (_questions[_index] == question)
+        {
+            IsCurrentBookmarked = value;
+        }
+    }
+
+    /// <summary>Asks for a reason and a comment and sends the report of the current question.</summary>
+    [RelayCommand(CanExecute = nameof(CanUseActions))]
+    private async Task ReportAsync(CancellationToken cancellationToken)
+    {
+        var question = _questions[_index];
+        ErrorMessage = null;
+        IsActionBusy = true;
+        try
+        {
+            var label = await dialogs.ChooseAsync("¿Qué le pasa a esta pregunta?", "Cancelar", QuestionReportReasons.Labels);
+            if (label is null || QuestionReportReasons.ReasonOf(label) is not { } reason)
+            {
+                return;
+            }
+
+            var requiresComment = QuestionReportReasons.RequiresComment(reason);
+            var comment = await AskCommentAsync(requiresComment ? NeedCommentMessage : OptionalCommentMessage);
+            if (comment is not null && requiresComment && comment.Length == 0)
+            {
+                comment = await AskCommentAsync(NeedCommentMessage);
+            }
+
+            if (comment is null || (requiresComment && comment.Length == 0))
+            {
+                return;
+            }
+
+            await api.ReportQuestionAsync(question.QuestionId, new CreateQuestionReportRequest(reason, comment.Length == 0 ? null : comment), cancellationToken);
+            await dialogs.AlertAsync("Gracias", "Revisaremos la pregunta.");
+        }
+        catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
+        {
+            await dialogs.AlertAsync("Pregunta reportada", ApiErrorMessages.From(ex));
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogReportFailed(ex, ex.GetType().FullName);
+            ErrorMessage = ApiErrorMessages.From(ex);
+        }
+        finally
+        {
+            IsActionBusy = false;
+        }
+    }
+
+    /// <summary>The trimmed comment, <c>""</c> if left empty, or <c>null</c> if the user cancelled.</summary>
+    private async Task<string?> AskCommentAsync(string message)
+    {
+        var text = await dialogs.PromptAsync("Reportar pregunta", message, "Enviar", "Cancelar", "Comentario", CommentMaxLength);
+        return text?.Trim();
+    }
+
+    private bool CanUseActions() => !IsActionBusy;
+
     private bool CanAnswer(QuizOptionItem? option) => IsNotBusy && !IsAnswered;
 
     [RelayCommand]
@@ -627,6 +747,7 @@ public sealed partial class QuizViewModel(
             letter++;
         }
 
+        IsCurrentBookmarked = question.IsBookmarked;
         IsAnswered = false;
         IsCorrect = false;
         FeedbackTitle = string.Empty;
@@ -699,6 +820,12 @@ public sealed partial class QuizViewModel(
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the mistakes left ({ExceptionType})")]
     private partial void LogMistakesFailed(Exception exception, string? exceptionType);
 
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not change the bookmark ({ExceptionType})")]
+    private partial void LogBookmarkFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not report the question ({ExceptionType})")]
+    private partial void LogReportFailed(Exception exception, string? exceptionType);
+
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not submit the answer ({ExceptionType})")]
     private partial void LogAnswerFailed(Exception exception, string? exceptionType);
 
@@ -712,9 +839,11 @@ public sealed partial class QuizViewModel(
 
         public AnswerFeedback? Feedback { get; set; } = source.Feedback;
 
+        public bool IsBookmarked { get; set; } = source.IsBookmarked;
+
         public string XpText { get; set; } = string.Empty;
 
         /// <summary>The question as the API sends it, with the feedback known now.</summary>
-        public QuizQuestionResponse ToResponse() => source with { Feedback = Feedback };
+        public QuizQuestionResponse ToResponse() => source with { Feedback = Feedback, IsBookmarked = IsBookmarked };
     }
 }

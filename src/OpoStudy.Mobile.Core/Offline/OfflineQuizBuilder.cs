@@ -51,7 +51,8 @@ internal static class OfflineQuizBuilder
                 order,
                 question.Statement,
                 [.. question.Options.OrderBy(o => o.Order).Select(o => new QuizOptionResponse(o.Id, o.Order, o.Text))],
-                feedback));
+                feedback,
+                false));
         }
 
         DateTimeOffset? finishedAt = quiz.Finished && answers.Count > 0 ? answers.Max(a => a.AnsweredAt) : null;

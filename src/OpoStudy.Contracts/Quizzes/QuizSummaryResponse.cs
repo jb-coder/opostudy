@@ -1,6 +1,6 @@
 namespace OpoStudy.Contracts.Quizzes;
 
-/// <summary>Summary of a quiz for the history list. <paramref name="Mode"/> is <c>"ByTopic"</c>, <c>"Random"</c>, <c>"Review"</c> or <c>"SpacedReview"</c>.</summary>
+/// <summary>Summary of a quiz for the history list. <paramref name="Mode"/> is <c>"ByTopic"</c>, <c>"Random"</c>, <c>"Review"</c>, <c>"SpacedReview"</c> or <c>"Bookmarks"</c>.</summary>
 public sealed record QuizSummaryResponse(
     Guid Id,
     Guid ExamId,

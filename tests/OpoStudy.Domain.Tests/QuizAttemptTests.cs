@@ -85,6 +85,20 @@ public sealed class QuizAttemptTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public void Create_BookmarksWithOrWithoutTopic_Succeeds(bool withTopic)
+    {
+        Guid? topicId = withTopic ? Guid.CreateVersion7() : null;
+
+        var attempt = QuizAttempt.Create(UserId, ExamId, topicId, QuizMode.Bookmarks, [_q1.Id, _q2.Id], Now);
+
+        attempt.Mode.ShouldBe(QuizMode.Bookmarks);
+        attempt.TopicId.ShouldBe(topicId);
+        attempt.Answers.Count.ShouldBe(2);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public void Create_ReviewWithOrWithoutTopic_Succeeds(bool withTopic)
     {
         Guid? topicId = withTopic ? Guid.CreateVersion7() : null;

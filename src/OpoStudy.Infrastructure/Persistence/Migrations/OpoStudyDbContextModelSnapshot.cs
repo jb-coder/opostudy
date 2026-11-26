@@ -497,6 +497,81 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                     b.ToTable("questions", (string)null);
                 });
 
+            modelBuilder.Entity("OpoStudy.Domain.Questions.QuestionBookmark", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("question_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.HasKey("UserId", "QuestionId")
+                        .HasName("pk_question_bookmarks");
+
+                    b.HasIndex("QuestionId")
+                        .HasDatabaseName("ix_question_bookmarks_question_id");
+
+                    b.ToTable("question_bookmarks", (string)null);
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.Questions.QuestionReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("comment");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("question_id");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_question_reports");
+
+                    b.HasIndex("QuestionId")
+                        .HasDatabaseName("ix_question_reports_question_id");
+
+                    b.HasIndex("Status", "CreatedAt")
+                        .HasDatabaseName("ix_question_reports_status_created_at");
+
+                    b.HasIndex("UserId", "QuestionId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_question_reports_one_open_per_user")
+                        .HasFilter("status = 'Open'");
+
+                    b.ToTable("question_reports", (string)null);
+                });
+
             modelBuilder.Entity("OpoStudy.Domain.Quizzes.QuizAnswer", b =>
                 {
                     b.Property<Guid>("QuizAttemptId")
@@ -964,6 +1039,40 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_questions_topics_topic_id");
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.Questions.QuestionBookmark", b =>
+                {
+                    b.HasOne("OpoStudy.Domain.Questions.Question", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_question_bookmarks_questions_question_id");
+
+                    b.HasOne("OpoStudy.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_question_bookmarks_users_user_id");
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.Questions.QuestionReport", b =>
+                {
+                    b.HasOne("OpoStudy.Domain.Questions.Question", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_question_reports_questions_question_id");
+
+                    b.HasOne("OpoStudy.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_question_reports_users_user_id");
                 });
 
             modelBuilder.Entity("OpoStudy.Domain.Quizzes.QuizAnswer", b =>

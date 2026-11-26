@@ -252,7 +252,8 @@ public sealed class QuizOfflineViewModelTests
             order,
             $"Statement {order}",
             [.. Enumerable.Range(1, 3).Select(i => new QuizOptionResponse(Guid.NewGuid(), i, $"Option {i}"))],
-            feedback);
+            feedback,
+            false);
 
     private QuizResponse Quiz(params QuizQuestionResponse[] questions) =>
         new(_quizId, _examId, null, "Random", DateTimeOffset.UtcNow, null, 0, 0, questions);

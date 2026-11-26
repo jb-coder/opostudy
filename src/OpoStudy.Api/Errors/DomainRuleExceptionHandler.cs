@@ -45,6 +45,8 @@ internal sealed class DomainRuleExceptionHandler : IExceptionHandler
             DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.DailyActivitiesPrimaryKey } } => DomainErrors.ConcurrencyConflict,
             // Two concurrent first answers of the same question insert the same review_schedules row.
             DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.ReviewSchedulesPrimaryKey } } => DomainErrors.ConcurrencyConflict,
+            // Two concurrent reports of the same question by the same user: the partial unique index allows one open report.
+            DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName: DbConstraintNames.QuestionReportsOneOpenPerUserIndex } } => DomainErrors.QuestionAlreadyReported,
             _ => null,
         };
         if (code is null)

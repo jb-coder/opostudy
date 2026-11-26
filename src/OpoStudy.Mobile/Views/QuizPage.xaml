@@ -43,6 +43,23 @@
                     <Label Style="{StaticResource TitleLabel}" Text="{Binding CurrentStatement}" />
                 </Border>
 
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="{StaticResource SpaceM}"
+                    IsVisible="{Binding ShowQuestionActions}">
+                    <Button
+                        Style="{StaticResource SecondaryButton}"
+                        Text="{Binding BookmarkText}"
+                        Command="{Binding ToggleBookmarkCommand}"
+                        SemanticProperties.Description="{Binding BookmarkDescription}" />
+                    <Button
+                        Grid.Column="1"
+                        Style="{StaticResource SecondaryButton}"
+                        Text="Reportar"
+                        Command="{Binding ReportCommand}"
+                        SemanticProperties.Description="Reportar un error en la pregunta" />
+                </Grid>
+
                 <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding Options}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="vm:QuizOptionItem">

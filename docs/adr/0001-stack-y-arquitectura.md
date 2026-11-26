@@ -133,6 +133,10 @@ Milestones de GitHub (título y descripción tal como figuran allí):
   | En blanco | `Blank` |
   | Entrega (de un simulacro) | `Submission` |
   | Repaso espaciado | `SpacedReview` |
+  | Pregunta marcada (para repasar después) | `QuestionBookmark` (modo de test `Bookmarks`) |
+  | Reporte (de una pregunta que el usuario cree errónea) | `QuestionReport` |
+  | Motivo del reporte | `QuestionReportReason` |
+  | Estado del reporte | `QuestionReportStatus` |
   | Programación de repaso (de una pregunta) | `ReviewSchedule` |
   | Caja (de Leitner) | `Box` |
   | Fecha de repaso | `DueOn` |

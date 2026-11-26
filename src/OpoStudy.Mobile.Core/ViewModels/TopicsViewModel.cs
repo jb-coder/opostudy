@@ -106,6 +106,16 @@ public sealed partial class TopicsViewModel(
     [NotifyCanExecuteChangedFor(nameof(StartRandomQuizCommand))]
     public partial bool MistakesOnly { get; set; }
 
+    /// <summary>Whether the user wants a quiz with only the questions they bookmarked. Excludes <see cref="MistakesOnly"/>.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RandomCardTitle))]
+    [NotifyPropertyChangedFor(nameof(RandomCardSubtitle))]
+    [NotifyPropertyChangedFor(nameof(RandomCardDescription))]
+    public partial bool BookmarkedOnly { get; set; }
+
+    /// <summary>Whether the "only bookmarked" switch can be used: bookmarks live on the server.</summary>
+    public bool CanReviewBookmarks => !MistakesNeedConnection;
+
     /// <summary>Questions the user currently has wrong in the exam.</summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanReviewMistakes))]
@@ -141,9 +151,11 @@ public sealed partial class TopicsViewModel(
 
     public bool HasMistakesHint => MistakesHint.Length > 0;
 
-    public string RandomCardTitle => MistakesOnly ? "Repasar todas las falladas" : QuizTitles.RandomQuiz;
+    public string RandomCardTitle => MistakesOnly ? "Repasar todas las falladas" : BookmarkedOnly ? QuizTitles.Bookmarks : QuizTitles.RandomQuiz;
 
-    public string RandomCardSubtitle => MistakesOnly ? QuizTitles.MistakeTotalText(MistakeTotal) : "Preguntas de todos los temas";
+    public string RandomCardSubtitle => MistakesOnly ? QuizTitles.MistakeTotalText(MistakeTotal)
+        : BookmarkedOnly ? "Tus preguntas marcadas de todos los temas"
+        : "Preguntas de todos los temas";
 
     public string RandomCardDescription => $"{RandomCardTitle}. {RandomCardSubtitle}";
 
@@ -197,7 +209,32 @@ public sealed partial class TopicsViewModel(
 
     partial void OnHasAnyQuestionsChanged(bool value) => OnPropertyChanged(nameof(IsRandomCardAvailable));
 
-    partial void OnMistakesOnlyChanged(bool value) => UpdateTopics();
+    partial void OnMistakesOnlyChanged(bool value)
+    {
+        if (value)
+        {
+            BookmarkedOnly = false;
+        }
+
+        UpdateTopics();
+    }
+
+    partial void OnBookmarkedOnlyChanged(bool value)
+    {
+        if (value)
+        {
+            MistakesOnly = false;
+        }
+    }
+
+    partial void OnMistakesNeedConnectionChanged(bool value)
+    {
+        OnPropertyChanged(nameof(CanReviewBookmarks));
+        if (value)
+        {
+            BookmarkedOnly = false;
+        }
+    }
 
     protected override void OnBusyChanged()
     {
@@ -354,16 +391,21 @@ public sealed partial class TopicsViewModel(
     {
         ArgumentNullException.ThrowIfNull(topic);
 
-        return topic.IsAvailable ? StartQuizAsync(topic.Id, QuizTitles.ForTopic(topic.Title, MistakesOnly), cancellationToken) : Task.CompletedTask;
+        return topic.IsAvailable ? StartQuizAsync(topic.Id, TitleFor(topic.Title), cancellationToken) : Task.CompletedTask;
     }
+
+    private string TitleFor(string topicTitle) => BookmarkedOnly ? QuizTitles.Bookmarks : QuizTitles.ForTopic(topicTitle, MistakesOnly);
 
     private bool CanStartTopicQuiz(TopicItem? topic) => IsNotBusy && topic is { IsAvailable: true };
 
     [RelayCommand(CanExecute = nameof(CanStartRandomQuiz))]
     private Task StartRandomQuizAsync(CancellationToken cancellationToken) =>
-        StartQuizAsync(null, QuizTitles.ForExam(MistakesOnly), cancellationToken);
+        StartQuizAsync(null, BookmarkedOnly ? QuizTitles.Bookmarks : QuizTitles.ForExam(MistakesOnly), cancellationToken);
 
     private bool CanStartRandomQuiz() => IsNotBusy && IsRandomCardAvailable;
+
+    /// <summary>Reviews (mistakes, bookmarks) are built by the server, so they never use the offline copy.</summary>
+    private bool NeedsServer => MistakesOnly || BookmarkedOnly;
 
     private async Task StartQuizAsync(Guid? topicId, string title, CancellationToken cancellationToken)
     {
@@ -371,19 +413,19 @@ public sealed partial class TopicsViewModel(
         ErrorMessage = null;
         try
         {
-            if (!MistakesOnly && OfflineState.IsOffline)
+            if (!NeedsServer && OfflineState.IsOffline)
             {
                 await StartOfflineQuizAsync(topicId, title, cancellationToken);
                 return;
             }
 
-            var quiz = await api.CreateQuizAsync(new CreateQuizRequest(_examId, topicId, SelectedQuestionCount, MistakesOnly), cancellationToken);
+            var quiz = await api.CreateQuizAsync(new CreateQuizRequest(_examId, topicId, SelectedQuestionCount, MistakesOnly, BookmarkedOnly: BookmarkedOnly), cancellationToken);
             OfflineState.ReportSuccess();
             await navigation.GoToAsync(
                 Routes.Quiz,
                 new Dictionary<string, object> { [QueryKeys.QuizId] = quiz.Id, [QueryKeys.QuizTitle] = title });
         }
-        catch (Exception ex) when (!MistakesOnly && ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
+        catch (Exception ex) when (!NeedsServer && ConnectivityErrors.IsConnectivityError(ex, cancellationToken))
         {
             LogCreateFailed(ex, ex.GetType().FullName);
             OfflineState.ReportConnectivityFailure();

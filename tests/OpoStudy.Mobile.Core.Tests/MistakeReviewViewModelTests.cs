@@ -233,7 +233,7 @@ public sealed class QuizBackAndReviewViewModelTests
     {
         var options = Enumerable.Range(0, 3).Select(i => new QuizOptionResponse(Guid.NewGuid(), i + 1, $"Option {i + 1}")).ToList();
         AnswerFeedback? feedback = answered ? new AnswerFeedback(options[0].Id, true, options[0].Id, "Explanation", "Art. 1 CE") : null;
-        return new QuizQuestionResponse(Guid.NewGuid(), order, $"Statement {order}", options, feedback);
+        return new QuizQuestionResponse(Guid.NewGuid(), order, $"Statement {order}", options, feedback, false);
     }
 
     private void GivenQuiz(string mode, Guid? topicId, params QuizQuestionResponse[] questions) =>
