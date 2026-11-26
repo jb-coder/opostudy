@@ -10,6 +10,8 @@ public static class QuizTitles
     public const string RandomQuiz = "Test aleatorio";
     public const string ReviewAll = "Repaso de falladas";
     public const string ReviewMode = "Review";
+    public const string MockExamMode = "MockExam";
+    public const string MockExam = "Simulacro";
 
     /// <summary>Title of a quiz about one topic; a review of that topic when <paramref name="mistakesOnly"/>.</summary>
     public static string ForTopic(string topicTitle, bool mistakesOnly) =>
@@ -22,6 +24,11 @@ public static class QuizTitles
     public static string For(QuizSummaryResponse quiz)
     {
         ArgumentNullException.ThrowIfNull(quiz);
+
+        if (quiz.Mode == MockExamMode)
+        {
+            return MockExam;
+        }
 
         var review = quiz.Mode == ReviewMode;
         return quiz.TopicTitle is { } topic ? ForTopic(topic, review) : ForExam(review);

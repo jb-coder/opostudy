@@ -134,6 +134,10 @@ public static class MauiProgram
         services.AddTransient<GradingsPage>();
         services.AddTransient<StatsViewModel>();
         services.AddTransient<StatsPage>();
+        services.AddTransient<MockExamsViewModel>();
+        services.AddTransient<MockExamsPage>();
+        services.AddTransient<MockExamViewModel>();
+        services.AddTransient<MockExamPage>();
 #if DEBUG
         services.AddTransient<StyleGuidePage>();
 #endif

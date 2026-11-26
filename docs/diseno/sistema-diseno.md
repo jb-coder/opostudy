@@ -112,6 +112,7 @@ Escala de 4 (`Spacing.xaml`):
 | `ListHeaderPadding`, `ListFooterPadding` (`Thickness`) | 0,0,0,12 y 0,12,0,0 (separación de la cabecera y del pie de una lista con `CollectionView`) |
 | `CalendarCornerRadius` (`CornerRadius`) | 8 (esquinas de cada día del calendario) |
 | `CalendarCellGap` (`Thickness`) | 2 (margen de cada día del calendario; 4 dp entre celdas) |
+| `IndexCellMargin` (`Thickness`) | 4 (margen de cada número del índice de preguntas del simulacro; celdas de 48 dp) |
 | `CalendarTodayStroke` | 2 (grosor del borde del día de hoy en el calendario) |
 | `ChartBarAreaHeight` | 96 (alto de las barras de la gráfica de notas de supuestos) |
 | `ChartBarWidth` | 32 (ancho de una barra de la gráfica) |

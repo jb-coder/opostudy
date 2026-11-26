@@ -10,4 +10,6 @@ public static class QueryKeys
     public const string GradingId = "gradingId";
     public const string QuizId = "quizId";
     public const string QuizTitle = "quizTitle";
+    public const string ExerciseNumber = "exerciseNumber";
+    public const string PassScore = "passScore";
 }

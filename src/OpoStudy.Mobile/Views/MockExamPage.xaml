@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.MockExamPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:MockExamViewModel"
+    Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Timer: always visible while the exam runs. Low time changes the style and also shows text. -->
+        <Border Grid.Row="0" IsVisible="{Binding IsRunning}" Margin="{StaticResource PagePadding}">
+            <Border.Triggers>
+                <DataTrigger TargetType="Border" Binding="{Binding IsTimeLow}" Value="True">
+                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                </DataTrigger>
+            </Border.Triggers>
+            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                <Label
+                    Style="{StaticResource TitleLabel}"
+                    Text="{Binding RemainingText}"
+                    HorizontalOptions="Center"
+                    SemanticProperties.Description="{Binding RemainingDescription}">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsTimeLow}" Value="True">
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label
+                    Style="{StaticResource WarningLabel}"
+                    Text="{Binding TimeLowText}"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsTimeLow}" />
+            </VerticalStackLayout>
+        </Border>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="{StaticResource PagePadding}" Spacing="{StaticResource SpaceL}">
+
+                <!-- Creating the mock exam -->
+                <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsLoading}">
+                    <ActivityIndicator IsRunning="{Binding IsLoading}" />
+                    <Label Text="Preparando el simulacro…" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding ShowLoadError}">
+                    <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                    <Button Text="Volver" Command="{Binding ExitCommand}" />
+                </VerticalStackLayout>
+
+                <!-- Question view -->
+                <VerticalStackLayout Spacing="{StaticResource SpaceL}" IsVisible="{Binding IsRunning}">
+                    <Label
+                        Style="{StaticResource CaptionLabel}"
+                        Text="{Binding ProgressText}"
+                        SemanticProperties.HeadingLevel="Level1" />
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindingContext="{Binding CurrentQuestion}" x:DataType="vm:MockExamQuestionItem">
+                        <Border>
+                            <Label Style="{StaticResource TitleLabel}" Text="{Binding Statement}" />
+                        </Border>
+
+                        <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding Options}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:MockExamOptionItem">
+                                    <Border
+                                        MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                                        SemanticProperties.Description="{Binding AccessibilityText}">
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding SelectOptionCommand, Source={RelativeSource AncestorType={x:Type vm:MockExamViewModel}}}"
+                                                CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+                                        <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                            <HorizontalStackLayout Spacing="{StaticResource SpaceM}">
+                                                <Label Style="{StaticResource SubtitleLabel}" Text="{Binding Letter}" />
+                                                <Label Text="{Binding Text}" VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                            <Label Text="{Binding StateText}" IsVisible="{Binding HasStateText}" Style="{StaticResource CaptionLabel}" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <Button
+                        Style="{StaticResource SecondaryButton}"
+                        Text="Dejar en blanco"
+                        Command="{Binding ClearAnswerCommand}" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SpaceM}">
+                        <Button
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Anterior"
+                            Command="{Binding PreviousCommand}" />
+                        <Button
+                            Grid.Column="1"
+                            Style="{StaticResource SecondaryButton}"
+                            Text="Siguiente"
+                            Command="{Binding NextCommand}" />
+                    </Grid>
+
+                    <!-- Index: tap a number to jump to that question. The state is also text for the screen reader. -->
+                    <VerticalStackLayout Spacing="{StaticResource SpaceS}">
+                        <Label
+                            Style="{StaticResource SubtitleLabel}"
+                            Text="Preguntas"
+                            SemanticProperties.HeadingLevel="Level2" />
+                        <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding Questions}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:MockExamQuestionItem">
+                                    <Border
+                                        WidthRequest="{StaticResource MinTouchTarget}"
+                                        HeightRequest="{StaticResource MinTouchTarget}"
+                                        Margin="{StaticResource IndexCellMargin}"
+                                        Padding="0"
+                                        SemanticProperties.Description="{Binding IndexDescription}">
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsCurrent}" Value="True">
+                                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding GoToQuestionCommand, Source={RelativeSource AncestorType={x:Type vm:MockExamViewModel}}}"
+                                                CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+                                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                                            <Label Text="{Binding NumberText}" HorizontalOptions="Center" />
+                                            <Label
+                                                Style="{StaticResource CaptionLabel}"
+                                                Text="{Binding AnsweredMark}"
+                                                HorizontalOptions="Center" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding ShowSubmitError}">
+                        <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                        <Button Text="Reintentar entrega" Command="{Binding RetrySubmitCommand}" />
+                    </VerticalStackLayout>
+
+                    <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsSubmitting}">
+                        <ActivityIndicator IsRunning="{Binding IsSubmitting}" />
+                        <Label Text="Entregando…" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <Button Text="Entregar" Command="{Binding SubmitCommand}" />
+                </VerticalStackLayout>
+
+                <!-- Result -->
+                <VerticalStackLayout Spacing="{StaticResource SpaceL}" IsVisible="{Binding IsFinished}">
+                    <Label
+                        Style="{StaticResource TitleLabel}"
+                        Text="Resultado"
+                        SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource DisplayLabel}" Text="{Binding ScoreText}" />
+                    <Label Style="{StaticResource SubtitleLabel}" Text="{Binding PassedText}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsPassed}" Value="True">
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding IsPassed}" Value="False">
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorDark}}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                    <Label Style="{StaticResource CaptionLabel}" Text="{Binding PassScoreText}" />
+                    <Label Text="{Binding BreakdownText}" />
+                    <Label Style="{StaticResource CaptionLabel}" Text="{Binding NetText}" />
+                    <Label Style="{StaticResource CaptionLabel}" Text="{Binding TimeText}" />
+                    <Label Style="{StaticResource WarningLabel}" Text="{Binding LateText}" IsVisible="{Binding IsLate}" />
+                    <Label Style="{StaticResource SubtitleLabel}" Text="{Binding XpText}" IsVisible="{Binding HasXpText}" />
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" BindableLayout.ItemsSource="{Binding ResultLines}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:MockExamResultLine">
+                                <Border SemanticProperties.Description="{Binding AccessibilityText}">
+                                    <VerticalStackLayout Spacing="{StaticResource SpaceS}">
+                                        <Label Text="{Binding NumberedStatement}" />
+                                        <Label Text="{Binding OutcomeText}" Style="{StaticResource CaptionLabel}">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsCorrect}" Value="True">
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SuccessLight}, Dark={StaticResource SuccessDark}}" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsIncorrect}" Value="True">
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ErrorLight}, Dark={StaticResource ErrorDark}}" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Label Style="{StaticResource CaptionLabel}" Text="{Binding YourAnswerText}" />
+                                        <Label Style="{StaticResource CaptionLabel}" Text="{Binding CorrectAnswerText}" />
+                                        <VerticalStackLayout Spacing="{StaticResource SpaceXs}" IsVisible="{Binding ShowDetails}">
+                                            <Label Text="{Binding Explanation}" />
+                                            <Label Style="{StaticResource CaptionLabel}" Text="{Binding ReferenceText}" />
+                                        </VerticalStackLayout>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Button Text="Hacer otro simulacro" Command="{Binding AnotherCommand}" />
+                    <Button
+                        Style="{StaticResource SecondaryButton}"
+                        Text="Volver al inicio"
+                        Command="{Binding GoHomeCommand}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</views:ViewModelPage>
