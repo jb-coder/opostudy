@@ -33,6 +33,8 @@ public static class Limits
     public const int MinOptions = 2;
     public const int MaxOptions = 6;
     public const int MaxQuestionsPerQuiz = 100;
+    public const int MaxMockExamMinutes = 240;
+    public const int MaxMockExamScore = 100;
 
     public const int TimeZone = 64;
     public const int MinDailyGoal = 5;
@@ -50,4 +52,7 @@ public static class Limits
 
     /// <summary>Oldest time of an answer the server accepts when syncing a quiz taken offline.</summary>
     public static readonly TimeSpan MaxOfflineAge = TimeSpan.FromDays(7);
+
+    /// <summary>Margin after a mock exam deadline within which a submission is not considered late (network delays).</summary>
+    public static readonly TimeSpan MockExamSubmissionGrace = TimeSpan.FromMinutes(2);
 }
