@@ -332,7 +332,8 @@ public sealed class QuizViewModelTests
             order,
             $"Statement {order}",
             [.. ids.Select((id, i) => new QuizOptionResponse(id, i + 1, $"Option {i + 1}"))],
-            feedback);
+            feedback,
+            false);
     }
 
     private static AnswerFeedback Feedback(Guid selected, Guid correct) =>

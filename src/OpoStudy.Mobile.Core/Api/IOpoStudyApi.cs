@@ -4,6 +4,7 @@ using OpoStudy.Contracts.MockExams;
 using OpoStudy.Contracts.Offline;
 using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Contracts.Progress;
+using OpoStudy.Contracts.Questions;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Contracts.Reviews;
 using OpoStudy.Contracts.Stats;
@@ -40,6 +41,15 @@ public interface IOpoStudyApi
 
     [Get("/api/v1/exams/{examId}/mistakes")]
     Task<MistakeSummaryResponse> GetMistakesAsync(Guid examId, CancellationToken cancellationToken = default);
+
+    [Put("/api/v1/questions/{questionId}/bookmark")]
+    Task BookmarkQuestionAsync(Guid questionId, CancellationToken cancellationToken = default);
+
+    [Delete("/api/v1/questions/{questionId}/bookmark")]
+    Task UnbookmarkQuestionAsync(Guid questionId, CancellationToken cancellationToken = default);
+
+    [Post("/api/v1/questions/{questionId}/reports")]
+    Task ReportQuestionAsync(Guid questionId, [Body] CreateQuestionReportRequest request, CancellationToken cancellationToken = default);
 
     [Get("/api/v1/reviews/due")]
     Task<DueReviewSummaryResponse> GetDueReviewsAsync(CancellationToken cancellationToken = default);

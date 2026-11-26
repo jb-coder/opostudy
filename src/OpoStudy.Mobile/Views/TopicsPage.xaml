@@ -60,6 +60,16 @@
                             IsVisible="{Binding HasMistakesHint}" />
                     </VerticalStackLayout>
 
+                    <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="{StaticResource MinTouchTarget}">
+                        <Label Text="Solo preguntas marcadas" VerticalOptions="Center" />
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="{Binding BookmarkedOnly}"
+                            IsEnabled="{Binding CanReviewBookmarks}"
+                            VerticalOptions="Center"
+                            SemanticProperties.Description="Solo preguntas marcadas" />
+                    </Grid>
+
                     <Border
                         MinimumHeightRequest="{StaticResource MinTouchTarget}"
                         SemanticProperties.Description="Simulacro de examen. Con tiempo y penalización, como el examen real">

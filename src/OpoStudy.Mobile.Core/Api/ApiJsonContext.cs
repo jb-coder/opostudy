@@ -7,6 +7,7 @@ using OpoStudy.Contracts.MockExams;
 using OpoStudy.Contracts.Offline;
 using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Contracts.Progress;
+using OpoStudy.Contracts.Questions;
 using OpoStudy.Contracts.Quizzes;
 using OpoStudy.Contracts.Reviews;
 using OpoStudy.Contracts.Stats;
@@ -27,6 +28,7 @@ namespace OpoStudy.Mobile.Core.Api;
 [JsonSerializable(typeof(MistakeSummaryResponse))]
 [JsonSerializable(typeof(IReadOnlyList<QuizSummaryResponse>))]
 [JsonSerializable(typeof(CreateQuizRequest))]
+[JsonSerializable(typeof(CreateQuestionReportRequest))]
 [JsonSerializable(typeof(QuizResponse))]
 [JsonSerializable(typeof(SubmitAnswerRequest))]
 [JsonSerializable(typeof(AnswerFeedbackResponse))]

@@ -88,6 +88,11 @@ internal static class QuizzesEndpoints
             errors["dueOnly"] = ["Elige solo un tipo de repaso."];
         }
 
+        if (request is { BookmarkedOnly: true } and ({ MistakesOnly: true } or { DueOnly: true }))
+        {
+            errors["bookmarkedOnly"] = ["Elige solo un tipo de repaso."];
+        }
+
         if (errors.Count > 0)
         {
             return TypedResults.ValidationProblem(errors);
@@ -121,6 +126,24 @@ internal static class QuizzesEndpoints
             }
 
             candidates = mistakes.Select(m => m.QuestionId);
+        }
+        else if (request.BookmarkedOnly)
+        {
+            mode = QuizMode.Bookmarks;
+            var bookmarkUserId = user.Id;
+            var bookmarkedQuestions = db.QuestionBookmarks
+                .Where(b => b.UserId == bookmarkUserId)
+                .Join(
+                    db.Questions.Where(q => q.IsActive && db.Topics.Any(t => t.Id == q.TopicId && t.ExamId == examId)),
+                    b => b.QuestionId,
+                    q => q.Id,
+                    (b, q) => new { q.Id, q.TopicId });
+            if (request.TopicId is { } bookmarkTopicId)
+            {
+                bookmarkedQuestions = bookmarkedQuestions.Where(q => q.TopicId == bookmarkTopicId);
+            }
+
+            candidates = bookmarkedQuestions.Select(q => q.Id);
         }
         else if (request.DueOnly)
         {
@@ -163,6 +186,7 @@ internal static class QuizzesEndpoints
         {
             return DomainErrors.Problem(
                 request.MistakesOnly ? DomainErrors.QuizNoMistakes
+                : request.BookmarkedOnly ? DomainErrors.QuizNoBookmarks
                 : request.DueOnly ? DomainErrors.QuizNoDueReviews
                 : DomainErrors.QuizNoQuestionsAvailable);
         }
@@ -172,7 +196,8 @@ internal static class QuizzesEndpoints
         await db.SaveChangesAsync(cancellationToken);
 
         var questions = await LoadQuestionsAsync(db, questionIds, cancellationToken);
-        return TypedResults.Created($"/api/v1/quizzes/{attempt.Id}", BuildQuizResponse(attempt, questions));
+        var bookmarked = await LoadBookmarkedAsync(db, user.Id, questionIds, cancellationToken);
+        return TypedResults.Created($"/api/v1/quizzes/{attempt.Id}", BuildQuizResponse(attempt, questions, bookmarked));
     }
 
     private static async Task<Results<Ok<IReadOnlyList<QuizSummaryResponse>>, ValidationProblem>> ListQuizzes(
@@ -259,8 +284,10 @@ internal static class QuizzesEndpoints
             return DomainErrors.Problem(DomainErrors.QuizNotFound);
         }
 
-        var questions = await LoadQuestionsAsync(db, [.. attempt.Answers.Select(a => a.QuestionId)], cancellationToken);
-        return TypedResults.Ok(BuildQuizResponse(attempt, questions));
+        var quizQuestionIds = attempt.Answers.Select(a => a.QuestionId).ToList();
+        var questions = await LoadQuestionsAsync(db, quizQuestionIds, cancellationToken);
+        var bookmarked = await LoadBookmarkedAsync(db, user.Id, quizQuestionIds, cancellationToken);
+        return TypedResults.Ok(BuildQuizResponse(attempt, questions, bookmarked));
     }
 
     private static async Task<Results<Ok<AnswerFeedbackResponse>, ValidationProblem, ProblemHttpResult>> SubmitAnswer(
@@ -490,7 +517,19 @@ internal static class QuizzesEndpoints
             .Where(q => questionIds.Contains(q.Id))
             .ToDictionaryAsync(q => q.Id, cancellationToken);
 
-    private static QuizResponse BuildQuizResponse(QuizAttempt attempt, Dictionary<Guid, Question> questions)
+    // One query with the bookmarks of the user among the questions of the quiz.
+    private static async Task<HashSet<Guid>> LoadBookmarkedAsync(
+        OpoStudyDbContext db,
+        Guid userId,
+        List<Guid> questionIds,
+        CancellationToken cancellationToken) =>
+        [.. await db.QuestionBookmarks
+            .AsNoTracking()
+            .Where(b => b.UserId == userId && questionIds.Contains(b.QuestionId))
+            .Select(b => b.QuestionId)
+            .ToListAsync(cancellationToken)];
+
+    private static QuizResponse BuildQuizResponse(QuizAttempt attempt, Dictionary<Guid, Question> questions, HashSet<Guid> bookmarked)
     {
         var items = attempt.Answers
             .Select(answer =>
@@ -509,7 +548,8 @@ internal static class QuizzesEndpoints
                     answer.Order,
                     question.Statement,
                     [.. question.Options.Select(o => new QuizOptionResponse(o.Id, o.Order, o.Text))],
-                    feedback);
+                    feedback,
+                    bookmarked.Contains(question.Id));
             })
             .ToList();
 
