@@ -46,9 +46,14 @@ content/
   "group": "C1",
   "topics": [
     { "slug": "constitucion", "number": 1, "title": "La Constitución Española de 1978", "section": "Materias comunes" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Primer ejercicio", "questionCount": 55, "durationMinutes": 50, "maxScore": 20, "penaltyRatio": 0.5,
+      "sections": ["Materias comunes"] }
   ]
 }
 ```
+`exercises` es opcional (spec 0033): define el formato de los simulacros de examen. Cada `section` debe existir tal cual en algún tema; los `number` no se repiten. El importador hace upsert por número y borra los ejercicios que desaparecen del fichero.
 
 **`topics/<topic-slug>.json`**
 ```json

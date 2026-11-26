@@ -42,6 +42,13 @@ public static partial class ContentReader
         ["question.no_correct_option"] = "options",
         ["question.multiple_correct_options"] = "options",
         ["option.invalid_text"] = "options",
+        ["exercise.invalid_number"] = "number",
+        ["exercise.invalid_title"] = "title",
+        ["exercise.invalid_question_count"] = "questionCount",
+        ["exercise.invalid_duration"] = "durationMinutes",
+        ["exercise.invalid_max_score"] = "maxScore",
+        ["exercise.invalid_penalty_ratio"] = "penaltyRatio",
+        ["exercise.invalid_sections"] = "sections",
         ["practical_case.invalid_key"] = "key",
         ["practical_case.invalid_title"] = "title",
         ["practical_case.invalid_section"] = "section",
@@ -162,6 +169,7 @@ public static partial class ContentReader
 
         var examValid = examFile is not null && ValidateExam(examFile, folderName, examFileName, errors);
         var topics = examValid ? ValidateTopics(examFile!, examFileName, errors) : [];
+        var exercises = examValid ? ValidateExercises(examFile!, topics, examFileName, errors) : [];
 
         // Topic files are always read so their own errors are reported even when exam.json is broken.
         var questionsByTopic = new Dictionary<string, List<QuestionContent>>(StringComparer.Ordinal);
@@ -194,7 +202,8 @@ public static partial class ContentReader
             examFile.Organization,
             examFile.Group,
             [.. topics.Select(t => t with { Questions = questionsByTopic.GetValueOrDefault(t.Slug) ?? [] })],
-            cases);
+            cases,
+            exercises);
     }
 
     private static bool ValidateExam(ExamFile exam, string folderName, string file, List<ContentError> errors)
@@ -252,6 +261,65 @@ public static partial class ContentReader
         }
 
         return topics;
+    }
+
+    /// <summary>Validates the optional exercises of exam.json: domain rules, unique numbers and sections that exist in the syllabus.</summary>
+    private static List<ExerciseContent> ValidateExercises(ExamFile exam, List<TopicContent> topics, string file, List<ContentError> errors)
+    {
+        var exercises = new List<ExerciseContent>();
+        var numbers = new HashSet<int>();
+        var knownSections = topics.Select(t => t.Section).Where(s => s is not null).ToHashSet(StringComparer.Ordinal);
+        var items = exam.Exercises ?? [];
+        for (var i = 0; i < items.Count; i++)
+        {
+            var exercise = items[i];
+            var path = $"$.exercises[{i}]";
+            var ok = Guarded(
+                () => ExamExercise.Create(
+                    Guid.Empty,
+                    exercise.Number,
+                    exercise.Title,
+                    exercise.QuestionCount,
+                    exercise.DurationMinutes,
+                    exercise.MaxScore,
+                    exercise.PenaltyRatio,
+                    exercise.Sections),
+                file,
+                path,
+                errors);
+
+            if (!numbers.Add(exercise.Number))
+            {
+                errors.Add(new ContentError(file, $"{path}.number", $"El número de ejercicio {exercise.Number} está repetido."));
+                ok = false;
+            }
+
+            for (var j = 0; j < exercise.Sections.Count; j++)
+            {
+                if (!knownSections.Contains(exercise.Sections[j]))
+                {
+                    errors.Add(new ContentError(
+                        file,
+                        $"{path}.sections[{j}]",
+                        $"La sección '{exercise.Sections[j]}' no existe en ningún tema de la oposición."));
+                    ok = false;
+                }
+            }
+
+            if (ok)
+            {
+                exercises.Add(new ExerciseContent(
+                    exercise.Number,
+                    exercise.Title.Trim(),
+                    exercise.QuestionCount,
+                    exercise.DurationMinutes,
+                    exercise.MaxScore,
+                    exercise.PenaltyRatio,
+                    [.. exercise.Sections.Select(s => s.Trim())]));
+            }
+        }
+
+        return exercises;
     }
 
     private static void ReadTopicFile(

@@ -24,6 +24,29 @@
           "section": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" }
         }
       }
+    },
+    "exercises": {
+      "type": "array",
+      "description": "Ejercicios tipo test de la oposición: formato de los simulacros de examen.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["number", "title", "questionCount", "durationMinutes", "maxScore", "penaltyRatio", "sections"],
+        "properties": {
+          "number": { "type": "integer", "minimum": 1 },
+          "title": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" },
+          "questionCount": { "type": "integer", "minimum": 1, "maximum": 100 },
+          "durationMinutes": { "type": "integer", "minimum": 1, "maximum": 240 },
+          "maxScore": { "type": "number", "exclusiveMinimum": 0, "maximum": 100, "multipleOf": 0.01 },
+          "penaltyRatio": { "type": "number", "minimum": 0, "maximum": 1, "multipleOf": 0.01 },
+          "sections": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1, "maxLength": 300, "pattern": "\\S" }
+          }
+        }
+      }
     }
   },
   "$defs": {

@@ -21,6 +21,24 @@ internal sealed class ExamConfiguration : IEntityTypeConfiguration<Exam>
     }
 }
 
+internal sealed class ExamExerciseConfiguration : IEntityTypeConfiguration<ExamExercise>
+{
+    public void Configure(EntityTypeBuilder<ExamExercise> builder)
+    {
+        builder.ToTable("exam_exercises");
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id).ValueGeneratedNever();
+        builder.Property(e => e.Title).HasMaxLength(Limits.Name);
+        builder.Property(e => e.MaxScore).HasPrecision(5, 2);
+        builder.Property(e => e.PenaltyRatio).HasPrecision(3, 2);
+        builder.Property(e => e.Sections).HasColumnType("text[]");
+        builder.Ignore(e => e.DefaultPassScore);
+
+        builder.HasOne<Exam>().WithMany().HasForeignKey(e => e.ExamId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasIndex(e => new { e.ExamId, e.Number }).IsUnique();
+    }
+}
+
 internal sealed class TopicConfiguration : IEntityTypeConfiguration<Topic>
 {
     public void Configure(EntityTypeBuilder<Topic> builder)

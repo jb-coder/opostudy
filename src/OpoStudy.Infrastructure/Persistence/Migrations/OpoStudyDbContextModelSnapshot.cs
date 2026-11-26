@@ -67,6 +67,59 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                     b.ToTable("exams", (string)null);
                 });
 
+            modelBuilder.Entity("OpoStudy.Domain.Exams.ExamExercise", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("integer")
+                        .HasColumnName("duration_minutes");
+
+                    b.Property<Guid>("ExamId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("exam_id");
+
+                    b.Property<decimal>("MaxScore")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("max_score");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer")
+                        .HasColumnName("number");
+
+                    b.Property<decimal>("PenaltyRatio")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("numeric(3,2)")
+                        .HasColumnName("penalty_ratio");
+
+                    b.Property<int>("QuestionCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("question_count");
+
+                    b.PrimitiveCollection<string[]>("Sections")
+                        .IsRequired()
+                        .HasColumnType("text[]")
+                        .HasColumnName("sections");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_exam_exercises");
+
+                    b.HasIndex("ExamId", "Number")
+                        .IsUnique()
+                        .HasDatabaseName("ix_exam_exercises_exam_id_number");
+
+                    b.ToTable("exam_exercises", (string)null);
+                });
+
             modelBuilder.Entity("OpoStudy.Domain.Exams.Topic", b =>
                 {
                     b.Property<Guid>("Id")
@@ -514,6 +567,11 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("revision");
 
+                    b.Property<decimal?>("Score")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("score");
+
                     b.Property<DateTimeOffset>("StartedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("started_at");
@@ -531,6 +589,42 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("xid")
                         .HasColumnName("xmin");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "MockExam", "OpoStudy.Domain.Quizzes.QuizAttempt.MockExam#MockExamRules", b1 =>
+                        {
+                            b1.Property<TimeSpan>("Duration")
+                                .HasColumnType("interval")
+                                .HasColumnName("mock_exam_duration");
+
+                            b1.Property<int>("ExerciseNumber")
+                                .HasColumnType("integer")
+                                .HasColumnName("mock_exam_exercise_number");
+
+                            b1.Property<decimal>("MaxScore")
+                                .HasPrecision(5, 2)
+                                .HasColumnType("numeric(5,2)")
+                                .HasColumnName("mock_exam_max_score");
+
+                            b1.Property<decimal>("PassScore")
+                                .HasPrecision(5, 2)
+                                .HasColumnType("numeric(5,2)")
+                                .HasColumnName("mock_exam_pass_score");
+
+                            b1.Property<decimal>("PenaltyRatio")
+                                .HasPrecision(3, 2)
+                                .HasColumnType("numeric(3,2)")
+                                .HasColumnName("mock_exam_penalty_ratio");
+
+                            b1.Property<int>("QuestionCount")
+                                .HasColumnType("integer")
+                                .HasColumnName("mock_exam_question_count");
+
+                            b1.Property<string>("Title")
+                                .IsRequired()
+                                .HasMaxLength(300)
+                                .HasColumnType("character varying(300)")
+                                .HasColumnName("mock_exam_title");
+                        });
 
                     b.HasKey("Id")
                         .HasName("pk_quiz_attempts");
@@ -685,6 +779,16 @@ namespace OpoStudy.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_users_firebase_uid");
 
                     b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("OpoStudy.Domain.Exams.ExamExercise", b =>
+                {
+                    b.HasOne("OpoStudy.Domain.Exams.Exam", null)
+                        .WithMany()
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_exam_exercises_exams_exam_id");
                 });
 
             modelBuilder.Entity("OpoStudy.Domain.Exams.Topic", b =>
