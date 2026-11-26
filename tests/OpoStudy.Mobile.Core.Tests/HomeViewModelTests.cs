@@ -1,3 +1,7 @@
+using System.Net;
+using System.Text;
+using System.Text.Json;
+
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
 
@@ -5,6 +9,8 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
 using OpoStudy.Contracts.Progress;
+using OpoStudy.Contracts.Quizzes;
+using OpoStudy.Contracts.Reviews;
 using OpoStudy.Contracts.SystemInfo;
 using OpoStudy.Contracts.Users;
 using OpoStudy.Mobile.Core.Api;
@@ -13,6 +19,8 @@ using OpoStudy.Mobile.Core.Navigation;
 using OpoStudy.Mobile.Core.Reminders;
 using OpoStudy.Mobile.Core.Services;
 using OpoStudy.Mobile.Core.ViewModels;
+
+using Refit;
 
 using Shouldly;
 
@@ -811,4 +819,205 @@ public sealed class HomeViewModelTests
     [InlineData(false)]
     public void IsStyleGuideVisible_Environment_FollowsIsDebug(bool isDebug) =>
         CreateSut(isDebug).IsStyleGuideVisible.ShouldBe(isDebug);
+
+    // ---- Spaced review card ----
+
+    private static readonly Guid ExamA = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    private static readonly Guid ExamB = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+
+    private static DueReviewSummaryResponse Due(params (Guid Id, string Name, int Count)[] exams) =>
+        new(exams.Sum(e => e.Count), [.. exams.Select(e => new ExamDueReviewsResponse(e.Id, e.Name, e.Count))]);
+
+    private async Task<HomeViewModel> LoadedAsync(DueReviewSummaryResponse? due)
+    {
+        _api.GetVersionAsync(Arg.Any<CancellationToken>()).Returns(new VersionResponse("0.1.0"));
+        if (due is not null)
+        {
+            _api.GetDueReviewsAsync(Arg.Any<CancellationToken>()).Returns(due);
+        }
+
+        var sut = CreateSut();
+        await sut.RefreshCommand.ExecuteAsync(null);
+        return sut;
+    }
+
+    private static QuizResponse NewQuiz(Guid id) => new(id, ExamA, null, "SpacedReview", DateTimeOffset.UtcNow, null, 0, 0, []);
+
+    private static async Task<ApiException> ProblemAsync(HttpStatusCode status, string body)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost/api/v1/quizzes");
+        using var response = new HttpResponseMessage(status) { Content = new StringContent(body, Encoding.UTF8, "application/problem+json") };
+        return await ApiException.Create(request, HttpMethod.Post, response, new RefitSettings());
+    }
+
+    [Fact]
+    public async Task RefreshCommand_DueReviews_ShowsCardWithPluralText()
+    {
+        var sut = await LoadedAsync(Due((ExamA, "A", 5)));
+
+        sut.HasDueReviews.ShouldBeTrue();
+        sut.DueReviewsText.ShouldBe("5 preguntas para repasar hoy");
+    }
+
+    [Fact]
+    public async Task RefreshCommand_OneDueReview_ShowsSingularText()
+    {
+        var sut = await LoadedAsync(Due((ExamA, "A", 1)));
+
+        sut.DueReviewsText.ShouldBe("1 pregunta para repasar hoy");
+    }
+
+    [Fact]
+    public async Task RefreshCommand_NoDueReviews_HidesCard()
+    {
+        var sut = await LoadedAsync(Due());
+
+        sut.HasDueReviews.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task RefreshCommand_DueReviewsFail_HidesCardWithoutMessage()
+    {
+        _api.GetDueReviewsAsync(Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+        var sut = await LoadedAsync(null);
+
+        sut.HasDueReviews.ShouldBeFalse();
+        sut.HasDueReviewError.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task StartDueReviewCommand_OneExam_CreatesQuizWithDueOnlyAndNavigates()
+    {
+        var quizId = Guid.NewGuid();
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).Returns(NewQuiz(quizId));
+        var sut = await LoadedAsync(Due((ExamA, "A", 35)));
+
+        await sut.StartDueReviewCommand.ExecuteAsync(null);
+
+        await _api.Received(1).CreateQuizAsync(
+            Arg.Is<CreateQuizRequest>(r => r.ExamId == ExamA && r.TopicId == null && r.QuestionCount == 20 && r.DueOnly && !r.MistakesOnly),
+            Arg.Any<CancellationToken>());
+        await _navigation.Received(1).GoToAsync(
+            Routes.Quiz,
+            Arg.Is<IReadOnlyDictionary<string, object>>(q => (Guid)q[QueryKeys.QuizId] == quizId && (string)q[QueryKeys.QuizTitle] == "Repaso de hoy"));
+        await _dialogs.DidNotReceive().ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>());
+    }
+
+    [Fact]
+    public async Task StartDueReviewCommand_FewDue_UsesTheCount()
+    {
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).Returns(NewQuiz(Guid.NewGuid()));
+        var sut = await LoadedAsync(Due((ExamA, "A", 3)));
+
+        await sut.StartDueReviewCommand.ExecuteAsync(null);
+
+        await _api.Received(1).CreateQuizAsync(Arg.Is<CreateQuizRequest>(r => r.QuestionCount == 3), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task StartDueReviewCommand_SeveralExams_AsksWhichAndUsesTheChosen()
+    {
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns("B");
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).Returns(NewQuiz(Guid.NewGuid()));
+        var sut = await LoadedAsync(Due((ExamA, "A", 2), (ExamB, "B", 4)));
+
+        await sut.StartDueReviewCommand.ExecuteAsync(null);
+
+        await _dialogs.Received(1).ChooseAsync(Arg.Any<string>(), "Cancelar", Arg.Is<IReadOnlyList<string>>(o => o.Count == 2 && o[0] == "A" && o[1] == "B"));
+        await _api.Received(1).CreateQuizAsync(Arg.Is<CreateQuizRequest>(r => r.ExamId == ExamB && r.QuestionCount == 4), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task StartDueReviewCommand_ChoiceCancelled_DoesNothing()
+    {
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns((string?)null);
+        var sut = await LoadedAsync(Due((ExamA, "A", 2), (ExamB, "B", 4)));
+
+        await sut.StartDueReviewCommand.ExecuteAsync(null);
+
+        await _api.DidNotReceive().CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>());
+        await _navigation.DidNotReceive().GoToAsync(Arg.Any<string>(), Arg.Any<IReadOnlyDictionary<string, object>>());
+    }
+
+    [Fact]
+    public async Task StartDueReviewCommand_WhileCreating_IsDisabled()
+    {
+        var gate = new TaskCompletionSource<QuizResponse>();
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).Returns(gate.Task);
+        var sut = await LoadedAsync(Due((ExamA, "A", 2)));
+
+        var running = sut.StartDueReviewCommand.ExecuteAsync(null);
+        sut.StartDueReviewCommand.CanExecute(null).ShouldBeFalse();
+
+        gate.SetResult(NewQuiz(Guid.NewGuid()));
+        await running;
+        sut.StartDueReviewCommand.CanExecute(null).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task StartDueReviewCommand_SecondTapWhileChoosingExam_DoesNotCreateASecondQuiz()
+    {
+        var choice = new TaskCompletionSource<string?>();
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns(choice.Task);
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).Returns(NewQuiz(Guid.NewGuid()));
+        var sut = await LoadedAsync(Due((ExamA, "A", 2), (ExamB, "B", 4)));
+
+        var first = sut.StartDueReviewCommand.ExecuteAsync(null);
+        sut.StartDueReviewCommand.CanExecute(null).ShouldBeFalse();
+        var second = sut.StartDueReviewCommand.ExecuteAsync(null);
+        choice.SetResult("A");
+        await first;
+        await second;
+
+        await _api.Received(1).CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>());
+        sut.StartDueReviewCommand.CanExecute(null).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task StartDueReviewCommand_NoDueReviews422_ShowsMessageAndReloadsCount()
+    {
+        var sut = await LoadedAsync(Due((ExamA, "A", 2)));
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(await ProblemAsync(HttpStatusCode.UnprocessableEntity, """{"title":"No tienes preguntas para repasar hoy.","code":"quiz.no_due_reviews"}"""));
+        _api.GetDueReviewsAsync(Arg.Any<CancellationToken>()).Returns(Due());
+
+        await sut.StartDueReviewCommand.ExecuteAsync(null);
+
+        sut.DueReviewErrorMessage.ShouldBe("No tienes preguntas para repasar hoy.");
+        sut.HasDueReviews.ShouldBeFalse();
+        await _api.Received(2).GetDueReviewsAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task StartDueReviewCommand_OtherError_ShowsMessageAndKeepsCard()
+    {
+        var sut = await LoadedAsync(Due((ExamA, "A", 2)));
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).ThrowsAsync(new HttpRequestException());
+
+        await sut.StartDueReviewCommand.ExecuteAsync(null);
+
+        sut.DueReviewErrorMessage.ShouldBe(ApiErrorMessages.Unreachable);
+        sut.HasDueReviews.ShouldBeTrue();
+        sut.StartDueReviewCommand.CanExecute(null).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void For_SpacedReviewSummary_UsesTheReviewTitle()
+    {
+        var quiz = new QuizSummaryResponse(Guid.NewGuid(), ExamA, null, null, "SpacedReview", DateTimeOffset.UtcNow, null, 5, 1, 0);
+
+        QuizTitles.For(quiz).ShouldBe("Repaso de hoy");
+    }
+
+    [Fact]
+    public void Deserialize_DueReviewSummaryJson_MapsExams()
+    {
+        const string json = """{"total":3,"exams":[{"examId":"11111111-1111-1111-1111-111111111111","examName":"Programador C1","count":3}]}""";
+
+        var summary = JsonSerializer.Deserialize(json, ApiJsonContext.Default.DueReviewSummaryResponse);
+
+        summary.ShouldNotBeNull();
+        summary.Total.ShouldBe(3);
+        summary.Exams.Single().ExamName.ShouldBe("Programador C1");
+    }
 }

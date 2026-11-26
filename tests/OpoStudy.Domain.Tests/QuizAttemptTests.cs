@@ -72,6 +72,19 @@ public sealed class QuizAttemptTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public void Create_SpacedReviewWithOrWithoutTopic_Succeeds(bool withTopic)
+    {
+        Guid? topicId = withTopic ? Guid.CreateVersion7() : null;
+
+        var attempt = QuizAttempt.Create(UserId, ExamId, topicId, QuizMode.SpacedReview, [_q1.Id, _q2.Id], Now);
+
+        attempt.Mode.ShouldBe(QuizMode.SpacedReview);
+        attempt.TopicId.ShouldBe(topicId);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public void Create_ReviewWithOrWithoutTopic_Succeeds(bool withTopic)
     {
         Guid? topicId = withTopic ? Guid.CreateVersion7() : null;

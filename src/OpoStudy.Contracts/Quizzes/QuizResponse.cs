@@ -1,6 +1,6 @@
 namespace OpoStudy.Contracts.Quizzes;
 
-/// <summary>A quiz with its questions. <paramref name="Mode"/> is <c>"ByTopic"</c>, <c>"Random"</c> or <c>"Review"</c>.</summary>
+/// <summary>A quiz with its questions. <paramref name="Mode"/> is <c>"ByTopic"</c>, <c>"Random"</c>, <c>"Review"</c> or <c>"SpacedReview"</c>.</summary>
 public sealed record QuizResponse(
     Guid Id,
     Guid ExamId,

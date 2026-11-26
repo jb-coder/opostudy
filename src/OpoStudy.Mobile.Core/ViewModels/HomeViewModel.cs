@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
+using OpoStudy.Contracts.Reviews;
 using OpoStudy.Mobile.Core.Api;
 using OpoStudy.Mobile.Core.Auth;
 using OpoStudy.Mobile.Core.Navigation;
@@ -30,6 +31,7 @@ public sealed partial class HomeViewModel(
     OfflineState offlineState,
     ILogger<HomeViewModel> logger) : OfflineAwareViewModel(offlineState)
 {
+    private const string NoDueReviewsCode = "quiz.no_due_reviews";
     private const string ReminderDeniedNotice = "Activa las notificaciones de OpoStudy en los ajustes de Android para recibir el recordatorio.";
 
     /// <summary>Set while the switch is changed from code, so it does not trigger the toggle command.</summary>
@@ -259,6 +261,7 @@ public sealed partial class HomeViewModel(
                 await LoadStreakAsync(CancellationToken.None);
                 await LoadLevelAsync(CancellationToken.None);
                 await LoadUnfinishedQuizAsync(CancellationToken.None);
+                await LoadDueReviewsAsync(CancellationToken.None);
             }
 
             return;
@@ -340,6 +343,7 @@ public sealed partial class HomeViewModel(
             await LoadStreakAsync(cancellationToken);
             await LoadLevelAsync(cancellationToken);
             await LoadUnfinishedQuizAsync(cancellationToken);
+            await LoadDueReviewsAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -525,6 +529,118 @@ public sealed partial class HomeViewModel(
             return null;
         }
     }
+
+    /// <summary>Bumped by every load, so a slower, older response never overwrites a newer one.</summary>
+    private int _dueReviewsVersion;
+
+    private IReadOnlyList<ExamDueReviewsResponse> _dueExams = [];
+
+    /// <summary>Whether the "Repaso de hoy" card is shown: only when some question is due.</summary>
+    [ObservableProperty]
+    public partial bool HasDueReviews { get; set; }
+
+    [ObservableProperty]
+    public partial string DueReviewsText { get; set; } = string.Empty;
+
+    /// <summary>False while the review quiz is being created, so the button cannot be pressed twice.</summary>
+    [ObservableProperty]
+    public partial bool IsDueReviewEnabled { get; set; } = true;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasDueReviewError))]
+    public partial string? DueReviewErrorMessage { get; set; }
+
+    public bool HasDueReviewError => DueReviewErrorMessage is not null;
+
+    /// <summary>Loads the spaced review card. Failures hide it, without a message.</summary>
+    private async Task LoadDueReviewsAsync(CancellationToken cancellationToken)
+    {
+        var version = ++_dueReviewsVersion;
+        try
+        {
+            var due = await api.GetDueReviewsAsync(cancellationToken);
+            OfflineState.ReportSuccess();
+            if (version == _dueReviewsVersion)
+            {
+                ApplyDueReviews(due);
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogDueReviewsFailed(ex, ex.GetType().FullName);
+            ReportIfConnectivity(ex, cancellationToken);
+            if (version == _dueReviewsVersion)
+            {
+                ApplyDueReviews(null);
+            }
+        }
+    }
+
+    private void ApplyDueReviews(DueReviewSummaryResponse? due)
+    {
+        _dueExams = due?.Exams ?? [];
+        DueReviewsText = due is null ? string.Empty : DueReviewCard.CountText(due.Total);
+        HasDueReviews = due is { Total: > 0 };
+        if (!HasDueReviews)
+        {
+            DueReviewErrorMessage = null;
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(IsDueReviewEnabled))]
+    private async Task StartDueReviewAsync(CancellationToken cancellationToken)
+    {
+        // ExecuteAsync does not check CanExecute and a second call would start its own body: guard here.
+        if (_dueExams.Count == 0 || !IsDueReviewEnabled)
+        {
+            return;
+        }
+
+        // Disabled from the start (also while the exam dialog is open), so a double tap cannot create two quizzes.
+        IsDueReviewEnabled = false;
+        try
+        {
+            var exam = _dueExams[0];
+            if (_dueExams.Count > 1)
+            {
+                var choice = await dialogs.ChooseAsync("¿Qué oposición quieres repasar?", "Cancelar", [.. _dueExams.Select(e => e.ExamName)]);
+                if (choice is null || _dueExams.FirstOrDefault(e => e.ExamName == choice) is not { } chosen)
+                {
+                    return;
+                }
+
+                exam = chosen;
+            }
+
+            DueReviewErrorMessage = null;
+            var quiz = await api.CreateQuizAsync(
+                new CreateQuizRequest(exam.ExamId, null, DueReviewCard.QuestionCount(exam.Count), DueOnly: true),
+                cancellationToken);
+            OfflineState.ReportSuccess();
+            await navigation.GoToAsync(
+                Routes.Quiz,
+                new Dictionary<string, object> { [QueryKeys.QuizId] = quiz.Id, [QueryKeys.QuizTitle] = DueReviewCard.QuizTitle });
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            LogDueReviewFailed(ex, ex.GetType().FullName);
+            var message = ApiErrorMessages.From(ex);
+            ReportIfConnectivity(ex, cancellationToken);
+            if (ApiErrorMessages.ProblemCode(ex) == NoDueReviewsCode)
+            {
+                // The count was stale: reload it (this may hide the card).
+                await LoadDueReviewsAsync(cancellationToken);
+            }
+
+            DueReviewErrorMessage = message;
+        }
+        finally
+        {
+            IsDueReviewEnabled = true;
+        }
+    }
+
+    partial void OnIsDueReviewEnabledChanged(bool value) => StartDueReviewCommand.NotifyCanExecuteChanged();
 
     private void ReportIfConnectivity(Exception exception, CancellationToken cancellationToken)
     {
@@ -751,6 +867,12 @@ public sealed partial class HomeViewModel(
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the last quiz ({ExceptionType})")]
     private partial void LogQuizzesFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the due reviews ({ExceptionType})")]
+    private partial void LogDueReviewsFailed(Exception exception, string? exceptionType);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not create the review quiz ({ExceptionType})")]
+    private partial void LogDueReviewFailed(Exception exception, string? exceptionType);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load the level ({ExceptionType})")]
     private partial void LogLevelFailed(Exception exception, string? exceptionType);

@@ -83,6 +83,11 @@ internal static class QuizzesEndpoints
             errors["questionCount"] = [$"El número de preguntas debe estar entre 1 y {Limits.MaxQuestionsPerQuiz}."];
         }
 
+        if (request is { MistakesOnly: true, DueOnly: true })
+        {
+            errors["dueOnly"] = ["Elige solo un tipo de repaso."];
+        }
+
         if (errors.Count > 0)
         {
             return TypedResults.ValidationProblem(errors);
@@ -98,6 +103,7 @@ internal static class QuizzesEndpoints
         var examId = request.ExamId;
         IQueryable<Guid> candidates;
         QuizMode mode;
+        var overdueFirst = false;
         if (request.TopicId is { } topicId
             && !await db.Topics.AnyAsync(t => t.Id == topicId && t.ExamId == examId, cancellationToken))
         {
@@ -116,6 +122,27 @@ internal static class QuizzesEndpoints
 
             candidates = mistakes.Select(m => m.QuestionId);
         }
+        else if (request.DueOnly)
+        {
+            mode = QuizMode.SpacedReview;
+            overdueFirst = true;
+            var userId = user.Id;
+            var today = user.TodayAt(timeProvider.GetUtcNow());
+            var due = db.ReviewSchedules
+                .Where(r => r.UserId == userId && r.DueOn <= today)
+                .Join(
+                    db.Questions.Where(q => q.IsActive && db.Topics.Any(t => t.Id == q.TopicId && t.ExamId == examId)),
+                    r => r.QuestionId,
+                    q => q.Id,
+                    (r, q) => new { r.QuestionId, q.TopicId, r.DueOn });
+            if (request.TopicId is { } dueTopicId)
+            {
+                due = due.Where(r => r.TopicId == dueTopicId);
+            }
+
+            // Most overdue first, then random among the same day.
+            candidates = due.OrderBy(r => r.DueOn).ThenBy(_ => EF.Functions.Random()).Select(r => r.QuestionId);
+        }
         else if (request.TopicId is { } byTopicId)
         {
             mode = QuizMode.ByTopic;
@@ -129,13 +156,15 @@ internal static class QuizzesEndpoints
                 .Select(q => q.Id);
         }
 
-        var questionIds = await candidates
-            .OrderBy(_ => EF.Functions.Random())
+        var questionIds = await (overdueFirst ? candidates : candidates.OrderBy(_ => EF.Functions.Random()))
             .Take(request.QuestionCount)
             .ToListAsync(cancellationToken);
         if (questionIds.Count == 0)
         {
-            return DomainErrors.Problem(request.MistakesOnly ? DomainErrors.QuizNoMistakes : DomainErrors.QuizNoQuestionsAvailable);
+            return DomainErrors.Problem(
+                request.MistakesOnly ? DomainErrors.QuizNoMistakes
+                : request.DueOnly ? DomainErrors.QuizNoDueReviews
+                : DomainErrors.QuizNoQuestionsAvailable);
         }
 
         var attempt = QuizAttempt.Create(user.Id, examId, request.TopicId, mode, questionIds, timeProvider.GetUtcNow());
@@ -286,7 +315,7 @@ internal static class QuizzesEndpoints
         // Domain rule violations are translated by DomainRuleExceptionHandler; so is a concurrency conflict on save.
         var now = timeProvider.GetUtcNow();
         var result = attempt.Answer(question, request.OptionId, now);
-        var recorded = await progress.RecordAnswerAsync(user, result.IsCorrect, now, cancellationToken);
+        var recorded = await progress.RecordAnswerAsync(user, request.QuestionId, result.IsCorrect, now, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
 
         var feedback = new AnswerFeedback(
@@ -396,7 +425,7 @@ internal static class QuizzesEndpoints
             else
             {
                 var result = attempt.Answer(question, answer.OptionId, at);
-                var recorded = await progress.RecordAnswerAsync(user, result.IsCorrect, at, cancellationToken);
+                var recorded = await progress.RecordAnswerAsync(user, answer.QuestionId, result.IsCorrect, at, cancellationToken);
                 xp += recorded.Xp.Gained;
                 answered.Add(answer.QuestionId);
                 accepted++;
