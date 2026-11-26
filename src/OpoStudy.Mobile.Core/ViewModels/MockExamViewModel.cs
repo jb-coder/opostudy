@@ -414,7 +414,26 @@ public sealed partial class MockExamViewModel(
     private void StartTimer()
     {
         StopTimer();
-        _timer = timeProvider.CreateTimer(_ => Tick(), null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+
+        // The timer fires on a thread-pool thread. Ticks are posted back to the context that started it
+        // (the UI thread in the app), because they change bound properties, command states and collections.
+        // Without a context (unit tests) they run inline.
+        var context = SynchronizationContext.Current;
+        _timer = timeProvider.CreateTimer(
+            _ =>
+            {
+                if (context is null)
+                {
+                    Tick();
+                }
+                else
+                {
+                    context.Post(_ => Tick(), null);
+                }
+            },
+            null,
+            TimeSpan.FromSeconds(1),
+            TimeSpan.FromSeconds(1));
     }
 
     private void StopTimer()

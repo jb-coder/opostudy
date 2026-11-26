@@ -279,6 +279,45 @@ public sealed class MockExamViewModelTests
     }
 
     [Fact]
+    public async Task Timer_StartedWithSynchronizationContext_PostsTicksToThatContext()
+    {
+        var sut = CreateSut();
+        var context = new RecordingSynchronizationContext();
+        var previous = SynchronizationContext.Current;
+        SynchronizationContext.SetSynchronizationContext(context);
+        try
+        {
+            await sut.OnAppearingAsync();
+        }
+        finally
+        {
+            SynchronizationContext.SetSynchronizationContext(previous);
+        }
+
+        var before = sut.RemainingText;
+        _time.Advance(TimeSpan.FromMinutes(1));
+
+        sut.RemainingText.ShouldBe(before);
+        context.RunPending();
+        sut.RemainingText.ShouldBe("49:00");
+    }
+
+    private sealed class RecordingSynchronizationContext : SynchronizationContext
+    {
+        private readonly Queue<(SendOrPostCallback Callback, object? State)> _pending = new();
+
+        public override void Post(SendOrPostCallback d, object? state) => _pending.Enqueue((d, state));
+
+        public void RunPending()
+        {
+            while (_pending.TryDequeue(out var item))
+            {
+                item.Callback(item.State);
+            }
+        }
+    }
+
+    [Fact]
     public async Task Timer_AnnouncesTenFiveAndOneMinuteOnce()
     {
         var sut = CreateSut();
