@@ -179,7 +179,11 @@ public sealed partial class MockExamViewModel(
     public partial bool IsSubmitting { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowExam))]
     public partial bool IsFinished { get; set; }
+
+    /// <summary>The creation, question and submission view; the result has its own scroll so it opens at the top.</summary>
+    public bool ShowExam => !IsFinished;
 
     /// <summary>The time is up: the answers are blocked.</summary>
     [ObservableProperty]
@@ -637,8 +641,15 @@ public sealed partial class MockExamViewModel(
         PassScoreText = $"Nota para aprobar: {MockExamTexts.Number(result.PassScore)}";
         BreakdownText = MockExamTexts.Breakdown(result.CorrectCount, result.IncorrectCount, result.BlankCount);
         NetText = MockExamTexts.NetCalculation(result.CorrectCount, result.IncorrectCount, result.PenaltyRatio);
-        var used = result.FinishedAt - result.StartedAt;
-        TimeText = MockExamTexts.TimeUsed(used < TimeSpan.Zero ? TimeSpan.Zero : used, _durationMinutes);
+        // Network latency can put FinishedAt a few seconds past the limit; only a late submission shows more than the limit.
+        var duration = TimeSpan.FromMinutes(_durationMinutes);
+        var used = TimeSpan.FromTicks(Math.Max(0, (result.FinishedAt - result.StartedAt).Ticks));
+        if (!result.SubmittedLate && used > duration)
+        {
+            used = duration;
+        }
+
+        TimeText = MockExamTexts.TimeUsed(used, _durationMinutes);
         IsLate = result.SubmittedLate;
         XpText = xpGained is > 0 ? $"+{xpGained} XP" : string.Empty;
         ResultLines = [.. result.Items.OrderBy(i => i.Order).Select(ToLine)];

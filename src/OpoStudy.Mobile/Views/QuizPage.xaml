@@ -66,10 +66,10 @@
                                         CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
                                 <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
-                                    <HorizontalStackLayout Spacing="{StaticResource SpaceM}">
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{StaticResource SpaceM}">
                                         <Label Style="{StaticResource SubtitleLabel}" Text="{Binding Letter}" />
-                                        <Label Text="{Binding Text}" VerticalOptions="Center" />
-                                    </HorizontalStackLayout>
+                                        <Label Grid.Column="1" Text="{Binding Text}" VerticalOptions="Center" />
+                                    </Grid>
                                     <Label Text="{Binding StateText}" IsVisible="{Binding HasStateText}">
                                         <Label.Triggers>
                                             <DataTrigger TargetType="Label" Binding="{Binding State}" Value="{x:Static vm:OptionState.Correct}">

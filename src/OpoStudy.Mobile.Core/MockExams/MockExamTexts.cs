@@ -65,8 +65,17 @@ public static class MockExamTexts
             return "Queda menos de un minuto";
         }
 
-        var minutes = (int)Math.Ceiling(remaining.TotalMinutes);
-        return minutes == 1 ? "Queda 1 minuto" : $"Quedan {minutes} minutos";
+        // Exact, like the clock: rounding up would say "2 minutos" with 01:12 left.
+        var minutes = (int)remaining.TotalMinutes;
+        var seconds = remaining.Seconds;
+        var verb = minutes == 1 ? "Queda" : "Quedan";
+        var minutesText = minutes == 1 ? "1 minuto" : $"{minutes} minutos";
+        return seconds switch
+        {
+            0 => $"{verb} {minutesText}",
+            1 => $"{verb} {minutesText} y 1 segundo",
+            _ => $"{verb} {minutesText} y {seconds} segundos",
+        };
     }
 
     public static string Announcement(int minutesLeft) =>
@@ -88,7 +97,8 @@ public static class MockExamTexts
     public static string NetCalculation(int correct, int incorrect, decimal penaltyRatio)
     {
         var net = correct - (incorrect * penaltyRatio);
-        return $"Netas: {correct} − {incorrect} × {Number(penaltyRatio)} = {Number(net)}";
+        var netText = net < 0 ? $"−{Number(-net)}" : Number(net);
+        return $"Netas: {correct} − {incorrect} × {Number(penaltyRatio)} = {netText}";
     }
 
     public static string ScoreLine(decimal score, decimal maxScore) => $"{Number(score)} / {Number(maxScore)}";

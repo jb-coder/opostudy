@@ -69,7 +69,7 @@ public sealed class MockExamViewModelTests
     }
 
     /// <summary>The first option is the correct one of every question.</summary>
-    private static MockExamResultResponse BuildResult(MockExamResponse exam, SubmitMockExamRequest request, decimal score = 12.73m, bool late = false)
+    private static MockExamResultResponse BuildResult(MockExamResponse exam, SubmitMockExamRequest request, decimal score = 12.73m, bool late = false, double usedMinutes = 38)
     {
         var selected = request.Answers.ToDictionary(a => a.QuestionId, a => a.OptionId);
         var items = exam.Questions.Select(q =>
@@ -83,7 +83,7 @@ public sealed class MockExamViewModelTests
             1,
             exam.Title,
             Start,
-            Start.AddMinutes(38),
+            Start.AddMinutes(usedMinutes),
             late,
             exam.Questions.Count,
             items.Count(i => i.Outcome == "Correct"),
@@ -190,6 +190,7 @@ public sealed class MockExamViewModelTests
                 && r.Answers.Any(a => a.QuestionId == sut.Questions[2].Id)),
             Arg.Any<CancellationToken>());
         sut.IsFinished.ShouldBeTrue();
+        sut.ShowExam.ShouldBeFalse();
         sut.IsRunning.ShouldBeFalse();
         sut.ScoreText.ShouldBe("12,73 / 20");
         sut.PassedText.ShouldBe("Apto");
@@ -274,7 +275,7 @@ public sealed class MockExamViewModelTests
         _time.Advance(TimeSpan.FromMinutes(26) + TimeSpan.FromSeconds(30));
 
         sut.RemainingText.ShouldBe("23:30");
-        sut.RemainingDescription.ShouldBe("Quedan 24 minutos");
+        sut.RemainingDescription.ShouldBe("Quedan 23 minutos y 30 segundos");
         sut.IsTimeLow.ShouldBeFalse();
     }
 
@@ -467,5 +468,20 @@ public sealed class MockExamViewModelTests
         sut.IsLate.ShouldBeTrue();
         sut.LateText.ShouldBe("Entregado fuera de tiempo");
         sut.HasXpText.ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(50.1, false, "Tiempo: 50:00 de 50:00")]
+    [InlineData(55, true, "Tiempo: 55:00 de 50:00")]
+    public async Task Result_FinishedAfterTheLimit_ClampsTimeUnlessLate(double usedMinutes, bool late, string expected)
+    {
+        var sut = CreateSut();
+        await sut.OnAppearingAsync();
+        _api.SubmitMockExamAsync(_mockExamId, Arg.Any<SubmitMockExamRequest>(), Arg.Any<CancellationToken>())
+            .Returns(call => new SubmitMockExamResponse(BuildResult(_exam, call.Arg<SubmitMockExamRequest>(), late: late, usedMinutes: usedMinutes), 0));
+
+        await sut.SubmitCommand.ExecuteAsync(null);
+
+        sut.TimeText.ShouldBe(expected);
     }
 }
