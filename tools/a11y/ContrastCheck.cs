@@ -74,7 +74,7 @@ foreach (var kind in new[] { "Text", "Graphic" })
             Console.Error.WriteLine(ex.Message);
             return 2;
         }
-        var ok = ratios.All(r => Math.Round(r, 2) >= min);
+        var ok = ratios.All(r => r >= min);
         failed |= !ok;
         Console.WriteLine($"| `{fg}` sobre `{bg}` | {Fmt(min, min % 1 == 0 ? 0 : 1)}:1 | {Fmt(ratios[0], 2)}:1 | {Fmt(ratios[1], 2)}:1 | {(ok ? "OK" : "FALLA")} |");
     }

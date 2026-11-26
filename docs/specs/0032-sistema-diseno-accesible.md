@@ -2,7 +2,7 @@
 
 - **Issue:** #90
 - **Milestone:** v0.5.0
-- **Estado:** lista
+- **Estado:** implementada
 
 ## Objetivo
 Las pantallas nuevas de v0.5.0 deben nacer accesibles y con un criterio visual común. Se fijan por escrito los requisitos de accesibilidad (WCAG 2.2 AA) y un checklist de revisión visual. Se añaden dos herramientas baratas para comprobarlos: el cálculo de contraste de la paleta y una auditoría del volcado de `uiautomator`. El rediseño completo pasa a v1.0.0 y la publicación en tienda, a v1.1.0.
@@ -135,15 +135,15 @@ Sin cambios.
 - No se versiona ningún `ui.xml` ni ninguna captura.
 
 ## Criterios de aceptación
-- [ ] `sistema-diseno.md` documenta los requisitos WCAG 2.2 AA (tabla del punto 1), el checklist visual y el patrón `IScreenReaderAnnouncer`.
-- [ ] `dotnet run tools/a11y/ContrastCheck.cs` termina con código 0. Sus tablas, en claro y oscuro, están pegadas en el documento.
-- [ ] Los usos de `Outline` fuera de las tarjetas están clasificados. Ninguno transmite información con menos de 3:1.
-- [ ] `AuditUiDump.cs` sobre el volcado de `HomePage` termina con código 0, o cada hallazgo restante está justificado en el PR.
-- [ ] Las capturas de `HomePage` en claro, en oscuro y con `font_scale 2.0` no muestran cortes ni solapes.
-- [ ] `IScreenReaderAnnouncer` está en Core, implementado y registrado en MAUI.
-- [ ] El ADR 0001 y el README reflejan el roadmap: v1.0.0 es el rediseño accesible y v1.1.0, la publicación en tienda.
-- [ ] La skill `maui-ui` incluye la auditoría, el 200 % y el checklist.
-- [ ] `dotnet build OpoStudy.Backend.slnf` y `dotnet build src/OpoStudy.Mobile -f net10.0-android` compilan sin warnings, y los tests siguen en verde.
+- [x] `sistema-diseno.md` documenta los requisitos WCAG 2.2 AA (tabla del punto 1), el checklist visual y el patrón `IScreenReaderAnnouncer`.
+- [x] `dotnet run tools/a11y/ContrastCheck.cs` termina con código 0. Sus tablas, en claro y oscuro, están pegadas en el documento.
+- [x] Los usos de `Outline` fuera de las tarjetas están clasificados. Ninguno transmite información con menos de 3:1.
+- [x] `AuditUiDump.cs` sobre el volcado de `HomePage` termina con código 0, o cada hallazgo restante está justificado en el PR.
+- [x] Las capturas de `HomePage` en claro, en oscuro y con `font_scale 2.0` no muestran cortes ni solapes.
+- [x] `IScreenReaderAnnouncer` está en Core, implementado y registrado en MAUI.
+- [x] El ADR 0001 y el README reflejan el roadmap: v1.0.0 es el rediseño accesible y v1.1.0, la publicación en tienda.
+- [x] La skill `maui-ui` incluye la auditoría, el 200 % y el checklist (cambio local: la skill no se versiona).
+- [x] `dotnet build OpoStudy.Backend.slnf` y `dotnet build src/OpoStudy.Mobile -f net10.0-android` compilan sin warnings, y los tests siguen en verde.
 
 ## Plan de tests
 - **Unitarios:**

@@ -47,6 +47,10 @@ if (file is null || density is null)
 }
 
 package ??= ReadApplicationId();
+if (package is null)
+{
+    Console.Error.WriteLine("Warning: ApplicationId not found (run from the repo root or pass --package); auditing nodes of every package.");
+}
 
 XDocument doc;
 try

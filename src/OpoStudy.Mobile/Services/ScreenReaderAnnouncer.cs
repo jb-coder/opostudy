@@ -9,7 +9,8 @@ internal sealed class ScreenReaderAnnouncer : IScreenReaderAnnouncer
     {
         if (!string.IsNullOrWhiteSpace(message))
         {
-            SemanticScreenReader.Default.Announce(message);
+            // Announcements must run on the UI thread; ViewModels may call this after an await on any thread.
+            MainThread.BeginInvokeOnMainThread(() => SemanticScreenReader.Default.Announce(message));
         }
     }
 }
