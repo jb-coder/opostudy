@@ -590,27 +590,29 @@ public sealed partial class HomeViewModel(
     [RelayCommand(CanExecute = nameof(IsDueReviewEnabled))]
     private async Task StartDueReviewAsync(CancellationToken cancellationToken)
     {
-        if (_dueExams.Count == 0)
+        // ExecuteAsync does not check CanExecute and a second call would start its own body: guard here.
+        if (_dueExams.Count == 0 || !IsDueReviewEnabled)
         {
             return;
         }
 
-        var exam = _dueExams[0];
-        if (_dueExams.Count > 1)
-        {
-            var choice = await dialogs.ChooseAsync("¿Qué oposición quieres repasar?", "Cancelar", [.. _dueExams.Select(e => e.ExamName)]);
-            if (choice is null || _dueExams.FirstOrDefault(e => e.ExamName == choice) is not { } chosen)
-            {
-                return;
-            }
-
-            exam = chosen;
-        }
-
-        DueReviewErrorMessage = null;
+        // Disabled from the start (also while the exam dialog is open), so a double tap cannot create two quizzes.
         IsDueReviewEnabled = false;
         try
         {
+            var exam = _dueExams[0];
+            if (_dueExams.Count > 1)
+            {
+                var choice = await dialogs.ChooseAsync("¿Qué oposición quieres repasar?", "Cancelar", [.. _dueExams.Select(e => e.ExamName)]);
+                if (choice is null || _dueExams.FirstOrDefault(e => e.ExamName == choice) is not { } chosen)
+                {
+                    return;
+                }
+
+                exam = chosen;
+            }
+
+            DueReviewErrorMessage = null;
             var quiz = await api.CreateQuizAsync(
                 new CreateQuizRequest(exam.ExamId, null, DueReviewCard.QuestionCount(exam.Count), DueOnly: true),
                 cancellationToken);

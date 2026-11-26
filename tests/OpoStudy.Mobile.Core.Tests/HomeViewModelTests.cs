@@ -955,6 +955,25 @@ public sealed class HomeViewModelTests
     }
 
     [Fact]
+    public async Task StartDueReviewCommand_SecondTapWhileChoosingExam_DoesNotCreateASecondQuiz()
+    {
+        var choice = new TaskCompletionSource<string?>();
+        _dialogs.ChooseAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>()).Returns(choice.Task);
+        _api.CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>()).Returns(NewQuiz(Guid.NewGuid()));
+        var sut = await LoadedAsync(Due((ExamA, "A", 2), (ExamB, "B", 4)));
+
+        var first = sut.StartDueReviewCommand.ExecuteAsync(null);
+        sut.StartDueReviewCommand.CanExecute(null).ShouldBeFalse();
+        var second = sut.StartDueReviewCommand.ExecuteAsync(null);
+        choice.SetResult("A");
+        await first;
+        await second;
+
+        await _api.Received(1).CreateQuizAsync(Arg.Any<CreateQuizRequest>(), Arg.Any<CancellationToken>());
+        sut.StartDueReviewCommand.CanExecute(null).ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task StartDueReviewCommand_NoDueReviews422_ShowsMessageAndReloadsCount()
     {
         var sut = await LoadedAsync(Due((ExamA, "A", 2)));

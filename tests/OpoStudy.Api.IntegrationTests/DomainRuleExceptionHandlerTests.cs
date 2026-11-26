@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
+using Npgsql;
+
 using OpoStudy.Api.Errors;
 using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Quizzes;
@@ -63,6 +65,27 @@ public sealed class DomainRuleExceptionHandlerTests(ApiFactory factory)
         title.ShouldNotBeNull();
         title.ShouldNotContain("some.unknown_code");
         title.ShouldNotContain("internal detail");
+    }
+
+    [Fact]
+    public async Task TryHandleAsync_UniqueViolationOnReviewSchedulesPrimaryKey_Returns409ConcurrencyConflict()
+    {
+        var postgres = new PostgresException("duplicate key", "ERROR", "ERROR", PostgresErrorCodes.UniqueViolation, constraintName: DbConstraintNames.ReviewSchedulesPrimaryKey);
+
+        var (status, problem) = await HandleAsync(new DbUpdateException("duplicate", postgres));
+
+        status.ShouldBe(HttpStatusCode.Conflict);
+        problem.GetProperty("code").GetString().ShouldBe("concurrency.conflict");
+    }
+
+    [Fact]
+    public async Task TryHandleAsync_UniqueViolationOnOtherConstraint_ReturnsFalse()
+    {
+        var postgres = new PostgresException("duplicate key", "ERROR", "ERROR", PostgresErrorCodes.UniqueViolation, constraintName: "ix_other");
+
+        var handled = await new DomainRuleExceptionHandler().TryHandleAsync(NewContext(), new DbUpdateException("duplicate", postgres), Ct);
+
+        handled.ShouldBeFalse();
     }
 
     [Fact]

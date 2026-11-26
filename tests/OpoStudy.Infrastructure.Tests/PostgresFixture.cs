@@ -21,6 +21,9 @@ public sealed class PostgresFixture : IAsyncLifetime
         await db.Database.MigrateAsync();
     }
 
+    /// <summary>Connection string of the server's default database, for tests that create their own database.</summary>
+    public string ConnectionString => _postgres.GetConnectionString();
+
     public async ValueTask DisposeAsync() => await _postgres.DisposeAsync();
 
     public OpoStudyDbContext CreateContext(params IInterceptor[] interceptors)
