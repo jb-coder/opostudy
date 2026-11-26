@@ -64,6 +64,18 @@ public sealed class ContentExercisesTests(PostgresFixture postgres)
     }
 
     [Fact]
+    public void Read_SectionWithSurroundingSpaces_MatchesTrimmedTopicSection()
+    {
+        using var content = new TempContent();
+        content.Write($"exams/{Exam}/exam.json", ExamJson("[" + ExerciseJson(sections: "[\"  Bloque I \"]") + "]"));
+
+        var result = ContentReader.Read(content.Root);
+
+        result.Errors.ShouldBeEmpty();
+        result.Exams.ShouldHaveSingleItem();
+    }
+
+    [Fact]
     public void Read_RepeatedNumber_ReportsError()
     {
         using var content = new TempContent();

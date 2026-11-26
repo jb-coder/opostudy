@@ -103,7 +103,7 @@ Feature nueva `src/OpoStudy.Api/Features/MockExams/MockExamsEndpoints.cs` (`MapM
 | `quiz.not_mock_exam` | 422 | Este test no es un simulacro. |
 | `quiz.invalid_mode` | 422 | No se ha podido completar la operación. |
 
-`POST /quizzes/{id}/answers` sobre un simulacro da 422 `mock_exam.answer_requires_submission` (lo traduce el handler existente). `GET /quizzes/{id}` y el historial `GET /quizzes` siguen funcionando para simulacros (`Mode = "MockExam"`); no hace falta tocarlos.
+`POST /quizzes/{id}/answers` sobre un simulacro da 422 `mock_exam.answer_requires_submission` (lo traduce el handler existente). `GET /quizzes/{id}` sigue funcionando para simulacros (`Mode = "MockExam"`). El historial `GET /quizzes` los excluye: su único uso es la tarjeta «continuar» del inicio, y un simulacro no se puede retomar como test.
 
 ### Contracts (`src/OpoStudy.Contracts/MockExams/`)
 - `ExamExerciseResponse(int Number, string Title, int QuestionCount, int DurationMinutes, decimal MaxScore, decimal PenaltyRatio, decimal DefaultPassScore, int AvailableQuestionCount)`.

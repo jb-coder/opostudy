@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Time.Testing;
 
 using OpoStudy.Contracts.MockExams;
+using OpoStudy.Contracts.Progress;
 using OpoStudy.Contracts.Quizzes;
 
 using Shouldly;
@@ -215,6 +216,24 @@ public sealed class MockExamsEndpointsTests(ApiFactory factory)
         result.Items[2].SelectedOptionId.ShouldBeNull();
         result.Items[0].CorrectOptionId.ShouldBe(CorrectOption(content, q[0].QuestionId));
         result.Items[1].Explanation.ShouldNotBeNullOrWhiteSpace();
+
+        // Only the two answered questions count for the daily goal; the blank one does not.
+        var streak = await client.GetFromJsonAsync<StreakResponse>(new Uri("/api/v1/me/streak", UriKind.Relative), Ct);
+        streak.ShouldNotBeNull();
+        streak.AnsweredToday.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task ListQuizzes_WithMockExam_ExcludesIt()
+    {
+        var content = await ContentSeeder.SeedAsync(factory.Services);
+        using var client = factory.CreateClientFor(NewUid());
+        var mockExam = await CreateAsync(client, content.Exam.Id);
+
+        var quizzes = await client.GetFromJsonAsync<List<QuizSummaryResponse>>(new Uri("/api/v1/quizzes", UriKind.Relative), Ct);
+
+        quizzes.ShouldNotBeNull();
+        quizzes.ShouldNotContain(q => q.Id == mockExam.Id);
     }
 
     [Fact]

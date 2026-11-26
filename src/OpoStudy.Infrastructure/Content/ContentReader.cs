@@ -268,7 +268,8 @@ public static partial class ContentReader
     {
         var exercises = new List<ExerciseContent>();
         var numbers = new HashSet<int>();
-        var knownSections = topics.Select(t => t.Section).Where(s => s is not null).ToHashSet(StringComparer.Ordinal);
+        // Compared trimmed, as the domain stores both the topic sections and the exercise sections.
+        var knownSections = topics.Select(t => t.Section?.Trim()).Where(s => s is not null).ToHashSet(StringComparer.Ordinal);
         var items = exam.Exercises ?? [];
         for (var i = 0; i < items.Count; i++)
         {
@@ -296,7 +297,7 @@ public static partial class ContentReader
 
             for (var j = 0; j < exercise.Sections.Count; j++)
             {
-                if (!knownSections.Contains(exercise.Sections[j]))
+                if (!knownSections.Contains(exercise.Sections[j]?.Trim()))
                 {
                     errors.Add(new ContentError(
                         file,
