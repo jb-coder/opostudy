@@ -18,6 +18,8 @@ Oposición inicial: **Programador Informático (C1) — Diputación de Málaga**
 ## Flujo de trabajo
 Gitflow (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`). Todo cambio entra por Pull Request con CI en verde.
 
+Hoja de ruta: `v1.0.0` es el rediseño accesible de la app (WCAG 2.2 AA, ver `docs/diseno/sistema-diseno.md`) y `v1.1.0`, la publicación en tienda (Google Play). Detalle en `docs/adr/0001-stack-y-arquitectura.md`.
+
 ## Secretos
 Este repositorio es **público**. Nunca se commitean secretos:
 - Local: `dotnet user-secrets`

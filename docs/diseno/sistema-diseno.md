@@ -26,11 +26,13 @@ Cada token es un par claro/oscuro definido en `Colors.xaml` como `<Token>Light` 
 | `Error` | `#B3261E` | `#F2B8B5` | Respuesta incorrecta, errores |
 | `Warning` | `#8A5300` | `#FFC870` | Avisos |
 
-### Contraste (WCAG 2.1 AA)
+### Contraste (WCAG 2.2 AA)
 
-Mínimo 4,5:1 para texto normal. Ratios calculados con la fórmula de luminancia relativa de WCAG para cada par texto/fondo que se usa en la app:
+Ratios calculados con `dotnet run tools/a11y/ContrastCheck.cs` (fórmula de luminancia relativa de WCAG sobre `Colors.xaml`). Las tablas se pegan tal cual; si se cambia un color, se repite el script y se actualizan. El script termina con código 1 si algún par falla.
 
-| Par (texto sobre fondo) | Mínimo | Claro | Oscuro | Resultado |
+**Texto (4,5:1)**, criterio 1.4.3:
+
+| Par (primer plano sobre fondo) | Mínimo | Claro | Oscuro | Resultado |
 |---|---|---|---|---|
 | `OnPrimary` sobre `Primary` | 4,5:1 | 6,81:1 | 8,48:1 | OK |
 | `OnSurface` sobre `Background` | 4,5:1 | 15,88:1 | 15,04:1 | OK |
@@ -46,10 +48,34 @@ Mínimo 4,5:1 para texto normal. Ratios calculados con la fórmula de luminancia
 | `Warning` sobre `Background` | 4,5:1 | 5,96:1 | 12,08:1 | OK |
 | `Warning` sobre `Surface` | 4,5:1 | 6,33:1 | 10,68:1 | OK |
 
+**Elementos gráficos y bordes de componentes (3:1)**, criterio 1.4.11:
+
+| Par (primer plano sobre fondo) | Mínimo | Claro | Oscuro | Resultado |
+|---|---|---|---|---|
+| `Primary` sobre `Background` | 3:1 | 6,41:1 | 10,17:1 | OK |
+| `Primary` sobre `Surface` | 3:1 | 6,81:1 | 8,99:1 | OK |
+| `Success` sobre `Background` | 3:1 | 5,08:1 | 10,54:1 | OK |
+| `Success` sobre `Surface` | 3:1 | 5,40:1 | 9,32:1 | OK |
+| `Error` sobre `Background` | 3:1 | 6,15:1 | 10,81:1 | OK |
+| `Error` sobre `Surface` | 3:1 | 6,54:1 | 9,56:1 | OK |
+| `Warning` sobre `Background` | 3:1 | 5,96:1 | 12,08:1 | OK |
+| `Warning` sobre `Surface` | 3:1 | 6,33:1 | 10,68:1 | OK |
+
+Usos de `Outline` fuera de las tarjetas, clasificados:
+
+| Uso | Clasificación |
+|---|---|
+| `Styles.xaml`: fondo del botón deshabilitado | Exento (WCAG no exige contraste a controles deshabilitados); el texto sigue legible |
+| `Styles.xaml`: trazo de `CardBorder` | Decorativo: la tarjeta no es un control |
+| `ProgressBarTrack.cs`: pista de `ProgressBar` | Decorativo: el valor siempre va en texto junto a la barra y en `SemanticProperties.Description` |
+| `StatsPage.xaml`: `BoxView` de la gráfica de notas | Decorativo: el porcentaje está en texto sobre la barra y en `SemanticProperties.Description`; la barra de relleno usa `Primary` (3:1) |
+| `StyleGuidePage.xaml`: muestra del color en el catálogo | Decorativo (solo muestra el token) |
+
+Ninguno transmite información únicamente con `Outline`, así que no hay que cambiar ningún uso. `Outline` sigue siendo decorativo: no lo uses como único indicador de un componente interactivo (para eso, `Primary`, que supera 3:1).
+
 Notas:
-- `Outline` (claro 1,57:1 sobre `Background`, oscuro 1,82:1) es **solo decorativo** (borde de tarjeta y separadores): no identifica ningún control, así que WCAG 1.4.11 (3:1) no aplica. Los controles que necesitan borde visible, como `SecondaryButton`, usan `Primary` (6,41:1 claro, 10,17:1 oscuro), que sí supera 3:1. No uses `Outline` como único indicador de un componente interactivo.
-- Los botones deshabilitados están exentos de contraste mínimo por WCAG, pero siguen siendo legibles (`OnSurfaceVariant` sobre `Outline`).
-- Para recalcular: luminancia relativa `L = 0,2126 R + 0,7152 G + 0,0722 B` (con canales sRGB linealizados) y ratio `(L1 + 0,05) / (L2 + 0,05)`, con `L1` la mayor. Si se cambia un color, hay que repetir la tabla.
+- Los controles que necesitan borde visible, como `SecondaryButton`, usan `Primary`.
+- Para recalcular a mano: luminancia relativa `L = 0,2126 R + 0,7152 G + 0,0722 B` (con canales sRGB linealizados: `c <= 0,04045 ? c/12,92 : ((c+0,055)/1,055)^2,4`) y ratio `(L1 + 0,05) / (L2 + 0,05)`, con `L1` la mayor.
 
 ## Tipografía
 
@@ -99,7 +125,7 @@ Con clave:
 
 | Clave | Para |
 |---|---|
-| `PrimaryButton` | Botón principal (base del `Button` implícito) |
+| `PrimaryButton` | Botón principal (base del `Button` implícito): alto mínimo real de 48 dp (en Android `ButtonInsets` quita los 6 dp de margen de MaterialButton) y texto con `WordWrap`, para que crezca al ampliar la fuente |
 | `SecondaryButton` | Botón de contorno (borde `Primary`) |
 | `TextButton` | Botón de texto, sin fondo; deshabilitado: sin fondo, texto `OnSurfaceVariant` y `DimmedOpacity` |
 | `CardBorder` | Tarjeta (`Surface` + trazo `Outline`, base del `Border` implícito) |
@@ -114,10 +140,47 @@ En modo `Debug`, la pantalla de inicio tiene un botón "Catálogo de estilos" (r
 
 ## Accesibilidad
 
-- Todo control táctil mide al menos 48x48 dp (`MinimumHeightRequest`/`MinimumWidthRequest` en los estilos de botón).
-- `SemanticProperties.Description` en controles sin texto visible e imágenes; `SemanticProperties.HeadingLevel` en los títulos de página (`Level1`) y de sección (`Level2`).
-- El estado (cargando, error, éxito) nunca se comunica solo con color: siempre hay texto.
-- Contraste AA en todos los pares texto/fondo (tabla anterior), en claro y oscuro.
+Objetivo: WCAG 2.2 AA en todas las pantallas. Cada requisito indica cómo se cumple en MAUI y cómo se comprueba.
+
+| Requisito | Criterio WCAG | Cómo se cumple | Cómo se comprueba |
+|---|---|---|---|
+| Contraste de texto ≥ 4,5:1 | 1.4.3 | Solo pares de la tabla de texto | `ContrastCheck.cs` |
+| Contraste de elementos gráficos y bordes de controles ≥ 3:1 | 1.4.11 | Tabla de elementos gráficos; `Outline` solo decorativo | `ContrastCheck.cs` |
+| Zona táctil ≥ 48x48 dp | 2.5.8 (24 px; el proyecto exige 48 dp, como Android) | `MinTouchTarget` en estilos; iconos dentro de un contenedor de 48 dp | `AuditUiDump.cs` |
+| Texto ampliable al 200 % sin cortes ni solapes | 1.4.4 | `FontAutoScalingEnabled` activo; sin alturas fijas en contenedores de texto; `LineBreakMode="WordWrap"`; pantallas dentro de un `ScrollView` | `adb shell settings put system font_scale 2.0` y captura |
+| Movimiento reducido | 2.3.3 | Si se añade una animación, no se reproduce cuando Android tiene las animaciones desactivadas (`ValueAnimator.AreAnimatorsEnabled()` en Android); la información nunca depende de la animación | Activar "Quitar animaciones" y repetir el flujo |
+| El estado nunca se comunica solo con color | 1.4.1 | Texto o marca (✓, ✗, •) junto al color | Captura en escala de grises (`adb shell settings put secure accessibility_display_daltonizer_enabled 1` y `accessibility_display_daltonizer 0`) |
+| Controles con nombre accesible | 4.1.2 | Texto visible o `SemanticProperties.Description`; en controles con texto, el nombre empieza por ese texto | `AuditUiDump.cs` y TalkBack |
+| Encabezados | 1.3.1 | `SemanticProperties.HeadingLevel`: `Level1` en el título de página y `Level2` en las secciones | TalkBack, navegación por encabezados |
+| Avisos dinámicos | 4.1.3 | Los resultados y errores que aparecen sin cambiar de pantalla (corrección de una respuesta, error al enviar, tiempo agotado) se anuncian con `IScreenReaderAnnouncer` | TalkBack |
+| Orden de foco lógico | 2.4.3 | El orden del XAML sigue el orden visual; no se usa `TabIndex` salvo justificación | TalkBack, deslizar por la pantalla |
+
+### Auditoría del volcado de `uiautomator`
+
+```bash
+adb shell uiautomator dump /sdcard/ui.xml && adb pull /sdcard/ui.xml "$SCRATCH/ui.xml"
+dotnet run tools/a11y/AuditUiDump.cs -- "$SCRATCH/ui.xml" --density <dpi> [--package <applicationId>]
+```
+
+- `<dpi>` sale de `adb shell wm density`. `--package` vale por defecto el `ApplicationId` de la app; los nodos de otros paquetes (p. ej. `com.android.systemui`) se ignoran.
+- Reglas: `unlabeled` (control interactivo sin `text` ni `content-desc` en él ni en sus descendientes) y `small-target` (ancho o alto menor de 48 dp, con 0,5 dp de tolerancia). Los nodos cortados por el borde de la pantalla o de un scroll también salen; el PR justifica cada excepción.
+- Código de salida: `0` sin hallazgos, `1` con hallazgos, `2` si el fichero no es válido.
+- Los volcados y las capturas pueden contener datos del usuario de prueba: se guardan fuera del repo.
+
+## Checklist de revisión visual
+
+Se repasa en cada pantalla nueva o modificada; el PR la incluye marcada.
+
+- **Jerarquía:** un solo `DisplayLabel` o `TitleLabel` por pantalla; una sola acción principal (`PrimaryButton`) visible a la vez; lo secundario con `SecondaryButton` o `TextButton`; la información más importante, arriba.
+- **Espaciado:** solo tokens de `Spacing.xaml`, sin números sueltos; `SpaceM` dentro de tarjetas, `SpaceL` entre tarjetas.
+- **Tipografía:** solo los estilos de la tabla; sin `FontSize` sueltos; como máximo tres tamaños por pantalla.
+- **Color:** solo tokens; sin hex en las vistas; el color de estado siempre acompañado de texto o marca.
+- **Iconografía:** iconos o emojis siempre con una etiqueta visible o `SemanticProperties.Description`; un mismo icono significa siempre lo mismo (✓ correcto o cumplido, ✗ incorrecto, 🛡️ protector, 🔥 racha); los decorativos, ocultos al lector (`AutomationProperties.IsInAccessibleTree="False"`).
+- **Movimiento:** sin animaciones decorativas; si hay transición, menos de 300 ms y respetando "Quitar animaciones".
+- **Estados:** cada pantalla con datos define cargando, vacío, error y éxito.
+- **Estados vacíos:** el texto dice qué falta y qué hacer, y hay un botón a la acción (por ejemplo, "Aún no has hecho ningún test" + "Empezar un test"); nunca una lista en blanco.
+- **Claro, oscuro y 200 %:** capturas en los tres casos, sin cortes ni solapes.
+- **Auditoría:** `AuditUiDump.cs` sin hallazgos (o cada hallazgo, justificado en el PR).
 
 ## Patrones de pantalla
 
@@ -128,3 +191,4 @@ En modo `Debug`, la pantalla de inicio tiene un botón "Catálogo de estilos" (r
 5. **Mensajes de error.** Siempre en español y sin detalles internos: salen de `ApiErrorMessages.From(exception)`.
 6. **Navegación.** Rutas en `Routes` (Core) y navegación mediante `INavigationService`; los ViewModels no conocen `Shell`.
 7. **Pantallas nuevas.** Registra ViewModel y página como `Transient` en `MauiProgram` y la ruta en `AppShell`.
+8. **Avisos al lector de pantalla.** Los ViewModels reciben `IScreenReaderAnnouncer` (Core) por constructor y anuncian los resultados y errores que aparecen sin navegar (corrección de una respuesta, error al enviar, tiempo agotado). La implementación MAUI llama a `SemanticScreenReader.Default.Announce` y no hace nada con un mensaje vacío; está registrada como `Singleton`. En los tests se sustituye por un fake.

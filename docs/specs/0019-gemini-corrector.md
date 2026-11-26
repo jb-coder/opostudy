@@ -133,7 +133,7 @@ Sin cambios.
 - **Inyección de prompt:** las respuestas van como cadenas JSON escapadas, y las instrucciones de sistema las declaran datos. La salida se valida (esquema + normalización + `Grading.Complete`): como mucho, un ataque puede inflar la nota de su propio supuesto, nunca escribir fuera de los límites ni afectar a otros usuarios.
 - **Privacidad:** a Google solo llegan el supuesto y las respuestas, sin uid, email ni id (0018). En el free tier, Google puede usar ese contenido para mejorar sus productos.
   - Es aceptable para la beta personal.
-  - Antes de producción (v1.0.0, ADR 0001) hay que pasar al plan de pago o avisar en la política de privacidad. Este punto se anota en la #21.
+  - Antes de producción (v1.1.0, ADR 0001) hay que pasar al plan de pago o avisar en la política de privacidad. Este punto se anota en la #21.
 - **Coste:** la cuota mensual (10) y una sola corrección en curso por usuario (0018) acotan las llamadas. El cliente no tiene reintentos propios. `MaxOutputTokens` limita la salida.
 
 ## Criterios de aceptación
