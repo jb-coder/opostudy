@@ -49,12 +49,7 @@ internal static class QuestionsEndpoints
     {
         var user = await currentUser.GetOrCreateAsync(cancellationToken);
 
-        var exists = await db.Questions.AnyAsync(
-            q => q.Id == questionId
-                && q.IsActive
-                && db.Topics.Any(t => t.Id == q.TopicId && db.Exams.Any(e => e.Id == t.ExamId && e.IsActive)),
-            cancellationToken);
-        if (!exists)
+        if (!await IsAvailableAsync(db, questionId, cancellationToken))
         {
             return DomainErrors.Problem(DomainErrors.QuestionNotFound);
         }
@@ -108,12 +103,11 @@ internal static class QuestionsEndpoints
         ArgumentNullException.ThrowIfNull(request);
 
         var errors = new Dictionary<string, string[]>();
-        QuestionReportReason reason = default;
-        var reasonText = request.Reason?.Trim();
-        if (string.IsNullOrEmpty(reasonText)
-            || !char.IsLetter(reasonText[0])
-            || !Enum.TryParse(reasonText, ignoreCase: true, out reason)
-            || !Enum.IsDefined(reason))
+        // Match a single enum name exactly: Enum.TryParse would also accept numbers and comma-separated flag lists.
+        var reasonName = Enum.GetNames<QuestionReportReason>()
+            .FirstOrDefault(name => string.Equals(name, request.Reason?.Trim(), StringComparison.OrdinalIgnoreCase));
+        var reason = reasonName is null ? default : Enum.Parse<QuestionReportReason>(reasonName);
+        if (reasonName is null)
         {
             errors["reason"] = ["Elige un motivo."];
         }
@@ -136,7 +130,7 @@ internal static class QuestionsEndpoints
         var user = await currentUser.GetOrCreateAsync(cancellationToken);
         var userId = user.Id;
 
-        if (!await db.Questions.AnyAsync(q => q.Id == questionId && q.IsActive, cancellationToken))
+        if (!await IsAvailableAsync(db, questionId, cancellationToken))
         {
             return DomainErrors.Problem(DomainErrors.QuestionNotFound);
         }
@@ -153,4 +147,12 @@ internal static class QuestionsEndpoints
         await db.SaveChangesAsync(cancellationToken);
         return TypedResults.NoContent();
     }
+
+    /// <summary>Active question of an active exam; anything else is reported as not found.</summary>
+    private static Task<bool> IsAvailableAsync(OpoStudyDbContext db, Guid questionId, CancellationToken cancellationToken) =>
+        db.Questions.AnyAsync(
+            q => q.Id == questionId
+                && q.IsActive
+                && db.Topics.Any(t => t.Id == q.TopicId && db.Exams.Any(e => e.Id == t.ExamId && e.IsActive)),
+            cancellationToken);
 }

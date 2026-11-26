@@ -250,6 +250,7 @@ public sealed class QuestionsEndpointsTests(ApiFactory factory)
     [InlineData("Unknown", null, "reason")]
     [InlineData("", null, "reason")]
     [InlineData("1", null, "reason")]
+    [InlineData("OutdatedLegislation,UnclearStatement", null, "reason")]
     [InlineData("Typo", "TOO_LONG", "comment")]
     [InlineData("Other", null, "comment")]
     [InlineData("Other", "   ", "comment")]
@@ -285,6 +286,17 @@ public sealed class QuestionsEndpointsTests(ApiFactory factory)
             ReportsUri(content.InactiveQuestionOf(content.Topic1).Id),
             new CreateQuestionReportRequest("Typo", null),
             Ct);
+
+        await response.ShouldBeProblemAsync(HttpStatusCode.NotFound, "question.not_found");
+    }
+
+    [Fact]
+    public async Task Report_QuestionOfInactiveExam_Returns404()
+    {
+        var (content, client, _) = await StartAsync();
+        var question = content.Questions.Values.First(q => q.TopicId == content.InactiveExamTopic.Id);
+
+        var response = await client.PostAsJsonAsync(ReportsUri(question.Id), new CreateQuestionReportRequest("Typo", null), Ct);
 
         await response.ShouldBeProblemAsync(HttpStatusCode.NotFound, "question.not_found");
     }
