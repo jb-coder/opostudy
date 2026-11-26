@@ -14,6 +14,18 @@ internal sealed class ExamFile
     public required string Organization { get; init; }
     public required string Group { get; init; }
     public required IReadOnlyList<ExamFileTopic> Topics { get; init; }
+    public IReadOnlyList<ExamFileExercise>? Exercises { get; init; }
+}
+
+internal sealed class ExamFileExercise
+{
+    public required int Number { get; init; }
+    public required string Title { get; init; }
+    public required int QuestionCount { get; init; }
+    public required int DurationMinutes { get; init; }
+    public required decimal MaxScore { get; init; }
+    public required decimal PenaltyRatio { get; init; }
+    public required IReadOnlyList<string> Sections { get; init; }
 }
 
 internal sealed class ExamFileTopic

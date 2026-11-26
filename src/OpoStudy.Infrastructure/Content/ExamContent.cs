@@ -10,7 +10,18 @@ public sealed record ExamContent(
     string Organization,
     string Group,
     IReadOnlyList<TopicContent> Topics,
-    IReadOnlyList<PracticalCaseContent> PracticalCases);
+    IReadOnlyList<PracticalCaseContent> PracticalCases,
+    IReadOnlyList<ExerciseContent>? Exercises = null);
+
+/// <summary>An exercise (ejercicio) of the exam: format of a mock exam.</summary>
+public sealed record ExerciseContent(
+    int Number,
+    string Title,
+    int QuestionCount,
+    int DurationMinutes,
+    decimal MaxScore,
+    decimal PenaltyRatio,
+    IReadOnlyList<string> Sections);
 
 public sealed record TopicContent(
     string Slug,

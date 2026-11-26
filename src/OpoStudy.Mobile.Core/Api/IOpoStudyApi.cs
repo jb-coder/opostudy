@@ -1,5 +1,6 @@
 using OpoStudy.Contracts.Exams;
 using OpoStudy.Contracts.Gradings;
+using OpoStudy.Contracts.MockExams;
 using OpoStudy.Contracts.Offline;
 using OpoStudy.Contracts.PracticalCases;
 using OpoStudy.Contracts.Progress;
@@ -53,6 +54,18 @@ public interface IOpoStudyApi
 
     [Post("/api/v1/quizzes/sync")]
     Task<SyncQuizResponse> SyncQuizAsync([Body] SyncQuizRequest request, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/exams/{examId}/exercises")]
+    Task<IReadOnlyList<ExamExerciseResponse>> GetExercisesAsync(Guid examId, CancellationToken cancellationToken = default);
+
+    [Post("/api/v1/mock-exams")]
+    Task<MockExamResponse> CreateMockExamAsync([Body] CreateMockExamRequest request, CancellationToken cancellationToken = default);
+
+    [Post("/api/v1/mock-exams/{id}/submission")]
+    Task<SubmitMockExamResponse> SubmitMockExamAsync(Guid id, [Body] SubmitMockExamRequest request, CancellationToken cancellationToken = default);
+
+    [Get("/api/v1/mock-exams/{id}/result")]
+    Task<MockExamResultResponse> GetMockExamResultAsync(Guid id, CancellationToken cancellationToken = default);
 
     [Get("/api/v1/me/streak")]
     Task<StreakResponse> GetStreakAsync(CancellationToken cancellationToken = default);

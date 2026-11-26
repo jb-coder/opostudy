@@ -89,6 +89,10 @@ try
     PrintCounts("Temas", report.Topics);
     PrintCounts("Preguntas", report.Questions);
     PrintCounts("Supuestos", report.PracticalCases);
+    if (report.Exercises is not null)
+    {
+        PrintCounts("Ejercicios", report.Exercises);
+    }
     foreach (var warning in report.Warnings)
     {
         Console.WriteLine($"Aviso: {warning}");

@@ -7,4 +7,7 @@ public enum QuizMode
 
     /// <summary>Review of the questions the user currently has wrong; the topic is optional.</summary>
     Review,
+
+    /// <summary>Timed exercise with penalty for wrong answers; answers are submitted all at once.</summary>
+    MockExam,
 }

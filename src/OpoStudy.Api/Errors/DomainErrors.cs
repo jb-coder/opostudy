@@ -14,6 +14,10 @@ internal static class DomainErrors
     public const string TopicNotFound = "topic.not_found";
     public const string PracticalCaseNotFound = "practical_case.not_found";
     public const string QuizNotFound = "quiz.not_found";
+    public const string MockExamNotFound = "mock_exam.not_found";
+    public const string ExerciseNotFound = "exercise.not_found";
+    public const string MockExamNotEnoughQuestions = "mock_exam.not_enough_questions";
+    public const string MockExamNotSubmitted = "mock_exam.not_submitted";
     public const string QuizForeignQuestion = "quiz.foreign_question";
     public const string QuizNoQuestionsAvailable = "quiz.no_questions_available";
     public const string QuizNoMistakes = "quiz.no_mistakes";
@@ -34,6 +38,12 @@ internal static class DomainErrors
         {
             ["quiz.finished"] = (StatusCodes.Status409Conflict, "El test ya está terminado."),
             ["quiz.already_answered"] = (StatusCodes.Status409Conflict, "Ya has respondido a esta pregunta."),
+            [MockExamNotSubmitted] = (StatusCodes.Status409Conflict, "El simulacro todavía no se ha entregado."),
+            [MockExamNotEnoughQuestions] = (StatusCodes.Status422UnprocessableEntity, "Todavía no hay preguntas suficientes para este simulacro."),
+            ["mock_exam.invalid_pass_score"] = (StatusCodes.Status422UnprocessableEntity, "La nota para aprobar debe estar entre 0 y la nota máxima."),
+            ["mock_exam.answer_requires_submission"] = (StatusCodes.Status422UnprocessableEntity, "En un simulacro las respuestas se envían todas juntas al entregarlo."),
+            ["mock_exam.invalid_question_count"] = (StatusCodes.Status422UnprocessableEntity, "El simulacro no tiene el número de preguntas esperado."),
+            ["quiz.not_mock_exam"] = (StatusCodes.Status422UnprocessableEntity, "Este test no es un simulacro."),
             [QuizConcurrentUpdate] = (StatusCodes.Status409Conflict, "El test se ha modificado desde otra petición. Vuelve a cargarlo."),
             [QuizSyncConflict] = (StatusCodes.Status409Conflict, "El test no coincide con el guardado en el servidor."),
             [ConcurrencyConflict] = (StatusCodes.Status409Conflict, "Los datos se han modificado desde otra petición. Vuelve a intentarlo."),
@@ -54,6 +64,8 @@ internal static class DomainErrors
             [ExamNotFound] = (StatusCodes.Status404NotFound, "La oposición no existe."),
             [TopicNotFound] = (StatusCodes.Status404NotFound, "El tema no existe."),
             [QuizNotFound] = (StatusCodes.Status404NotFound, "El test no existe."),
+            [MockExamNotFound] = (StatusCodes.Status404NotFound, "El simulacro no existe."),
+            [ExerciseNotFound] = (StatusCodes.Status404NotFound, "El ejercicio no existe."),
             [GradingNotFound] = (StatusCodes.Status404NotFound, "La corrección no existe."),
             [PracticalCaseNotFound] = (StatusCodes.Status404NotFound, "El supuesto práctico no existe."),
         }.ToFrozenDictionary();

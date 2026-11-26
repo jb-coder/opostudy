@@ -30,7 +30,7 @@ internal static class QuizzesEndpoints
         api.MapGet("/quizzes", ListQuizzes)
             .WithName("ListQuizzes")
             .WithTags("Quizzes")
-            .WithSummary("Historial de tests del usuario, del más reciente al más antiguo")
+            .WithSummary("Historial de tests del usuario (sin simulacros), del más reciente al más antiguo")
             .ProducesValidationProblem();
 
         api.MapGet("/quizzes/{quizId:guid}", GetQuiz)
@@ -176,6 +176,8 @@ internal static class QuizzesEndpoints
         var rows = await db.QuizAttempts
             .AsNoTracking()
             .Where(a => a.UserId == userId)
+            // Mock exams have their own routes and cannot be resumed as a quiz (spec 0033).
+            .Where(a => a.Mode != QuizMode.MockExam)
             .OrderByDescending(a => a.StartedAt)
             .ThenByDescending(a => a.Id)
             .Skip(skip)

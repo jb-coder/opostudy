@@ -10,7 +10,8 @@ public sealed record ImportReport(
     ImportCounts Questions,
     ImportCounts PracticalCases,
     IReadOnlyList<string> Warnings,
-    bool DryRun);
+    bool DryRun,
+    ImportCounts? Exercises = null);
 
 /// <summary>The import cannot be applied (e.g. a question changes its number of options). Nothing is saved.</summary>
 public sealed class ContentImportException : Exception

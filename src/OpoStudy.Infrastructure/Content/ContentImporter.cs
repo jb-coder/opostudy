@@ -73,6 +73,7 @@ public sealed class ContentImporter(OpoStudyDbContext db)
         var topicCounts = new Counter();
         var questionCounts = new Counter();
         var caseCounts = new Counter();
+        var exerciseCounts = new Counter();
         var warnings = new List<string>();
 
         var slugs = exams.Select(e => e.Slug).ToList();
@@ -88,6 +89,8 @@ public sealed class ContentImporter(OpoStudyDbContext db)
         var dbQuestions = await db.Questions
             .Where(q => topicIds.Contains(q.TopicId) || keyList.Contains(q.Key))
             .ToDictionaryAsync(q => q.Key, StringComparer.Ordinal, ct);
+
+        var dbExercises = await db.ExamExercises.Where(x => examIds.Contains(x.ExamId)).ToListAsync(ct);
 
         var dbCases = await db.PracticalCases
             .Where(c => examIds.Contains(c.ExamId) || caseKeyList.Contains(c.Key))
@@ -106,6 +109,8 @@ public sealed class ContentImporter(OpoStudyDbContext db)
                     UpsertQuestion(question, topicIdsBySlug[topic.Slug], dbQuestions, questionCounts);
                 }
             }
+
+            UpsertExercises(exam, content, dbExercises, exerciseCounts);
 
             foreach (var practicalCase in content.PracticalCases)
             {
@@ -128,7 +133,42 @@ public sealed class ContentImporter(OpoStudyDbContext db)
         }
 
         await db.SaveChangesAsync(ct);
-        return new ImportReport(examCounts.ToCounts(), topicCounts.ToCounts(), questionCounts.ToCounts(), caseCounts.ToCounts(), warnings, dryRun);
+        return new ImportReport(examCounts.ToCounts(), topicCounts.ToCounts(), questionCounts.ToCounts(), caseCounts.ToCounts(), warnings, dryRun, exerciseCounts.ToCounts());
+    }
+
+    /// <summary>Upserts the exercises by number. Exercises no longer in the file are deleted (counted as Deactivated): nothing references them.</summary>
+    private void UpsertExercises(Exam exam, ExamContent content, List<ExamExercise> dbExercises, Counter counts)
+    {
+        var existing = dbExercises.Where(x => x.ExamId == exam.Id).ToDictionary(x => x.Number);
+        var exercises = content.Exercises ?? [];
+        foreach (var item in exercises)
+        {
+            if (!existing.TryGetValue(item.Number, out var exercise))
+            {
+                db.ExamExercises.Add(ExamExercise.Create(
+                    exam.Id, item.Number, item.Title, item.QuestionCount, item.DurationMinutes, item.MaxScore, item.PenaltyRatio, item.Sections));
+                counts.Created++;
+                continue;
+            }
+
+            if (exercise.Title != item.Title.Trim()
+                || exercise.QuestionCount != item.QuestionCount
+                || exercise.DurationMinutes != item.DurationMinutes
+                || exercise.MaxScore != item.MaxScore
+                || exercise.PenaltyRatio != item.PenaltyRatio
+                || !exercise.Sections.SequenceEqual(item.Sections.Select(s => s.Trim())))
+            {
+                exercise.Update(item.Number, item.Title, item.QuestionCount, item.DurationMinutes, item.MaxScore, item.PenaltyRatio, item.Sections);
+                counts.Updated++;
+            }
+        }
+
+        var numbers = exercises.Select(e => e.Number).ToHashSet();
+        foreach (var removed in existing.Values.Where(x => !numbers.Contains(x.Number)))
+        {
+            db.ExamExercises.Remove(removed);
+            counts.Deactivated++;
+        }
     }
 
     private Exam UpsertExam(ExamContent content, Dictionary<string, Exam> dbExams, Counter counts)

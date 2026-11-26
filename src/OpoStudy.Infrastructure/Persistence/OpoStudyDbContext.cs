@@ -13,6 +13,7 @@ public sealed class OpoStudyDbContext(DbContextOptions<OpoStudyDbContext> option
 {
     public DbSet<Exam> Exams => Set<Exam>();
     public DbSet<Topic> Topics => Set<Topic>();
+    public DbSet<ExamExercise> ExamExercises => Set<ExamExercise>();
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<PracticalCase> PracticalCases => Set<PracticalCase>();
     public DbSet<Grading> Gradings => Set<Grading>();

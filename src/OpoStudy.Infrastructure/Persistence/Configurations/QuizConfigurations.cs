@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using OpoStudy.Domain.Common;
 using OpoStudy.Domain.Exams;
 using OpoStudy.Domain.Questions;
 using OpoStudy.Domain.Quizzes;
@@ -23,6 +24,22 @@ internal sealed class QuizAttemptConfiguration : IEntityTypeConfiguration<QuizAt
         builder.Ignore(a => a.IsFinished);
         builder.Ignore(a => a.CorrectCount);
         builder.Ignore(a => a.IncorrectCount);
+        builder.Ignore(a => a.DeadlineAt);
+        builder.Ignore(a => a.BlankCount);
+        builder.Ignore(a => a.Passed);
+        builder.Ignore(a => a.IsSubmittedLate);
+        builder.Property(a => a.Score).HasPrecision(5, 2);
+
+        // Copy of the exercise rules, stored in the same table (columns mock_exam_*; all null for regular quizzes).
+        builder.ComplexProperty(
+            a => a.MockExam,
+            rules =>
+            {
+                rules.Property(r => r.Title).HasMaxLength(Limits.Name);
+                rules.Property(r => r.MaxScore).HasPrecision(5, 2);
+                rules.Property(r => r.PenaltyRatio).HasPrecision(3, 2);
+                rules.Property(r => r.PassScore).HasPrecision(5, 2);
+            });
 
         // Deleting an account deletes its history (GDPR); content is never deleted in cascade.
         builder.HasOne<User>().WithMany().HasForeignKey(a => a.UserId).OnDelete(DeleteBehavior.Cascade);

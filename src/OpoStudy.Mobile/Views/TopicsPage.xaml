@@ -62,6 +62,26 @@
 
                     <Border
                         MinimumHeightRequest="{StaticResource MinTouchTarget}"
+                        SemanticProperties.Description="Simulacro de examen. Con tiempo y penalización, como el examen real">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding StartMockExamCommand}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                <Label Style="{StaticResource SubtitleLabel}" Text="Simulacro de examen" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="Con tiempo y penalización, como el examen real" />
+                            </VerticalStackLayout>
+                            <Label
+                                Grid.Column="1"
+                                Style="{StaticResource SubtitleLabel}"
+                                Text="›"
+                                VerticalOptions="Center"
+                                SemanticProperties.Description="Abrir" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        MinimumHeightRequest="{StaticResource MinTouchTarget}"
                         SemanticProperties.Description="{Binding RandomCardDescription}">
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding IsRandomCardAvailable}" Value="False">

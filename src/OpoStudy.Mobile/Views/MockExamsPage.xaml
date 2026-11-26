@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ViewModelPage
+    x:Class="OpoStudy.Mobile.Views.MockExamsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OpoStudy.Mobile.Views"
+    xmlns:controls="clr-namespace:OpoStudy.Mobile.Views.Controls"
+    xmlns:texts="clr-namespace:OpoStudy.Mobile.Core.MockExams;assembly=OpoStudy.Mobile.Core"
+    xmlns:vm="clr-namespace:OpoStudy.Mobile.Core.ViewModels;assembly=OpoStudy.Mobile.Core"
+    x:DataType="vm:MockExamsViewModel"
+    Title="Simulacro de examen">
+
+    <RefreshView
+        Command="{Binding RefreshCommand}"
+        IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+        <CollectionView
+            ItemsSource="{Binding Exercises}"
+            Margin="{StaticResource PagePadding}">
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="{StaticResource SpaceM}" Padding="0,0,0,12">
+                    <Label
+                        Style="{StaticResource TitleLabel}"
+                        Text="Simulacro de examen"
+                        SemanticProperties.HeadingLevel="Level1" />
+                    <Label Style="{StaticResource CaptionLabel}" Text="{Binding ExamName}" />
+
+                    <controls:OfflineBanner IsVisible="{Binding ShowOfflineBanner}" Text="{Binding OfflineBannerText}" />
+
+                    <HorizontalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding IsBusy}">
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" />
+                        <Label Text="Cargando ejercicios…" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding HasError}">
+                        <Label Style="{StaticResource ErrorLabel}" Text="{Binding ErrorMessage}" />
+                        <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="{StaticResource SpaceM}" IsVisible="{Binding NeedsConnection}">
+                        <Label Style="{StaticResource WarningLabel}" Text="{x:Static texts:MockExamTexts.NeedsConnection}" />
+                        <Button Text="Reintentar" Command="{Binding RefreshCommand}" />
+                    </VerticalStackLayout>
+
+                    <Label
+                        Style="{StaticResource CaptionLabel}"
+                        Text="{x:Static texts:MockExamTexts.Empty}"
+                        IsVisible="{Binding IsEmpty}" />
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SpaceM}" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:ExerciseItem">
+                    <Border>
+                        <VerticalStackLayout Spacing="{StaticResource SpaceM}">
+                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}" SemanticProperties.Description="{Binding AccessibilityText}">
+                                <Label
+                                    Style="{StaticResource SubtitleLabel}"
+                                    Text="{Binding Title}"
+                                    SemanticProperties.HeadingLevel="Level2" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="{Binding Details}" />
+                                <Label Style="{StaticResource CaptionLabel}" Text="{Binding PenaltyText}" />
+                                <Label
+                                    Style="{StaticResource WarningLabel}"
+                                    Text="{Binding AvailabilityText}"
+                                    IsVisible="{Binding HasAvailabilityText}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="{StaticResource SpaceXs}">
+                                <Label Text="Nota para aprobar" />
+                                <Entry
+                                    Keyboard="Numeric"
+                                    Text="{Binding PassScoreText}"
+                                    IsEnabled="{Binding IsAvailable}"
+                                    SemanticProperties.Description="Nota para aprobar" />
+                                <Label
+                                    Style="{StaticResource ErrorLabel}"
+                                    Text="{Binding PassScoreError}"
+                                    IsVisible="{Binding HasPassScoreError}" />
+                            </VerticalStackLayout>
+
+                            <Button
+                                Text="Empezar"
+                                Command="{Binding StartCommand, Source={RelativeSource AncestorType={x:Type vm:MockExamsViewModel}}}"
+                                CommandParameter="{Binding .}"
+                                SemanticProperties.Description="{Binding Title, StringFormat='Empezar {0}'}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</views:ViewModelPage>

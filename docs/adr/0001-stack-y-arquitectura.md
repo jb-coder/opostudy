@@ -125,6 +125,13 @@ Milestones de GitHub (título y descripción tal como figuran allí):
   | Corrector (proveedor LLM o falso) | `LlmCorrector` (`ILlmCorrector`) |
   | Estadísticas | `Stats` |
   | Porcentaje de aciertos | `Accuracy` |
+  | Simulacro (de examen) | `MockExam` (un `QuizAttempt` con `Mode = MockExam`) |
+  | Ejercicio (de la oposición, formato del simulacro) | `ExamExercise` |
+  | Nota | `Score` |
+  | Nota para aprobar | `PassScore` |
+  | Penalización por fallo (fracción de un acierto) | `PenaltyRatio` |
+  | En blanco | `Blank` |
+  | Entrega (de un simulacro) | `Submission` |
 
 ### Calidad
 - **Tests**:

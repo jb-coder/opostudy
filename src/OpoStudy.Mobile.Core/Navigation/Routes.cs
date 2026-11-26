@@ -17,6 +17,8 @@ public static class Routes
     public const string Grading = "grading";
     public const string Gradings = "gradings";
     public const string Stats = "stats";
+    public const string MockExams = "mock-exams";
+    public const string MockExam = "mock-exam";
 
     /// <summary>Relative route that pops the current page.</summary>
     public const string Back = "..";

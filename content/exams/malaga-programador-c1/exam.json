@@ -245,5 +245,29 @@
       "title": "Tema 32. Prevención de riesgos laborales. Igualdad efectiva de mujeres y hombres (LO 3/2007, Ley 12/2007 de Andalucía y Ley 9/2018)",
       "section": "Bloque II-C. Materias específicas"
     }
+  ],
+  "exercises": [
+    {
+      "number": 1,
+      "title": "Primer ejercicio",
+      "questionCount": 55,
+      "durationMinutes": 50,
+      "maxScore": 20,
+      "penaltyRatio": 0.5,
+      "sections": ["Bloque I. Materias comunes"]
+    },
+    {
+      "number": 2,
+      "title": "Segundo ejercicio",
+      "questionCount": 75,
+      "durationMinutes": 60,
+      "maxScore": 25,
+      "penaltyRatio": 0.5,
+      "sections": [
+        "Bloque II-A. Materias específicas",
+        "Bloque II-B. Materias específicas",
+        "Bloque II-C. Materias específicas"
+      ]
+    }
   ]
 }
